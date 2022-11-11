@@ -29,12 +29,9 @@ namespace FanControl
             }
 
             fanModeSelectMenu.SelectedIndex = 0;
-        }
+            fanModeSelectNotifyMenu.SelectedIndex = 0;
 
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            fanControl.Update();
-            propertyGrid1.Refresh();
+            notifyIcon.ShowBalloonTip(3000, "Steam Deck Fan Control", "Fan Control Started", ToolTipIcon.Info);
         }
 
         private void fanModeSelect_SelectedValueChanged(object sender, EventArgs e)
@@ -70,6 +67,18 @@ namespace FanControl
         {
             // Always revert to default on closing
             fanControl.SetMode(FanControl.FanMode.Default);
+        }
+
+        private void updateTimer_Tick(object sender, EventArgs e)
+        {
+            fanControl.Update();
+
+            if (Visible)
+            {
+                propertyGrid1.Refresh();
+            }
+
+            notifyIcon.Text = String.Format("Fan: {0} RPM Mode: {1}", fanControl.CurrentRPM, fanControl.Mode);
         }
     }
 }
