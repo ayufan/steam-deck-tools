@@ -62,8 +62,7 @@ namespace FanControl
 
             computer.Close();
         }
-
-        static void Main(string[] args)
+        static void ConsoleMain(string[] args)
         {
             // Monitor();
 
@@ -76,6 +75,18 @@ namespace FanControl
 
                 Console.WriteLine("Fan RPM: {0}", Vlv0100.GetFanRPM());
                 Console.WriteLine("Fan Desired RPM: {0}", Vlv0100.GetFanDesiredRPM());
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            if (Environment.UserInteractive && !Console.IsInputRedirected)
+            {
+                ConsoleMain(args);
+            }
+            else
+            {
+                Application.Run(new FanControlForm());
             }
         }
     }

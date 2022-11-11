@@ -18,6 +18,8 @@ namespace FanControl
         static IntPtr FNCK = new IntPtr(0xFE700300 + 0x9F);
         static ushort IO6C = 0x6C;
 
+        public const ushort MAX_FAN_RPM = 0x1C84;
+
         public static ushort GetFanDesiredRPM()
         {
             byte[] data = InpOut.ReadMemory(FSLO_FSHI, 2);
@@ -39,8 +41,8 @@ namespace FanControl
 
         public static void SetFanDesiredRPM(ushort rpm)
         {
-            if (rpm > 0x1C84)
-                rpm = 0x1C84;
+            if (rpm > MAX_FAN_RPM)
+                rpm = MAX_FAN_RPM;
 
             byte[] data = BitConverter.GetBytes(rpm);
             InpOut.WriteMemory(FSLO_FSHI, data);
