@@ -206,11 +206,6 @@ namespace FanControl
             return value;
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
-
         public ushort? CalculateRPM(FanController.FanMode mode)
         {
             if (!Profiles.ContainsKey(mode) || !Value.HasValue)

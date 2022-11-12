@@ -72,13 +72,14 @@ namespace FanControl
             if (e.CloseReason == CloseReason.UserClosing && Visible)
             {
                 e.Cancel = true;
-                WindowState = FormWindowState.Minimized;
+                Hide();
             }
         }
 
         private void formShow_Event(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Normal;
+            Show();
             propertyGrid1.Refresh();
         }
 
@@ -117,9 +118,9 @@ namespace FanControl
             toolStripMenuItemStartupOnBoot.Checked = startupManager.Startup;
         }
 
-        private void label1_DoubleClick(object sender, EventArgs e)
+        private void help_DoubleClick(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://github.com/ayufan-research/SteamDeckTools");
+            System.Diagnostics.Process.Start("explorer.exe", "http://github.com/ayufan-research/SteamDeckTools");
         }
     }
 }

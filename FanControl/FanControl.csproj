@@ -8,7 +8,7 @@
     <UseWindowsForms>True</UseWindowsForms>
     <StartupObject>FanControl.Program</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AssemblyVersion>0.1.0</AssemblyVersion>
+    <Version>0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

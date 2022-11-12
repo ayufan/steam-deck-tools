@@ -46,7 +46,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.sensorWarningLabel = new System.Windows.Forms.Label();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-            this.label1 = new System.Windows.Forms.Label();
+            this.helpLabel = new System.Windows.Forms.Label();
             this.contextMenu.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -160,7 +160,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.sensorWarningLabel, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.propertyGrid1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.helpLabel, 0, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 44);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -198,20 +198,21 @@
             this.propertyGrid1.TabIndex = 1;
             this.propertyGrid1.ToolbarVisible = false;
             // 
-            // label1
+            // helpLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
-            this.label1.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label1.Location = new System.Drawing.Point(3, 853);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(706, 32);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "https://github.com/ayufan-research/SteamDeckTools";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label1.DoubleClick += new System.EventHandler(this.label1_DoubleClick);
+            this.helpLabel.AutoSize = true;
+            this.helpLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.helpLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.helpLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.helpLabel.Font = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
+            this.helpLabel.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.helpLabel.Location = new System.Drawing.Point(3, 853);
+            this.helpLabel.Name = "helpLabel";
+            this.helpLabel.Size = new System.Drawing.Size(706, 32);
+            this.helpLabel.TabIndex = 7;
+            this.helpLabel.Text = "https://github.com/ayufan-research/SteamDeckTools";
+            this.helpLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.helpLabel.DoubleClick += new System.EventHandler(this.help_DoubleClick);
             // 
             // FanControlForm
             // 
@@ -258,6 +259,6 @@
         private PropertyGrid propertyGrid1;
         private ToolStripMenuItem toolStripMenuItemStartupOnBoot;
         private ToolStripSeparator toolStripSeparator2;
-        private Label label1;
+        private Label helpLabel;
     }
 }
