@@ -39,11 +39,14 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fanModeSelectMenu = new System.Windows.Forms.ToolStripComboBox();
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemStartupOnBoot = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertyGridUpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.sensorWarningLabel = new System.Windows.Forms.Label();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.label1 = new System.Windows.Forms.Label();
             this.contextMenu.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -119,15 +122,29 @@
             // controlToolStripMenuItem
             // 
             this.controlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemStartupOnBoot,
+            this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.controlToolStripMenuItem.Name = "controlToolStripMenuItem";
             this.controlToolStripMenuItem.Size = new System.Drawing.Size(113, 40);
             this.controlToolStripMenuItem.Text = "&Control";
             // 
+            // toolStripMenuItemStartupOnBoot
+            // 
+            this.toolStripMenuItemStartupOnBoot.Name = "toolStripMenuItemStartupOnBoot";
+            this.toolStripMenuItemStartupOnBoot.Size = new System.Drawing.Size(315, 44);
+            this.toolStripMenuItemStartupOnBoot.Text = "&Startup on Boot";
+            this.toolStripMenuItemStartupOnBoot.Click += new System.EventHandler(this.toolStripMenuItemStartupOnBoot_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(312, 6);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(184, 44);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(315, 44);
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.formClose_Event);
             // 
@@ -143,11 +160,13 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.sensorWarningLabel, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.propertyGrid1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 44);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(712, 885);
             this.tableLayoutPanel1.TabIndex = 5;
@@ -159,7 +178,7 @@
             this.sensorWarningLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.sensorWarningLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.sensorWarningLabel.ForeColor = System.Drawing.Color.Red;
-            this.sensorWarningLabel.Location = new System.Drawing.Point(3, 757);
+            this.sensorWarningLabel.Location = new System.Drawing.Point(3, 725);
             this.sensorWarningLabel.Name = "sensorWarningLabel";
             this.sensorWarningLabel.Size = new System.Drawing.Size(706, 128);
             this.sensorWarningLabel.TabIndex = 6;
@@ -175,9 +194,24 @@
             this.propertyGrid1.HelpVisible = false;
             this.propertyGrid1.Location = new System.Drawing.Point(3, 3);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(706, 751);
+            this.propertyGrid1.Size = new System.Drawing.Size(706, 719);
             this.propertyGrid1.TabIndex = 1;
             this.propertyGrid1.ToolbarVisible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
+            this.label1.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.label1.Location = new System.Drawing.Point(3, 853);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(706, 32);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "https://github.com/ayufan-research/SteamDeckTools";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label1.DoubleClick += new System.EventHandler(this.label1_DoubleClick);
             // 
             // FanControlForm
             // 
@@ -188,9 +222,12 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "FanControlForm";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Steam Deck Fan Control";
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FanControlForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FanControlForm_FormClosed);
             this.contextMenu.ResumeLayout(false);
@@ -219,5 +256,8 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Label sensorWarningLabel;
         private PropertyGrid propertyGrid1;
+        private ToolStripMenuItem toolStripMenuItemStartupOnBoot;
+        private ToolStripSeparator toolStripSeparator2;
+        private Label label1;
     }
 }

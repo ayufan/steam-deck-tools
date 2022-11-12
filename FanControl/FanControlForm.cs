@@ -1,8 +1,10 @@
-﻿using System;
+﻿using FanControl.FromLibreHardwareMonitor;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
@@ -15,10 +17,17 @@ namespace FanControl
     public partial class FanControlForm : Form
     {
         private FanController fanControl = new FanController();
+        private StartupManager startupManager = new StartupManager();
 
         public FanControlForm()
         {
             InitializeComponent();
+
+            Text += " v" + Application.ProductVersion.ToString();
+            notifyIcon.Text = Text;
+
+            toolStripMenuItemStartupOnBoot.Visible = startupManager.IsAvailable;
+            toolStripMenuItemStartupOnBoot.Checked = startupManager.Startup;
 
             propertyGrid1.SelectedObject = fanControl;
             propertyGrid1.ExpandAllGridItems();
@@ -29,19 +38,33 @@ namespace FanControl
                 fanModeSelectNotifyMenu.Items.Add(item);
             }
 
-            fanModeSelectMenu.SelectedIndex = 0;
-            fanModeSelectNotifyMenu.SelectedIndex = 0;
+            try
+            {
+                var fanMode = Enum.Parse(typeof(FanController.FanMode), Properties.Settings.Default.FanMode);
+                setFanMode((FanController.FanMode)fanMode);
+            }
+            catch(System.ArgumentException)
+            {
+                setFanMode(FanController.FanMode.Default);
+            }
 
-            notifyIcon.ShowBalloonTip(3000, "Steam Deck Fan Control", "Fan Control Started", ToolTipIcon.Info);
+            notifyIcon.ShowBalloonTip(3000, Text, "Fan Control Started", ToolTipIcon.Info);
+        }
+
+        private void setFanMode(FanController.FanMode mode)
+        {
+            fanControl.SetMode(mode);
+            fanModeSelectMenu.SelectedItem = mode;
+            fanModeSelectNotifyMenu.SelectedItem = mode;
+            Properties.Settings.Default["FanMode"] = mode.ToString();
+            Properties.Settings.Default.Save();
         }
 
         private void fanModeSelect_SelectedValueChanged(object sender, EventArgs e)
         {
             var comboBox = (ToolStripComboBox)sender;
             var selectedMode = (FanController.FanMode)comboBox.SelectedItem;
-            fanControl.SetMode(selectedMode);
-            fanModeSelectMenu.SelectedItem = selectedMode;
-            fanModeSelectNotifyMenu.SelectedItem = selectedMode;
+            setFanMode(selectedMode);
         }
 
         private void FanControlForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -49,13 +72,13 @@ namespace FanControl
             if (e.CloseReason == CloseReason.UserClosing && Visible)
             {
                 e.Cancel = true;
-                Hide();
+                WindowState = FormWindowState.Minimized;
             }
         }
 
         private void formShow_Event(object sender, EventArgs e)
         {
-            Show();
+            WindowState = FormWindowState.Normal;
             propertyGrid1.Refresh();
         }
 
@@ -86,6 +109,17 @@ namespace FanControl
             propertyGrid1.SelectedGridItem = item;
             sensorWarningLabel.Visible = fanControl.IsAnyInvalid();
             notifyIcon.Text = String.Format("Fan: {0} RPM Mode: {1}", fanControl.CurrentRPM, fanControl.Mode);
+        }
+
+        private void toolStripMenuItemStartupOnBoot_Click(object sender, EventArgs e)
+        {
+            startupManager.Startup = !startupManager.Startup;
+            toolStripMenuItemStartupOnBoot.Checked = startupManager.Startup;
+        }
+
+        private void label1_DoubleClick(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://github.com/ayufan-research/SteamDeckTools");
         }
     }
 }

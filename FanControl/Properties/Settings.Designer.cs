@@ -22,5 +22,17 @@ namespace FanControl.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Default")]
+        public string FanMode {
+            get {
+                return ((string)(this["FanMode"]));
+            }
+            set {
+                this["FanMode"] = value;
+            }
+        }
     }
 }
