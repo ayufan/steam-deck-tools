@@ -21,8 +21,20 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Set RELEASE_VERSION
-      run: echo "RELEASE_VERSION=$(cat VERSION).$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
       shell: bash
+      run: |
+        majorVer=$(cat VERSION)
+        lastVer=$(git tag --sort version:refname --list "$majorVer.*" | head -n1)
+        if [[ -n "$lastVer" ]]; then
+          newVer=(${lastVer//./ })
+          newVer[-1]="$((${newVer[-1]}+1))"
+          nextVer="${newVer[*]}"
+          nextVer="${nextVer// /.}"
+        else
+          nextVer="$majorVer.0"
+        fi
+        echo "MajorVer=$majorVer LastVer=$lastVer NextVer=$nextVer"
+        echo "RELEASE_VERSION=$nextVer" >> $GITHUB_ENV
     - name: Build
       run: dotnet build --configuration Release --output "FanControl-${{ env.RELEASE_VERSION }}/" "/property:Version=${{ env.RELEASE_VERSION }}"
     - name: Test
