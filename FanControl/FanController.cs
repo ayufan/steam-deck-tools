@@ -36,11 +36,7 @@ namespace FanControl
         public ushort DesiredRPM { get; private set; }
 
         [CategoryAttribute("Board")]
-        public String FirmwareVersion { get; private set; } = Vlv0100.GetFirmwareVersion().ToString("X");
-        [CategoryAttribute("Board")]
-        public String BoardID { get; private set; } = Vlv0100.GetBoardID().ToString("X");
-        [CategoryAttribute("Board")]
-        public String PDCS { get; private set; } = Vlv0100.GetPDCS().ToString("X");
+        public String PDVersion { get; private set; } = Vlv0100.GetFirmwareVersion().ToString("X");
 
         private LibreHardwareMonitor.Hardware.Computer libreHardwareComputer = new LibreHardwareMonitor.Hardware.Computer
         {
