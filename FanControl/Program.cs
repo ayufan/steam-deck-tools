@@ -34,15 +34,17 @@ namespace FanControl
                 IsMotherboardEnabled = true,
                 IsControllerEnabled = true,
                 IsNetworkEnabled = true,
-                IsStorageEnabled = true
+                IsStorageEnabled = true,
+                IsPsuEnabled = true,
+                IsBatteryEnabled = true
             };
 
             computer.Open();
-            computer.Accept(new UpdateVisitor());
+            //computer.Accept(new UpdateVisitor());
 
             foreach (IHardware hardware in computer.Hardware)
             {
-                Console.WriteLine("Hardware: {0}", hardware.Name);
+                Console.WriteLine("Hardware: {0}. Type: {1}", hardware.Name, hardware.HardwareType);
 
                 foreach (IHardware subhardware in hardware.SubHardware)
                 {
@@ -50,13 +52,13 @@ namespace FanControl
 
                     foreach (ISensor sensor in subhardware.Sensors)
                     {
-                        Console.WriteLine("\t\tSensor: {0}, value: {1}", sensor.Name, sensor.Value);
+                        Console.WriteLine("\t\tSensor: {0}, value: {1}, type: {2}", sensor.Name, sensor.Value, sensor.SensorType);
                     }
                 }
 
                 foreach (ISensor sensor in hardware.Sensors)
                 {
-                    Console.WriteLine("\tSensor: {0}, value: {1}", sensor.Name, sensor.Value);
+                    Console.WriteLine("\tSensor: {0}, value: {1}, type: {2}", sensor.Name, sensor.Value, sensor.SensorType);
                 }
             }
 
@@ -64,7 +66,7 @@ namespace FanControl
         }
         static void ConsoleMain(string[] args)
         {
-            // Monitor();
+            Monitor();
 
             while (true)
             {

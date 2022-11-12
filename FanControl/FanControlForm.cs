@@ -21,8 +21,9 @@ namespace FanControl
             InitializeComponent();
 
             propertyGrid1.SelectedObject = fanControl;
+            propertyGrid1.ExpandAllGridItems();
 
-            foreach(var item in Enum.GetValues(typeof(FanControl.FanMode)))
+            foreach (var item in Enum.GetValues(typeof(FanControl.FanMode)))
             {
                 fanModeSelectMenu.Items.Add(item);
                 fanModeSelectNotifyMenu.Items.Add(item);
@@ -55,6 +56,7 @@ namespace FanControl
         private void formShow_Event(object sender, EventArgs e)
         {
             Show();
+            propertyGrid1.Refresh();
         }
 
         private void formClose_Event(object sender, EventArgs e)
@@ -69,15 +71,19 @@ namespace FanControl
             fanControl.SetMode(FanControl.FanMode.Default);
         }
 
-        private void updateTimer_Tick(object sender, EventArgs e)
+        private void fanLoopTimer_Tick(object sender, EventArgs e)
         {
             fanControl.Update();
+        }
 
-            if (Visible)
-            {
-                propertyGrid1.Refresh();
-            }
+        private void propertyGridUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            if (!Visible)
+                return;
 
+            var item = propertyGrid1.SelectedGridItem;
+            propertyGrid1.Refresh();
+            propertyGrid1.SelectedGridItem = item;
             notifyIcon.Text = String.Format("Fan: {0} RPM Mode: {1}", fanControl.CurrentRPM, fanControl.Mode);
         }
     }

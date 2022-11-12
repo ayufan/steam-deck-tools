@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FanControlForm));
-            this.updateTimer = new System.Windows.Forms.Timer(this.components);
+            this.fanLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.fanModeSelectNotifyMenu = new System.Windows.Forms.ToolStripComboBox();
@@ -41,15 +41,16 @@
             this.fanModeSelectMenu = new System.Windows.Forms.ToolStripComboBox();
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.propertyGridUpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.contextMenu.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // updateTimer
+            // fanLoopTimer
             // 
-            this.updateTimer.Enabled = true;
-            this.updateTimer.Interval = 250;
-            this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
+            this.fanLoopTimer.Enabled = true;
+            this.fanLoopTimer.Interval = 250;
+            this.fanLoopTimer.Tick += new System.EventHandler(this.fanLoopTimer_Tick);
             // 
             // notifyIcon
             // 
@@ -98,7 +99,7 @@
             this.propertyGrid1.HelpVisible = false;
             this.propertyGrid1.Location = new System.Drawing.Point(0, 44);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(712, 599);
+            this.propertyGrid1.Size = new System.Drawing.Size(712, 885);
             this.propertyGrid1.TabIndex = 0;
             this.propertyGrid1.ToolbarVisible = false;
             // 
@@ -138,11 +139,17 @@
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.formClose_Event);
             // 
+            // propertyGridUpdateTimer
+            // 
+            this.propertyGridUpdateTimer.Enabled = true;
+            this.propertyGridUpdateTimer.Interval = 1000;
+            this.propertyGridUpdateTimer.Tick += new System.EventHandler(this.propertyGridUpdateTimer_Tick);
+            // 
             // FanControlForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(712, 643);
+            this.ClientSize = new System.Drawing.Size(712, 929);
             this.Controls.Add(this.propertyGrid1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -150,7 +157,6 @@
             this.Name = "FanControlForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Steam Deck Fan Control";
-            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FanControlForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FanControlForm_FormClosed);
             this.contextMenu.ResumeLayout(false);
@@ -163,7 +169,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer updateTimer;
+        private System.Windows.Forms.Timer fanLoopTimer;
         private NotifyIcon notifyIcon;
         private PropertyGrid propertyGrid1;
         private ContextMenuStrip contextMenu;
@@ -174,5 +180,6 @@
         private ToolStripComboBox fanModeSelectMenu;
         private ToolStripMenuItem controlToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.Timer propertyGridUpdateTimer;
     }
 }

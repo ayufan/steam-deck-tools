@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
@@ -16,6 +17,7 @@ namespace FanControl
         static IntPtr FRPR = new IntPtr(0xFE700B00 + 0x97);
         static IntPtr FNRL_FNRH = new IntPtr(0xFE700300 + 0xB0);
         static IntPtr FNCK = new IntPtr(0xFE700300 + 0x9F);
+        static IntPtr BATH_BATL = new IntPtr(0xFE700400 + 0x6E);
         static ushort IO6C = 0x6C;
 
         public const ushort MAX_FAN_RPM = 0x1C84;
@@ -52,6 +54,13 @@ namespace FanControl
         {
             byte[] data = InpOut.ReadMemory(FNCK, 1);
             return (data[0] & 0x1) != 0;
+        }
+
+        public static float GetBattTemperature()
+        {
+            byte[] data = InpOut.ReadMemory(BATH_BATL, 2);
+            int value = (data[0] << 8) + data[1];
+            return (float)(value - 0x0AAC) / 10.0f;
         }
 
         private static void SetGain(ushort gain)
