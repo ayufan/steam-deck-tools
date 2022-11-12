@@ -26,6 +26,7 @@ namespace FanControl
             Text += " v" + Application.ProductVersion.ToString();
             notifyIcon.Text = Text;
 
+            toolStripMenuItemAlwaysOnTop.Checked = TopMost = Properties.Settings.Default.AlwaysOnTop;
             toolStripMenuItemStartupOnBoot.Visible = startupManager.IsAvailable;
             toolStripMenuItemStartupOnBoot.Checked = startupManager.Startup;
 
@@ -120,6 +121,14 @@ namespace FanControl
         private void help_DoubleClick(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("explorer.exe", "http://github.com/ayufan-research/SteamDeckTools");
+        }
+
+        private void toolStripMenuItemAlwaysOnTop_Click(object sender, EventArgs e)
+        {
+            toolStripMenuItemAlwaysOnTop.Checked = !toolStripMenuItemAlwaysOnTop.Checked;
+            TopMost = toolStripMenuItemAlwaysOnTop.Checked;
+            Properties.Settings.Default.AlwaysOnTop = toolStripMenuItemAlwaysOnTop.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }
