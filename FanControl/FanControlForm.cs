@@ -120,7 +120,7 @@ namespace FanControl
 
         private void help_DoubleClick(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("explorer.exe", "http://github.com/ayufan-research/SteamDeckTools");
+            System.Diagnostics.Process.Start("explorer.exe", "http://github.com/ayufan-research/steam-deck-tools");
         }
 
         private void toolStripMenuItemAlwaysOnTop_Click(object sender, EventArgs e)

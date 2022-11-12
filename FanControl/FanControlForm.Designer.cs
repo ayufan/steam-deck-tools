@@ -226,7 +226,7 @@
             this.helpLabel.Name = "helpLabel";
             this.helpLabel.Size = new System.Drawing.Size(706, 32);
             this.helpLabel.TabIndex = 8;
-            this.helpLabel.Text = "https://github.com/ayufan-research/SteamDeckTools";
+            this.helpLabel.Text = "https://github.com/ayufan-research/steam-deck-tools";
             this.helpLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.helpLabel.DoubleClick += new System.EventHandler(this.help_DoubleClick);
             // 
