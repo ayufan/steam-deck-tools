@@ -46,8 +46,7 @@ namespace FanControl
             var pdcs = GetPDCS();
 
             return SupportedFirmwares.Contains(firmwareVersion) &&
-                SupportedBoardID.Contains(boardID) &&
-                SupportedPDCS.Contains(pdcs);
+                SupportedBoardID.Contains(boardID);
         }
 
         public static ushort GetFirmwareVersion()

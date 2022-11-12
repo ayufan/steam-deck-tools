@@ -54,7 +54,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
     - uses: vimtor/action-zip@v1
       with:
-        files: FanControl-${{ github.event.release.tag_name }}/
+        files: FanControl-${{ github.event.release.tag_name }}
         dest: FanControl-${{ github.event.release.tag_name }}.zip
     - uses: ncipollo/release-action@v1
       with:
