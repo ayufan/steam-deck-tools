@@ -39,7 +39,8 @@ silicon. But! The device might overheat and break due to this missing temperatur
 The application tries it best to not harm device (just in case). So, it validates bios version.
 Those are currently supported:
 
-- F7A0107 (FW ver: 0xB030)
+- F7A0107 (PD ver: 0xB030)
+- F7A0110 (PD ver: 0xB030)
 
 ## Author
 
