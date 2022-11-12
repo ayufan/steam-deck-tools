@@ -14,7 +14,7 @@ namespace FanControl
 {
     public partial class FanControlForm : Form
     {
-        private FanControl fanControl = new FanControl();
+        private FanController fanControl = new FanController();
 
         public FanControlForm()
         {
@@ -23,7 +23,7 @@ namespace FanControl
             propertyGrid1.SelectedObject = fanControl;
             propertyGrid1.ExpandAllGridItems();
 
-            foreach (var item in Enum.GetValues(typeof(FanControl.FanMode)))
+            foreach (var item in Enum.GetValues(typeof(FanController.FanMode)))
             {
                 fanModeSelectMenu.Items.Add(item);
                 fanModeSelectNotifyMenu.Items.Add(item);
@@ -38,7 +38,7 @@ namespace FanControl
         private void fanModeSelect_SelectedValueChanged(object sender, EventArgs e)
         {
             var comboBox = (ToolStripComboBox)sender;
-            var selectedMode = (FanControl.FanMode)comboBox.SelectedItem;
+            var selectedMode = (FanController.FanMode)comboBox.SelectedItem;
             fanControl.SetMode(selectedMode);
             fanModeSelectMenu.SelectedItem = selectedMode;
             fanModeSelectNotifyMenu.SelectedItem = selectedMode;
@@ -68,7 +68,7 @@ namespace FanControl
         private void FanControlForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Always revert to default on closing
-            fanControl.SetMode(FanControl.FanMode.Default);
+            fanControl.SetMode(FanController.FanMode.Default);
         }
 
         private void fanLoopTimer_Tick(object sender, EventArgs e)
@@ -84,6 +84,7 @@ namespace FanControl
             var item = propertyGrid1.SelectedGridItem;
             propertyGrid1.Refresh();
             propertyGrid1.SelectedGridItem = item;
+            sensorWarningLabel.Visible = fanControl.IsAnyInvalid();
             notifyIcon.Text = String.Format("Fan: {0} RPM Mode: {1}", fanControl.CurrentRPM, fanControl.Mode);
         }
     }

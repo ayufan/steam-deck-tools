@@ -36,14 +36,17 @@
             this.fanModeSelectNotifyMenu = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fanModeSelectMenu = new System.Windows.Forms.ToolStripComboBox();
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertyGridUpdateTimer = new System.Windows.Forms.Timer(this.components);
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.sensorWarningLabel = new System.Windows.Forms.Label();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.contextMenu.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // fanLoopTimer
@@ -92,17 +95,6 @@
             this.toolStripMenuItem1.Text = "Exit";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.formClose_Event);
             // 
-            // propertyGrid1
-            // 
-            this.propertyGrid1.DisabledItemForeColor = System.Drawing.SystemColors.ControlText;
-            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid1.HelpVisible = false;
-            this.propertyGrid1.Location = new System.Drawing.Point(0, 44);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(712, 885);
-            this.propertyGrid1.TabIndex = 0;
-            this.propertyGrid1.ToolbarVisible = false;
-            // 
             // menuStrip1
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
@@ -145,12 +137,54 @@
             this.propertyGridUpdateTimer.Interval = 1000;
             this.propertyGridUpdateTimer.Tick += new System.EventHandler(this.propertyGridUpdateTimer_Tick);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.sensorWarningLabel, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.propertyGrid1, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 44);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(712, 885);
+            this.tableLayoutPanel1.TabIndex = 5;
+            // 
+            // sensorWarningLabel
+            // 
+            this.sensorWarningLabel.AutoSize = true;
+            this.sensorWarningLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sensorWarningLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sensorWarningLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.sensorWarningLabel.ForeColor = System.Drawing.Color.Red;
+            this.sensorWarningLabel.Location = new System.Drawing.Point(3, 757);
+            this.sensorWarningLabel.Name = "sensorWarningLabel";
+            this.sensorWarningLabel.Size = new System.Drawing.Size(706, 128);
+            this.sensorWarningLabel.TabIndex = 6;
+            this.sensorWarningLabel.Text = "Some sensors are missing.\r\nThe fan behavior might be incorrect.\r\nWhich might resu" +
+    "lt in device failure.\r\nUse at your own risk!";
+            this.sensorWarningLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.sensorWarningLabel.Visible = false;
+            // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.DisabledItemForeColor = System.Drawing.SystemColors.ControlText;
+            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid1.HelpVisible = false;
+            this.propertyGrid1.Location = new System.Drawing.Point(3, 3);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(706, 751);
+            this.propertyGrid1.TabIndex = 1;
+            this.propertyGrid1.ToolbarVisible = false;
+            // 
             // FanControlForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(712, 929);
-            this.Controls.Add(this.propertyGrid1);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -162,6 +196,8 @@
             this.contextMenu.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -171,7 +207,6 @@
 
         private System.Windows.Forms.Timer fanLoopTimer;
         private NotifyIcon notifyIcon;
-        private PropertyGrid propertyGrid1;
         private ContextMenuStrip contextMenu;
         private MenuStrip menuStrip1;
         private ToolStripComboBox fanModeSelectNotifyMenu;
@@ -181,5 +216,8 @@
         private ToolStripMenuItem controlToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.Timer propertyGridUpdateTimer;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Label sensorWarningLabel;
+        private PropertyGrid propertyGrid1;
     }
 }
