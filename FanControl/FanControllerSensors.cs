@@ -21,6 +21,7 @@ namespace FanControl
                     SensorName = "Package",
                     SensorType = SensorType.Power,
                     ValueDeadZone = 0.1f,
+                    AvgSamples = 20,
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {
                         {
@@ -48,6 +49,7 @@ namespace FanControl
                     SensorName = "Core (Tctl/Tdie)",
                     SensorType = SensorType.Temperature,
                     ValueDeadZone = 0.0f,
+                    AvgSamples = 20,
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {
                         {
@@ -72,6 +74,7 @@ namespace FanControl
                     SensorName = "GPU Core",
                     SensorType = SensorType.Temperature,
                     ValueDeadZone = 0.0f,
+                    AvgSamples = 20,
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {
                         {

@@ -172,7 +172,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(712, 989);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(712, 1045);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // label1
@@ -182,7 +182,7 @@
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(3, 893);
+            this.label1.Location = new System.Drawing.Point(3, 949);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(706, 64);
             this.label1.TabIndex = 9;
@@ -197,7 +197,7 @@
             this.helpLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.helpLabel.Font = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
             this.helpLabel.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.helpLabel.Location = new System.Drawing.Point(3, 957);
+            this.helpLabel.Location = new System.Drawing.Point(3, 1013);
             this.helpLabel.Name = "helpLabel";
             this.helpLabel.Size = new System.Drawing.Size(706, 32);
             this.helpLabel.TabIndex = 8;
@@ -211,7 +211,7 @@
             this.sensorWarningLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.sensorWarningLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.sensorWarningLabel.ForeColor = System.Drawing.Color.Red;
-            this.sensorWarningLabel.Location = new System.Drawing.Point(3, 797);
+            this.sensorWarningLabel.Location = new System.Drawing.Point(3, 853);
             this.sensorWarningLabel.Name = "sensorWarningLabel";
             this.sensorWarningLabel.Size = new System.Drawing.Size(706, 96);
             this.sensorWarningLabel.TabIndex = 6;
@@ -227,7 +227,7 @@
             this.propertyGrid1.HelpVisible = false;
             this.propertyGrid1.Location = new System.Drawing.Point(3, 3);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(706, 791);
+            this.propertyGrid1.Size = new System.Drawing.Size(706, 847);
             this.propertyGrid1.TabIndex = 1;
             this.propertyGrid1.ToolbarVisible = false;
             // 
@@ -235,12 +235,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(712, 1033);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(712, 1089);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FanControlForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

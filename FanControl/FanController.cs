@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace FanControl
 {
     [TypeConverter(typeof(ExpandableObjectConverter))]
+    [RefreshProperties(RefreshProperties.Repaint)]
     internal partial class FanController : IDisposable
     {
         public enum FanMode
@@ -25,9 +26,13 @@ namespace FanControl
         public FanMode Mode { get; private set; }
 
         [CategoryAttribute("Fan")]
+        [NotifyParentProperty(true)]
+
         public ushort CurrentRPM { get; private set; }
 
         [CategoryAttribute("Fan")]
+        [NotifyParentProperty(true)]
+
         public ushort DesiredRPM { get; private set; }
 
         [CategoryAttribute("Board")]

@@ -106,9 +106,7 @@ namespace FanControl
             if (!Visible)
                 return;
 
-            var item = propertyGrid1.SelectedGridItem;
             propertyGrid1.Refresh();
-            propertyGrid1.SelectedGridItem = item;
             sensorWarningLabel.Visible = fanControl.IsAnyInvalid();
             notifyIcon.Text = String.Format("Fan: {0} RPM Mode: {1}", fanControl.CurrentRPM, fanControl.Mode);
         }

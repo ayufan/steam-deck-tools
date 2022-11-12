@@ -180,28 +180,35 @@ namespace FanControl
             return true;
         }
 
+        private String Unit()
+        {
+            switch (SensorType)
+            {
+                case SensorType.Temperature:
+                    return "℃";
+
+                case SensorType.Power:
+                    return "W";
+
+                default:
+                    return "";
+            }
+        }
+
         public String FormattedValue()
         {
             if (!Value.HasValue)
                 return "";
 
-            String value = Value.Value.ToString("F1");
+            String value = "";
+            
+            if (AllSamples.Count > 0) 
+                value += AllSamples.Last().ToString("F1") + Unit();
 
-            switch (SensorType)
-            {
-                case SensorType.Temperature:
-                    value += "℃";
-                    break;
-
-                case SensorType.Power:
-                    value += "W";
-                    break;
-            }
+            value += " (avg: " + Value.Value.ToString("F1") + Unit() + ")";
 
             if (CalculatedRPM.HasValue)
-            {
-                value += " (min: " + CalculatedRPM.ToString() + "RPM)";
-            }
+                value += " (" + CalculatedRPM.ToString() + "RPM)";
 
             return value;
         }
