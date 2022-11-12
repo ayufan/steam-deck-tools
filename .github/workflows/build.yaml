@@ -24,7 +24,7 @@ jobs:
       shell: bash
       run: |
         majorVer=$(cat VERSION)
-        lastVer=$(git tag --sort version:refname --list "$majorVer.*" | head -n1)
+        lastVer=$(git tag --sort version:refname --list "$majorVer.*" | tail -n1)
         if [[ -n "$lastVer" ]]; then
           newVer=(${lastVer//./ })
           newVer[-1]="$((${newVer[-1]}+1))"
