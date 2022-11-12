@@ -1,45 +1,17 @@
 on:
   push:
     branches: [main]
-  pull_request:
-  release:
-    types: [published]
+    paths-ignore:
+      - '**/**.md'
 
 env:
   DOTNET_VERSION: '6.0.x'
 
 jobs:
-  build-and-test:
-    runs-on: ${{ matrix.os }}
-    if: github.ref_type != 'tag'
-    strategy:
-      matrix:
-        os: [windows-latest]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build without Version
-      run: dotnet build --configuration Release --output FanControl-develop/
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
-    - uses: vimtor/action-zip@v1
-      with:
-        files: FanControl-develop/
-        dest: FanControl-develop.zip
-
   build-and-release:
-    runs-on: ${{ matrix.os }}
-    if: github.ref_type == 'tag'
+    runs-on: windows-latest
     permissions:
       contents: write
-    strategy:
-      matrix:
-        os: [windows-latest]
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -48,19 +20,21 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Install dependencies
       run: dotnet restore
-    - name: Build with Version
-      run: dotnet build --configuration Release /property:Version=${{ github.event.release.tag_name }} --output FanControl-${{ github.event.release.tag_name }}/
+    - name: Set RELEASE_VERSION
+      run: echo "RELEASE_VERSION=$(cat VERSION).$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+      shell: bash
+    - name: Build
+      run: dotnet build --configuration Release --output "FanControl-${{ env.RELEASE_VERSION }}/" "/property:Version=${{ env.RELEASE_VERSION }}"
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - uses: vimtor/action-zip@v1
       with:
-        files: FanControl-${{ github.event.release.tag_name }}
-        dest: FanControl-${{ github.event.release.tag_name }}.zip
+        files: FanControl-${{ env.RELEASE_VERSION }}
+        dest: FanControl-${{ env.RELEASE_VERSION }}.zip
+        recursive: true
     - uses: ncipollo/release-action@v1
       with:
+        tag: ${{ env.RELEASE_VERSION }}
         artifacts: "*.zip"
         prerelease: true
-        allowUpdates: true
         generateReleaseNotes: true
-        omitNameDuringUpdate: true
-        updateOnlyUnreleased: true

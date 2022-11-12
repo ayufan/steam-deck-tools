@@ -1,0 +1,26 @@
+on:
+  pull_request:
+
+env:
+  DOTNET_VERSION: '6.0.x'
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build without Version
+      run: dotnet build --configuration Release --output FanControl-develop/
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+    - uses: vimtor/action-zip@v1
+      with:
+        files: FanControl-develop
+        dest: FanControl-develop.zip
+        recursive: true
