@@ -47,7 +47,7 @@ namespace FanControl
                     HardwareType = HardwareType.Cpu,
                     SensorName = "Core (Tctl/Tdie)",
                     SensorType = SensorType.Temperature,
-                    ValueDeadZone = 2.0f,
+                    ValueDeadZone = 0.0f,
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {
                         {
@@ -71,7 +71,7 @@ namespace FanControl
                     HardwareType = HardwareType.GpuAmd,
                     SensorName = "GPU Core",
                     SensorType = SensorType.Temperature,
-                    ValueDeadZone = 2.0f,
+                    ValueDeadZone = 0.0f,
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {
                         {
@@ -94,7 +94,7 @@ namespace FanControl
                     HardwareType = HardwareType.Storage,
                     SensorName = "Temperature",
                     SensorType = SensorType.Temperature,
-                    ValueDeadZone = 1.0f,
+                    ValueDeadZone = 0.5f,
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {
                         {
@@ -119,7 +119,7 @@ namespace FanControl
                     HardwareType = HardwareType.Battery,
                     SensorName = "Temperature",
                     SensorType = SensorType.Temperature,
-                    ValueDeadZone = 1.0f,
+                    ValueDeadZone = 0.0f,
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {
                         {

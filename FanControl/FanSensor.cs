@@ -153,7 +153,7 @@ namespace FanControl
             if (!newValue.HasValue || newValue <= 0.0)
                 return false;
 
-            if (AllSamples.Count == 0 || Math.Abs(AllSamples.Last() - newValue.Value) > ValueDeadZone)
+            if (AllSamples.Count == 0 || Math.Abs(AllSamples.Last() - newValue.Value) >= ValueDeadZone)
             {
                 AllSamples.Add(newValue.Value);
                 while (AllSamples.Count > AvgSamples)
