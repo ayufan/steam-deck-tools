@@ -24,13 +24,6 @@ namespace FanControl
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {
                         {
-                            FanMode.MidWay, new FanSensor.Profile()
-                            {
-                                Type = FanSensor.Profile.ProfileType.Constant,
-                                MinRPM = Vlv0100.MAX_FAN_RPM / 2
-                            }
-                        },
-                        {
                             FanMode.Max, new FanSensor.Profile()
                             {
                                 Type = FanSensor.Profile.ProfileType.Constant,

@@ -17,7 +17,6 @@ namespace FanControl
         public enum FanMode
         {
             Default,
-            MidWay,
             SteamOS,
             Max
         }
