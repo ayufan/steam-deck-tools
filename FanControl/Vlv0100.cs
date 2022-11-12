@@ -12,15 +12,61 @@ namespace FanControl
     {
         // Those addresses are taken from DSDT for VLV0100
         // and might change at any time with a BIOS update
+        // Purpose: https://lore.kernel.org/lkml/20220206022023.376142-1-andrew.smirnov@gmail.com/
+        // Addresses: DSDT.txt
         static IntPtr FSLO_FSHI = new IntPtr(0xFE700B00 + 0x92);
         static IntPtr GNLO_GNHI = new IntPtr(0xFE700B00 + 0x95);
         static IntPtr FRPR = new IntPtr(0xFE700B00 + 0x97);
         static IntPtr FNRL_FNRH = new IntPtr(0xFE700300 + 0xB0);
         static IntPtr FNCK = new IntPtr(0xFE700300 + 0x9F);
         static IntPtr BATH_BATL = new IntPtr(0xFE700400 + 0x6E);
+        static IntPtr PDFV = new IntPtr(0xFE700C00 + 0x4C);
+        static IntPtr XBID = new IntPtr(0xFE700300 + 0xBD);
+        static IntPtr PDCT = new IntPtr(0xFE700C00 + 0x01);
         static ushort IO6C = 0x6C;
 
         public const ushort MAX_FAN_RPM = 0x1C84;
+        
+        public static readonly ushort[] SupportedFirmwares = {
+            0xB030 // 45104
+        };
+
+        public static readonly byte[] SupportedBoardID = {
+            6
+        };
+
+        public static readonly byte[] SupportedPDCS = {
+            0x2B // 43
+        };
+
+        public static bool IsSupported()
+        {
+            var firmwareVersion = GetFirmwareVersion();
+            var boardID = GetBoardID();
+            var pdcs = GetPDCS();
+
+            return SupportedFirmwares.Contains(firmwareVersion) &&
+                SupportedBoardID.Contains(boardID) &&
+                SupportedPDCS.Contains(pdcs);
+        }
+
+        public static ushort GetFirmwareVersion()
+        {
+            byte[] data = InpOut.ReadMemory(PDFV, 2);
+            return BitConverter.ToUInt16(data);
+        }
+
+        public static byte GetBoardID()
+        {
+            byte[] data = InpOut.ReadMemory(XBID, 1);
+            return data[0];
+        }
+
+        public static byte GetPDCS()
+        {
+            byte[] data = InpOut.ReadMemory(PDCT, 1);
+            return data[0];
+        }
 
         public static ushort GetFanDesiredRPM()
         {

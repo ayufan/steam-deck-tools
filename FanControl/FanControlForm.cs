@@ -25,6 +25,19 @@ namespace FanControl
 
             Text += " v" + Application.ProductVersion.ToString();
             notifyIcon.Text = Text;
+            
+            if (!Vlv0100.IsSupported())
+            {
+                String message = "";
+                message += "Current device is not supported.\n";
+                message += "FirmwareVersion: " + Vlv0100.GetFirmwareVersion().ToString("X") + "\n";
+                message += "BoardID: " + Vlv0100.GetBoardID().ToString("X") + "\n";
+                message += "PDCS: " + Vlv0100.GetPDCS().ToString("X") + "\n";
+
+                MessageBox.Show(message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+                return;
+            }
 
             toolStripMenuItemStartupOnBoot.Visible = startupManager.IsAvailable;
             toolStripMenuItemStartupOnBoot.Checked = startupManager.Startup;
@@ -80,6 +93,7 @@ namespace FanControl
         {
             WindowState = FormWindowState.Normal;
             Show();
+            Activate();
             propertyGrid1.Refresh();
         }
 
