@@ -205,7 +205,17 @@ namespace PerformanceOverlay
                     HardwareType = HardwareType.Battery,
                     HardwareName = "GETAC",
                     SensorType = SensorType.Power,
-                    SensorName = "Charge/Discharge Rate",
+                    SensorName = "Discharge Rate",
+                    Format = "F1"
+                }
+            },
+            {
+                "BATT_CHARGE_W", new HardwareSensor()
+                {
+                    HardwareType = HardwareType.Battery,
+                    HardwareName = "GETAC",
+                    SensorType = SensorType.Power,
+                    SensorName = "Charge Rate",
                     Format = "F1"
                 }
             },
