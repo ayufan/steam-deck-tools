@@ -15,10 +15,13 @@ namespace PerformanceOverlay
     internal class Controller : IDisposable
     {
         public const String Title = "Performance Overlay";
+        public readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
+
         Container components = new Container();
         RTSSSharedMemoryNET.OSD? osd;
         ToolStripMenuItem showItem;
         System.Windows.Forms.NotifyIcon notifyIcon;
+        System.Windows.Forms.Timer osdTimer;
         Sensors sensors = new Sensors();
         StartupManager startupManager = new StartupManager(
             Title,
@@ -81,13 +84,13 @@ namespace PerformanceOverlay
             exitItem.Click += ExitItem_Click;
 
             notifyIcon = new System.Windows.Forms.NotifyIcon(components);
-            notifyIcon.Icon = Resources.traffic_light_outline1;
-            notifyIcon.Text = Title;
+            notifyIcon.Icon = Resources.traffic_light_outline;
+            notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
             notifyIcon.Click += NotifyIcon_Click;
 
-            var osdTimer = new System.Windows.Forms.Timer(components);
+            osdTimer = new System.Windows.Forms.Timer(components);
             osdTimer.Tick += OsdTimer_Tick;
             osdTimer.Interval = 250;
             osdTimer.Enabled = true;
@@ -143,19 +146,25 @@ namespace PerformanceOverlay
         {
             try
             {
-                notifyIcon.Text = Title + ". RTSS Version: " + OSD.Version;
+                notifyIcon.Text = TitleWithVersion + ". RTSS Version: " + OSD.Version;
+                notifyIcon.Icon = Resources.traffic_light_outline;
             }
             catch
             {
-                notifyIcon.Text = Title + ". RTSS Not Available.";
+                notifyIcon.Text = TitleWithVersion + ". RTSS Not Available.";
+                notifyIcon.Icon = Resources.traffic_light_outline_red;
+                osdReset();
+                return;
             }
 
             if (!showItem.Checked)
             {
-                using (osd) { }
-                osd = null;
+                osdTimer.Interval = 1000;
+                osdReset();
                 return;
             }
+
+            osdTimer.Interval = 250;
 
             sensors.Update();
 
@@ -174,8 +183,32 @@ namespace PerformanceOverlay
             }
             catch(SystemException)
             {
-                osd = null;
             }
+        }
+
+        private void osdReset()
+        {
+            try
+            {
+                if (osd != null)
+                    osd.Update("");
+            }
+            catch (SystemException)
+            {
+            }
+        }
+
+        private void osdClose()
+        {
+            try
+            {
+                if (osd != null)
+                    osd.Dispose();
+            }
+            catch (SystemException)
+            {
+            }
+            osd = null;
         }
 
         private uint osdEmbedGraph(ref uint offset, ref String osdOverlay, String name, int dwWidth, int dwHeight, int dwMargin, float fltMin, float fltMax, EMBEDDED_OBJECT_GRAPH dwFlags)
@@ -195,7 +228,7 @@ namespace PerformanceOverlay
         public void Dispose()
         {
             components.Dispose();
-            using (osd) { }
+            osdClose();
             using (sensors) { }
         }
     }

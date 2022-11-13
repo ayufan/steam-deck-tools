@@ -61,21 +61,21 @@ namespace PerformanceOverlay {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Bitmap traffic_light_outline {
+        internal static System.Drawing.Icon traffic_light_outline {
             get {
                 object obj = ResourceManager.GetObject("traffic_light_outline", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon traffic_light_outline1 {
+        internal static System.Drawing.Icon traffic_light_outline_red {
             get {
-                object obj = ResourceManager.GetObject("traffic_light_outline1", resourceCulture);
+                object obj = ResourceManager.GetObject("traffic_light_outline_red", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
