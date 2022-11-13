@@ -58,19 +58,19 @@ There are 4 modes of presentation:
 
 ### 2.1. FPS
 
-<img src="images/perf_overlay_fps.png" height="100"/>
+<img src="images/perf_overlay_fps.png" width="600"/>
 
 ### 2.2. Minimal
 
-<img src="images/perf_overlay_min.png" height="50"/>
+<img src="images/perf_overlay_min.png" width="600"/>
 
 ### 2.3. Detail
 
-<img src="images/perf_overlay_detail.png" height="50"/>
+<img src="images/perf_overlay_detail.png" width="600"/>
 
 ### 2.4. Full
 
-<img src="images/perf_overlay_full.png" height="50"/>
+<img src="images/perf_overlay_full.png" height="100"/>
 
 ## Author
 
