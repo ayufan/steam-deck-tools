@@ -28,6 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommonHelpers\CommonHelpers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="RTSSSharedMemoryNET">
       <HintPath>RTSSSharedMemoryNET.dll</HintPath>
     </Reference>

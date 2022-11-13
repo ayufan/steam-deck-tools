@@ -29,7 +29,7 @@ namespace FanControl
                             FanMode.Max, new FanSensor.Profile()
                             {
                                 Type = FanSensor.Profile.ProfileType.Constant,
-                                MinRPM = Vlv0100.MAX_FAN_RPM
+                                MinRPM = CommonHelpers.Vlv0100.MAX_FAN_RPM
                             }
                         },
                         {

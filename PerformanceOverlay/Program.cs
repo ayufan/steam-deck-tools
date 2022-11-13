@@ -1,4 +1,5 @@
 using RTSSSharedMemoryNET;
+using System.Diagnostics;
 
 namespace PerformanceOverlay
 {
@@ -13,8 +14,13 @@ namespace PerformanceOverlay
             {
                 foreach (var entry in RTSSSharedMemoryNET.OSD.GetOSDEntries())
                 {
-                    Console.WriteLine("Entry: {0}", entry.Owner);
-                    Console.WriteLine("\t", entry.Text);
+                    Trace.WriteLine("Entry: {0}", entry.Owner);
+                    Trace.WriteLine("\t", entry.Text);
+
+                    using (var newOSD = new OSD("New OSD"))
+                    {
+                        newOSD.Update(entry.Text);
+                    }
                 }
             }
             catch(SystemException)

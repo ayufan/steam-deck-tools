@@ -2,6 +2,7 @@ on:
   pull_request:
 
 env:
+  RELEASE_NAME: SteamDeckTools
   DOTNET_VERSION: '6.0.x'
 
 jobs:
@@ -16,11 +17,11 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build without Version
-      run: dotnet build --configuration Release --output FanControl-develop/
+      run: dotnet build --configuration Release --output ${{ env.SteamDeckTools }}-develop/
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - uses: vimtor/action-zip@v1
       with:
-        files: FanControl-develop
-        dest: FanControl-develop.zip
+        files: ${{ env.SteamDeckTools }}-develop
+        dest: ${{ env.SteamDeckTools }}-develop.zip
         recursive: true

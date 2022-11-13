@@ -6,9 +6,9 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FanControl
+namespace CommonHelpers
 {
-    internal class Vlv0100
+    public class Vlv0100
     {
         // Those addresses are taken from DSDT for VLV0100
         // and might change at any time with a BIOS update

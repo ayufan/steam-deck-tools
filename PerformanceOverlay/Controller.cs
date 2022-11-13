@@ -1,8 +1,10 @@
-﻿using PerformanceOverlay.External;
+﻿using Microsoft.VisualBasic.Logging;
+using PerformanceOverlay.External;
 using RTSSSharedMemoryNET;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,22 +65,27 @@ namespace PerformanceOverlay
             osdTimer.Interval = 250;
             osdTimer.Enabled = true;
 
-            GlobalHotKey.RegisterHotKey("F11", () =>
+            if (Settings.Default.ShowOSDShortcut != "")
             {
-                showItem.Checked = !showItem.Checked;
-            });
+                GlobalHotKey.RegisterHotKey(Settings.Default.ShowOSDShortcut, () =>
+                {
+                    showItem.Checked = !showItem.Checked;
+                });
+            }
 
-            // Select next overlay
-            GlobalHotKey.RegisterHotKey("Shift+F11", () =>
+            if (Settings.Default.CycleOSDShortcut != "")
             {
-                var values = Enum.GetValues<Overlays.Mode>().ToList();
+                GlobalHotKey.RegisterHotKey(Settings.Default.CycleOSDShortcut, () =>
+                {
+                    var values = Enum.GetValues<Overlays.Mode>().ToList();
 
-                int index = values.IndexOf(Settings.Default.OSDModeParsed);
-                Settings.Default.OSDModeParsed = values[(index + 1) % values.Count];
+                    int index = values.IndexOf(Settings.Default.OSDModeParsed);
+                    Settings.Default.OSDModeParsed = values[(index + 1) % values.Count];
 
-                showItem.Checked = true;
-                updateContextItems(contextMenu);
-            });
+                    showItem.Checked = true;
+                    updateContextItems(contextMenu);
+                });
+            }
         }
 
         private void updateContextItems(ContextMenuStrip contextMenu)
@@ -117,12 +124,26 @@ namespace PerformanceOverlay
             {
                 if (osd == null)
                     osd = new OSD("PerformanceOverlay");
+
+                uint offset = 0;
+                osdEmbedGraph(ref offset, ref osdOverlay, "[OBJ_FT_SMALL]", -8, -1, 1, 0, 50000.0f, EMBEDDED_OBJECT_GRAPH.FLAG_FRAMETIME);
+                osdEmbedGraph(ref offset, ref osdOverlay, "[OBJ_FT_LARGE]", -32, -2, 1, 0, 50000.0f, EMBEDDED_OBJECT_GRAPH.FLAG_FRAMETIME);
+
                 osd.Update(osdOverlay);
             }
             catch(SystemException)
             {
                 osd = null;
             }
+        }
+
+        private uint osdEmbedGraph(ref uint offset, ref String osdOverlay, String name, int dwWidth, int dwHeight, int dwMargin, float fltMin, float fltMax, EMBEDDED_OBJECT_GRAPH dwFlags)
+        {
+            uint size = osd.EmbedGraph(offset, new float[0], 0, dwWidth, dwHeight, dwMargin, fltMin, fltMax, dwFlags);
+            if (size > 0)
+                osdOverlay = osdOverlay.Replace(name, "<OBJ=" + offset.ToString("X") + ">");
+            offset += size;
+            return size;
         }
 
         private void ExitItem_Click(object? sender, EventArgs e)

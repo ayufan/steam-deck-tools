@@ -90,14 +90,16 @@ namespace PerformanceOverlay
         public static readonly String[] Helpers =
         {
             "<C0=008040><C1=0080C0><C2=C08080><C3=FF0000><C4=FFFFFF><C250=FF8000>",
-            "<A0=-4><A1=5><A2=-2><S0=-50><S1=50>",
+            "<A0=-4><A1=5><A2=-2><A5=-5><S0=-50><S1=50>",
         };
 
         public static readonly Entry OSD = new Entry
         {
             Nested = {
+                // Simple just FPS
                 new Entry { Text = "<C4><FR><C><A><A1><S1><C4> FPS", Include = { Mode.FPS } },
 
+                // Minimal and Detail
                 new Entry {
                     Nested =
                     {
@@ -107,7 +109,7 @@ namespace PerformanceOverlay
                             Nested =
                             {
                                 new Entry("<C4><A0>{BATT_%}<A><A1><S1> %<S><A>"),
-                                new Entry("<C4><A0>{BATT_W}<A><A1><S1> W<S><A>")
+                                new Entry("<C4><A0>{BATT_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true }
                             }
                         },
                         new Entry
@@ -117,7 +119,7 @@ namespace PerformanceOverlay
                             {
                                 new Entry("<C4><A0>{GPU_%}<A><A1><S1> %<S><A>"),
                                 new Entry("<C4><A0>{GPU_W}<A><A1><S1> W<S><A>"),
-                                new Entry { Text = "<C4><A0>{GPU_T}<A><A1><S1> C<S><A>", IgnoreMissing = true }
+                                new Entry { Text = "<C4><A0>{GPU_T}<A><A1><S1> C<S><A>", IgnoreMissing = true, Include = { Mode.Detail } }
                             }
                         },
                         new Entry
@@ -127,51 +129,57 @@ namespace PerformanceOverlay
                             {
                                 new Entry("<C4><A0>{CPU_%}<A><A1><S1> %<S><A>"),
                                 new Entry("<C4><A0>{CPU_W}<A><A1><S1> W<S><A>"),
-                                new Entry { Text = "<C4><A0>{CPU_T}<A><A1><S1> C<S><A>", IgnoreMissing = true }
+                                new Entry { Text = "<C4><A0>{CPU_T}<A><A1><S1> C<S><A>", IgnoreMissing = true, Include = { Mode.Detail } }
                             }
                         },
                         new Entry
                         {
                             Text = "<C1>RAM<C>",
-                            Nested =
-                            {
-                                new Entry("<C4><A0>{MEM_GB}<A><A1><S1> GiB<S><A>")
-                            }
+                            Nested = { new Entry("<C4><A0>{MEM_GB}<A><A1><S1> GiB<S><A>") }
+                        },
+                        new Entry
+                        {
+                            Text = "<C1>FAN<C>",
+                            Nested = { new Entry("<C4><A5>{FAN_RPM}<A><A1><S1> RPM<S><A>") },
+                            Include = { Mode.Detail }
                         },
                         new Entry
                         {
                             Text = "<C2><APP><C>",
-                            Nested =
-                            {
-                                new Entry("<A0><C4><FR><C><A><A1><S1><C4> FPS<C><S><A>")
-                            }
+                            Nested = { new Entry("<A0><C4><FR><C><A><A1><S1><C4> FPS<C><S><A>") }
                         },
                         new Entry
                         {
-                            Text = "<C2><OBJ><C>"
+                            Text = "<C2>[OBJ_FT_SMALL]<C><S1> <A0><FT><A><A1> ms<A><S><C>",
+                            Include = { Mode.Detail }
                         }
                     },
                     Separator = "<C250>|<C> ",
-                    Include = { Mode.Minimal }
+                    Include = { Mode.Minimal, Mode.Detail }
                 },
 
-                new Entry { Text = "<C0>MEM<C>   <A0>{MEM_MB}<A><A1><S1> MB<S>", Exclude = { Mode.FPS, Mode.Minimal } },
-                new Entry { Text = "<C1>CPU<C>   <A0>{CPU_%}<A><A1><S1> %<S><A>", Exclude = { Mode.FPS, Mode.Minimal } },
-                new Entry { Text = "<C1>RAM<C>   <A0>{GPU_MB}<A><A1><S1> MB<S><A>", Exclude = { Mode.FPS, Mode.Minimal } },
-                new Entry { Text = "<C2><APP><C> <A0><C4><FR><C><A><A1><S1><C4> FPS<C><S><A> <A0><C4><FT><C><A><A1><S1><C4> ms<C><S><A>", Exclude = { Mode.FPS, Mode.Minimal } },
                 new Entry {
-                    Text = "<C1>BAT<C>  ",
-                    Nested = {
-                        new Entry("<A0>{BATT_%}<A><A1><S1> %<S><A>"),
-                        new Entry("<A0>{BATT_W}<A><A1><S1> W<S><A>")
+                    Nested =
+                    {
+                        new Entry { Text = "<C1>CPU<C>   <A0>{CPU_%}<A><A1><S1> %<S><A> <A0>{CPU_T}<A><A1><S1> C<S><A>" },
+                        new Entry { Text = "<C1>GPU<C>   <A0>{GPU_%}<A><A1><S1> %<S><A> <A0>{GPU_T}<A><A1><S1> C<S><A>" },
+                        new Entry { Text = "<C1>RAM<C>   <A0>{MEM_MB}<A><A1><S1> MB<S><A0>{GPU_MB}<A><A1><S1> MB<S><A>" },
+                        new Entry { Text = "<C1>FAN<C>   <A0>{FAN_RPM}<A><A1><S1> RPM<S><A>" },
+                        new Entry { Text = "<C2><APP><C> <A0><C4><FR><C><A><A1><S1><C4> FPS<C><S><A> <A0><C4><FT><C><A><A1><S1><C4> ms<C><S><A>" },
+                        new Entry {
+                            Text = "<C1>BAT<C>  ",
+                            Nested = {
+                                new Entry("<A0>{BATT_%}<A><A1><S1> %<S><A>"),
+                                new Entry("<A0>{BATT_W}<A><A1><S1> W<S><A>")
+                            }
+                        },
+                        new Entry { Text = "<C2><S1>Frametime<S>" },
+                        new Entry { Text = "[OBJ_FT_LARGE]<S1> <A0><FT><A><A1> ms<A><S><C>" },
                     },
-                    Exclude = { Mode.FPS, Mode.Minimal }
-                },
-                new Entry { Text = "<C2><S1>Frametime<S>", Exclude = { Mode.FPS, Mode.Minimal } },
-                new Entry { Text = "<OBJ>", Exclude = { Mode.FPS, Mode.Minimal } },
-                new Entry { Text = "<S1> <A0><FT><A><A1> ms<A><S><C>", Exclude = { Mode.FPS, Mode.Minimal } }
-            },
-            Separator = "\r\n"
+                    Separator = "\r\n",
+                    Include = { Mode.All }
+                }
+            }
         };
 
         public static String GetOSD(Mode mode, Sensors sensors)

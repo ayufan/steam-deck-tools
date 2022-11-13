@@ -1,4 +1,4 @@
-﻿using FanControl.FromLibreHardwareMonitor;
+﻿using CommonHelpers.FromLibreHardwareMonitor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,10 @@ namespace FanControl
     public partial class FanControlForm : Form
     {
         private FanController fanControl = new FanController();
-        private StartupManager startupManager = new StartupManager();
+        private StartupManager startupManager = new StartupManager(
+            "Steam Deck Fan Control",
+            "Starts Steam Deck Fan Control on Windows startup."
+        );
 
         public FanControlForm()
         {

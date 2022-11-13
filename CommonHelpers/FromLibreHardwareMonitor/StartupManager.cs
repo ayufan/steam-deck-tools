@@ -15,18 +15,21 @@ using Microsoft.Win32.TaskScheduler;
 using Action = Microsoft.Win32.TaskScheduler.Action;
 using Task = Microsoft.Win32.TaskScheduler.Task;
 
-namespace FanControl.FromLibreHardwareMonitor
+namespace CommonHelpers.FromLibreHardwareMonitor
 {
     public class StartupManager
     {
         private const string RegistryPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
         private bool _startup;
 
-        public const string Description = "Starts Steam Deck Fan Control on Windows startup.";
-        public const string NameOf = "Steam Deck Fan Control";
+        public String NameOf { get; set; }
+        public String Description { get; set; }
 
-        public StartupManager()
+        public StartupManager(String name, String description)
         {
+            NameOf = name;
+            Description = description;
+
             if (Environment.OSVersion.Platform >= PlatformID.Unix)
             {
                 IsAvailable = false;
@@ -131,7 +134,7 @@ namespace FanControl.FromLibreHardwareMonitor
             }
         }
 
-        private static Task GetTask()
+        private Task GetTask()
         {
             try
             {
@@ -164,19 +167,19 @@ namespace FanControl.FromLibreHardwareMonitor
             TaskService.Instance.RootFolder.RegisterTaskDefinition(NameOf, taskDefinition);
         }
 
-        private static void DeleteTask()
+        private void DeleteTask()
         {
             Task task = GetTask();
             task?.Folder.DeleteTask(task.Name, false);
         }
 
-        private static void CreateRegistryKey()
+        private void CreateRegistryKey()
         {
             RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
             registryKey?.SetValue(NameOf, Application.ExecutablePath);
         }
 
-        private static void DeleteRegistryKey()
+        private void DeleteRegistryKey()
         {
             RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
             registryKey?.DeleteValue(NameOf);

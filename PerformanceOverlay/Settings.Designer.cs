@@ -46,5 +46,23 @@ namespace PerformanceOverlay {
                 this["OSDMode"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F11")]
+        public string ShowOSDShortcut {
+            get {
+                return ((string)(this["ShowOSDShortcut"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Shift+F11")]
+        public string CycleOSDShortcut {
+            get {
+                return ((string)(this["CycleOSDShortcut"]));
+            }
+        }
     }
 }

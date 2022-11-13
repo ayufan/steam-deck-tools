@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Navigation;
 using static PerformanceOverlay.Sensors;
 
 namespace PerformanceOverlay
@@ -206,6 +207,16 @@ namespace PerformanceOverlay
                     SensorType = SensorType.Power,
                     SensorName = "Charge/Discharge Rate",
                     Format = "F1"
+                }
+            },
+            {
+                "FAN_RPM", new UserValueSensor()
+                {
+                    Value = delegate ()
+                    {
+                        return (float)CommonHelpers.Vlv0100.GetFanRPM();
+                    },
+                    Format = "F0"
                 }
             }
         };
