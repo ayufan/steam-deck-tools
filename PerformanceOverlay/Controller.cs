@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic.Logging;
+﻿using CommonHelpers.FromLibreHardwareMonitor;
+using Microsoft.VisualBasic.Logging;
 using PerformanceOverlay.External;
 using RTSSSharedMemoryNET;
 using System;
@@ -13,10 +14,16 @@ namespace PerformanceOverlay
 {
     internal class Controller : IDisposable
     {
+        public const String Title = "Performance Overlay";
         Container components = new Container();
         RTSSSharedMemoryNET.OSD? osd;
         ToolStripMenuItem showItem;
+        System.Windows.Forms.NotifyIcon notifyIcon;
         Sensors sensors = new Sensors();
+        StartupManager startupManager = new StartupManager(
+            Title,
+            "Starts Performance Overlay on Windows startup."
+        );
 
         LibreHardwareMonitor.Hardware.Computer libreHardwareComputer = new LibreHardwareMonitor.Hardware.Computer
         {
@@ -50,12 +57,32 @@ namespace PerformanceOverlay
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
+            if (startupManager.IsAvailable)
+            {
+                var startupItem = new ToolStripMenuItem("Run On Startup");
+                startupItem.Checked = startupManager.Startup;
+                startupItem.Click += delegate
+                {
+                    startupManager.Startup = !startupManager.Startup;
+                    startupItem.Checked = startupManager.Startup;
+                };
+                contextMenu.Items.Add(startupItem);
+            }
+
+            var helpItem = contextMenu.Items.Add("&Help");
+            helpItem.Click += delegate
+            {
+                System.Diagnostics.Process.Start("explorer.exe", "http://github.com/ayufan-research/steam-deck-tools");
+            };
+
+            contextMenu.Items.Add(new ToolStripSeparator());
+
             var exitItem = contextMenu.Items.Add("&Exit");
             exitItem.Click += ExitItem_Click;
 
-            var notifyIcon = new System.Windows.Forms.NotifyIcon(components);
+            notifyIcon = new System.Windows.Forms.NotifyIcon(components);
             notifyIcon.Icon = Resources.traffic_light_outline1;
-            notifyIcon.Text = "Steam Deck Fan Control";
+            notifyIcon.Text = Title;
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
             notifyIcon.Click += NotifyIcon_Click;
@@ -88,6 +115,11 @@ namespace PerformanceOverlay
             }
         }
 
+        private void HelpItem_Click(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private void updateContextItems(ContextMenuStrip contextMenu)
         {
             foreach (ToolStripItem item in contextMenu.Items)
@@ -109,6 +141,15 @@ namespace PerformanceOverlay
 
         private void OsdTimer_Tick(object? sender, EventArgs e)
         {
+            try
+            {
+                notifyIcon.Text = Title + ". RTSS Version: " + OSD.Version;
+            }
+            catch
+            {
+                notifyIcon.Text = Title + ". RTSS Not Available.";
+            }
+
             if (!showItem.Checked)
             {
                 using (osd) { }
