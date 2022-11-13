@@ -18,6 +18,7 @@ namespace FanControl
 
         public float ValueDeadZone { get; set; }
         public int AvgSamples { get; set; } = 5;
+        public float? MaxValue { get; set; }
 
         internal string HardwareName { get; set; } = "";
         internal HardwareType HardwareType { get; set; }
@@ -152,6 +153,9 @@ namespace FanControl
         {
             if (!newValue.HasValue || newValue <= 0.0)
                 return false;
+
+            if (MaxValue.HasValue)
+                newValue = Math.Min(newValue.Value, MaxValue.Value);
 
             if (AllSamples.Count == 0 || Math.Abs(AllSamples.Last() - newValue.Value) >= ValueDeadZone)
             {

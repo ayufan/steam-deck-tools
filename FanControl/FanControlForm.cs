@@ -50,6 +50,23 @@ namespace FanControl
             }
 
             notifyIcon.ShowBalloonTip(3000, Text, "Fan Control Started", ToolTipIcon.Info);
+
+            Microsoft.Win32.SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+        }
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            Microsoft.Win32.SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
+        }
+
+        private void SystemEvents_PowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
+        {
+            // Restore fan mode on resume
+            if (e.Mode == Microsoft.Win32.PowerModes.Resume)
+            {
+                fanControl.SetMode(fanControl.Mode);
+            }
         }
 
         private void setFanMode(FanController.FanMode mode)

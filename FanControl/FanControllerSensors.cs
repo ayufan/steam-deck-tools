@@ -22,6 +22,7 @@ namespace FanControl
                     SensorType = SensorType.Power,
                     ValueDeadZone = 0.1f,
                     AvgSamples = 20,
+                    MaxValue = 25, // TODO: On resume a bogus value is returned
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {
                         {
