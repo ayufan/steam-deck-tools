@@ -42,6 +42,36 @@ Those are currently supported:
 - F7A0107 (PD ver: 0xB030)
 - F7A0110 (PD ver: 0xB030)
 
+## 2. Performance Overlay
+
+This is a very simple application that requires [Rivatuner Statistics Server Download](https://www.rivatuner.org/)
+and provides asthetics of SteamOS Performance Overlay.
+
+Uninstall MSI Afterburner and any other OSD software.
+
+It currently registers two global hotkeys:
+
+- **F11** - enable performance overlay
+- **Shift+F11** - cycle to next performance overlay (and enable it)
+
+There are 4 modes:
+
+### 2.1. FPS
+
+<img src="images/perf_overlay_fps.png" width="300"/>
+
+### 2.2. Minimal
+
+<img src="images/perf_overlay_min.png" width="300"/>
+
+### 2.3. Detail
+
+<img src="images/perf_overlay_detail.png" width="300"/>
+
+### 2.4. Full
+
+<img src="images/perf_overlay_full.png" width="300"/>
+
 ## Author
 
 Kamil Trzciński, 2022, License GPLv3

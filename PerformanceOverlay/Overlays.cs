@@ -16,7 +16,7 @@ namespace PerformanceOverlay
             FPS,
             Minimal,
             Detail,
-            All
+            Full
         }
 
         public class Entry
@@ -177,7 +177,7 @@ namespace PerformanceOverlay
                         new Entry { Text = "[OBJ_FT_LARGE]<S1> <A0><FT><A><A1> ms<A><S><C>" },
                     },
                     Separator = "\r\n",
-                    Include = { Mode.All }
+                    Include = { Mode.Full }
                 }
             }
         };
