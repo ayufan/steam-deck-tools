@@ -135,7 +135,7 @@ namespace PerformanceOverlay
                         new Entry
                         {
                             Text = "<C1>RAM<C>",
-                            Nested = { new Entry("<C4><A0>{MEM_GB}<A><A1><S1> GiB<S><A>") }
+                            Nested = { new Entry("<C4><A5>{MEM_GB}<A><A1><S1> GiB<S><A>") }
                         },
                         new Entry
                         {
@@ -150,7 +150,7 @@ namespace PerformanceOverlay
                         },
                         new Entry
                         {
-                            Text = "<C2>[OBJ_FT_SMALL]<C><S1> <A0><FT><A><A1> ms<A><S><C>",
+                            Text = "<C2>[OBJ_FT_SMALL]<C><S1> <C4><A0><FT><A><A1> ms<A><S><C>",
                             Include = { Mode.Detail }
                         }
                     },

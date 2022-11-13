@@ -54,23 +54,23 @@ It currently registers two global hotkeys:
 - **F11** - enable performance overlay
 - **Shift+F11** - cycle to next performance overlay (and enable it)
 
-There are 4 modes:
+There are 4 modes of presentation:
 
 ### 2.1. FPS
 
-<img src="images/perf_overlay_fps.png" width="300"/>
+<img src="images/perf_overlay_fps.png" height="100"/>
 
 ### 2.2. Minimal
 
-<img src="images/perf_overlay_min.png" width="300"/>
+<img src="images/perf_overlay_min.png" height="50"/>
 
 ### 2.3. Detail
 
-<img src="images/perf_overlay_detail.png" width="300"/>
+<img src="images/perf_overlay_detail.png" height="50"/>
 
 ### 2.4. Full
 
-<img src="images/perf_overlay_full.png" width="300"/>
+<img src="images/perf_overlay_full.png" height="50"/>
 
 ## Author
 
