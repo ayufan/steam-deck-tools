@@ -2,3 +2,5 @@ bin/
 obj/
 /.vs/
 *.user
+build-release/
+.vscode/
