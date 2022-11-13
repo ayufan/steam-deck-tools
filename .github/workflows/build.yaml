@@ -39,13 +39,13 @@ jobs:
         echo "MajorVer=$majorVer LastVer=$lastVer NextVer=$nextVer"
         echo "RELEASE_VERSION=$nextVer" >> $GITHUB_ENV
     - name: Build
-      run: dotnet build --configuration Release --output "${{ env.SteamDeckTools }}-${{ env.RELEASE_VERSION }}/" "/property:Version=${{ env.RELEASE_VERSION }}"
+      run: dotnet build --configuration Release --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" "/property:Version=${{ env.RELEASE_VERSION }}"
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - uses: vimtor/action-zip@v1
       with:
-        files: ${{ env.SteamDeckTools }}-${{ env.RELEASE_VERSION }}
-        dest: ${{ env.SteamDeckTools }}-${{ env.RELEASE_VERSION }}.zip
+        files: ${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}
+        dest: ${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}.zip
         recursive: true
     - uses: ncipollo/release-action@v1
       with:
