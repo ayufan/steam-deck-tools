@@ -25,10 +25,13 @@ namespace CommonHelpers.FromLibreHardwareMonitor
         public String NameOf { get; set; }
         public String Description { get; set; }
 
-        public StartupManager(String name, String description)
+        public StartupManager(String name, String description = null)
         {
             NameOf = name;
-            Description = description;
+            if (description != null)
+                Description = description;
+            else
+                Description = String.Format("Starts {0} on Windows startup", name);
 
             if (Environment.OSVersion.Platform >= PlatformID.Unix)
             {

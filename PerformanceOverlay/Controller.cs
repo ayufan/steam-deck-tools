@@ -85,7 +85,6 @@ namespace PerformanceOverlay
             notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
-            notifyIcon.Click += NotifyIcon_Click;
 
             osdTimer = new System.Windows.Forms.Timer(components);
             osdTimer.Tick += OsdTimer_Tick;
@@ -169,6 +168,8 @@ namespace PerformanceOverlay
 
             try
             {
+                osdClose();
+
                 if (osd == null)
                     osd = new OSD("PerformanceOverlay");
 
@@ -201,11 +202,11 @@ namespace PerformanceOverlay
             {
                 if (osd != null)
                     osd.Dispose();
+                osd = null;
             }
             catch (SystemException)
             {
             }
-            osd = null;
         }
 
         private uint osdEmbedGraph(ref uint offset, ref String osdOverlay, String name, int dwWidth, int dwHeight, int dwMargin, float fltMin, float fltMax, EMBEDDED_OBJECT_GRAPH dwFlags)

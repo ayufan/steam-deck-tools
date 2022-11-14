@@ -72,6 +72,44 @@ There are 4 modes of presentation:
 
 <img src="images/perf_overlay_full.png" height="100"/>
 
+## 3. Power Control
+
+This is a very simple application that requires [Rivatuner Statistics Server Download](https://www.rivatuner.org/)
+and provides an easily accessible controls.
+
+Uninstall MSI Afterburner and any other OSD software.
+
+There are currently 4 configurable settings:
+
+- Volume
+- Brightness
+- Refresh Rate
+- TDP
+
+<img src="images/power_control.png" height="250"/>
+
+### 3.1. Use it
+
+It will only work in OSD mode when rendering graphics.
+The notification setting is always available.
+
+- SteamDeck Controller: press Quick Access (3 dots), and then together DPad Left, Rigth, Up, Down.
+- Keyboard: `Ctrl+Win+Numpad2` (Down), `Ctrl+Win+Numpad4` (Left), `Ctrl+Win+Numpad6` (Right), `Ctrl+Win+Numpad8` (Up)
+
+### 3.2. SWICD configuration
+
+Since the SWICD will mess-up with double inputs you need to configure the following
+
+- Set 3 dots to **NONE** in button mapping
+
+    <img src="images/power_control_swicd_1.png" height="150"/>
+
+- Add **Button Actions** for all 4 controls: 3 dots + DPad Left/Right/Up/Down, **CLEAR** Keyboard Shortcut
+
+    <img src="images/power_control_swicd_2.png" height="150"/>
+
+    <img src="images/power_control_swicd_3.png" height="500"/>
+
 ## Author
 
 Kamil Trzciński, 2022, License GPLv3
