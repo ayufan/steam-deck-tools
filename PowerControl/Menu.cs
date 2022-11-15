@@ -219,7 +219,7 @@ namespace PowerControl
 
                 output += optionText(SelectedOption);
 
-                if (SelectedOption != ActiveOption)
+                if (!Object.Equals(ActiveOption, SelectedOption))
                     output += " (active: " + optionText(ActiveOption) + ")";
 
                 return output;
