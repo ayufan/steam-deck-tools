@@ -48,8 +48,6 @@ namespace PowerControl
 
         public class MenuItemSeparator : MenuItem
         {
-            private ToolStripItem toolStripItem;
-
             public MenuItemSeparator()
             {
                 Selectable = false;
@@ -57,11 +55,6 @@ namespace PowerControl
 
             public override void CreateMenu(ToolStripItemCollection collection)
             {
-                if (toolStripItem != null)
-                    return;
-
-                toolStripItem = new ToolStripSeparator();
-                collection.Add(toolStripItem);
             }
 
             public override string Render(MenuItem selected)
