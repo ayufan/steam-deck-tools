@@ -81,10 +81,15 @@ namespace PowerControl
 
                         int stampLimit = mW/10;
 
-                        Process.Start("Resources/RyzenAdj/ryzenadj.exe", new string[] {
-                            "--stapm-limit=" + stampLimit.ToString(),
-                            "--slow-limit=" + mW.ToString(),
-                            "--fast-limit=" + mW.ToString(),
+                        Process.Start(new ProcessStartInfo()
+                        {
+                            FileName = "Resources/RyzenAdj/ryzenadj.exe",
+                            ArgumentList = {
+                                "--stapm-limit=" + stampLimit.ToString(),
+                                "--slow-limit=" + mW.ToString(),
+                                "--fast-limit=" + mW.ToString(),
+                            },
+                            WindowStyle = ProcessWindowStyle.Hidden
                         });
 
                         return selected;
