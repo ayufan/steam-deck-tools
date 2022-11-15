@@ -22,6 +22,7 @@ namespace PerformanceOverlay
 
         Container components = new Container();
         RTSSSharedMemoryNET.OSD? osd;
+        System.Windows.Forms.ContextMenuStrip contextMenu;
         ToolStripMenuItem showItem;
         System.Windows.Forms.NotifyIcon notifyIcon;
         System.Windows.Forms.Timer osdTimer;
@@ -33,7 +34,7 @@ namespace PerformanceOverlay
 
         public Controller()
         {
-            var contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
+            contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
             Instance.Open(TitleWithVersion, "Global\\PerformanceOverlay");
 
@@ -95,7 +96,10 @@ namespace PerformanceOverlay
             {
                 GlobalHotKey.RegisterHotKey(Settings.Default.ShowOSDShortcut, () =>
                 {
-                    showItem.Checked = !showItem.Checked;
+                    Settings.Default.ShowOSD = !Settings.Default.ShowOSD;
+                    Settings.Default.Save();
+
+                    updateContextItems(contextMenu);
                 });
             }
 
@@ -107,16 +111,12 @@ namespace PerformanceOverlay
 
                     int index = values.IndexOf(Settings.Default.OSDModeParsed);
                     Settings.Default.OSDModeParsed = values[(index + 1) % values.Count];
+                    Settings.Default.ShowOSD = true;
+                    Settings.Default.Save();
 
-                    showItem.Checked = true;
                     updateContextItems(contextMenu);
                 });
             }
-        }
-
-        private void HelpItem_Click(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         private void updateContextItems(ContextMenuStrip contextMenu)
@@ -126,6 +126,8 @@ namespace PerformanceOverlay
                 if (item.Tag is OverlayMode)
                    ((ToolStripMenuItem)item).Checked = ((OverlayMode)item.Tag == Settings.Default.OSDModeParsed);
             }
+
+            showItem.Checked = Settings.Default.ShowOSD;
         }
 
         private void NotifyIcon_Click(object? sender, EventArgs e)
@@ -135,7 +137,9 @@ namespace PerformanceOverlay
 
         private void ShowItem_Click(object? sender, EventArgs e)
         {
-            showItem.Checked = !showItem.Checked;
+            Settings.Default.ShowOSD = !Settings.Default.ShowOSD;
+            Settings.Default.Save();
+            updateContextItems(contextMenu);
         }
 
         private void OsdTimer_Tick(object? sender, EventArgs e)
@@ -153,7 +157,7 @@ namespace PerformanceOverlay
                 return;
             }
 
-            if (!showItem.Checked)
+            if (!Settings.Default.ShowOSD)
             {
                 osdTimer.Interval = 1000;
                 osdReset();
