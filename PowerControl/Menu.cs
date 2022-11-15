@@ -46,6 +46,42 @@ namespace PowerControl
             public abstract void SelectPrev();
         };
 
+        public class MenuItemSeparator : MenuItem
+        {
+            private ToolStripItem toolStripItem;
+
+            public MenuItemSeparator()
+            {
+                Selectable = false;
+            }
+
+            public override void CreateMenu(ToolStripItemCollection collection)
+            {
+                if (toolStripItem != null)
+                    return;
+
+                toolStripItem = new ToolStripSeparator();
+                collection.Add(toolStripItem);
+            }
+
+            public override string Render(MenuItem selected)
+            {
+                return Color("---", Colors.Blue);
+            }
+
+            public override void SelectNext()
+            {
+            }
+
+            public override void SelectPrev()
+            {
+            }
+
+            public override void Update()
+            {
+            }
+        }
+
         public class MenuItemWithOptions : MenuItem
         {
             public delegate object CurrentValueDelegate();
@@ -68,13 +104,21 @@ namespace PowerControl
             {
                 this.Selectable = true;
             }
+
             public override void Update()
             {
                 if (CurrentValue != null)
                 {
                     var result = CurrentValue();
                     if (result != null)
+                    {
                         ActiveOption = result;
+                        Visible = true;
+                    }
+                    else
+                    {
+                        Visible = false;
+                    }
                 }
 
                 if (OptionsValues != null)
