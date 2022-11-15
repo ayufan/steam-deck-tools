@@ -48,7 +48,7 @@ namespace PowerControl
             rootMenu.CreateMenu(contextMenu.Items);
             rootMenu.VisibleChanged = delegate ()
             {
-                showOSD();
+                updateOSD();
             };
             contextMenu.Items.Add(new ToolStripSeparator());
 
@@ -96,27 +96,31 @@ namespace PowerControl
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuUpKey, () =>
             {
                 rootMenu.Prev();
+                setDismissTimer();
             });
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuDownKey, () =>
             {
                 rootMenu.Next();
+                setDismissTimer();
             });
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuLeftKey, () =>
             {
                 rootMenu.SelectPrev();
+                setDismissTimer();
             });
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuRightKey, () =>
             {
                 rootMenu.SelectNext();
+                setDismissTimer();
             });
 
             if (Settings.Default.EnableNeptuneController)
             {
                 neptuneTimer = new System.Windows.Forms.Timer(components);
-                neptuneTimer.Interval = 50;
+                neptuneTimer.Interval = 1000 / 30;
                 neptuneTimer.Tick += NeptuneTimer_Tick;
                 neptuneTimer.Enabled = true;
 
@@ -158,7 +162,7 @@ namespace PowerControl
 
             // Consume only some events to avoid under-running SWICD
             if ((input.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) != 0)
-                Thread.Sleep(50);
+                Thread.Sleep(1000 / 30);
             else
                 Thread.Sleep(250);
         }
@@ -199,6 +203,7 @@ namespace PowerControl
             }
 
             rootMenu.Show();
+            setDismissTimer(false);
 
             if (input.buttons1 != 0 || input.buttons2 != 0 || input.buttons3 != 0 || input.buttons4 != 0)
             {
@@ -222,11 +227,11 @@ namespace PowerControl
             }
         }
 
-        private void showOSD()
+        private void setDismissTimer(bool enabled = true)
         {
             osdDismissTimer.Stop();
-            osdDismissTimer.Start();
-            updateOSD();
+            if (enabled)
+                osdDismissTimer.Start();
         }
 
         private void hideOSD()
