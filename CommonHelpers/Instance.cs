@@ -15,6 +15,7 @@ namespace CommonHelpers
         {
             IsCpuEnabled = true,
             IsGpuEnabled = true,
+            IsMemoryEnabled = true,
             IsStorageEnabled = true,
             IsBatteryEnabled = true
         };
