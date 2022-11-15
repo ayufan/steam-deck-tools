@@ -35,11 +35,8 @@
     <Reference Include="hidapi.net">
       <HintPath>hidapi.net.dll</HintPath>
     </Reference>
-    <Reference Include="neptune-hidapi.net">
-      <HintPath>NeptuneHid\neptune-hidapi.net.dll</HintPath>
-    </Reference>
     <Reference Include="RTSSSharedMemoryNET">
-      <HintPath>..\PerformanceOverlay\RTSSSharedMemoryNET.dll</HintPath>
+      <HintPath>..\CommonHelpers\RTSSSharedMemoryNET.dll</HintPath>
     </Reference>
   </ItemGroup>
 

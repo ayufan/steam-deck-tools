@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <Reference Include="RTSSSharedMemoryNET">
-      <HintPath>RTSSSharedMemoryNET.dll</HintPath>
+      <HintPath>..\CommonHelpers\RTSSSharedMemoryNET.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -58,9 +58,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="RTSSSharedMemoryNET.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
