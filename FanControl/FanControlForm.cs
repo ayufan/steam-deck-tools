@@ -1,4 +1,5 @@
-﻿using CommonHelpers.FromLibreHardwareMonitor;
+﻿using CommonHelpers;
+using CommonHelpers.FromLibreHardwareMonitor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,7 +28,10 @@ namespace FanControl
             InitializeComponent();
 
             Text += " v" + Application.ProductVersion.ToString();
+            Instance.Open(Text, "Global\\FanControlOnce");
+
             notifyIcon.Text = Text;
+            notifyIcon.Visible = true;
 
             toolStripMenuItemAlwaysOnTop.Checked = TopMost = Properties.Settings.Default.AlwaysOnTop;
             toolStripMenuItemStartupOnBoot.Visible = startupManager.IsAvailable;

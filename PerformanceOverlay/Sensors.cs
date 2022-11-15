@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
 using static PerformanceOverlay.Sensors;
+using CommonHelpers;
 
 namespace PerformanceOverlay
 {
@@ -288,33 +289,21 @@ namespace PerformanceOverlay
                 }
             }
         };
-
-        private LibreHardwareMonitor.Hardware.Computer libreHardwareComputer = new LibreHardwareMonitor.Hardware.Computer
-        {
-            IsCpuEnabled = true,
-            IsMemoryEnabled = true,
-            IsGpuEnabled = true,
-            IsStorageEnabled = true,
-            IsBatteryEnabled = true
-        };
-
         public IList<ISensor> AllHardwareSensors { get; private set; } = new List<ISensor>();
 
         public Sensors()
         {
-            libreHardwareComputer.Open();
         }
 
         public void Dispose()
         {
-            libreHardwareComputer.Close();
         }
 
         public void Update()
         {
             var allSensors = new List<ISensor>();
 
-            foreach (IHardware hardware in libreHardwareComputer.Hardware)
+            foreach (IHardware hardware in Instance.HardwareComputer.Hardware)
             {
                 try
                 {

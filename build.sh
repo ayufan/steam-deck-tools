@@ -5,6 +5,8 @@ if [[ $# -ne 0 ]] && [[ $# -ne 1 ]]; then
     exit 1
 fi
 
+set -eo pipefail
+
 majorVer=$(cat VERSION)
 lastVer=$(git tag --sort version:refname --list "$majorVer.*" | tail -n1)
 if [[ -n "$lastVer" ]]; then
@@ -19,8 +21,4 @@ fi
 echo "MajorVer=$majorVer LastVer=$lastVer NextVer=$nextVer"
 
 args="--configuration Release /property:Version=$nextVer"
-if [[ -n "$1" ]]; then
-    dotnet build $args --output "$1"
-else
-    dotnet build $args
-fi
+dotnet build $args --output "${1:-build-release/}"

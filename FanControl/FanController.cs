@@ -39,17 +39,8 @@ namespace FanControl
         [CategoryAttribute("Board")]
         public String PDVersion { get; private set; } = Vlv0100.GetFirmwareVersion().ToString("X");
 
-        private LibreHardwareMonitor.Hardware.Computer libreHardwareComputer = new LibreHardwareMonitor.Hardware.Computer
-        {
-            IsCpuEnabled = true,
-            IsGpuEnabled = true,
-            IsStorageEnabled = true,
-            IsBatteryEnabled = true
-        };
-
         public FanController()
         {
-            libreHardwareComputer.Open();
         }
 
         private void visitHardware(IHardware hardware)
@@ -92,7 +83,7 @@ namespace FanControl
             foreach (var sensor in allSensors.Values)
                 sensor.Reset();
 
-            foreach (var hardware in libreHardwareComputer.Hardware)
+            foreach (var hardware in Instance.HardwareComputer.Hardware)
                 visitHardware(hardware);
 
             allSensors["Batt"].Update("VLV0100", Vlv0100.GetBattTemperature(), Mode);
@@ -131,7 +122,6 @@ namespace FanControl
 
         public void Dispose()
         {
-            libreHardwareComputer.Close();
         }
     }
 }

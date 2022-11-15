@@ -69,7 +69,7 @@
             this.notifyIcon.ContextMenuStrip = this.contextMenu;
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "Steam Deck Fan Control";
-            this.notifyIcon.Visible = true;
+            this.notifyIcon.Visible = false;
             this.notifyIcon.DoubleClick += new System.EventHandler(this.formShow_Event);
             // 
             // contextMenu

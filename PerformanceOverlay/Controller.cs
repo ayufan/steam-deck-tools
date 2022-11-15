@@ -1,4 +1,5 @@
-﻿using CommonHelpers.FromLibreHardwareMonitor;
+﻿using CommonHelpers;
+using CommonHelpers.FromLibreHardwareMonitor;
 using Microsoft.VisualBasic.Logging;
 using PerformanceOverlay.External;
 using RTSSSharedMemoryNET;
@@ -9,13 +10,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PerformanceOverlay
 {
     internal class Controller : IDisposable
     {
         public const String Title = "Performance Overlay";
-        public readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
+        public readonly String TitleWithVersion = Title + " v" + System.Windows.Forms.Application.ProductVersion.ToString();
 
         Container components = new Container();
         RTSSSharedMemoryNET.OSD? osd;
@@ -28,17 +31,11 @@ namespace PerformanceOverlay
             "Starts Performance Overlay on Windows startup."
         );
 
-        LibreHardwareMonitor.Hardware.Computer libreHardwareComputer = new LibreHardwareMonitor.Hardware.Computer
-        {
-            IsCpuEnabled = true,
-            IsGpuEnabled = true,
-            IsStorageEnabled = true,
-            IsBatteryEnabled = true
-        };
-
         public Controller()
         {
             var contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
+
+            Instance.Open(TitleWithVersion, "Global\\PerformanceOverlay");
 
             showItem = new ToolStripMenuItem("&Show OSD");
             showItem.Click += ShowItem_Click;
@@ -222,7 +219,7 @@ namespace PerformanceOverlay
 
         private void ExitItem_Click(object? sender, EventArgs e)
         {
-            Application.Exit();
+            System.Windows.Forms.Application.Exit();
         }
 
         public void Dispose()
