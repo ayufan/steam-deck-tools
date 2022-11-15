@@ -21,4 +21,23 @@ namespace CommonHelpers
         Detail,
         Full
     }
+
+    public enum OverlayEnabled : uint
+    {
+        Yes = 378313,
+        No
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FanModeSetting
+    {
+        public FanMode Current, Desired;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct OverlayModeSetting
+    {
+        public OverlayMode Current, Desired;
+        public OverlayEnabled CurrentEnabled, DesiredEnabled;
+    }
 }

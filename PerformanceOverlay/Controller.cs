@@ -1,4 +1,4 @@
-using CommonHelpers;
+﻿using CommonHelpers;
 using CommonHelpers.FromLibreHardwareMonitor;
 using Microsoft.VisualBasic.Logging;
 using PerformanceOverlay.External;
@@ -31,6 +31,8 @@ namespace PerformanceOverlay
             Title,
             "Starts Performance Overlay on Windows startup."
         );
+
+        SharedData<OverlayModeSetting> sharedData = SharedData<OverlayModeSetting>.CreateNew();
 
         public Controller()
         {
@@ -142,8 +144,37 @@ namespace PerformanceOverlay
             updateContextItems(contextMenu);
         }
 
+        private void SharedData_Update()
+        {
+            if (sharedData.GetValue(out var value))
+            {
+                if (Enum.IsDefined<OverlayMode>(value.Desired))
+                {
+                    Settings.Default.OSDModeParsed = (OverlayMode)value.Desired;
+                    Settings.Default.ShowOSD = true;
+                    Settings.Default.Save();
+                    updateContextItems(contextMenu);
+                }
+
+                if (Enum.IsDefined<OverlayEnabled>(value.DesiredEnabled))
+                {
+                    Settings.Default.ShowOSD = (OverlayEnabled)value.DesiredEnabled == OverlayEnabled.Yes;
+                    Settings.Default.Save();
+                    updateContextItems(contextMenu);
+                }
+            }
+
+            sharedData.SetValue(new OverlayModeSetting()
+            {
+                Current = Settings.Default.OSDModeParsed,
+                CurrentEnabled = Settings.Default.ShowOSD ? OverlayEnabled.Yes : OverlayEnabled.No
+            });
+        }
+
         private void OsdTimer_Tick(object? sender, EventArgs e)
         {
+            SharedData_Update();
+
             try
             {
                 notifyIcon.Text = TitleWithVersion + ". RTSS Version: " + OSD.Version;

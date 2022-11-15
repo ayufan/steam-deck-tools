@@ -1,4 +1,4 @@
-using CommonHelpers;
+﻿using CommonHelpers;
 using CommonHelpers.FromLibreHardwareMonitor;
 using FanControl.Properties;
 using System;
@@ -23,6 +23,8 @@ namespace FanControl
             "Steam Deck Fan Control",
             "Starts Steam Deck Fan Control on Windows startup."
         );
+
+        private SharedData<FanModeSetting> sharedData = SharedData<FanModeSetting>.CreateNew();
 
         public FanControlForm()
         {
@@ -122,8 +124,19 @@ namespace FanControl
             fanControl.SetMode(FanMode.Default);
         }
 
+        private void SharedData_Update()
+        {
+            if (sharedData.GetValue(out var value) && Enum.IsDefined<FanMode>(value.Desired))
+            {
+                setFanMode((FanMode)value.Desired);
+            }
+
+            sharedData.SetValue(new FanModeSetting() { Current = fanControl.Mode });
+        }
+
         private void fanLoopTimer_Tick(object sender, EventArgs e)
         {
+            SharedData_Update();
             fanControl.Update();
         }
 

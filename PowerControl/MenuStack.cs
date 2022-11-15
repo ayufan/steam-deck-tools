@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonHelpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -101,6 +102,79 @@ namespace PowerControl
                     Options = { "Auto", 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600 },
                     ApplyDelay = 1000,
                     Visible = false
+                },
+                new Menu.MenuItemSeparator(),
+                new Menu.MenuItemWithOptions()
+                {
+                    Name = "OSD",
+                    ApplyDelay = 500,
+                    OptionsValues = delegate()
+                    {
+                        return Enum.GetValues<OverlayEnabled>().Select(item => (object)item).ToArray();
+                    },
+                    CurrentValue = delegate()
+                    {
+                        if (SharedData<OverlayModeSetting>.GetExistingValue(out var value))
+                           return value.CurrentEnabled;
+                        return null;
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        if (!SharedData<OverlayModeSetting>.GetExistingValue(out var value))
+                            return null;
+                        value.DesiredEnabled =  (OverlayEnabled)selected;
+                        if (!SharedData<OverlayModeSetting>.SetExistingValue(value))
+                            return null;
+                        return selected;
+                    }
+                },
+                new Menu.MenuItemWithOptions()
+                {
+                    Name = "OSD Mode",
+                    ApplyDelay = 500,
+                    OptionsValues = delegate()
+                    {
+                        return Enum.GetValues<OverlayMode>().Select(item => (object)item).ToArray();
+                    },
+                    CurrentValue = delegate()
+                    {
+                        if (SharedData<OverlayModeSetting>.GetExistingValue(out var value))
+                           return value.Current;
+                        return null;
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        if (!SharedData<OverlayModeSetting>.GetExistingValue(out var value))
+                            return null;
+                        value.Desired = (OverlayMode)selected;
+                        if (!SharedData<OverlayModeSetting>.SetExistingValue(value))
+                            return null;
+                        return selected;
+                    }
+                },
+                new Menu.MenuItemWithOptions()
+                {
+                    Name = "FAN",
+                    ApplyDelay = 500,
+                    OptionsValues = delegate()
+                    {
+                        return Enum.GetValues<FanMode>().Select(item => (object)item).ToArray();
+                    },
+                    CurrentValue = delegate()
+                    {
+                        if (SharedData<FanModeSetting>.GetExistingValue(out var value))
+                           return value.Current;
+                        return null;
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        if (!SharedData<FanModeSetting>.GetExistingValue(out var value))
+                            return null;
+                        value.Desired = (FanMode)selected;
+                        if (!SharedData<FanModeSetting>.SetExistingValue(value))
+                            return null;
+                        return selected;
+                    }
                 }
             }
         };
