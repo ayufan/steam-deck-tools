@@ -1,5 +1,6 @@
-﻿using CommonHelpers;
+using CommonHelpers;
 using CommonHelpers.FromLibreHardwareMonitor;
+using FanControl.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,7 +41,7 @@ namespace FanControl
             propertyGrid1.SelectedObject = fanControl;
             propertyGrid1.ExpandAllGridItems();
 
-            foreach (var item in Enum.GetValues(typeof(FanController.FanMode)))
+            foreach (var item in Enum.GetValues(typeof(FanMode)))
             {
                 fanModeSelectMenu.Items.Add(item);
                 fanModeSelectNotifyMenu.Items.Add(item);
@@ -48,12 +49,12 @@ namespace FanControl
 
             try
             {
-                var fanMode = Enum.Parse(typeof(FanController.FanMode), Properties.Settings.Default.FanMode);
-                setFanMode((FanController.FanMode)fanMode);
+                var fanMode = Enum.Parse(typeof(FanMode), Properties.Settings.Default.FanMode);
+                setFanMode((FanMode)fanMode);
             }
             catch(System.ArgumentException)
             {
-                setFanMode(FanController.FanMode.Default);
+                setFanMode(FanMode.Default);
             }
 
             notifyIcon.ShowBalloonTip(3000, Text, "Fan Control Started", ToolTipIcon.Info);
@@ -76,7 +77,7 @@ namespace FanControl
             }
         }
 
-        private void setFanMode(FanController.FanMode mode)
+        private void setFanMode(FanMode mode)
         {
             fanControl.SetMode(mode);
             fanModeSelectMenu.SelectedItem = mode;
@@ -88,7 +89,7 @@ namespace FanControl
         private void fanModeSelect_SelectedValueChanged(object sender, EventArgs e)
         {
             var comboBox = (ToolStripComboBox)sender;
-            var selectedMode = (FanController.FanMode)comboBox.SelectedItem;
+            var selectedMode = (FanMode)comboBox.SelectedItem;
             setFanMode(selectedMode);
         }
 
@@ -118,7 +119,7 @@ namespace FanControl
         private void FanControlForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Always revert to default on closing
-            fanControl.SetMode(FanController.FanMode.Default);
+            fanControl.SetMode(FanMode.Default);
         }
 
         private void fanLoopTimer_Tick(object sender, EventArgs e)

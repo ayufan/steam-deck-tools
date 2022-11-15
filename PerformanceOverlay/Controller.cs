@@ -1,4 +1,4 @@
-﻿using CommonHelpers;
+using CommonHelpers;
 using CommonHelpers.FromLibreHardwareMonitor;
 using Microsoft.VisualBasic.Logging;
 using PerformanceOverlay.External;
@@ -42,7 +42,7 @@ namespace PerformanceOverlay
             showItem.Checked = Settings.Default.ShowOSD;
             contextMenu.Items.Add(showItem);
             contextMenu.Items.Add(new ToolStripSeparator());
-            foreach (var mode in Enum.GetValues<Overlays.Mode>())
+            foreach (var mode in Enum.GetValues<OverlayMode>())
             {
                 var modeItem = new ToolStripMenuItem(mode.ToString());
                 modeItem.Tag = mode;
@@ -103,7 +103,7 @@ namespace PerformanceOverlay
             {
                 GlobalHotKey.RegisterHotKey(Settings.Default.CycleOSDShortcut, () =>
                 {
-                    var values = Enum.GetValues<Overlays.Mode>().ToList();
+                    var values = Enum.GetValues<OverlayMode>().ToList();
 
                     int index = values.IndexOf(Settings.Default.OSDModeParsed);
                     Settings.Default.OSDModeParsed = values[(index + 1) % values.Count];
@@ -123,8 +123,8 @@ namespace PerformanceOverlay
         {
             foreach (ToolStripItem item in contextMenu.Items)
             {
-                if (item.Tag is Overlays.Mode)
-                   ((ToolStripMenuItem)item).Checked = ((Overlays.Mode)item.Tag == Settings.Default.OSDModeParsed);
+                if (item.Tag is OverlayMode)
+                   ((ToolStripMenuItem)item).Checked = ((OverlayMode)item.Tag == Settings.Default.OSDModeParsed);
             }
         }
 

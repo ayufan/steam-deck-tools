@@ -16,13 +16,6 @@ namespace FanControl
     [RefreshProperties(RefreshProperties.Repaint)]
     internal partial class FanController : IDisposable
     {
-        public enum FanMode
-        {
-            Default,
-            SteamOS,
-            Max
-        }
-
         [CategoryAttribute("Fan")]
         public FanMode Mode { get; private set; }
 

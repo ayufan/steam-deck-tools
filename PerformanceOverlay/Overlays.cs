@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonHelpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -11,19 +12,11 @@ namespace PerformanceOverlay
 {
     internal class Overlays
     {
-        public enum Mode
-        {
-            FPS,
-            Minimal,
-            Detail,
-            Full
-        }
-
         public class Entry
         {
             public String? Text { get; set; }
-            public IList<Mode> Include { get; set; } = new List<Mode>();
-            public IList<Mode> Exclude { get; set; } = new List<Mode>();
+            public IList<OverlayMode> Include { get; set; } = new List<OverlayMode>();
+            public IList<OverlayMode> Exclude { get; set; } = new List<OverlayMode>();
             public IList<Entry> Nested { get; set; } = new List<Entry>();
             public String Separator { get; set; } = "";
             public bool IgnoreMissing { get; set; }
@@ -62,7 +55,7 @@ namespace PerformanceOverlay
                 return output;
             }
 
-            public String? GetValue(Mode mode, Sensors sensors)
+            public String? GetValue(OverlayMode mode, Sensors sensors)
             {
                 if (Exclude.Count > 0 && Exclude.Contains(mode))
                     return null;
@@ -97,7 +90,7 @@ namespace PerformanceOverlay
         {
             Nested = {
                 // Simple just FPS
-                new Entry("<C4><FR><C><A><A1><S1><C4> FPS") { Include = { Mode.FPS } },
+                new Entry("<C4><FR><C><A><A1><S1><C4> FPS") { Include = { OverlayMode.FPS } },
 
                 // Minimal and Detail
                 new Entry {
@@ -110,7 +103,7 @@ namespace PerformanceOverlay
                             {
                                 new Entry("<C4><A0>{BATT_%}<A><A1><S1> %<S><A>"),
                                 new Entry("<C4><A0>{BATT_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true },
-                                new Entry("C<C4><A0>{BATT_CHARGE_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true, Include = { Mode.Detail } }
+                                new Entry("C<C4><A0>{BATT_CHARGE_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true, Include = { OverlayMode.Detail } }
                             }
                         },
                         new Entry
@@ -120,7 +113,7 @@ namespace PerformanceOverlay
                             {
                                 new Entry("<C4><A0>{GPU_%}<A><A1><S1> %<S><A>"),
                                 new Entry("<C4><A0>{GPU_W}<A><A1><S1> W<S><A>"),
-                                new Entry("<C4><A0>{GPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true, Include = { Mode.Detail } }
+                                new Entry("<C4><A0>{GPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true, Include = { OverlayMode.Detail } }
                             }
                         },
                         new Entry
@@ -130,7 +123,7 @@ namespace PerformanceOverlay
                             {
                                 new Entry("<C4><A0>{CPU_%}<A><A1><S1> %<S><A>"),
                                 new Entry("<C4><A0>{CPU_W}<A><A1><S1> W<S><A>"),
-                                new Entry("<C4><A0>{CPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true, Include = { Mode.Detail } }
+                                new Entry("<C4><A0>{CPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true, Include = { OverlayMode.Detail } }
                             }
                         },
                         new Entry
@@ -142,7 +135,7 @@ namespace PerformanceOverlay
                         {
                             Text = "<C1>FAN<C>",
                             Nested = { new Entry("<C4><A5>{FAN_RPM}<A><A1><S1> RPM<S><A>") },
-                            Include = { Mode.Detail }
+                            Include = { OverlayMode.Detail }
                         },
                         new Entry
                         {
@@ -152,11 +145,11 @@ namespace PerformanceOverlay
                         new Entry
                         {
                             Text = "<C2>[OBJ_FT_SMALL]<C><S1> <C4><A0><FT><A><A1> ms<A><S><C>",
-                            Include = { Mode.Detail }
+                            Include = { OverlayMode.Detail }
                         }
                     },
                     Separator = "<C250>|<C> ",
-                    Include = { Mode.Minimal, Mode.Detail }
+                    Include = { OverlayMode.Minimal, OverlayMode.Detail }
                 },
 
                 new Entry {
@@ -178,12 +171,12 @@ namespace PerformanceOverlay
                         new Entry("[OBJ_FT_LARGE]<S1> <A0><FT><A><A1> ms<A><S><C>"),
                     },
                     Separator = "\r\n",
-                    Include = { Mode.Full }
+                    Include = { OverlayMode.Full }
                 }
             }
         };
 
-        public static String GetOSD(Mode mode, Sensors sensors)
+        public static String GetOSD(OverlayMode mode, Sensors sensors)
         {
             var sb = new StringBuilder();
 

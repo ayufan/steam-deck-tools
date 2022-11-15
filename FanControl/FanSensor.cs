@@ -1,4 +1,5 @@
-﻿using LibreHardwareMonitor.Hardware;
+﻿using CommonHelpers;
+using LibreHardwareMonitor.Hardware;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,7 +28,7 @@ namespace FanControl
 
         private List<float> AllSamples = new List<float>();
 
-        internal Dictionary<FanController.FanMode, Profile> Profiles { get; set; } = new Dictionary<FanController.FanMode, Profile>();
+        internal Dictionary<FanMode, Profile> Profiles { get; set; } = new Dictionary<FanMode, Profile>();
 
         internal class Profile
         {
@@ -136,7 +137,7 @@ namespace FanControl
                 sensor.Name == SensorName;
         }
 
-        public bool Update(ISensor hwSensor, FanController.FanMode mode)
+        public bool Update(ISensor hwSensor, FanMode mode)
         {
             if (!Matches(hwSensor))
                 return false;
@@ -149,7 +150,7 @@ namespace FanControl
                 hwSensor.Value, mode);
         }
 
-        public bool Update(string name, float? newValue, FanController.FanMode mode)
+        public bool Update(string name, float? newValue, FanMode mode)
         {
             if (!newValue.HasValue || newValue <= 0.0)
                 return false;
@@ -174,7 +175,7 @@ namespace FanControl
             return true;
         }
 
-        public bool IsValid(FanController.FanMode mode)
+        public bool IsValid(FanMode mode)
         {
             // If we have profile, but no sensor value to consume it
             // it is invalid
@@ -217,7 +218,7 @@ namespace FanControl
             return value;
         }
 
-        public ushort? CalculateRPM(FanController.FanMode mode)
+        public ushort? CalculateRPM(FanMode mode)
         {
             if (!Profiles.ContainsKey(mode) || !Value.HasValue)
                 return null;

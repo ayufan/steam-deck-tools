@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonHelpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,17 +10,17 @@ namespace PerformanceOverlay
 {
     internal partial class Settings
     {
-        public Overlays.Mode OSDModeParsed
+        public OverlayMode OSDModeParsed
         {
             get
             {
                 try
                 {
-                    return (Mode)Enum.Parse<Mode>(OSDMode);
+                    return (OverlayMode)Enum.Parse<OverlayMode>(OSDMode);
                 }
                 catch (ArgumentException)
                 {
-                    return Mode.FPS;
+                    return OverlayMode.FPS;
                 }
             }
             set
