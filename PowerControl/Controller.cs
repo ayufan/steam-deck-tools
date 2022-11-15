@@ -1,4 +1,4 @@
-﻿using CommonHelpers;
+using CommonHelpers;
 using CommonHelpers.FromLibreHardwareMonitor;
 using Microsoft.VisualBasic.Logging;
 using PowerControl.External;
@@ -89,10 +89,7 @@ namespace PowerControl
             };
 
             var osdTimer = new System.Windows.Forms.Timer(components);
-            osdTimer.Tick += delegate (object? sender, EventArgs e)
-            {
-                updateOSD();
-            };
+            osdTimer.Tick += OsdTimer_Tick;
             osdTimer.Interval = 250;
             osdTimer.Enabled = true;
 
@@ -127,6 +124,22 @@ namespace PowerControl
                 neptuneDevice.OpenDevice();
                 neptuneDevice.BeginRead();
             }
+        }
+
+        private void OsdTimer_Tick(object? sender, EventArgs e)
+        {
+            try
+            {
+                notifyIcon.Text = TitleWithVersion + ". RTSS Version: " + OSD.Version;
+                notifyIcon.Icon = Resources.poll;
+            }
+            catch
+            {
+                notifyIcon.Text = TitleWithVersion + ". RTSS Not Available.";
+                notifyIcon.Icon = Resources.poll_red;
+            }
+
+            updateOSD();
         }
 
         private void NeptuneDevice_OnInputReceived(object? sender, hidapi.HidDeviceInputReceivedEventArgs e)
