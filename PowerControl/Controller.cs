@@ -1,4 +1,4 @@
-using CommonHelpers;
+﻿using CommonHelpers;
 using CommonHelpers.FromLibreHardwareMonitor;
 using Microsoft.VisualBasic.Logging;
 using PowerControl.External;
@@ -243,20 +243,15 @@ namespace PowerControl
         {
             if (!rootMenu.Visible)
             {
-                try
-                {
-                    if (osd != null)
-                        osd.Dispose();
-                    osd = null;
-                }
-                catch (SystemException)
-                {
-                }
+                osdClose();
                 return;
             }
 
             try
             {
+                // recreate OSD if not index 0
+                if (osd != null && osd.OSDIndex() == 0)
+                    osdClose();
                 if (osd == null)
                     osd = new OSD("Power Control");
                 osd.Update(rootMenu.Render(null));
@@ -274,7 +269,20 @@ namespace PowerControl
         public void Dispose()
         {
             components.Dispose();
-            hideOSD();
+            osdClose();
+        }
+
+        private void osdClose()
+        {
+            try
+            {
+                if (osd != null)
+                    osd.Dispose();
+                osd = null;
+            }
+            catch (SystemException)
+            {
+            }
         }
     }
 }
