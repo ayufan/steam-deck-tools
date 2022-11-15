@@ -1,14 +1,7 @@
-﻿using CommonHelpers;
+using CommonHelpers;
 using PowerControl.Helpers;
 using PowerControl.Helpers.GPU;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Navigation;
-using static PowerControl.Helpers.PhysicalMonitorBrightnessController;
 
 namespace PowerControl
 {
@@ -157,42 +150,85 @@ namespace PowerControl
                 new Menu.MenuItemWithOptions()
                 {
                     Name = "TDP",
-                    Options = { "Auto", "3W", "4W", "5W", "6W", "7W", "8W", "10W", "12W", "15W" },
+                    Options = { "3W", "4W", "5W", "6W", "7W", "8W", "10W", "12W", "15W" },
                     ApplyDelay = 1000,
-                    ResetValue = () => { return "Auto"; },
+                    ResetValue = () => { return "15W"; },
+                    ActiveOption = "?",
                     ApplyValue = delegate(object selected)
                     {
-                        int mW = 15000;
+                        uint mW = uint.Parse(selected.ToString().Replace("W", "")) * 1000;
 
-                        if (selected.ToString() != "Auto")
+                        if (VangoghGPU.IsSupported)
                         {
-                            mW = int.Parse(selected.ToString().Replace("W", "")) * 1000;
+                            using (var sd = VangoghGPU.Open())
+                            {
+                                if (sd is null)
+                                    return null;
+
+                                sd.SlowTDP = mW;
+                                sd.FastTDP = mW;
+                            }
                         }
-
-                        int stampLimit = mW/10;
-
-                        Process.Start(new ProcessStartInfo()
+                        else
                         {
-                            FileName = "Resources/RyzenAdj/ryzenadj.exe",
-                            ArgumentList = {
-                                "--stapm-limit=" + stampLimit.ToString(),
-                                "--slow-limit=" + mW.ToString(),
-                                "--fast-limit=" + mW.ToString(),
-                            },
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            UseShellExecute = false,
-                            CreateNoWindow = true
-                        });
+                            uint stampLimit = mW/10;
+
+                            Process.Start(new ProcessStartInfo()
+                            {
+                                FileName = "Resources/RyzenAdj/ryzenadj.exe",
+                                ArgumentList = {
+                                    "--stapm-limit=" + stampLimit.ToString(),
+                                    "--slow-limit=" + mW.ToString(),
+                                    "--fast-limit=" + mW.ToString(),
+                                },
+                                WindowStyle = ProcessWindowStyle.Hidden,
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            });
+                        }
 
                         return selected;
                     }
                 },
                 new Menu.MenuItemWithOptions()
                 {
-                    Name = "GPU Clock",
-                    Options = { "Auto", 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600 },
+                    Name = "GPU Min",
+                    Options = { "200MHz", "400MHz", "800MHz", "1200MHz", "1600MHz" },
                     ApplyDelay = 1000,
-                    Visible = false
+                    Visible = VangoghGPU.IsSupported,
+                    ActiveOption = "?",
+                    ResetValue = () => { return "200MHz"; },
+                    ApplyValue = delegate(object selected)
+                    {
+                        using (var sd = VangoghGPU.Open())
+                        {
+                            if (sd is null)
+                                return null;
+
+                            sd.HardMinGfxClock = uint.Parse(selected.ToString().Replace("MHz", ""));
+                            return sd.GfxClock.ToString() + "MHz";
+                        }
+                    }
+                },
+                new Menu.MenuItemWithOptions()
+                {
+                    Name = "CPU Max",
+                    Options = { "800MHz", "2000MHz", "3000MHz", "3500MHz" },
+                    ApplyDelay = 1000,
+                    ActiveOption = "?",
+                    Visible = VangoghGPU.IsSupported,
+                    ResetValue = () => { return "3500MHz"; },
+                    ApplyValue = delegate(object selected)
+                    {
+                        using (var sd = VangoghGPU.Open())
+                        {
+                            if (sd is null)
+                                return null;
+
+                            sd.MaxCPUClock = uint.Parse(selected.ToString().Replace("MHz", ""));
+                            return selected;
+                        }
+                    }
                 },
                 new Menu.MenuItemWithOptions()
                 {

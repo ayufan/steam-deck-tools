@@ -1,0 +1,380 @@
+﻿using CommonHelpers;
+using System.Diagnostics;
+
+namespace PowerControl.Helpers.GPU
+{
+    internal class VangoghGPU : IDisposable
+    {
+        public struct SupportedDevice
+        {
+            public ushort VendorID, DeviceID;
+            public IntPtr MMIOAddress;
+            public uint MMIOSize;
+            public uint SMUVersion;
+
+            public SupportedDevice(ushort VendorID, ushort DeviceID, uint MMIOAddress, uint MMIOSize, uint SMUVersion)
+            {
+                this.VendorID = VendorID;
+                this.DeviceID = DeviceID;
+                this.MMIOAddress = new IntPtr(MMIOAddress);
+                this.MMIOSize = MMIOSize;
+                this.SMUVersion = SMUVersion;
+            }
+
+            private void Log(string format, params object?[]? arg)
+            {
+                Trace.WriteLine(string.Format("GPU: [{0:X4}:{1:X4}] ", VendorID, DeviceID) + string.Format(format, arg));
+            }
+
+            public bool Found()
+            {
+                // Strong validate device that it has our "memory layout"
+                var pciAddress = WinRing0.FindPciDeviceById(VendorID, DeviceID, 0);
+                if (pciAddress == WinRing0.NO_DEVICE)
+                {
+                    Log("PCI: not found");
+                    return false;
+                }
+
+                Log("PCI: [{0:X8}]", pciAddress);
+
+                var barAddr = WinRing0.ReadPciConfigDword(pciAddress, 0x24); // BAR6
+                if (MMIOAddress != new IntPtr(barAddr))
+                {
+                    Log("PCI: [{0:X8}] => BAR: {1:X8} vs {2:X8} => mismatch",
+                        pciAddress, MMIOAddress, barAddr);
+                    return false;
+                }
+
+                Log("PCI: [{0:X8}] => BAR: {1:X8} => OK",
+                    pciAddress, barAddr);
+                return true;
+            }
+
+            public VangoghGPU? Open()
+            {
+                var gpu = VangoghGPU.OpenMMIO(MMIOAddress, MMIOSize);
+                if (gpu == null)
+                    return null;
+
+                // Check supported SMU version
+                var smuVersion = gpu.SMUVersion;
+                if (smuVersion != SMUVersion)
+                {
+                    Log("SMU: {0:X8} => not supported", smuVersion);
+                    return null;
+                }
+
+                Log("SMU: {0:X8} => detected", smuVersion);
+                return gpu;
+            }
+        };
+
+        public static readonly SupportedDevice[] SupportedDevices = new SupportedDevice[]
+        {
+            // SteamDeck
+            new SupportedDevice(0x1002, 0x163F, 0x80300000, 0x80380000 - 0x80300000, 0x43F3900)
+        };
+
+        private static SupportedDevice? DetectedDevice;
+
+        public static bool IsSupported
+        {
+            get { return DetectedDevice != null; }
+        }
+
+        public static VangoghGPU? Open()
+        {
+            return DetectedDevice?.Open();
+        }
+
+        public static bool Detect()
+        {
+            foreach ( var device in SupportedDevices)
+            {
+                if (!device.Found())
+                    continue;
+
+                using (var gpu = device.Open())
+                {
+                    if (gpu is not null)
+                    {
+                        DetectedDevice = device;
+                        return true;
+                    }
+                }
+            }
+
+            DetectedDevice = null;
+            return false;
+        }
+
+        // Addresses:
+        // drivers/gpu/drm/amd/include/vangogh_ip_offset.h => MP1_BASE => 0x00016000
+        // drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c => mmMP1_SMN_C2PMSG_* => 0x0282/0x0292/0x029a
+        // drivers/gpu/drm/amd/include/asic_reg/nbio/nbio_7_4_offset.h => mmPCIE_INDEX2/mmPCIE_DATA2 => 0x000e/0x000f
+        //
+        // Messages:
+        // drivers/gpu/drm/amd/pm/inc/smu_v11_5_ppsmc.h
+
+        private RyzenSMU smu;
+
+        ~VangoghGPU()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            if (smu != null)
+                smu.Dispose();
+        }
+
+        private static VangoghGPU? OpenMMIO(IntPtr mmioAddress, uint mmioSize)
+        {
+            var gpu = new VangoghGPU
+            {
+                smu = new RyzenSMU()
+                {
+                    MMIO_ADDR = mmioAddress,
+                    MMIO_SIZE = mmioSize,
+                    RES_ADDR = 0x0001629A * 4,
+                    MSG_ADDR = 0x00016282 * 4,
+                    PARAM_ADDR = 0x00016292 * 4,
+                    INDEX_ADDR = 0xE * 4,
+                    DATA_ADDR = 0xF * 4
+                }
+            };
+
+            if (!gpu.smu.Open())
+                return null;
+
+            return gpu;
+        }
+
+        public UInt32 SMUVersion
+        {
+            get { return getValue(Message.PPSMC_MSG_GetSmuVersion); }
+        }
+
+        public UInt32 IfVersion
+        {
+            get { return getValue(Message.PPSMC_MSG_GetDriverIfVersion); }
+        }
+
+        const uint MIN_TDP = 3000;
+        const uint MAX_TDP = 15000;
+
+        public uint SlowTDP
+        {
+            get { return getValue(Message.PPSMC_MSG_GetSlowPPTLimit); }
+            set { setValue(Message.PPSMC_MSG_SetSlowPPTLimit, value, MIN_TDP, MAX_TDP); }
+        }
+
+        public uint FastTDP
+        {
+            get { return getValue(Message.PPSMC_MSG_GetFastPPTLimit); }
+            set { setValue(Message.PPSMC_MSG_SetFastPPTLimit, value, MIN_TDP, MAX_TDP); }
+        }
+
+        public uint GfxClock
+        {
+            get { return getValue(Message.PPSMC_MSG_GetGfxclkFrequency); }
+        }
+
+        public uint FClock
+        {
+            get { return getValue(Message.PPSMC_MSG_GetFclkFrequency); }
+        }
+
+        const uint MIN_CPU_CLOCK = 800;
+        const uint MAX_CPU_CLOCK = 3500;
+
+        public uint MinCPUClock
+        {
+            set { setValue(Message.PPSMC_MSG_SetSoftMinCclk, value, MIN_CPU_CLOCK, MAX_CPU_CLOCK); }
+        }
+
+        public uint MaxCPUClock
+        {
+            set { setValue(Message.PPSMC_MSG_SetSoftMaxCclk, value, MIN_CPU_CLOCK, MAX_CPU_CLOCK); }
+        }
+
+        const uint MIN_GFX_CLOCK = 200;
+        const uint MAX_GFX_CLOCK = 1600;
+
+        public uint HardMinGfxClock
+        {
+            set { setValue(Message.PPSMC_MSG_SetHardMinGfxClk, value, MIN_GFX_CLOCK, MAX_GFX_CLOCK); }
+        }
+
+        public uint SoftMinGfxClock
+        {
+            set { setValue(Message.PPSMC_MSG_SetSoftMinGfxclk, value, MIN_GFX_CLOCK, MAX_GFX_CLOCK); }
+        }
+
+        public uint SoftMaxGfxClock
+        {
+            set { setValue(Message.PPSMC_MSG_SetSoftMaxGfxClk, value, MIN_GFX_CLOCK, MAX_GFX_CLOCK); }
+        }
+
+        public Dictionary<string, uint> All
+        {
+            get
+            {
+                var dict = new Dictionary<string, uint>();
+
+                foreach(var key in ValuesGetters)
+                {
+                    if (!this.smu.SendMsg(key, 0, out var value))
+                        continue;
+
+                    var keyString = key.ToString().Replace("PPSMC_MSG_Get", "");
+                    dict[keyString] = value;
+                }
+
+                return dict;
+            }
+        }
+
+        private uint getValue(Message msg)
+        {
+            this.smu.SendMsg(msg, 0, out var value);
+            return value;
+        }
+
+        private void setValue(Message msg, uint value, uint min = UInt32.MinValue, uint max = UInt32.MaxValue)
+        {
+            this.smu.SendMsg(msg, Math.Clamp(value, min, max));
+        }
+
+        private readonly Message[] ValuesGetters = new Message[]
+        {
+            Message.PPSMC_MSG_GetGfxclkFrequency,
+            Message.PPSMC_MSG_GetFclkFrequency,
+            Message.PPSMC_MSG_GetPptLimit,
+            Message.PPSMC_MSG_GetThermalLimit,
+            Message.PPSMC_MSG_GetFastPPTLimit,
+            Message.PPSMC_MSG_GetSlowPPTLimit,
+
+            // Those values return PPSMC_Result_CmdRejectedPrereq
+            Message.PPSMC_MSG_GetCurrentTemperature,
+            Message.PPSMC_MSG_GetCurrentPower,
+            Message.PPSMC_MSG_GetCurrentCurrent,
+            Message.PPSMC_MSG_GetCurrentFreq,
+            Message.PPSMC_MSG_GetCurrentVoltage,
+            Message.PPSMC_MSG_GetAverageCpuActivity,
+            Message.PPSMC_MSG_GetAverageGfxActivity,
+            Message.PPSMC_MSG_GetAveragePower,
+            Message.PPSMC_MSG_GetAverageTemperature
+        };
+
+        enum Result : byte
+        {
+            PPSMC_Result_OK = 0x1,
+            PPSMC_Result_Failed = 0xFF,
+            PPSMC_Result_UnknownCmd = 0xFE,
+            PPSMC_Result_CmdRejectedPrereq = 0xFD,
+            PPSMC_Result_CmdRejectedBusy = 0xFC
+        }
+
+        enum Tables : byte
+        {
+            TABLE_BIOS_IF = 0, // Called by BIOS
+            TABLE_WATERMARKS = 1, // Called by DAL through VBIOS
+            TABLE_CUSTOM_DPM = 2, // Called by Driver
+            TABLE_SPARE1 = 3,
+            TABLE_DPMCLOCKS = 4, // Called by Driver
+            TABLE_SPARE2 = 5, // Called by Tools
+            TABLE_MODERN_STDBY = 6, // Called by Tools for Modern Standby Log
+            TABLE_SMU_METRICS = 7, // Called by Driver
+            TABLE_COUNT = 8
+        }
+
+        enum Message : ushort
+        {
+            PPSMC_MSG_TestMessage = 0x1,
+            PPSMC_MSG_GetSmuVersion = 0x2,
+            PPSMC_MSG_GetDriverIfVersion = 0x3,
+            PPSMC_MSG_EnableGfxOff = 0x4,
+            PPSMC_MSG_DisableGfxOff = 0x5,
+            PPSMC_MSG_PowerDownIspByTile = 0x6, // ISP is power gated by default
+            PPSMC_MSG_PowerUpIspByTile = 0x7,
+            PPSMC_MSG_PowerDownVcn = 0x8, // VCN is power gated by default
+            PPSMC_MSG_PowerUpVcn = 0x9,
+            PPSMC_MSG_RlcPowerNotify = 0xA,
+            PPSMC_MSG_SetHardMinVcn = 0xB, // For wireless display
+            PPSMC_MSG_SetSoftMinGfxclk = 0xC, //Sets SoftMin for GFXCLK. Arg is in MHz
+            PPSMC_MSG_ActiveProcessNotify = 0xD,
+            PPSMC_MSG_SetHardMinIspiclkByFreq = 0xE,
+            PPSMC_MSG_SetHardMinIspxclkByFreq = 0xF,
+            PPSMC_MSG_SetDriverDramAddrHigh = 0x10,
+            PPSMC_MSG_SetDriverDramAddrLow = 0x11,
+            PPSMC_MSG_TransferTableSmu2Dram = 0x12,
+            PPSMC_MSG_TransferTableDram2Smu = 0x13,
+            PPSMC_MSG_GfxDeviceDriverReset = 0x14, //mode 2 reset during TDR
+            PPSMC_MSG_GetEnabledSmuFeatures = 0x15,
+            PPSMC_MSG_spare1 = 0x16,
+            PPSMC_MSG_SetHardMinSocclkByFreq = 0x17,
+            PPSMC_MSG_SetSoftMinFclk = 0x18, //Used to be PPSMC_MSG_SetMinVideoFclkFreq
+            PPSMC_MSG_SetSoftMinVcn = 0x19,
+            PPSMC_MSG_EnablePostCode = 0x1A,
+            PPSMC_MSG_GetGfxclkFrequency = 0x1B,
+            PPSMC_MSG_GetFclkFrequency = 0x1C,
+            PPSMC_MSG_AllowGfxOff = 0x1D,
+            PPSMC_MSG_DisallowGfxOff = 0x1E,
+            PPSMC_MSG_SetSoftMaxGfxClk = 0x1F,
+            PPSMC_MSG_SetHardMinGfxClk = 0x20,
+            PPSMC_MSG_SetSoftMaxSocclkByFreq = 0x21,
+            PPSMC_MSG_SetSoftMaxFclkByFreq = 0x22,
+            PPSMC_MSG_SetSoftMaxVcn = 0x23,
+            PPSMC_MSG_spare2 = 0x24,
+            PPSMC_MSG_SetPowerLimitPercentage = 0x25,
+            PPSMC_MSG_PowerDownJpeg = 0x26,
+            PPSMC_MSG_PowerUpJpeg = 0x27,
+            PPSMC_MSG_SetHardMinFclkByFreq = 0x28,
+            PPSMC_MSG_SetSoftMinSocclkByFreq = 0x29,
+            PPSMC_MSG_PowerUpCvip = 0x2A,
+            PPSMC_MSG_PowerDownCvip = 0x2B,
+            PPSMC_MSG_GetPptLimit = 0x2C,
+            PPSMC_MSG_GetThermalLimit = 0x2D,
+            PPSMC_MSG_GetCurrentTemperature = 0x2E,
+            PPSMC_MSG_GetCurrentPower = 0x2F,
+            PPSMC_MSG_GetCurrentVoltage = 0x30,
+            PPSMC_MSG_GetCurrentCurrent = 0x31,
+            PPSMC_MSG_GetAverageCpuActivity = 0x32,
+            PPSMC_MSG_GetAverageGfxActivity = 0x33,
+            PPSMC_MSG_GetAveragePower = 0x34,
+            PPSMC_MSG_GetAverageTemperature = 0x35,
+            PPSMC_MSG_SetAveragePowerTimeConstant = 0x36,
+            PPSMC_MSG_SetAverageActivityTimeConstant = 0x37,
+            PPSMC_MSG_SetAverageTemperatureTimeConstant = 0x38,
+            PPSMC_MSG_SetMitigationEndHysteresis = 0x39,
+            PPSMC_MSG_GetCurrentFreq = 0x3A,
+            PPSMC_MSG_SetReducedPptLimit = 0x3B,
+            PPSMC_MSG_SetReducedThermalLimit = 0x3C,
+            PPSMC_MSG_DramLogSetDramAddr = 0x3D,
+            PPSMC_MSG_StartDramLogging = 0x3E,
+            PPSMC_MSG_StopDramLogging = 0x3F,
+            PPSMC_MSG_SetSoftMinCclk = 0x40,
+            PPSMC_MSG_SetSoftMaxCclk = 0x41,
+            PPSMC_MSG_SetDfPstateActiveLevel = 0x42,
+            PPSMC_MSG_SetDfPstateSoftMinLevel = 0x43,
+            PPSMC_MSG_SetCclkPolicy = 0x44,
+            PPSMC_MSG_DramLogSetDramAddrHigh = 0x45,
+            PPSMC_MSG_DramLogSetDramBufferSize = 0x46,
+            PPSMC_MSG_RequestActiveWgp = 0x47,
+            PPSMC_MSG_QueryActiveWgp = 0x48,
+            PPSMC_MSG_SetFastPPTLimit = 0x49,
+            PPSMC_MSG_SetSlowPPTLimit = 0x4A,
+            PPSMC_MSG_GetFastPPTLimit = 0x4B,
+            PPSMC_MSG_GetSlowPPTLimit = 0x4C,
+            PPSMC_Message_Count = 0x4D,
+        }
+        private static void TraceLine(string format, params object?[]? arg)
+        {
+            Trace.WriteLine(string.Format(format, arg));
+        }
+    }
+}

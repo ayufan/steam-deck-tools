@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CommonHelpers
 {
-    internal class InpOut
+    public class InpOut
     {
         [DllImport("inpoutx64.dll", EntryPoint = "MapPhysToLin", CallingConvention = CallingConvention.StdCall)]
         public static extern IntPtr MapPhysToLin(IntPtr pbPhysAddr, uint dwPhysSize, out IntPtr pPhysicalMemoryHandle);
@@ -22,6 +22,12 @@ namespace CommonHelpers
 
         [DllImport("inpoutx64.dll", EntryPoint = "DlPortWritePortUchar", CallingConvention = CallingConvention.StdCall)]
         public static extern byte DlPortWritePortUchar(ushort port, byte vlaue);
+
+        [DllImport("inpoutx64.dll", CallingConvention = CallingConvention.StdCall)]
+        public static extern bool GetPhysLong(IntPtr pbPhysAddr, out uint physValue);
+
+        [DllImport("inpoutx64.dll", CallingConvention = CallingConvention.StdCall)]
+        public static extern bool SetPhysLong(IntPtr pbPhysAddr, uint physValue);
 
         public static byte[] ReadMemory(IntPtr baseAddress, uint size)
         {
