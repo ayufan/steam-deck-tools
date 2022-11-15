@@ -18,6 +18,8 @@ namespace PowerControl
     {
         public const String Title = "Power Control";
         public readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
+        public const int KeyPressRepeatTime = 300;
+        public const int KeyPressNextRepeatTime = 150;
 
         Container components = new Container();
         System.Windows.Forms.NotifyIcon notifyIcon;
@@ -28,8 +30,8 @@ namespace PowerControl
         System.Windows.Forms.Timer osdDismissTimer;
 
         hidapi.HidDevice neptuneDevice = new hidapi.HidDevice(0x28de, 0x1205, 64);
-        SDCInput neptuneLastDeviceState = new SDCInput();
         SDCInput neptuneDeviceState = new SDCInput();
+        DateTime? neptuneDeviceNextKey;
         System.Windows.Forms.Timer neptuneTimer;
 
         public Controller()
@@ -130,6 +132,28 @@ namespace PowerControl
             }
         }
 
+        private bool isForeground()
+        {
+            try
+            {
+                var processId = Helpers.TopLevelWindow.GetTopLevelProcessId();
+                if (processId is null)
+                    return true;
+
+                foreach (var app in OSD.GetAppEntries(AppFlags.MASK))
+                {
+                    if (app.ProcessId == processId)
+                        return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
         private void OsdTimer_Tick(object? sender, EventArgs e)
         {
             try
@@ -150,7 +174,7 @@ namespace PowerControl
         {
             var input = SDCInput.FromBuffer(e.Buffer);
 
-            neptuneDeviceState = new SDCInput()
+            var filteredInput = new SDCInput()
             {
                 buttons0 = input.buttons0,
                 buttons1 = input.buttons1,
@@ -160,6 +184,12 @@ namespace PowerControl
                 buttons5 = input.buttons5
             };
 
+            if (!neptuneDeviceState.Equals(filteredInput))
+            {
+                neptuneDeviceState = filteredInput;
+                neptuneDeviceNextKey = null;
+            }
+
             // Consume only some events to avoid under-running SWICD
             if ((input.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) != 0)
                 Thread.Sleep(1000 / 30);
@@ -167,35 +197,17 @@ namespace PowerControl
                 Thread.Sleep(250);
         }
 
-        private bool isForeground()
-        {
-            try
-            {
-                var processId = Helpers.TopLevelWindow.GetTopLevelProcessId();
-                if (processId is null)
-                    return true;
-
-                foreach (var app in OSD.GetAppEntries(AppFlags.MASK))
-                {
-                    if (app.ProcessId == processId)
-                        return true;
-                }
-
-                return false;
-            }
-            catch 
-            {
-                return true;
-            }
-        }
-
         private void NeptuneTimer_Tick(object? sender, EventArgs e)
         {
-            if (neptuneDeviceState.Equals(neptuneLastDeviceState))
-                return;
+            var input = neptuneDeviceState;
 
-            var input = neptuneLastDeviceState = neptuneDeviceState;
-            
+            if (neptuneDeviceNextKey == null)
+                neptuneDeviceNextKey = DateTime.UtcNow.AddMilliseconds(KeyPressRepeatTime);
+            else if (neptuneDeviceNextKey < DateTime.UtcNow)
+                neptuneDeviceNextKey = DateTime.UtcNow.AddMilliseconds(KeyPressNextRepeatTime);
+            else
+                return; // otherwise it did not yet trigger
+
             if ((input.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) == 0 || !isForeground())
             {
                 hideOSD();
