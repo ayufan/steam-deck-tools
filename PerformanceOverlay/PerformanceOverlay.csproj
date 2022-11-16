@@ -7,7 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Resources\traffic-light-outline.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\poll.ico</ApplicationIcon>
     <UseWPF>True</UseWPF>
   </PropertyGroup>
 
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\traffic-light-outline.ico" />
+    <Content Include="Resources\poll.ico" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,5 +8,7 @@
 - Add battery remaining
 - Add FPSWithBattery overlay
 - Add FPS Limit using RTSS
+- Fix ryzenadj creating console window
+- Swap icons of PerformanceOverlay and PowerControl
 
 If you found it useful buy me [Ko-fi](https://ko-fi.com/ayufan).

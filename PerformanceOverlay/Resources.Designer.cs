@@ -63,9 +63,9 @@ namespace PerformanceOverlay {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon traffic_light_outline {
+        internal static System.Drawing.Icon poll {
             get {
-                object obj = ResourceManager.GetObject("traffic_light_outline", resourceCulture);
+                object obj = ResourceManager.GetObject("poll", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace PerformanceOverlay {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon traffic_light_outline_red {
+        internal static System.Drawing.Icon poll_red {
             get {
-                object obj = ResourceManager.GetObject("traffic_light_outline_red", resourceCulture);
+                object obj = ResourceManager.GetObject("poll_red", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

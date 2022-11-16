@@ -85,7 +85,7 @@ namespace PerformanceOverlay
             exitItem.Click += ExitItem_Click;
 
             notifyIcon = new System.Windows.Forms.NotifyIcon(components);
-            notifyIcon.Icon = Resources.traffic_light_outline;
+            notifyIcon.Icon = Resources.poll;
             notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
@@ -179,12 +179,12 @@ namespace PerformanceOverlay
             try
             {
                 notifyIcon.Text = TitleWithVersion + ". RTSS Version: " + OSD.Version;
-                notifyIcon.Icon = Resources.traffic_light_outline;
+                notifyIcon.Icon = Resources.poll;
             }
             catch
             {
                 notifyIcon.Text = TitleWithVersion + ". RTSS Not Available.";
-                notifyIcon.Icon = Resources.traffic_light_outline_red;
+                notifyIcon.Icon = Resources.poll_red;
                 osdReset();
                 return;
             }
