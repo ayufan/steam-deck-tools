@@ -83,7 +83,7 @@ namespace PerformanceOverlay
         public static readonly String[] Helpers =
         {
             "<C0=008040><C1=0080C0><C2=C08080><C3=FF0000><C4=FFFFFF><C250=FF8000>",
-            "<A0=-4><A1=5><A2=-2><A5=-5><S0=-50><S1=50>",
+            "<A0=-4><A1=5><A2=-2><A3=-3><A4=-4><A5=-5><S0=-50><S1=50>",
         };
 
         public static readonly Entry OSD = new Entry
@@ -98,12 +98,13 @@ namespace PerformanceOverlay
                     {
                         new Entry
                         {
-                            Text = "<C1>BATT<C>",
+                            Text = "<C1>BAT<C>",
                             Nested =
                             {
-                                new Entry("<C4><A0>{BATT_%}<A><A1><S1> %<S><A>"),
-                                new Entry("<C4><A0>{BATT_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true },
-                                new Entry("C<C4><A0>{BATT_CHARGE_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true, Include = { OverlayMode.Detail } }
+                                new Entry("<C4><A3>{BATT_%}<A><A1><S1> %<S><A>"),
+                                new Entry("<C4><A4>{BATT_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true },
+                                new Entry("<C4><A3>{BATT_MIN}<A><A1><S1> min<S><A>") { IgnoreMissing = true },
+                                new Entry("C<C4><A4>{BATT_CHARGE_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true, Include = { OverlayMode.Detail } }
                             }
                         },
                         new Entry
@@ -111,9 +112,9 @@ namespace PerformanceOverlay
                             Text = "<C1>GPU<C>",
                             Nested =
                             {
-                                new Entry("<C4><A0>{GPU_%}<A><A1><S1> %<S><A>"),
-                                new Entry("<C4><A0>{GPU_W}<A><A1><S1> W<S><A>"),
-                                new Entry("<C4><A0>{GPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true, Include = { OverlayMode.Detail } }
+                                new Entry("<C4><A3>{GPU_%}<A><A1><S1> %<S><A>"),
+                                new Entry("<C4><A4>{GPU_W}<A><A1><S1> W<S><A>"),
+                                new Entry("<C4><A4>{GPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true, Include = { OverlayMode.Detail } }
                             }
                         },
                         new Entry
@@ -121,9 +122,9 @@ namespace PerformanceOverlay
                             Text = "<C1>CPU<C>",
                             Nested =
                             {
-                                new Entry("<C4><A0>{CPU_%}<A><A1><S1> %<S><A>"),
-                                new Entry("<C4><A0>{CPU_W}<A><A1><S1> W<S><A>"),
-                                new Entry("<C4><A0>{CPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true, Include = { OverlayMode.Detail } }
+                                new Entry("<C4><A3>{CPU_%}<A><A1><S1> %<S><A>"),
+                                new Entry("<C4><A4>{CPU_W}<A><A1><S1> W<S><A>"),
+                                new Entry("<C4><A4>{CPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true, Include = { OverlayMode.Detail } }
                             }
                         },
                         new Entry
@@ -140,7 +141,7 @@ namespace PerformanceOverlay
                         new Entry
                         {
                             Text = "<C2><APP><C>",
-                            Nested = { new Entry("<A0><C4><FR><C><A><A1><S1><C4> FPS<C><S><A>") }
+                            Nested = { new Entry("<C4><A4><FR><C><A><A1><S1><C4> FPS<C><S><A>") }
                         },
                         new Entry
                         {
@@ -155,16 +156,43 @@ namespace PerformanceOverlay
                 new Entry {
                     Nested =
                     {
-                        new Entry("<C1>CPU<C>   <A0>{CPU_%}<A><A1><S1> %<S><A> <A0>{CPU_T}<A><A1><S1> C<S><A>"),
-                        new Entry("<C1>GPU<C>   <A0>{GPU_%}<A><A1><S1> %<S><A> <A0>{GPU_T}<A><A1><S1> C<S><A>"),
-                        new Entry("<C1>RAM<C>   <A0>{MEM_MB}<A><A1><S1> MB<S> <A5>{GPU_MB}<A><A1><S1> MB<S><A>"),
-                        new Entry("<C1>FAN<C>   <A0>{FAN_RPM}<A><A1><S1> RPM<S><A>"),
-                        new Entry("<C2><APP><C>  <A0><C4><FR><C><A><A1><S1><C4> FPS<C><S><A> <A0><C4><FT><C><A><A1><S1><C4> ms<C><S><A>"),
-                        new Entry("<C1>BAT<C>   ") {
+                        new Entry("<C1>CPU<C>\t  ")
+                        {
                             Nested = {
-                                new Entry("<A0>{BATT_%}<A><A1><S1> %<S><A>"),
-                                new Entry(" <A0>{BATT_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true },
-                                new Entry("C<A0>{BATT_CHARGE_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true }
+                                new Entry("<A5>{CPU_%}<A><A1><S1> %<S><A>"),
+                                new Entry("<A5>{CPU_W}<A><A1><S1> W<S>"),
+                                new Entry("<A5>{MEM_MB}<A><A1><S1> MB<S>"),
+                                new Entry("<A5>{CPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true },
+                            }
+                        },
+                        new Entry("<C1>GPU<C>\t  ")
+                        {
+                            Nested = {
+                                new Entry("<A5>{GPU_%}<A><A1><S1> %<S><A>"),
+                                new Entry("<A5>{GPU_W}<A><A1><S1> W<S><A>"),
+                                new Entry("<A5>{GPU_MB}<A><A1><S1> MB<S><A>"),
+                                new Entry("<A5>{GPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true },
+                            }
+                        },
+                        new Entry("<C1>FAN<C>\t  ")
+                        {
+                            Nested = {
+                                new Entry("<A5>{FAN_RPM}<A><A1><S1> RPM<S><A>"),
+                            }
+                        },
+                        new Entry("<C2><APP><C>\t  ")
+                        {
+                            Nested = {
+                                new Entry("<A5><C4><FR><C><A><A1><S1><C4> FPS<C><S><A>"),
+                                new Entry("<A5><C4><FT><C><A><A1><S1><C4> ms<C><S><A>"),
+                            }
+                        },
+                        new Entry("<C1>BAT<C>\t  ") {
+                            Nested = {
+                                new Entry("<A5>{BATT_%}<A><A1><S1> %<S><A>"),
+                                new Entry("<A5>{BATT_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true },
+                                new Entry("<A5>{BATT_MIN}<A><A1><S1> min<S><A>") { IgnoreMissing = true },
+                                new Entry("<A5>C{BATT_CHARGE_W}<A><A1><S1> W<S><A>") { IgnoreMissing = true }
                             }
                         },
                         new Entry("<C2><S1>Frametime<S>"),

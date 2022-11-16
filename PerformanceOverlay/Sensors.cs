@@ -216,6 +216,16 @@ namespace PerformanceOverlay
                 }
             },
             {
+                "BATT_MIN", new HardwareSensor()
+                {
+                    HardwareType = HardwareType.Battery,
+                    SensorType = SensorType.TimeSpan,
+                    SensorName = "Remaining Time (Estimated)",
+                    Format = "F0",
+                    Multiplier = 1.0f/60.0f
+                }
+            },
+            {
                 "BATT_W", new HardwareSensor()
                 {
                     HardwareType = HardwareType.Battery,
