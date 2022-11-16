@@ -90,7 +90,7 @@ namespace PerformanceOverlay
         {
             Nested = {
                 // Simple just FPS
-                new Entry("<C4><FR><C><A><A1><S1><C4> FPS") { Include = { OverlayMode.FPS } },
+                new Entry("<C4><FR><C><A><A1><S1><C4> FPS<C><S><A>") { Include = { OverlayMode.FPS } },
 
                 // Minimal and Detail
                 new Entry {
