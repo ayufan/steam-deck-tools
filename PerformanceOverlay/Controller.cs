@@ -204,9 +204,8 @@ namespace PerformanceOverlay
             try
             {
                 // recreate OSD if not index 0
-                if (osd != null && osd.OSDIndex() != 0)
+                if (OSDHelpers.OSDIndex("PerformanceOverlay") != 0)
                     osdClose();
-
                 if (osd == null)
                     osd = new OSD("PerformanceOverlay");
 

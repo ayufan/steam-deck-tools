@@ -266,8 +266,8 @@ namespace PowerControl
 
             try
             {
-                // recreate OSD if not index 0
-                if (osd != null && osd.OSDIndex() == 0)
+                // recreate OSD if index 0
+                if (OSDHelpers.OSDIndex("Power Control") == 0 && OSD.GetOSDCount() > 1)
                     osdClose();
                 if (osd == null)
                     osd = new OSD("Power Control");
