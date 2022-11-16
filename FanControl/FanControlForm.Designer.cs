@@ -35,7 +35,10 @@
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.fanModeSelectNotifyMenu = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripSeparatorEndOfModes = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItemStartupOnBootContext = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemAlwaysOnTopContext = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -43,6 +46,7 @@
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemStartupOnBoot = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemAlwaysOnTop = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertyGridUpdateTimer = new System.Windows.Forms.Timer(this.components);
@@ -69,56 +73,74 @@
             this.notifyIcon.ContextMenuStrip = this.contextMenu;
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "Steam Deck Fan Control";
-            this.notifyIcon.Visible = false;
             this.notifyIcon.DoubleClick += new System.EventHandler(this.formShow_Event);
             // 
             // contextMenu
             // 
-            this.contextMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem2,
             this.toolStripSeparator3,
-            this.fanModeSelectNotifyMenu,
+            this.toolStripSeparatorEndOfModes,
+            this.toolStripMenuItemStartupOnBootContext,
+            this.toolStripMenuItemAlwaysOnTopContext,
+            this.toolStripMenuItem3,
             this.toolStripSeparator1,
             this.toolStripMenuItem1});
             this.contextMenu.Name = "fanModeSelectMenu";
-            this.contextMenu.Size = new System.Drawing.Size(311, 87);
+            this.contextMenu.Size = new System.Drawing.Size(158, 132);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(310, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(157, 22);
             this.toolStripMenuItem2.Text = "&Show";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.formShow_Event);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(307, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(154, 6);
             // 
-            // fanModeSelectNotifyMenu
+            // toolStripSeparatorEndOfModes
             // 
-            this.fanModeSelectNotifyMenu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.fanModeSelectNotifyMenu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.fanModeSelectNotifyMenu.Name = "fanModeSelectNotifyMenu";
-            this.fanModeSelectNotifyMenu.Size = new System.Drawing.Size(250, 23);
-            this.fanModeSelectNotifyMenu.SelectedIndexChanged += new System.EventHandler(this.fanModeSelect_SelectedValueChanged);
+            this.toolStripSeparatorEndOfModes.Name = "toolStripSeparatorEndOfModes";
+            this.toolStripSeparatorEndOfModes.Size = new System.Drawing.Size(154, 6);
+            // 
+            // toolStripMenuItemStartupOnBootContext
+            // 
+            this.toolStripMenuItemStartupOnBootContext.Name = "toolStripMenuItemStartupOnBootContext";
+            this.toolStripMenuItemStartupOnBootContext.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemStartupOnBootContext.Text = "Startup on &Boot";
+            this.toolStripMenuItemStartupOnBootContext.Click += new System.EventHandler(this.toolStripMenuItemStartupOnBoot_Click);
+            // 
+            // toolStripMenuItemAlwaysOnTopContext
+            // 
+            this.toolStripMenuItemAlwaysOnTopContext.Name = "toolStripMenuItemAlwaysOnTopContext";
+            this.toolStripMenuItemAlwaysOnTopContext.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemAlwaysOnTopContext.Text = "&Always on Top";
+            this.toolStripMenuItemAlwaysOnTopContext.Click += new System.EventHandler(this.toolStripMenuItemAlwaysOnTop_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItem3.Text = "Help";
+            this.toolStripMenuItem3.Click += new System.EventHandler(this.help_DoubleClick);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(307, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(154, 6);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(310, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
             this.toolStripMenuItem1.Text = "&Exit";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.formClose_Event);
             // 
             // menuStrip1
             // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fanModeSelectMenu,
             this.controlToolStripMenuItem});
@@ -136,13 +158,14 @@
             this.fanModeSelectMenu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.fanModeSelectMenu.Name = "fanModeSelectMenu";
             this.fanModeSelectMenu.Size = new System.Drawing.Size(136, 23);
-            this.fanModeSelectMenu.SelectedIndexChanged += new System.EventHandler(this.fanModeSelect_SelectedValueChanged);
+            this.fanModeSelectMenu.SelectedIndexChanged += new System.EventHandler(this.fanModeSelectMenu_SelectedIndexChanged);
             // 
             // controlToolStripMenuItem
             // 
             this.controlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemStartupOnBoot,
             this.toolStripMenuItemAlwaysOnTop,
+            this.toolStripMenuItem4,
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.controlToolStripMenuItem.Name = "controlToolStripMenuItem";
@@ -162,6 +185,13 @@
             this.toolStripMenuItemAlwaysOnTop.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemAlwaysOnTop.Text = "&Always on Top";
             this.toolStripMenuItemAlwaysOnTop.Click += new System.EventHandler(this.toolStripMenuItemAlwaysOnTop_Click);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem4.Text = "Help";
+            this.toolStripMenuItem4.Click += new System.EventHandler(this.help_DoubleClick);
             // 
             // toolStripSeparator2
             // 
@@ -273,7 +303,6 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FanControlForm";
@@ -299,8 +328,7 @@
         private NotifyIcon notifyIcon;
         private ContextMenuStrip contextMenu;
         private MenuStrip menuStrip1;
-        private ToolStripComboBox fanModeSelectNotifyMenu;
-        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripSeparator toolStripSeparatorEndOfModes;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripComboBox fanModeSelectMenu;
         private ToolStripMenuItem controlToolStripMenuItem;
@@ -316,5 +344,10 @@
         private ToolStripMenuItem toolStripMenuItemAlwaysOnTop;
         private ToolStripMenuItem toolStripMenuItem2;
         private ToolStripSeparator toolStripSeparator3;
+        private ToolStripMenuItem toolStripMenuItemStartupOnBootContext;
+        private ToolStripMenuItem toolStripMenuItemAlwaysOnTopContext;
+        private ToolStripMenuItem toolStripMenuItem3;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem toolStripMenuItem4;
     }
 }

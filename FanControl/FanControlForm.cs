@@ -37,17 +37,23 @@ namespace FanControl
             notifyIcon.Text = Text;
             notifyIcon.Visible = true;
 
-            toolStripMenuItemAlwaysOnTop.Checked = TopMost = Properties.Settings.Default.AlwaysOnTop;
+            TopMost = Properties.Settings.Default.AlwaysOnTop;
+            toolStripMenuItemAlwaysOnTop.Checked = TopMost;
+            toolStripMenuItemAlwaysOnTopContext.Checked = TopMost;
+
             toolStripMenuItemStartupOnBoot.Visible = startupManager.IsAvailable;
             toolStripMenuItemStartupOnBoot.Checked = startupManager.Startup;
-
-            propertyGrid1.SelectedObject = fanControl;
-            propertyGrid1.ExpandAllGridItems();
+            toolStripMenuItemStartupOnBootContext.Visible = startupManager.IsAvailable;
+            toolStripMenuItemStartupOnBootContext.Checked = startupManager.Startup;
 
             foreach (var item in Enum.GetValues(typeof(FanMode)))
             {
+                var menuItem = new ToolStripMenuItem(item.ToString()) { Tag = item };
+                menuItem.Click += FanMode_Click;
+                int insertIndex = contextMenu.Items.IndexOf(toolStripSeparatorEndOfModes);
+                contextMenu.Items.Insert(insertIndex, menuItem);
+
                 fanModeSelectMenu.Items.Add(item);
-                fanModeSelectNotifyMenu.Items.Add(item);
             }
 
             try
@@ -59,6 +65,9 @@ namespace FanControl
             {
                 setFanMode(FanMode.Default);
             }
+
+            propertyGrid1.SelectedObject = fanControl;
+            propertyGrid1.ExpandAllGridItems();
 
             notifyIcon.ShowBalloonTip(3000, Text, "Fan Control Started", ToolTipIcon.Info);
 
@@ -83,17 +92,28 @@ namespace FanControl
         private void setFanMode(FanMode mode)
         {
             fanControl.SetMode(mode);
-            fanModeSelectMenu.SelectedItem = mode;
-            fanModeSelectNotifyMenu.SelectedItem = mode;
             Properties.Settings.Default["FanMode"] = mode.ToString();
             Properties.Settings.Default.Save();
+
+            foreach (ToolStripItem menuItem in contextMenu.Items)
+            {
+                if (menuItem is ToolStripMenuItem && menuItem.Tag is FanMode)
+                    ((ToolStripMenuItem)menuItem).Checked = ((FanMode)menuItem.Tag == mode);
+            }
+
+            fanModeSelectMenu.SelectedItem = mode;
         }
 
-        private void fanModeSelect_SelectedValueChanged(object sender, EventArgs e)
+        private void FanMode_Click(object? sender, EventArgs e)
         {
-            var comboBox = (ToolStripComboBox)sender;
-            var selectedMode = (FanMode)comboBox.SelectedItem;
-            setFanMode(selectedMode);
+            var menuItem = (ToolStripMenuItem)sender;
+            setFanMode((FanMode)menuItem.Tag);
+        }
+
+        private void fanModeSelectMenu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var menuItem = (ToolStripComboBox)sender;
+            setFanMode((FanMode)menuItem.SelectedItem);
         }
 
         private void FanControlForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -155,6 +175,7 @@ namespace FanControl
         {
             startupManager.Startup = !startupManager.Startup;
             toolStripMenuItemStartupOnBoot.Checked = startupManager.Startup;
+            toolStripMenuItemStartupOnBootContext.Checked = startupManager.Startup;
         }
 
         private void help_DoubleClick(object sender, EventArgs e)
@@ -164,8 +185,9 @@ namespace FanControl
 
         private void toolStripMenuItemAlwaysOnTop_Click(object sender, EventArgs e)
         {
-            toolStripMenuItemAlwaysOnTop.Checked = !toolStripMenuItemAlwaysOnTop.Checked;
-            TopMost = toolStripMenuItemAlwaysOnTop.Checked;
+            TopMost = !TopMost;
+            toolStripMenuItemAlwaysOnTop.Checked = TopMost;
+            toolStripMenuItemAlwaysOnTopContext.Checked = TopMost;
             Properties.Settings.Default.AlwaysOnTop = toolStripMenuItemAlwaysOnTop.Checked;
             Properties.Settings.Default.Save();
         }

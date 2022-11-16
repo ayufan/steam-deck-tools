@@ -12,6 +12,8 @@ namespace FanControl
     {
         static void Main(string[] args)
         {
+            ApplicationConfiguration.Initialize();
+
             Application.Run(new FanControlForm());
         }
     }
