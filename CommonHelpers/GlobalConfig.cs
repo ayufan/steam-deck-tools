@@ -17,6 +17,7 @@ namespace CommonHelpers
     public enum OverlayMode : uint
     {
         FPS = 10032,
+        FPSWithBattery,
         Minimal,
         Detail,
         Full

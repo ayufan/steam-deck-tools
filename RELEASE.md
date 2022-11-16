@@ -6,5 +6,7 @@
 - Add `0` brightness
 - Support any battery model
 - Add battery remaining
+- Add FPSWithBattery overlay
+- Add FPS Limit using RTSS
 
 If you found it useful buy me [Ko-fi](https://ko-fi.com/ayufan).

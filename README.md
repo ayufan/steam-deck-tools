@@ -54,21 +54,23 @@ It currently registers two global hotkeys:
 - **F11** - enable performance overlay
 - **Shift+F11** - cycle to next performance overlay (and enable it)
 
-There are 4 modes of presentation:
+There are 5 modes of presentation:
 
 ### 2.1. FPS
 
 <img src="images/perf_overlay_fps.png" width="600"/>
 
-### 2.2. Minimal
+### 2.2. FPS with Battery
+
+### 2.3. Minimal
 
 <img src="images/perf_overlay_min.png" width="600"/>
 
-### 2.3. Detail
+### 2.4. Detail
 
 <img src="images/perf_overlay_detail.png" width="600"/>
 
-### 2.4. Full
+### 2.5. Full
 
 <img src="images/perf_overlay_full.png" height="100"/>
 
@@ -84,7 +86,10 @@ There are currently 4 configurable settings:
 - Volume
 - Brightness
 - Refresh Rate
+- FPS Limit (requires RTSS)
 - TDP
+- OSD / OSDMode (requires PerformanceOverlay running)
+- Fan (requires FanControl running)
 
 <img src="images/power_control.png" height="250"/>
 
