@@ -3,5 +3,6 @@
 - Allow to control OSD and Fan from Power Control
 - Improve flickering of OSD
 - Add Volume Up/Down controls (disable with `EnableVolumeControl` in `PowerControl.dll.config`)
+- Add `0` brightness
 
 If you found it useful buy me [Ko-fi](https://ko-fi.com/ayufan).
