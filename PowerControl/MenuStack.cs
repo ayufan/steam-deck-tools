@@ -1,4 +1,5 @@
 ﻿using CommonHelpers;
+using PowerControl.External;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -63,7 +64,56 @@ namespace PowerControl
                     ApplyValue = delegate(object selected)
                     {
                         Helpers.PhysicalMonitorBrightnessController.SetRefreshRate((int)selected);
+                        Root["FPS Limit"].Update(); // force refresh FPS limit
                         return Helpers.PhysicalMonitorBrightnessController.GetRefreshRate();
+                    }
+                },
+                new Menu.MenuItemWithOptions()
+                {
+                    Name = "FPS Limit",
+                    ApplyDelay = 500,
+                    OptionsValues = delegate()
+                    {
+                        var refreshRate = Helpers.PhysicalMonitorBrightnessController.GetRefreshRate();
+                        return new object[]
+                        {
+                            "Off", refreshRate, refreshRate / 2, refreshRate / 4
+                        };
+                    },
+                    CurrentValue = delegate()
+                    {
+                        try
+                        {
+                            RTSS.LoadProfile();
+                            if (RTSS.GetProfileProperty("FramerateLimit", out int framerate))
+                                return (framerate == 0) ? "Off" : framerate;
+                        }
+                        catch
+                        {
+                        }
+                        return null;
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        try
+                        {
+                            int framerate = 0;
+                            if (selected != null && selected.ToString() != "Off")
+                                framerate = (int)selected;
+
+                            RTSS.LoadProfile();
+                            if (!RTSS.SetProfileProperty("FramerateLimit", framerate))
+                                return null;
+                            if (!RTSS.GetProfileProperty("FramerateLimit", out framerate))
+                                return null;
+                            RTSS.SaveProfile();
+                            RTSS.UpdateProfiles();
+                            return (framerate == 0) ? "Off" : framerate;
+                        }
+                        catch
+                        {
+                        }
+                        return null;
                     }
                 },
                 new Menu.MenuItemWithOptions()
