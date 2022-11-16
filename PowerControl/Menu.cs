@@ -157,8 +157,10 @@ namespace PowerControl
             {
                 if (ApplyValue != null)
                     ActiveOption = ApplyValue(SelectedOption);
+                else
+                    ActiveOption = SelectedOption;
 
-                SelectedOption = ActiveOption;
+                SelectedOption = null;
 
                 onUpdateToolStrip();
             }
@@ -207,7 +209,7 @@ namespace PowerControl
 
             public override void SelectNext()
             {
-                int index = Options.IndexOf(SelectedOption);
+                int index = Options.IndexOf(SelectedOption ?? ActiveOption);
                 if (index >= 0)
                     SelectedOption = Options[Math.Min(index + 1, Options.Count - 1)];
                 else
@@ -218,7 +220,7 @@ namespace PowerControl
 
             public override void SelectPrev()
             {
-                int index = Options.IndexOf(SelectedOption);
+                int index = Options.IndexOf(SelectedOption ?? ActiveOption);
                 if (index >= 0)
                     SelectedOption = Options[Math.Max(index - 1, 0)];
                 else
