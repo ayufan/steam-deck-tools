@@ -233,7 +233,7 @@ namespace PowerControl
                 
                 if (option == null)
                     text = Color("?", Colors.White);
-                else if (Object.Equals(option, SelectedOption))
+                else if (Object.Equals(option, SelectedOption ?? ActiveOption))
                     text = Color(option.ToString(), Colors.Red);
                 else if(Object.Equals(option, ActiveOption))
                     text = Color(option.ToString(), Colors.White);
@@ -254,7 +254,7 @@ namespace PowerControl
 
                 output += optionText(SelectedOption ?? ActiveOption);
 
-                if (!Object.Equals(ActiveOption, SelectedOption))
+                if (SelectedOption != null && !Object.Equals(ActiveOption, SelectedOption))
                     output += " (active: " + optionText(ActiveOption) + ")";
 
                 return output;
