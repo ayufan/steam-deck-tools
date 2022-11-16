@@ -140,7 +140,9 @@ namespace PowerControl
                                 "--slow-limit=" + mW.ToString(),
                                 "--fast-limit=" + mW.ToString(),
                             },
-                            WindowStyle = ProcessWindowStyle.Hidden
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            UseShellExecute = false,
+                            CreateNoWindow = true
                         });
 
                         return selected;
