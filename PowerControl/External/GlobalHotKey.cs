@@ -14,7 +14,7 @@ namespace PowerControl.External
         /// <param name="aKeyGesture">e.g. Alt + Shift + Control + Win + S</param>
         /// <param name="aAction">Action to be called when hotkey is pressed</param>
         /// <returns>true, if registration succeeded, otherwise false</returns>
-        public static bool RegisterHotKey(string aKeyGestureString, Action aAction)
+        public static bool RegisterHotKey(string aKeyGestureString, Action aAction, bool repeat = false)
         {
             if (aKeyGestureString == "")
                 return false;
@@ -24,13 +24,13 @@ namespace PowerControl.External
             foreach (var gesture in aKeyGestureString.Split(","))
             {
                 KeyGesture aKeyGesture = (KeyGesture)c.ConvertFrom(gesture);
-                if (RegisterHotKey(aKeyGesture.Modifiers, aKeyGesture.Key, aAction))
+                if (RegisterHotKey(aKeyGesture.Modifiers, aKeyGesture.Key, aAction, repeat))
                     success = true;
             }
             return success;
         }
 
-        public static bool RegisterHotKey(ModifierKeys aModifier, Key aKey, Action aAction)
+        public static bool RegisterHotKey(ModifierKeys aModifier, Key aKey, Action aAction, bool repeat = false)
         {
             if (aModifier == ModifierKeys.None && false)
             {
@@ -44,7 +44,7 @@ namespace PowerControl.External
             System.Windows.Forms.Keys aVirtualKeyCode = (System.Windows.Forms.Keys)KeyInterop.VirtualKeyFromKey(aKey);
             currentID = currentID + 1;
             bool aRegistered = RegisterHotKey(window.Handle, currentID,
-                                        (uint)aModifier | MOD_NOREPEAT,
+                                        (uint)aModifier | (repeat ? 0 : MOD_NOREPEAT),
                                         (uint)aVirtualKeyCode);
 
             if (aRegistered)

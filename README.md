@@ -93,7 +93,9 @@ There are currently 4 configurable settings:
 It will only work in OSD mode when rendering graphics.
 The notification setting is always available.
 
-- SteamDeck Controller: press Quick Access (3 dots), and then together DPad Left, Rigth, Up, Down.
+- SteamDeck Controller: press and hold Quick Access (3 dots), and then DPad Left, Rigth, Up, Down.
+- Control Volume: use Volume Up and Down
+- Control Brightness: press and hold Quick Access (3 dots), and then Volume Up and Down
 - Keyboard: `Ctrl+Win+Numpad2` (Down), `Ctrl+Win+Numpad4` (Left), `Ctrl+Win+Numpad6` (Right), `Ctrl+Win+Numpad8` (Up)
 
 ### 3.2. SWICD configuration

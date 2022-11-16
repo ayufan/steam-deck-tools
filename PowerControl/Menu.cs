@@ -272,6 +272,19 @@ namespace PowerControl
             public delegate void VisibleChangedDelegate();
             public VisibleChangedDelegate? VisibleChanged;
 
+            public MenuItem this[String name]
+            {
+                get
+                {
+                    foreach(var item in Items)
+                    {
+                        if (item.Name == name)
+                            return item;
+                    }
+                    return null;
+                }
+            }
+
             public override void CreateMenu(ToolStripItemCollection collection)
             {
                 foreach(var item in Items)
@@ -374,6 +387,19 @@ namespace PowerControl
                 }
             }
 
+            public void SelectNext(String name)
+            {
+                var item = this[name];
+                if (item is null)
+                    return;
+
+                Show();
+                Selected = item;
+                item.SelectNext();
+                if (VisibleChanged != null)
+                    VisibleChanged();
+            }
+
             public override void SelectPrev()
             {
                 if (Show())
@@ -385,6 +411,19 @@ namespace PowerControl
                     if (VisibleChanged != null)
                         VisibleChanged();
                 }
+            }
+
+            public void SelectPrev(String name)
+            {
+                var item = this[name];
+                if (item is null)
+                    return;
+
+                Show();
+                Selected = item;
+                item.SelectPrev();
+                if (VisibleChanged != null)
+                    VisibleChanged();
             }
         }
     }

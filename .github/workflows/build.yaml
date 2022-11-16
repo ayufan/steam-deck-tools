@@ -53,3 +53,4 @@ jobs:
         artifacts: "*.zip"
         prerelease: true
         generateReleaseNotes: true
+        bodyFile: RELEASE.md

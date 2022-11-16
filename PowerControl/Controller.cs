@@ -97,26 +97,38 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuUpKey, () =>
             {
+                if (!isForeground())
+                    return;
                 rootMenu.Prev();
                 setDismissTimer();
-            });
+                dismissNeptuneInput();
+            }, true);
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuDownKey, () =>
             {
+                if (!isForeground())
+                    return;
                 rootMenu.Next();
                 setDismissTimer();
-            });
+                dismissNeptuneInput();
+            }, true);
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuLeftKey, () =>
             {
+                if (!isForeground())
+                    return;
                 rootMenu.SelectPrev();
                 setDismissTimer();
+                dismissNeptuneInput();
             });
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuRightKey, () =>
             {
+                if (!isForeground())
+                    return;
                 rootMenu.SelectNext();
                 setDismissTimer();
+                dismissNeptuneInput();
             });
 
             if (Settings.Default.EnableNeptuneController)
@@ -129,6 +141,29 @@ namespace PowerControl
                 neptuneDevice.OnInputReceived += NeptuneDevice_OnInputReceived;
                 neptuneDevice.OpenDevice();
                 neptuneDevice.BeginRead();
+            }
+
+            if (Settings.Default.EnableVolumeControls)
+            {
+                GlobalHotKey.RegisterHotKey("VolumeUp", () =>
+                {
+                    if ((neptuneDeviceState.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) != 0)
+                        rootMenu.SelectNext("Brightness");
+                    else
+                        rootMenu.SelectNext("Volume");
+                    setDismissTimer();
+                    dismissNeptuneInput();
+                });
+
+                GlobalHotKey.RegisterHotKey("VolumeDown", () =>
+                {
+                    if ((neptuneDeviceState.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) != 0)
+                        rootMenu.SelectPrev("Brightness");
+                    else
+                        rootMenu.SelectPrev("Volume");
+                    setDismissTimer();
+                    dismissNeptuneInput();
+                });
             }
         }
 
@@ -197,6 +232,11 @@ namespace PowerControl
                 Thread.Sleep(250);
         }
 
+        private void dismissNeptuneInput()
+        {
+            neptuneDeviceNextKey = DateTime.UtcNow.AddDays(1);
+        }
+
         private void NeptuneTimer_Tick(object? sender, EventArgs e)
         {
             var input = neptuneDeviceState;
@@ -210,6 +250,8 @@ namespace PowerControl
 
             if ((input.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) == 0 || !isForeground())
             {
+                // schedule next repeat far in the future
+                dismissNeptuneInput();
                 hideOSD();
                 return;
             }
@@ -251,6 +293,7 @@ namespace PowerControl
             if (!rootMenu.Visible)
                 return;
 
+            Trace.WriteLine("Hide OSD");
             rootMenu.Visible = false;
             osdDismissTimer.Stop();
             updateOSD();
@@ -270,7 +313,10 @@ namespace PowerControl
                 if (OSDHelpers.OSDIndex("Power Control") == 0 && OSD.GetOSDCount() > 1)
                     osdClose();
                 if (osd == null)
+                {
                     osd = new OSD("Power Control");
+                    Trace.WriteLine("Show OSD");
+                }
                 osd.Update(rootMenu.Render(null));
             }
             catch (SystemException)
@@ -294,7 +340,10 @@ namespace PowerControl
             try
             {
                 if (osd != null)
+                {
                     osd.Dispose();
+                    Trace.WriteLine("Close OSD");
+                }
                 osd = null;
             }
             catch (SystemException)

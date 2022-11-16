@@ -67,5 +67,14 @@ namespace PowerControl {
                 return ((bool)(this["EnableNeptuneController"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableVolumeControls {
+            get {
+                return ((bool)(this["EnableVolumeControls"]));
+            }
+        }
     }
 }
