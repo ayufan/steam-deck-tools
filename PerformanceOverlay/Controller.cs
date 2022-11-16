@@ -37,7 +37,8 @@ namespace PerformanceOverlay
         public Controller()
         {
             contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
-
+            
+            SharedData_Update();
             Instance.Open(TitleWithVersion, "Global\\PerformanceOverlay");
 
             showItem = new ToolStripMenuItem("&Show OSD");

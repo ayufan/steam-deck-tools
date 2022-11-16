@@ -29,6 +29,7 @@ namespace FanControl
         public FanControlForm()
         {
             InitializeComponent();
+            SharedData_Update();
 
             Text += " v" + Application.ProductVersion.ToString();
             Instance.Open(Text, "Global\\FanControlOnce");

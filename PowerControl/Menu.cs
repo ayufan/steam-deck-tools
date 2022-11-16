@@ -126,8 +126,6 @@ namespace PowerControl
 
                 if (ActiveOption == null)
                     ActiveOption = Options.First();
-                if (SelectedOption == null)
-                    SelectedOption = ActiveOption;
 
                 onUpdateToolStrip();
             }
@@ -171,7 +169,7 @@ namespace PowerControl
                     return;
 
                 foreach (ToolStripMenuItem item in toolStripItem.DropDownItems)
-                    item.Checked = (item.Tag.ToString() == SelectedOption.ToString());
+                    item.Checked = Object.Equals(item.Tag, SelectedOption ?? ActiveOption);
 
                 toolStripItem.Visible = Visible && Options.Count > 0;
             }
@@ -254,7 +252,7 @@ namespace PowerControl
                 else
                     output += Color(Name + ":", Colors.Blue).PadRight(30);
 
-                output += optionText(SelectedOption);
+                output += optionText(SelectedOption ?? ActiveOption);
 
                 if (!Object.Equals(ActiveOption, SelectedOption))
                     output += " (active: " + optionText(ActiveOption) + ")";
