@@ -207,75 +207,30 @@ namespace PerformanceOverlay
                 }
             },
             {
-                "BATT_%", new CompositeSensor()
+                "BATT_%", new HardwareSensor()
                 {
-                    Sensors =
-                    {
-                        new HardwareSensor()
-                        {
-                            HardwareType = HardwareType.Battery,
-                            HardwareName = "GETAC",
-                            SensorType = SensorType.Level,
-                            SensorName = "Charge Level",
-                            Format = "F0"
-                        },
-                        new HardwareSensor()
-                        {
-                            HardwareType = HardwareType.Battery,
-                            HardwareName = "MWL32b",
-                            SensorType = SensorType.Level,
-                            SensorName = "Charge Level",
-                            Format = "F0"
-                        }
-                    }
+                    HardwareType = HardwareType.Battery,
+                    SensorType = SensorType.Level,
+                    SensorName = "Charge Level",
+                    Format = "F0"
                 }
             },
             {
-                "BATT_W", new CompositeSensor()
+                "BATT_W", new HardwareSensor()
                 {
-                    Sensors =
-                    {
-                        new HardwareSensor()
-                        {
-                            HardwareType = HardwareType.Battery,
-                            HardwareName = "GETAC",
-                            SensorType = SensorType.Power,
-                            SensorName = "Discharge Rate",
-                            Format = "F1"
-                        },
-                        new HardwareSensor()
-                        {
-                            HardwareType = HardwareType.Battery,
-                            HardwareName = "MWL32b",
-                            SensorType = SensorType.Power,
-                            SensorName = "Discharge Rate",
-                            Format = "F1"
-                        }
-                    }
+                    HardwareType = HardwareType.Battery,
+                    SensorType = SensorType.Power,
+                    SensorName = "Discharge Rate",
+                    Format = "F1"
                 }
             },
             {
-                "BATT_CHARGE_W", new CompositeSensor()
+                "BATT_CHARGE_W", new HardwareSensor()
                 {
-                    Sensors =
-                    {
-                        new HardwareSensor()
-                        {
-                            HardwareType = HardwareType.Battery,
-                            HardwareName = "GETAC",
-                            SensorType = SensorType.Power,
-                            SensorName = "Charge Rate",
-                            Format = "F1"
-                        },
-                        new HardwareSensor()
-                        {
-                            HardwareType = HardwareType.Battery,
-                            HardwareName = "MWL32b",
-                            SensorType = SensorType.Power,
-                            SensorName = "Charge Rate",
-                            Format = "F1"
-                        }
-                    }
+                    HardwareType = HardwareType.Battery,
+                    SensorType = SensorType.Power,
+                    SensorName = "Charge Rate",
+                    Format = "F1"
                 }
             },
             {
