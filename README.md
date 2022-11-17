@@ -62,6 +62,8 @@ There are 5 modes of presentation:
 
 ### 2.2. FPS with Battery
 
+<img src="images/perf_overlay_fpsbat.png" width="600"/>
+
 ### 2.3. Minimal
 
 <img src="images/perf_overlay_min.png" width="600"/>
@@ -86,7 +88,7 @@ There are currently 4 configurable settings:
 - Volume
 - Brightness
 - Refresh Rate
-- FPS Limit (requires RTSS)
+- FPS Limit (requires: RTSS > Setup > Enable Framelimit)
 - TDP
 - OSD / OSDMode (requires PerformanceOverlay running)
 - Fan (requires FanControl running)
