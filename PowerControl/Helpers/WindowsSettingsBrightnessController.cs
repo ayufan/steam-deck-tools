@@ -23,9 +23,9 @@ namespace PowerControl.Helpers
             return -1;
         }
 
-        public static int Get10()
+        public static int Get(double roundValue = 10.0)
         {
-           return (int)(Math.Round(Get() / 10.0) * 10.0);
+           return (int)(Math.Round(Get() / roundValue) * roundValue);
         }
 
         public static void Set(int brightness)

@@ -42,9 +42,9 @@ namespace PowerControl.Helpers
             }
         }
 
-        public static int GetMasterVolume10()
+        public static int GetMasterVolume(double roundValue)
         {
-            return (int)(Math.Round(GetMasterVolume() / 10.0) * 10.0);
+            return (int)(Math.Round(GetMasterVolume() / roundValue) * roundValue);
         }
 
         /// <summary>

@@ -24,13 +24,13 @@ namespace PowerControl
 
                     CurrentValue = delegate()
                     {
-                        return Helpers.WindowsSettingsBrightnessController.Get10();
+                        return Helpers.WindowsSettingsBrightnessController.Get(5.0);
                     },
                     ApplyValue = delegate(object selected)
                     {
                         Helpers.WindowsSettingsBrightnessController.Set((int)selected);
 
-                        return Helpers.WindowsSettingsBrightnessController.Get10();
+                        return Helpers.WindowsSettingsBrightnessController.Get(5.0);
                     }
                 },
                 new Menu.MenuItemWithOptions()
@@ -39,14 +39,14 @@ namespace PowerControl
                     Options = { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 },
                     CurrentValue = delegate()
                     {
-                        return Helpers.AudioManager.GetMasterVolume10();
+                        return Helpers.AudioManager.GetMasterVolume(5.0);
                     },
                     ApplyValue = delegate(object selected)
                     {
                         Helpers.AudioManager.SetMasterVolumeMute(false);
                         Helpers.AudioManager.SetMasterVolume((int)selected);
 
-                        return Helpers.AudioManager.GetMasterVolume10();
+                        return Helpers.AudioManager.GetMasterVolume(5.0);
                     }
                 },
                 new Menu.MenuItemWithOptions()
