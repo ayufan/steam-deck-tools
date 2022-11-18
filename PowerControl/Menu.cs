@@ -141,6 +141,10 @@ namespace PowerControl
                         Options = result.ToList();
                         updateOptions();
                     }
+                    else
+                    {
+                        Visible = false;
+                    }
                 }
 
                 if (ActiveOption == null)

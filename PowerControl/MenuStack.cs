@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
+using static PowerControl.Helpers.PhysicalMonitorBrightnessController;
 
 namespace PowerControl
 {
@@ -47,6 +48,29 @@ namespace PowerControl
                         Helpers.AudioManager.SetMasterVolume((int)selected);
 
                         return Helpers.AudioManager.GetMasterVolume(5.0);
+                    }
+                },
+                new Menu.MenuItemWithOptions()
+                {
+                    Name = "Resolution",
+                    ApplyDelay = 1000,
+                    OptionsValues = delegate()
+                    {
+                        var resolutions = Helpers.PhysicalMonitorBrightnessController.GetAllResolutions();
+                        if (resolutions.Count() > 1)
+                            return resolutions.Select(item => (object)item).ToArray();
+                        return null;
+                    },
+                    CurrentValue = delegate()
+                    {
+                        return Helpers.PhysicalMonitorBrightnessController.GetResolution();
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        Helpers.PhysicalMonitorBrightnessController.SetResolution((DisplayResolution)selected);
+                        Root["Refresh Rate"].Update(); // force refresh Refresh Rate
+                        Root["FPS Limit"].Update(); // force refresh FPS limit
+                        return Helpers.PhysicalMonitorBrightnessController.GetResolution();
                     }
                 },
                 new Menu.MenuItemWithOptions()

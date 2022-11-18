@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -199,16 +200,107 @@ namespace PowerControl.Helpers
             UpdateMonitors();
         }
 
+        public struct DisplayResolution
+        {
+            public int Width { get; set; }
+            public int Height { get; set; }
+
+            public DisplayResolution() { Width = 0; Height = 0; }
+
+            public DisplayResolution(int width, int height) { Width = width; Height = height; }
+
+            public static bool operator ==(DisplayResolution sz1, DisplayResolution sz2) => sz1.Width == sz2.Width && sz1.Height == sz2.Height;
+
+            public static bool operator !=(DisplayResolution sz1, DisplayResolution sz2) => !(sz1 == sz2);
+
+            public override readonly bool Equals([NotNullWhen(true)] object? obj) => obj is DisplayResolution && Equals((DisplayResolution)obj);
+            public readonly bool Equals(DisplayResolution other) => this == other;
+
+            public override readonly int GetHashCode() => HashCode.Combine(Width, Height);
+
+            public override string ToString()
+            {
+                return String.Format("{0}x{1}", Width, Height);
+            }
+        }
+
         #region Get & Set
         public void Set(uint brightness)
         {
             Set(brightness, true);
         }
 
-        public static int[] GetRefreshRates()
+        public static DisplayResolution[] GetAllResolutions()
+        {
+            HashSet<DisplayResolution> resolutions = new HashSet<DisplayResolution>();
+            DEVMODE current = new DEVMODE();
+
+            if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref current))
+                return new DisplayResolution[0];
+
+            DEVMODE dm = new DEVMODE();
+            for (int i = 0; EnumDisplaySettings(null, i, ref dm); i++)
+            {
+                if (!dm.dmFields.HasFlag(DM.PelsWidth) || !dm.dmFields.HasFlag(DM.PelsHeight))
+                    continue;
+                resolutions.Add(new DisplayResolution(dm.dmPelsWidth, dm.dmPelsHeight));
+            }
+
+            return resolutions.ToArray();
+        }
+
+        public static DisplayResolution? GetResolution()
+        {
+            DEVMODE dm = new DEVMODE();
+
+            if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref dm))
+                return null;
+
+            if (!dm.dmFields.HasFlag(DM.PelsWidth) || !dm.dmFields.HasFlag(DM.PelsHeight))
+                return null;
+
+            return new DisplayResolution(dm.dmPelsWidth, dm.dmPelsHeight);
+        }
+
+        public static bool SetResolution(DisplayResolution size)
+        {
+            DEVMODE dm = new DEVMODE();
+
+            if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref dm))
+                return false;
+
+            var refreshRates = GetRefreshRates(size);
+            if (refreshRates.Count() == 0)
+                return false;
+
+            dm.dmFields |= DM.PelsWidth | DM.PelsHeight | DM.DisplayFrequency;
+            dm.dmPelsWidth = size.Width;
+            dm.dmPelsHeight = size.Height;
+            dm.dmDisplayFrequency = refreshRates.Last();
+
+            var dispChange = ChangeDisplaySettingsEx(null, ref dm, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_NONE, IntPtr.Zero);
+
+            if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref dm))
+                return false;
+
+            Trace.WriteLine("DispChange: " + dispChange.ToString() + " Size:" + size.ToString() + 
+                " SetSize:" + new DisplayResolution(dm.dmPelsWidth, dm.dmPelsHeight).ToString());
+
+            if (dispChange == DISP_CHANGE.Successful)
+                return true;
+
+            return true;
+        }
+
+        public static int[] GetRefreshRates(DisplayResolution? size = null)
         {
             List<int> refreshRates = new List<int>();
             DEVMODE current = new DEVMODE();
+
+            if (size is null)
+                size = GetResolution();
+            if (size is null)
+                return new int[0];
 
             if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref current))
                 return new int[0];
@@ -216,10 +308,12 @@ namespace PowerControl.Helpers
             DEVMODE dm = new DEVMODE();
             for (int i = 0; EnumDisplaySettings(null, i, ref dm); i++)
             {
-                if (dm.dmPelsWidth != current.dmPelsWidth || dm.dmPelsHeight != current.dmPelsHeight || dm.dmBitsPerPel != current.dmBitsPerPel)
+                if (dm.dmPelsWidth != size?.Width || dm.dmPelsHeight != size?.Height || dm.dmBitsPerPel != current.dmBitsPerPel)
                     continue;
                 refreshRates.Add(dm.dmDisplayFrequency);
             }
+
+            refreshRates.Sort();
 
             return refreshRates.ToArray();
         }
@@ -237,6 +331,10 @@ namespace PowerControl.Helpers
         public static bool SetRefreshRate(int hz)
         {
             DEVMODE dm = new DEVMODE();
+
+            var allowedRefreshRates = GetRefreshRates();
+            if (!allowedRefreshRates.Contains(hz))
+                return false;
 
             if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref dm))
                 return false;
