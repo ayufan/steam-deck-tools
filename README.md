@@ -90,6 +90,7 @@ There are currently 4 configurable settings:
 - Refresh Rate
 - FPS Limit (requires: RTSS > Setup > Enable Framelimit)
 - TDP
+- SMT (Each core of AMD has 2 threads, this allows to enable/disable second threads)
 - OSD / OSDMode (requires PerformanceOverlay running)
 - Fan (requires FanControl running)
 

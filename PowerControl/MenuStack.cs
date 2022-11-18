@@ -1,5 +1,5 @@
 ﻿using CommonHelpers;
-using PowerControl.External;
+using PowerControl.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -157,6 +157,33 @@ namespace PowerControl
                     Options = { "Auto", 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600 },
                     ApplyDelay = 1000,
                     Visible = false
+                },
+                new Menu.MenuItemWithOptions()
+                {
+                    Name = "SMT",
+                    ApplyDelay = 500,
+                    Options = { "No", "Yes" },
+                    ResetValue = () => { return "Yes"; },
+                    CurrentValue = delegate()
+                    {
+                        if (!RTSS.IsOSDForeground(out var processId))
+                            return null;
+                        if (!ProcessorCores.HasSMTThreads())
+                            return null;
+
+                        return ProcessorCores.IsUsingSMT(processId.Value) ? "Yes" : "No";
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        if (!RTSS.IsOSDForeground(out var processId))
+                            return null;
+                        if (!ProcessorCores.HasSMTThreads())
+                            return null;
+
+                        ProcessorCores.SetProcessSMT(processId.Value, selected.ToString() == "Yes");
+
+                        return ProcessorCores.IsUsingSMT(processId.Value) ? "Yes" : "No";
+                    }
                 },
                 new Menu.MenuItemSeparator(),
                 new Menu.MenuItemWithOptions()

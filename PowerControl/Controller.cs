@@ -2,6 +2,7 @@
 using CommonHelpers.FromLibreHardwareMonitor;
 using Microsoft.VisualBasic.Logging;
 using PowerControl.External;
+using PowerControl.Helpers;
 using RTSSSharedMemoryNET;
 using System;
 using System.Collections.Generic;
@@ -97,7 +98,7 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuUpKey, () =>
             {
-                if (!isForeground())
+                if (!RTSS.IsOSDForeground())
                     return;
                 rootMenu.Prev();
                 setDismissTimer();
@@ -106,7 +107,7 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuDownKey, () =>
             {
-                if (!isForeground())
+                if (!RTSS.IsOSDForeground())
                     return;
                 rootMenu.Next();
                 setDismissTimer();
@@ -115,7 +116,7 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuLeftKey, () =>
             {
-                if (!isForeground())
+                if (!RTSS.IsOSDForeground())
                     return;
                 rootMenu.SelectPrev();
                 setDismissTimer();
@@ -124,7 +125,7 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuRightKey, () =>
             {
-                if (!isForeground())
+                if (!RTSS.IsOSDForeground())
                     return;
                 rootMenu.SelectNext();
                 setDismissTimer();
@@ -164,28 +165,6 @@ namespace PowerControl
                     setDismissTimer();
                     dismissNeptuneInput();
                 });
-            }
-        }
-
-        private bool isForeground()
-        {
-            try
-            {
-                var processId = Helpers.TopLevelWindow.GetTopLevelProcessId();
-                if (processId is null)
-                    return true;
-
-                foreach (var app in OSD.GetAppEntries(AppFlags.MASK))
-                {
-                    if (app.ProcessId == processId)
-                        return true;
-                }
-
-                return false;
-            }
-            catch
-            {
-                return true;
             }
         }
 
@@ -262,7 +241,7 @@ namespace PowerControl
                 return;
             }
 
-            if ((input.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) == 0 || !isForeground())
+            if ((input.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) == 0 || !RTSS.IsOSDForeground())
             {
                 // schedule next repeat far in the future
                 dismissNeptuneInput();

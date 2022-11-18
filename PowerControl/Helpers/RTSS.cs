@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RTSSSharedMemoryNET;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,21 +7,49 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PowerControl.External
+namespace PowerControl.Helpers
 {
     internal static class RTSS
     {
+        public static bool IsOSDForeground()
+        {
+            return IsOSDForeground(out _);
+        }
+
+        public static bool IsOSDForeground(out int? processId)
+        {
+            try
+            {
+                processId = (int?)Helpers.TopLevelWindow.GetTopLevelProcessId();
+                if (processId is null)
+                    return true;
+
+                foreach (var app in OSD.GetAppEntries(AppFlags.MASK))
+                {
+                    if (app.ProcessId == processId)
+                        return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                processId = null;
+                return true;
+            }
+        }
+
         public static bool GetProfileProperty<T>(string propertyName, out T value)
         {
             var bytes = new byte[Marshal.SizeOf<T>()];
             var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-            value = default(T);
+            value = default;
             try
             {
                 if (!GetProfileProperty(propertyName, handle.AddrOfPinnedObject(), (uint)bytes.Length))
                     return false;
 
-                value = (T)Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
+                value = Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
                 return true;
             }
             catch
