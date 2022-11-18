@@ -83,11 +83,12 @@ and provides an easily accessible controls.
 
 Uninstall MSI Afterburner and any other OSD software.
 
-There are currently 4 configurable settings:
+There are currently configurable settings:
 
 - Volume
 - Brightness
 - Refresh Rate
+- Resolution (requires enabling `EnableExperimentalFeatures` in `appconfig`)
 - FPS Limit (requires: RTSS > Setup > Enable Framelimit)
 - TDP
 - SMT (Each core of AMD has 2 threads, this allows to enable/disable second threads)

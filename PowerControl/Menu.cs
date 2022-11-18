@@ -147,7 +147,7 @@ namespace PowerControl
                     }
                 }
 
-                if (ActiveOption == null)
+                if (ActiveOption == null && Options.Count > 0)
                     ActiveOption = Options.First();
 
                 onUpdateToolStrip();

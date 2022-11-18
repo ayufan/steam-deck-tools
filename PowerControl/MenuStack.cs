@@ -54,6 +54,11 @@ namespace PowerControl
                 {
                     Name = "Resolution",
                     ApplyDelay = 1000,
+                    ResetValue = () => {
+                        if (!Settings.Default.EnableExperimentalFeatures)
+                            return null;
+                        return Helpers.PhysicalMonitorBrightnessController.GetAllResolutions().Last();
+                    },
                     OptionsValues = delegate()
                     {
                         var resolutions = Helpers.PhysicalMonitorBrightnessController.GetAllResolutions();
@@ -63,6 +68,8 @@ namespace PowerControl
                     },
                     CurrentValue = delegate()
                     {
+                        if (!Settings.Default.EnableExperimentalFeatures)
+                            return null;
                         return Helpers.PhysicalMonitorBrightnessController.GetResolution();
                     },
                     ApplyValue = delegate(object selected)

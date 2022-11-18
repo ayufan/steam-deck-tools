@@ -59,21 +59,39 @@ namespace PowerControl {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool EnableNeptuneController {
             get {
                 return ((bool)(this["EnableNeptuneController"]));
             }
+            set {
+                this["EnableNeptuneController"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool EnableVolumeControls {
             get {
                 return ((bool)(this["EnableVolumeControls"]));
+            }
+            set {
+                this["EnableVolumeControls"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableExperimentalFeatures {
+            get {
+                return ((bool)(this["EnableExperimentalFeatures"]));
+            }
+            set {
+                this["EnableExperimentalFeatures"] = value;
             }
         }
     }
