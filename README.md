@@ -76,7 +76,7 @@ There are 5 modes of presentation:
 
 <img src="images/perf_overlay_full.png" height="100"/>
 
-## 3. Power Control (use pre-release 0.3.x)
+## 3. Power Control
 
 This is a very simple application that requires [Rivatuner Statistics Server Download](https://www.rivatuner.org/)
 and provides an easily accessible controls.
