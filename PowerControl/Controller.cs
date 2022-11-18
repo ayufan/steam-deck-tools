@@ -248,6 +248,20 @@ namespace PowerControl
             else
                 return; // otherwise it did not yet trigger
 
+            // Reset sequence: 3 dots + L4|R4|L5|R5
+            if (input.buttons0 == (ushort)SDCButton0.BTN_L5 &&
+                input.buttons1 == (byte)SDCButton1.BTN_R5 &&
+                input.buttons2 == 0 &&
+                input.buttons3 == 0 &&
+                input.buttons4 == (byte)(SDCButton4.BTN_L4 | SDCButton4.BTN_R4) &&
+                input.buttons5 == (byte)SDCButton5.BTN_QUICK_ACCESS)
+            {
+                rootMenu.Show();
+                rootMenu.Reset();
+                notifyIcon.ShowBalloonTip(3000, TitleWithVersion, "Settings were reset to default.", ToolTipIcon.Info);
+                return;
+            }
+
             if ((input.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) == 0 || !isForeground())
             {
                 // schedule next repeat far in the future

@@ -53,6 +53,7 @@ namespace PowerControl
                 {
                     Name = "Refresh Rate",
                     ApplyDelay = 1000,
+                    ResetValue = () => { return Helpers.PhysicalMonitorBrightnessController.GetRefreshRates().Max(); },
                     OptionsValues = delegate()
                     {
                         return Helpers.PhysicalMonitorBrightnessController.GetRefreshRates().Select(item => (object)item).ToArray();
@@ -72,6 +73,7 @@ namespace PowerControl
                 {
                     Name = "FPS Limit",
                     ApplyDelay = 500,
+                    ResetValue = () => { return "Off"; },
                     OptionsValues = delegate()
                     {
                         var refreshRate = Helpers.PhysicalMonitorBrightnessController.GetRefreshRate();
@@ -121,6 +123,7 @@ namespace PowerControl
                     Name = "TDP",
                     Options = { "Auto", "3W", "4W", "5W", "6W", "7W", "8W", "10W", "12W", "15W" },
                     ApplyDelay = 1000,
+                    ResetValue = () => { return "Auto"; },
                     ApplyValue = delegate(object selected)
                     {
                         int mW = 15000;

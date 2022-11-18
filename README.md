@@ -101,9 +101,13 @@ It will only work in OSD mode when rendering graphics.
 The notification setting is always available.
 
 - SteamDeck Controller: press and hold Quick Access (3 dots), and then DPad Left, Rigth, Up, Down.
+- Keyboard: `Ctrl+Win+Numpad2` (Down), `Ctrl+Win+Numpad4` (Left), `Ctrl+Win+Numpad6` (Right), `Ctrl+Win+Numpad8` (Up)
+
+Additional shortcuts:
+
 - Control Volume: use Volume Up and Down
 - Control Brightness: press and hold Quick Access (3 dots), and then Volume Up and Down
-- Keyboard: `Ctrl+Win+Numpad2` (Down), `Ctrl+Win+Numpad4` (Left), `Ctrl+Win+Numpad6` (Right), `Ctrl+Win+Numpad8` (Up)
+- Press `3 dots + L4 + R4 + L5 + R5` to reset (TDP, Refresh Rate, FPS limit) to default
 
 ### 3.2. SWICD configuration
 

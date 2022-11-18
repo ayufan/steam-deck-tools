@@ -41,6 +41,7 @@ namespace PowerControl
 
             public abstract void CreateMenu(ToolStripItemCollection collection);
             public abstract void Update();
+            public abstract void Reset();
 
             public abstract void SelectNext();
             public abstract void SelectPrev();
@@ -73,6 +74,10 @@ namespace PowerControl
             public override void Update()
             {
             }
+
+            public override void Reset()
+            {
+            }
         }
 
         public class MenuItemWithOptions : MenuItem
@@ -89,6 +94,7 @@ namespace PowerControl
             public CurrentValueDelegate CurrentValue { get; set; }
             public OptionsValueDelegate OptionsValues { get; set; }
             public ApplyValueDelegate ApplyValue { get; set; }
+            public CurrentValueDelegate ResetValue { get; set; }
 
             private System.Windows.Forms.Timer delayTimer;
             private ToolStripMenuItem toolStripItem;
@@ -96,6 +102,19 @@ namespace PowerControl
             public MenuItemWithOptions()
             {
                 this.Selectable = true;
+            }
+
+            public override void Reset()
+            {
+                if (ResetValue == null)
+                    return;
+
+                var resetOption = ResetValue();
+                if (resetOption == null || resetOption.Equals(ActiveOption))
+                    return;
+
+                SelectedOption = resetOption;
+                onApply();
             }
 
             public override void Update()
@@ -288,16 +307,21 @@ namespace PowerControl
             public override void CreateMenu(ToolStripItemCollection collection)
             {
                 foreach(var item in Items)
-                {
                     item.CreateMenu(collection);
-                }
             }
             public override void Update()
             {
                 foreach (var item in Items)
-                {
                     item.Update();
-                }
+            }
+
+            public override void Reset()
+            {
+                foreach (var item in Items)
+                    item.Reset();
+
+                if (VisibleChanged != null)
+                    VisibleChanged();
             }
 
             public override string Render(MenuItem parentSelected)
