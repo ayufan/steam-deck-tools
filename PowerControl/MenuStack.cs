@@ -80,7 +80,10 @@ namespace PowerControl
                     ResetValue = () => { return Helpers.PhysicalMonitorBrightnessController.GetRefreshRates().Max(); },
                     OptionsValues = delegate()
                     {
-                        return Helpers.PhysicalMonitorBrightnessController.GetRefreshRates().Select(item => (object)item).ToArray();
+                        var refreshRates = Helpers.PhysicalMonitorBrightnessController.GetRefreshRates();
+                        if (refreshRates.Count() > 1)
+                            return refreshRates.Select(item => (object)item).ToArray();
+                        return null;
                     },
                     CurrentValue = delegate()
                     {
