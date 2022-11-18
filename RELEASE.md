@@ -11,5 +11,6 @@
 - Fix ryzenadj creating console window
 - Swap icons of PerformanceOverlay and PowerControl
 - Improve FanControl UI
+- Make increments for Brightness and Volume in 5
 
 If you found it useful buy me [Ko-fi](https://ko-fi.com/ayufan).
