@@ -22,7 +22,7 @@ namespace PowerControl.Helpers
             {
                 processId = (int?)Helpers.TopLevelWindow.GetTopLevelProcessId();
                 if (processId is null)
-                    return true;
+                    return false;
 
                 foreach (var app in OSD.GetAppEntries(AppFlags.MASK))
                 {
