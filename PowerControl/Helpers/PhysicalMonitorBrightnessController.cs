@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -200,7 +201,7 @@ namespace PowerControl.Helpers
             UpdateMonitors();
         }
 
-        public struct DisplayResolution
+        public struct DisplayResolution : IComparable<DisplayResolution>
         {
             public int Width { get; set; }
             public int Height { get; set; }
@@ -217,6 +218,13 @@ namespace PowerControl.Helpers
             public readonly bool Equals(DisplayResolution other) => this == other;
 
             public override readonly int GetHashCode() => HashCode.Combine(Width, Height);
+
+            public int CompareTo(DisplayResolution other)
+            {
+                var index = Width.CompareTo(other.Width);
+                if (index == 0) index = Height.CompareTo(other.Height);
+                return index;
+            }
 
             public override string ToString()
             {
@@ -254,7 +262,7 @@ namespace PowerControl.Helpers
         {
             return FindAllDisplaySettings()
                 .Select((dm) => new DisplayResolution(dm.dmPelsWidth, dm.dmPelsHeight))
-                .ToHashSet()
+                .ToImmutableSortedSet()
                 .ToArray();
         }
 
