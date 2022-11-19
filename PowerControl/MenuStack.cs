@@ -22,7 +22,7 @@ namespace PowerControl
                 {
                     Name = "Brightness",
                     Options = { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 },
-
+                    CycleOptions = false,
                     CurrentValue = delegate()
                     {
                         return Helpers.WindowsSettingsBrightnessController.Get(5.0);
@@ -38,6 +38,7 @@ namespace PowerControl
                 {
                     Name = "Volume",
                     Options = { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 },
+                    CycleOptions = false,
                     CurrentValue = delegate()
                     {
                         return Helpers.AudioManager.GetMasterVolume(5.0);
@@ -113,7 +114,7 @@ namespace PowerControl
                         var refreshRate = Helpers.PhysicalMonitorBrightnessController.GetRefreshRate();
                         return new object[]
                         {
-                            "Off", refreshRate, refreshRate / 2, refreshRate / 4
+                            refreshRate / 4, refreshRate / 2, refreshRate, "Off"
                         };
                     },
                     CurrentValue = delegate()

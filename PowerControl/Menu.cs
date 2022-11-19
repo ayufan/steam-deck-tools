@@ -90,6 +90,7 @@ namespace PowerControl
             public Object SelectedOption { get; set; }
             public Object ActiveOption { get; set; }
             public int ApplyDelay { get; set; }
+            public bool CycleOptions { get; set; } = true;
 
             public CurrentValueDelegate CurrentValue { get; set; }
             public OptionsValueDelegate OptionsValues { get; set; }
@@ -230,26 +231,35 @@ namespace PowerControl
                 collection.Add(toolStripItem);
             }
 
+            private void SelectIndex(int index)
+            {
+                if (Options.Count == 0)
+                    return;
+
+                SelectedOption = Options[Math.Clamp(index, 0, Options.Count - 1)];
+                scheduleApply();
+            }
+
             public override void SelectNext()
             {
                 int index = Options.IndexOf(SelectedOption ?? ActiveOption);
-                if (index >= 0)
-                    SelectedOption = Options[Math.Min(index + 1, Options.Count - 1)];
+                if (index < 0)
+                    SelectIndex(0); // select first
+                else if (CycleOptions)
+                    SelectIndex((index + 1) % Options.Count);
                 else
-                    SelectedOption = Options.First();
-
-                scheduleApply();
+                    SelectIndex(index + 1);
             }
 
             public override void SelectPrev()
             {
                 int index = Options.IndexOf(SelectedOption ?? ActiveOption);
-                if (index >= 0)
-                    SelectedOption = Options[Math.Max(index - 1, 0)];
+                if (index < 0)
+                    SelectIndex(Options.Count - 1); // select last
+                else if (CycleOptions)
+                    SelectIndex((index - 1 + Options.Count) % Options.Count);
                 else
-                    SelectedOption = Options.First();
-
-                scheduleApply();
+                    SelectIndex(index - 1);
             }
 
             private String optionText(Object option)

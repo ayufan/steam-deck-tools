@@ -16,5 +16,6 @@
 - Allow to disable SMT (second threads of each physical cores)
 - Fix PowerControl crash on startup (introduced with SMT)
 - Allow to change resolution (Experimental feature)
+- PowerControl options are in cycle
 
 If you found it useful buy me [Ko-fi](https://ko-fi.com/ayufan).
