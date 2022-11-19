@@ -35,7 +35,7 @@ namespace PowerControl.Helpers
             catch
             {
                 processId = null;
-                return true;
+                return false;
             }
         }
 
