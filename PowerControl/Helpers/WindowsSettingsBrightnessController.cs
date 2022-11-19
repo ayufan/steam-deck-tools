@@ -11,16 +11,23 @@ namespace PowerControl.Helpers
     {
         public static int Get()
         {
-            using var mclass = new ManagementClass("WmiMonitorBrightness")
+            try
             {
-                Scope = new ManagementScope(@"\\.\root\wmi")
-            };
-            using var instances = mclass.GetInstances();
-            foreach (ManagementObject instance in instances)
-            {
-                return (byte)instance.GetPropertyValue("CurrentBrightness");
+                using var mclass = new ManagementClass("WmiMonitorBrightness")
+                {
+                    Scope = new ManagementScope(@"\\.\root\wmi")
+                };
+                using var instances = mclass.GetInstances();
+                foreach (ManagementObject instance in instances)
+                {
+                    return (byte)instance.GetPropertyValue("CurrentBrightness");
+                }
+                return -1;
             }
-            return -1;
+            catch
+            {
+                return -1;
+            }
         }
 
         public static int Get(double roundValue = 10.0)

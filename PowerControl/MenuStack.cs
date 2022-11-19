@@ -56,7 +56,7 @@ namespace PowerControl
                     Name = "Resolution",
                     ApplyDelay = 1000,
                     ResetValue = () => {
-                        if (!Settings.Default.EnableExperimentalFeatures)
+                        if (!AMD.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
                             return null;
                         return Helpers.PhysicalMonitorBrightnessController.GetAllResolutions().Last();
                     },
@@ -69,7 +69,7 @@ namespace PowerControl
                     },
                     CurrentValue = delegate()
                     {
-                        if (!Settings.Default.EnableExperimentalFeatures)
+                        if (!AMD.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
                             return null;
                         return Helpers.PhysicalMonitorBrightnessController.GetResolution();
                     },
