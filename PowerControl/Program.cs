@@ -20,7 +20,7 @@ namespace PowerControl
             {
                 Trace.WriteLine("WinRing0 initialized=" + WinRing0.InitializeOls().ToString());
 
-                VangoghGPU.Detect();
+                Instance.WithGlobalMutex(1000, () => VangoghGPU.Detect());
             }
 
             // To customize application configuration such as set high DPI settings or default font,

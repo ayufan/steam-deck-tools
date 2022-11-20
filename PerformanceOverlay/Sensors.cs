@@ -334,19 +334,23 @@ namespace PerformanceOverlay
 
         public void Update()
         {
-            var allSensors = new List<ISensor>();
-
-            foreach (IHardware hardware in Instance.HardwareComputer.Hardware)
+            Instance.WithGlobalMutex(200, () =>
             {
-                try
-                {
-                    hardware.Update();
-                }
-                catch (SystemException) { }
-                hardware.Accept(new SensorVisitor(sensor => allSensors.Add(sensor)));
-            }
+                var allSensors = new List<ISensor>();
 
-            this.AllHardwareSensors = allSensors;
+                foreach (IHardware hardware in Instance.HardwareComputer.Hardware)
+                {
+                    try
+                    {
+                        hardware.Update();
+                    }
+                    catch (SystemException) { }
+                    hardware.Accept(new SensorVisitor(sensor => allSensors.Add(sensor)));
+                }
+
+                this.AllHardwareSensors = allSensors;
+                return true;
+            });
         }
         
         public string? GetValue(String name)

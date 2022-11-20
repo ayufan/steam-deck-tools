@@ -160,14 +160,19 @@ namespace PowerControl
 
                         if (VangoghGPU.IsSupported)
                         {
-                            using (var sd = VangoghGPU.Open())
+                            return Instance.WithGlobalMutex<object>(200, () =>
                             {
-                                if (sd is null)
-                                    return null;
+                                using (var sd = VangoghGPU.Open())
+                                {
+                                    if (sd is null)
+                                        return null;
 
-                                sd.SlowTDP = mW;
-                                sd.FastTDP = mW;
-                            }
+                                    sd.SlowTDP = mW;
+                                    sd.FastTDP = mW;
+                                }
+
+                                return selected;
+                            });
                         }
                         else
                         {
@@ -185,9 +190,9 @@ namespace PowerControl
                                 UseShellExecute = false,
                                 CreateNoWindow = true
                             });
-                        }
 
-                        return selected;
+                            return selected;
+                        }
                     }
                 },
                 new Menu.MenuItemWithOptions()
@@ -200,20 +205,23 @@ namespace PowerControl
                     ResetValue = () => { return "Default"; },
                     ApplyValue = delegate(object selected)
                     {
-                        using (var sd = VangoghGPU.Open())
+                        return Instance.WithGlobalMutex<object>(200, () =>
                         {
-                            if (sd is null)
-                                return null;
-
-                            if (selected.ToString() == "Default")
+                            using (var sd = VangoghGPU.Open())
                             {
-                                sd.HardMinGfxClock = 200;
+                                if (sd is null)
+                                    return null;
+
+                                if (selected.ToString() == "Default")
+                                {
+                                    sd.HardMinGfxClock = 200;
+                                    return selected;
+                                }
+
+                                sd.HardMinGfxClock = uint.Parse(selected.ToString().Replace("MHz", ""));
                                 return selected;
                             }
-
-                            sd.HardMinGfxClock = uint.Parse(selected.ToString().Replace("MHz", ""));
-                            return selected;
-                        }
+                        });
                     }
                 },
                 new Menu.MenuItemWithOptions()
@@ -226,38 +234,41 @@ namespace PowerControl
                     ResetValue = () => { return "Default"; },
                     ApplyValue = delegate(object selected)
                     {
-                        using (var sd = VangoghGPU.Open())
+                        return Instance.WithGlobalMutex<object>(200, () =>
                         {
-                            if (sd is null)
-                                return null;
-
-                            switch(selected.ToString())
+                            using (var sd = VangoghGPU.Open())
                             {
-                                case "Default":
-                                    sd.MinCPUClock = 1400;
-                                    sd.MaxCPUClock = 3500;
-                                    break;
-
-                                case "Power-Save":
-                                    sd.MinCPUClock = 1400;
-                                    sd.MaxCPUClock = 1800;
-                                    break;
-
-                                case "Balanced":
-                                    sd.MinCPUClock = 2200;
-                                    sd.MaxCPUClock = 2800;
-                                    break;
-
-                                case "Max":
-                                    sd.MinCPUClock = 3000;
-                                    sd.MaxCPUClock = 3500;
-                                    break;
-
-                                default:
+                                if (sd is null)
                                     return null;
+
+                                switch(selected.ToString())
+                                {
+                                    case "Default":
+                                        sd.MinCPUClock = 1400;
+                                        sd.MaxCPUClock = 3500;
+                                        break;
+
+                                    case "Power-Save":
+                                        sd.MinCPUClock = 1400;
+                                        sd.MaxCPUClock = 1800;
+                                        break;
+
+                                    case "Balanced":
+                                        sd.MinCPUClock = 2200;
+                                        sd.MaxCPUClock = 2800;
+                                        break;
+
+                                    case "Max":
+                                        sd.MinCPUClock = 3000;
+                                        sd.MaxCPUClock = 3500;
+                                        break;
+
+                                    default:
+                                        return null;
+                                }
+                                return selected;
                             }
-                            return selected;
-                        }
+                        });
                     }
                 },
                 new Menu.MenuItemWithOptions()

@@ -6,6 +6,7 @@ using System.Security;
 using System.Security.Principal;
 using System.Security.AccessControl;
 using System.Windows.Forms;
+using System.Runtime.CompilerServices;
 
 namespace CommonHelpers
 {
@@ -21,9 +22,43 @@ namespace CommonHelpers
         };
 
         private static Mutex? runOnceMutex;
+        private static Mutex? globalLockMutex;
 
         private const String GLOBAL_MUTEX_NAME = "Global\\SteamDeckToolsCommonHelpers";
         private const int GLOBAL_DEFAULT_TIMEOUT = 5000;
+
+        public static Mutex? WaitGlobalMutex(int timeoutMs)
+        {
+            if (globalLockMutex == null)
+                globalLockMutex = TryCreateOrOpenExistingMutex(GLOBAL_MUTEX_NAME);
+
+            try
+            {
+                if (globalLockMutex.WaitOne(timeoutMs))
+                    return globalLockMutex;
+                return null;
+            }
+            catch(AbandonedMutexException)
+            {
+                return globalLockMutex;
+            }
+        }
+
+        public static T WithGlobalMutex<T>(int timeoutMs, Func<T> func)
+        {
+            var mutex = WaitGlobalMutex(timeoutMs);
+            if (mutex is null)
+                return default(T);
+
+            try
+            {
+                return func();
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
+        }
 
         public static void Open(String title, String? runOnce = null, int runOnceTimeout = 100)
         {
@@ -32,9 +67,11 @@ namespace CommonHelpers
                 RunOnce(title, runOnce, runOnceTimeout);
             }
 
-            using (var globalLock = TryCreateOrOpenExistingMutex(GLOBAL_MUTEX_NAME))
+            var mutex = WaitGlobalMutex(GLOBAL_DEFAULT_TIMEOUT);
+
+            try
             {
-                if (!globalLock.WaitOne(GLOBAL_DEFAULT_TIMEOUT))
+                if (mutex is null)
                 {
                     Fatal(title, "Failed to acquire global mutex.");
                 }
@@ -51,8 +88,10 @@ namespace CommonHelpers
                 }
 
                 HardwareComputer.Open();
-
-                globalLock.ReleaseMutex();
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
             }
         }
 

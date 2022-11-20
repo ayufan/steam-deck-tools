@@ -73,11 +73,27 @@ namespace FanControl
 
         public void Update()
         {
-            foreach (var sensor in allSensors.Values)
-                sensor.Reset();
+            var mutex = Instance.WaitGlobalMutex(200);
 
-            foreach (var hardware in Instance.HardwareComputer.Hardware)
-                visitHardware(hardware);
+            if (mutex is null)
+            {
+                // If we cannot acquire mutex slightly increase FAN to compensate just in case
+                Vlv0100.SetFanDesiredRPM((ushort)(Vlv0100.GetFanDesiredRPM() * 110 / 100));
+                return;
+            }
+
+            try
+            {
+                foreach (var sensor in allSensors.Values)
+                    sensor.Reset();
+
+                foreach (var hardware in Instance.HardwareComputer.Hardware)
+                    visitHardware(hardware);
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
 
             allSensors["Batt"].Update("VLV0100", Vlv0100.GetBattTemperature(), Mode);
 

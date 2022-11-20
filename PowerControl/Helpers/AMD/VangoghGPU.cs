@@ -51,21 +51,25 @@ namespace PowerControl.Helpers.GPU
                 return true;
             }
 
-            public VangoghGPU? Open()
+            public VangoghGPU? Open(bool validateSMU = true)
             {
                 var gpu = VangoghGPU.OpenMMIO(MMIOAddress, MMIOSize);
                 if (gpu == null)
                     return null;
 
-                // Check supported SMU version
-                var smuVersion = gpu.SMUVersion;
-                if (smuVersion != SMUVersion)
+                if (validateSMU)
                 {
-                    Log("SMU: {0:X8} => not supported", smuVersion);
-                    return null;
+                    // Check supported SMU version
+                    var smuVersion = gpu.SMUVersion;
+                    if (smuVersion != SMUVersion)
+                    {
+                        Log("SMU: {0:X8} => not supported", smuVersion);
+                        return null;
+                    }
+
+                    Log("SMU: {0:X8} => detected", smuVersion);
                 }
 
-                Log("SMU: {0:X8} => detected", smuVersion);
                 return gpu;
             }
         };
@@ -85,7 +89,7 @@ namespace PowerControl.Helpers.GPU
 
         public static VangoghGPU? Open()
         {
-            return DetectedDevice?.Open();
+            return DetectedDevice?.Open(false);
         }
 
         public static bool Detect()
