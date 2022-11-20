@@ -112,17 +112,9 @@ Additional shortcuts:
 
 ### 3.2. SWICD configuration
 
-Since the SWICD will mess-up with double inputs you need to configure the following
-
 - Set 3 dots to **NONE** in button mapping
 
     <img src="images/power_control_swicd_1.png" height="150"/>
-
-- Add **Button Actions** for all 4 controls: 3 dots + DPad Left/Right/Up/Down, **CLEAR** Keyboard Shortcut
-
-    <img src="images/power_control_swicd_2.png" height="150"/>
-
-    <img src="images/power_control_swicd_3.png" height="500"/>
 
 ## 4. Risks
 
