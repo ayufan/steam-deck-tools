@@ -5,16 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PowerControl.Helpers
+namespace PowerControl.Helpers.GPU
 {
-    internal class AMD
+    internal class AMDAdrenaline
     {
         // TODO: This CLSID is likely to change over time and be broken
         // pnputil /enum-devices /class Display
-        const String GPUDriverKey = "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\0000";
-        const String DriverDesc = "DriverDesc";
-        const String ExpectedDriverDesc = "AMD Custom GPU 0405";
-        const String GPUScaling = "GPUScaling00";
+        const string GPUDriverKey = "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\0000";
+        const string DriverDesc = "DriverDesc";
+        const string ExpectedDriverDesc = "AMD Custom GPU 0405";
+        const string GPUScaling = "GPUScaling00";
 
         internal static bool IsGPUScalingEnabled()
         {
@@ -25,7 +25,7 @@ namespace PowerControl.Helpers
                     return false;
 
                 var driverDesc = registry.GetValue(DriverDesc);
-                if (driverDesc is String && ((string)driverDesc) != ExpectedDriverDesc)
+                if (driverDesc is string && (string)driverDesc != ExpectedDriverDesc)
                     return false;
 
                 var scalingBytes = registry.GetValue(GPUScaling);

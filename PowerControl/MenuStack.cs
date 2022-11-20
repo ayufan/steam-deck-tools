@@ -1,5 +1,6 @@
 ﻿using CommonHelpers;
 using PowerControl.Helpers;
+using PowerControl.Helpers.GPU;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -56,7 +57,7 @@ namespace PowerControl
                     Name = "Resolution",
                     ApplyDelay = 1000,
                     ResetValue = () => {
-                        if (!AMD.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
+                        if (!AMDAdrenaline.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
                             return null;
                         return Helpers.PhysicalMonitorBrightnessController.GetAllResolutions().Last();
                     },
@@ -69,7 +70,7 @@ namespace PowerControl
                     },
                     CurrentValue = delegate()
                     {
-                        if (!AMD.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
+                        if (!AMDAdrenaline.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
                             return null;
                         return Helpers.PhysicalMonitorBrightnessController.GetResolution();
                     },
