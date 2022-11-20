@@ -25,13 +25,15 @@ namespace PerformanceOverlay
             public float Multiplier { get; set; } = 1.0f;
             public bool IgnoreZero { get; set; }
 
-            protected string? ConvertToString(float value)
+            protected string? ConvertToString(float? value)
             {
+                if (value is null)
+                    return null;
                 if (value == 0 && IgnoreZero)
                     return null;
 
                 value *= Multiplier;
-                return value.ToString(Format, CultureInfo.GetCultureInfo("en-US"));
+                return value.Value.ToString(Format, CultureInfo.GetCultureInfo("en-US"));
             }
         }
 
@@ -84,18 +86,56 @@ namespace PerformanceOverlay
             }
         }
 
-        public class CompositeSensor : Sensor
+        public class CompositeSensor : ValueSensor
         {
-            public IList<Sensor> Sensors { get; set; } = new List<Sensor>();
+            public enum AggregateType
+            {
+                First,
+                Min,
+                Max,
+                Avg
+            };
 
-            public override string? GetValue(Sensors sensors)
+            public IList<Sensor> Sensors { get; set; } = new List<Sensor>();
+            public AggregateType Aggregate { get; set; } = AggregateType.First;
+            public String? Format { get; set; }
+
+            private IEnumerable<string> GetValues(Sensors sensors)
             {
                 foreach (var sensor in Sensors)
                 {
                     var result = sensor.GetValue(sensors);
                     if (result is not null)
-                        return result;
+                        yield return result;
                 }
+            }
+
+            private IEnumerable<float> GetNumericValues(Sensors sensors)
+            {
+                return GetValues(sensors).Select((value) => float.Parse(value));
+            }
+
+            public override string? GetValue(Sensors sensors)
+            {
+                if (Aggregate == AggregateType.First)
+                    return GetValues(sensors).FirstOrDefault();
+
+                var numbers = GetNumericValues(sensors);
+                if (numbers.Count() == 0)
+                    return null;
+
+                switch (Aggregate)
+                {
+                    case AggregateType.Min:
+                        return ConvertToString(numbers.Min());
+
+                    case AggregateType.Max:
+                        return ConvertToString(numbers.Max());
+
+                    case AggregateType.Avg:
+                        return ConvertToString(numbers.Average());
+                }
+
                 return null;
             }
         }
@@ -131,6 +171,24 @@ namespace PerformanceOverlay
                     SensorName = "Core (Tctl/Tdie)",
                     Format = "F1",
                     IgnoreZero = true
+                }
+            },
+            {
+                "CPU_MHZ", new CompositeSensor()
+                {
+                    Format = "F0",
+                    Aggregate = CompositeSensor.AggregateType.Max,
+                    Sensors = Enumerable.Range(1, 4).Select((index) => {
+                        return new HardwareSensor()
+                        {
+                            HardwareType = HardwareType.Cpu,
+                            HardwareName = "AMD Custom APU 0405",
+                            SensorType = SensorType.Clock,
+                            SensorName = "Core #" + index.ToString(),
+                            Format = "F0",
+                            IgnoreZero = true
+                        };
+                    }).ToList<Sensor>()
                 }
             },
             {
@@ -193,6 +251,16 @@ namespace PerformanceOverlay
                     SensorType = SensorType.Power,
                     SensorName = "GPU SoC",
                     Format = "F1"
+                }
+            },
+            {
+                "GPU_MHZ", new HardwareSensor()
+                {
+                    HardwareType = HardwareType.GpuAmd,
+                    HardwareName = "AMD Custom GPU 0405",
+                    SensorType = SensorType.Clock,
+                    SensorName = "GPU Core",
+                    Format = "F0"
                 }
             },
             {

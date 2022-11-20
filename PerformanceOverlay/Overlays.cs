@@ -170,8 +170,14 @@ namespace PerformanceOverlay
                             Nested = {
                                 new Entry("<A5>{CPU_%}<A><A1><S1> %<S><A>"),
                                 new Entry("<A5>{CPU_W}<A><A1><S1> W<S>"),
-                                new Entry("<A5>{MEM_MB}<A><A1><S1> MB<S>"),
                                 new Entry("<A5>{CPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true },
+                            }
+                        },
+                        new Entry("\t  ")
+                        {
+                            Nested = {
+                                new Entry("<A5>{MEM_MB}<A><A1><S1> MB<S>"),
+                                new Entry("<A5>{CPU_MHZ}<A><A1><S1> MHz<S><A>")
                             }
                         },
                         new Entry("<C1>GPU<C>\t  ")
@@ -179,8 +185,14 @@ namespace PerformanceOverlay
                             Nested = {
                                 new Entry("<A5>{GPU_%}<A><A1><S1> %<S><A>"),
                                 new Entry("<A5>{GPU_W}<A><A1><S1> W<S><A>"),
-                                new Entry("<A5>{GPU_MB}<A><A1><S1> MB<S><A>"),
                                 new Entry("<A5>{GPU_T}<A><A1><S1> C<S><A>") { IgnoreMissing = true },
+                            }
+                        },
+                        new Entry("\t  ")
+                        {
+                            Nested = {
+                                new Entry("<A5>{GPU_MB}<A><A1><S1> MB<S><A>"),
+                                new Entry("<A5>{GPU_MHZ}<A><A1><S1> MHz<S><A>") { IgnoreMissing = true }
                             }
                         },
                         new Entry("<C1>FAN<C>\t  ")

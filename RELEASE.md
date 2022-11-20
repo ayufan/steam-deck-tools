@@ -7,5 +7,6 @@
 - Allow to disable SMT (second threads of each physical cores)
 - Show Full OSD if in PowerControl mode
 - Highly risky: Allow to change CPU and GPU frequency (enable `EnableExperimentalFeatures` in `PowerControl.dll.config`)
+- Show CPU/GPU frequency in Full overlay
 
 If you found it useful buy me [Ko-fi](https://ko-fi.com/ayufan).
