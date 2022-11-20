@@ -2,6 +2,9 @@
 
 This repository contains my own personal set of tools to help running Windows on Steam Deck.
 
+**This software is provided on best-effort basis and can break your SteamDeck.**
+To learn more go to [Risks](#4-risk).
+
 ## 1. Steam Deck Fan Control
 
 This is a very early and highly experimental fan controller for Windows build based
@@ -124,6 +127,28 @@ Since the SWICD will mess-up with double inputs you need to configure the follow
     <img src="images/power_control_swicd_2.png" height="150"/>
 
     <img src="images/power_control_swicd_3.png" height="500"/>
+
+## 4. Risk
+
+**This software is provided on best-effort basis and can break your SteamDeck.** It does a direct manipulation
+of kernel memory to control usage the EC (Embedded Controller) and setting desired fan RPM via VLV0100
+
+The Tools are written trying to check if you are truly using SteamDeck and compatible system.
+The applications try it's best to start only on **validated configurations** to avoid breaking your system.
+
+It was build based on knowledge gained in Steam Deck kernel patch and DSDT presented by bios.
+The memory addresses used are hardcoded and can be changed any moment by the Bios update.
+
+Fortunately quite amount of people are using it with a success and no problems observed.
+However, you should be aware of the consequences.
+
+## 5. Anti-Cheat and Antivirus software
+
+Since this project uses direct manipulation of kernel memory via `inpoutx64.dll` and `WinRing0x64.dll`
+it might trigger Antivirus and Anti-Cheat software.
+
+You might consider disabling all tools if this happens. Unfortunatelly there's no worakound for that
+unless someone gets access to driver signing certificate for Windows.
 
 ## Author
 
