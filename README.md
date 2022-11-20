@@ -159,4 +159,10 @@ unless someone gets access to driver signing certificate for Windows.
 
 ## Author
 
-Kamil Trzciński, 2022, License GPLv3
+Kamil Trzciński, 2022
+
+## License
+
+[Creative Commons Attribution-NonCommercial (CC-BY-NC)](://creativecommons.org/licenses/by-nc/4.0/).
+
+Free for personal use. Contact me in other cases (`ayufan@ayufan.eu`).
