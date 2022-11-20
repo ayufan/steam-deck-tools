@@ -188,17 +188,17 @@ namespace PowerControl.Helpers.GPU
             get { return getValue(Message.PPSMC_MSG_GetFclkFrequency); }
         }
 
-        const uint MIN_CPU_CLOCK = 800;
+        const uint MIN_CPU_CLOCK = 1400;
         const uint MAX_CPU_CLOCK = 3500;
 
         public uint MinCPUClock
         {
-            set { setValue(Message.PPSMC_MSG_SetSoftMinCclk, value, MIN_CPU_CLOCK, MAX_CPU_CLOCK); }
+            set { setCPUValue(Message.PPSMC_MSG_SetSoftMinCclk, value, MIN_CPU_CLOCK, MAX_CPU_CLOCK); }
         }
 
         public uint MaxCPUClock
         {
-            set { setValue(Message.PPSMC_MSG_SetSoftMaxCclk, value, MIN_CPU_CLOCK, MAX_CPU_CLOCK); }
+            set { setCPUValue(Message.PPSMC_MSG_SetSoftMaxCclk, value, MIN_CPU_CLOCK, MAX_CPU_CLOCK); }
         }
 
         const uint MIN_GFX_CLOCK = 200;
@@ -238,15 +238,24 @@ namespace PowerControl.Helpers.GPU
             }
         }
 
+        private void setCPUValue(Message msg, uint value, uint min = UInt32.MinValue, uint max = UInt32.MaxValue)
+        {
+            // TODO: Hardcode CPUs
+            for (uint i = 0; i < 4; i++)
+            {
+                setValue(msg, value | (i << 20), min, max, (1 << 20) - 1);
+            }
+        }
+
         private uint getValue(Message msg)
         {
             this.smu.SendMsg(msg, 0, out var value);
             return value;
         }
 
-        private void setValue(Message msg, uint value, uint min = UInt32.MinValue, uint max = UInt32.MaxValue)
+        private void setValue(Message msg, uint value, uint min = UInt32.MinValue, uint max = UInt32.MaxValue, uint clampMask = uint.MaxValue)
         {
-            this.smu.SendMsg(msg, Math.Clamp(value, min, max));
+            this.smu.SendMsg(msg, Math.Clamp(value & clampMask, min, max) | (value & ~clampMask));
         }
 
         private readonly Message[] ValuesGetters = new Message[]

@@ -192,12 +192,12 @@ namespace PowerControl
                 },
                 new Menu.MenuItemWithOptions()
                 {
-                    Name = "GPU Min",
-                    Options = { "200MHz", "400MHz", "800MHz", "1200MHz", "1600MHz" },
+                    Name = "GPU",
+                    Options = { "Default", "400MHz", "800MHz", "1200MHz", "1600MHz" },
                     ApplyDelay = 1000,
                     Visible = VangoghGPU.IsSupported,
                     ActiveOption = "?",
-                    ResetValue = () => { return "200MHz"; },
+                    ResetValue = () => { return "Default"; },
                     ApplyValue = delegate(object selected)
                     {
                         using (var sd = VangoghGPU.Open())
@@ -205,19 +205,25 @@ namespace PowerControl
                             if (sd is null)
                                 return null;
 
+                            if (selected.ToString() == "Default")
+                            {
+                                sd.HardMinGfxClock = 200;
+                                return selected;
+                            }
+
                             sd.HardMinGfxClock = uint.Parse(selected.ToString().Replace("MHz", ""));
-                            return sd.GfxClock.ToString() + "MHz";
+                            return selected;
                         }
                     }
                 },
                 new Menu.MenuItemWithOptions()
                 {
-                    Name = "CPU Max",
-                    Options = { "800MHz", "2000MHz", "3000MHz", "3500MHz" },
+                    Name = "CPU",
+                    Options = { "Default", "Power-Save", "Balanced", "Max" },
                     ApplyDelay = 1000,
                     ActiveOption = "?",
                     Visible = VangoghGPU.IsSupported,
-                    ResetValue = () => { return "3500MHz"; },
+                    ResetValue = () => { return "Default"; },
                     ApplyValue = delegate(object selected)
                     {
                         using (var sd = VangoghGPU.Open())
@@ -225,7 +231,31 @@ namespace PowerControl
                             if (sd is null)
                                 return null;
 
-                            sd.MaxCPUClock = uint.Parse(selected.ToString().Replace("MHz", ""));
+                            switch(selected.ToString())
+                            {
+                                case "Default":
+                                    sd.MinCPUClock = 1400;
+                                    sd.MaxCPUClock = 3500;
+                                    break;
+
+                                case "Power-Save":
+                                    sd.MinCPUClock = 1400;
+                                    sd.MaxCPUClock = 1800;
+                                    break;
+
+                                case "Balanced":
+                                    sd.MinCPUClock = 2200;
+                                    sd.MaxCPUClock = 2800;
+                                    break;
+
+                                case "Max":
+                                    sd.MinCPUClock = 3000;
+                                    sd.MaxCPUClock = 3500;
+                                    break;
+
+                                default:
+                                    return null;
+                            }
                             return selected;
                         }
                     }
