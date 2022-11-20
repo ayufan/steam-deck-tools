@@ -15,23 +15,26 @@ using Microsoft.Win32.TaskScheduler;
 using Action = Microsoft.Win32.TaskScheduler.Action;
 using Task = Microsoft.Win32.TaskScheduler.Task;
 
-namespace CommonHelpers.FromLibreHardwareMonitor
+namespace ExternalHelpers
 {
+    /// <summary>
+    /// Taken and adapter from: https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/blob/master/LibreHardwareMonitor/UI/StartupManager.cs
+    /// </summary>
     public class StartupManager
     {
         private const string RegistryPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
         private bool _startup;
 
-        public String NameOf { get; set; }
-        public String Description { get; set; }
+        public string NameOf { get; set; }
+        public string Description { get; set; }
 
-        public StartupManager(String name, String description = null)
+        public StartupManager(string name, string description = null)
         {
             NameOf = name;
             if (description != null)
                 Description = description;
             else
-                Description = String.Format("Starts {0} on Windows startup", name);
+                Description = string.Format("Starts {0} on Windows startup", name);
 
             if (Environment.OSVersion.Platform >= PlatformID.Unix)
             {

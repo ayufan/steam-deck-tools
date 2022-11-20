@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonHelpers\CommonHelpers.csproj" />
+    <ProjectReference Include="..\ExternalHelpers\ExternalHelpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

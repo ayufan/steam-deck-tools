@@ -59,11 +59,11 @@ namespace PowerControl
                     ResetValue = () => {
                         if (!AMDAdrenaline.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
                             return null;
-                        return Helpers.PhysicalMonitorBrightnessController.GetAllResolutions().Last();
+                        return DisplayResolutionController.GetAllResolutions().Last();
                     },
                     OptionsValues = delegate()
                     {
-                        var resolutions = Helpers.PhysicalMonitorBrightnessController.GetAllResolutions();
+                        var resolutions = DisplayResolutionController.GetAllResolutions();
                         if (resolutions.Count() > 1)
                             return resolutions.Select(item => (object)item).ToArray();
                         return null;
@@ -72,37 +72,37 @@ namespace PowerControl
                     {
                         if (!AMDAdrenaline.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
                             return null;
-                        return Helpers.PhysicalMonitorBrightnessController.GetResolution();
+                        return DisplayResolutionController.GetResolution();
                     },
                     ApplyValue = delegate(object selected)
                     {
-                        Helpers.PhysicalMonitorBrightnessController.SetResolution((DisplayResolution)selected);
+                        DisplayResolutionController.SetResolution((DisplayResolutionController.DisplayResolution)selected);
                         Root["Refresh Rate"].Update(); // force refresh Refresh Rate
                         Root["FPS Limit"].Update(); // force refresh FPS limit
-                        return Helpers.PhysicalMonitorBrightnessController.GetResolution();
+                        return DisplayResolutionController.GetResolution();
                     }
                 },
                 new Menu.MenuItemWithOptions()
                 {
                     Name = "Refresh Rate",
                     ApplyDelay = 1000,
-                    ResetValue = () => { return Helpers.PhysicalMonitorBrightnessController.GetRefreshRates().Max(); },
+                    ResetValue = () => { return DisplayResolutionController.GetRefreshRates().Max(); },
                     OptionsValues = delegate()
                     {
-                        var refreshRates = Helpers.PhysicalMonitorBrightnessController.GetRefreshRates();
+                        var refreshRates = DisplayResolutionController.GetRefreshRates();
                         if (refreshRates.Count() > 1)
                             return refreshRates.Select(item => (object)item).ToArray();
                         return null;
                     },
                     CurrentValue = delegate()
                     {
-                        return Helpers.PhysicalMonitorBrightnessController.GetRefreshRate();
+                        return DisplayResolutionController.GetRefreshRate();
                     },
                     ApplyValue = delegate(object selected)
                     {
-                        Helpers.PhysicalMonitorBrightnessController.SetRefreshRate((int)selected);
+                        DisplayResolutionController.SetRefreshRate((int)selected);
                         Root["FPS Limit"].Update(); // force refresh FPS limit
-                        return Helpers.PhysicalMonitorBrightnessController.GetRefreshRate();
+                        return DisplayResolutionController.GetRefreshRate();
                     }
                 },
                 new Menu.MenuItemWithOptions()
@@ -112,7 +112,7 @@ namespace PowerControl
                     ResetValue = () => { return "Off"; },
                     OptionsValues = delegate()
                     {
-                        var refreshRate = Helpers.PhysicalMonitorBrightnessController.GetRefreshRate();
+                        var refreshRate = DisplayResolutionController.GetRefreshRate();
                         return new object[]
                         {
                             refreshRate / 4, refreshRate / 2, refreshRate, "Off"

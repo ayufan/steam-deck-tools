@@ -14,6 +14,11 @@ namespace PowerControl.Helpers
     /// </summary>
     public static class AudioManager
     {
+        public static int GetMasterVolume(double roundValue)
+        {
+            return (int)(Math.Round(GetMasterVolume() / roundValue) * roundValue);
+        }
+
         #region Master Volume Manipulation
 
         /// <summary>
@@ -40,11 +45,6 @@ namespace PowerControl.Helpers
                 if (masterVol != null)
                     Marshal.ReleaseComObject(masterVol);
             }
-        }
-
-        public static int GetMasterVolume(double roundValue)
-        {
-            return (int)(Math.Round(GetMasterVolume() / roundValue) * roundValue);
         }
 
         /// <summary>

@@ -4,8 +4,11 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Input;
 
-namespace PowerControl.External
+namespace ExternalHelpers
 {
+    /// <summary>
+    /// Taken and adapted from: https://stackoverflow.com/a/65412682
+    /// </summary>
     public class GlobalHotKey : IDisposable
     {
         /// <summary>
@@ -30,7 +33,7 @@ namespace PowerControl.External
             return success;
         }
 
-        public static bool RegisterHotKey(ModifierKeys aModifier, Key aKey, Action aAction, bool repeat = false)
+        public static bool RegisterHotKey(ModifierKeys aModifier, Key aKey, Action aAction, bool repeat)
         {
             if (aModifier == ModifierKeys.None && false)
             {
@@ -44,7 +47,7 @@ namespace PowerControl.External
             System.Windows.Forms.Keys aVirtualKeyCode = (System.Windows.Forms.Keys)KeyInterop.VirtualKeyFromKey(aKey);
             currentID = currentID + 1;
             bool aRegistered = RegisterHotKey(window.Handle, currentID,
-                                        (uint)aModifier | (repeat ? 0 : MOD_NOREPEAT),
+                                        (uint)aModifier | (repeat ? MOD_NOREPEAT : 0),
                                         (uint)aVirtualKeyCode);
 
             if (aRegistered)

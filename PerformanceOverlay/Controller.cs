@@ -1,7 +1,6 @@
 ﻿using CommonHelpers;
-using CommonHelpers.FromLibreHardwareMonitor;
+using ExternalHelpers;
 using Microsoft.VisualBasic.Logging;
-using PerformanceOverlay.External;
 using RTSSSharedMemoryNET;
 using System;
 using System.Collections.Generic;

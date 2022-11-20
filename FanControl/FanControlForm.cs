@@ -1,5 +1,5 @@
 ﻿using CommonHelpers;
-using CommonHelpers.FromLibreHardwareMonitor;
+using ExternalHelpers;
 using FanControl.Properties;
 using System;
 using System.Collections.Generic;

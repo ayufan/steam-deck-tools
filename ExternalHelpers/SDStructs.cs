@@ -7,7 +7,10 @@ using System.Runtime.InteropServices;
 
 namespace PowerControl.External
 {
-    internal enum SDCPacketType
+    /// <summary>
+    /// Taken from: https://github.com/mKenfenheuer/neptune-hidapi.net/blob/main/Hid/HidEnums.cs
+    /// </summary>
+    public enum SDCPacketType
     {
         PT_INPUT = 0x01,
         PT_HOTPLUG = 0x03,
@@ -26,7 +29,7 @@ namespace PowerControl.External
         PT_RESET = 0x95,
         PT_GET_SERIAL = 0xAE,
     }
-    internal enum SDCPacketLength
+    public enum SDCPacketLength
     {
         PL_LED = 0x03,
         PL_OFF = 0x04,
@@ -35,14 +38,14 @@ namespace PowerControl.External
         PL_CONFIGURE_BT = 0x0f,
         PL_GET_SERIAL = 0x15,
     }
-    internal enum SDCConfigType
+    public enum SDCConfigType
     {
         CT_LED = 0x2d,
         CT_CONFIGURE = 0x32,
         CONFIGURE_BT = 0x18,
     }
 
-    internal enum SDCButton0
+    public enum SDCButton0
     {
         BTN_L5 = 0b1000000000000000,
         BTN_OPTIONS = 0b0100000000000000,
@@ -62,7 +65,7 @@ namespace PowerControl.External
         BTN_R2 = 0b0000000000000001,
     }
 
-    internal enum SDCButton1
+    public enum SDCButton1
     {
         BTN_LSTICK_PRESS = 0b01000000,
         BTN_LPAD_TOUCH = 0b00001000,
@@ -72,12 +75,12 @@ namespace PowerControl.External
         BTN_R5 = 0b00000001,
     }
 
-    internal enum SDCButton2
+    public enum SDCButton2
     {
         BTN_RSTICK_PRESS = 0b00000100,
     }
 
-    internal enum SDCButton4
+    public enum SDCButton4
     {
         BTN_LSTICK_TOUCH = 0b01000000,
         BTN_RSTICK_TOUCH = 0b10000000,
@@ -85,14 +88,14 @@ namespace PowerControl.External
         BTN_L4 = 0b00000010,
     }
 
-    internal enum SDCButton5
+    public enum SDCButton5
     {
         BTN_QUICK_ACCESS = 0b00000100,
     }
 
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SDCInput
+    public struct SDCInput
     {
         public byte ptype;          //0x00
         public byte _a1;            //0x01 
@@ -128,7 +131,7 @@ namespace PowerControl.External
         public short lpad_pressure; //0x38
         public short rpad_pressure; //0x3A
 
-        internal static SDCInput FromBuffer(byte[] bytes)
+        public static SDCInput FromBuffer(byte[] bytes)
         {
             var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             try
@@ -147,7 +150,7 @@ namespace PowerControl.External
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SDCHapticPacket
+    public struct SDCHapticPacket
     {
         public byte packet_type; // = 0x8f;
         public byte len; //  = 0x07;

@@ -7,8 +7,16 @@ using System.Threading.Tasks;
 
 namespace PowerControl.Helpers
 {
+    /// <summary>
+    /// Taken from: https://gist.github.com/maxkoshevoi/b8a1ad91f4d2a9fd3931168c14080694
+    /// </summary>
     public static class WindowsSettingsBrightnessController
     {
+        public static int Get(double roundValue = 10.0)
+        {
+            return (int)(Math.Round(Get() / roundValue) * roundValue);
+        }
+
         public static int Get()
         {
             try
@@ -28,11 +36,6 @@ namespace PowerControl.Helpers
             {
                 return -1;
             }
-        }
-
-        public static int Get(double roundValue = 10.0)
-        {
-           return (int)(Math.Round(Get() / roundValue) * roundValue);
         }
 
         public static void Set(int brightness)

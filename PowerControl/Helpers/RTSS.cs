@@ -20,7 +20,7 @@ namespace PowerControl.Helpers
         {
             try
             {
-                processId = (int?)Helpers.TopLevelWindow.GetTopLevelProcessId();
+                processId = (int?)GetTopLevelProcessId();
                 if (processId is null)
                     return false;
 
@@ -81,11 +81,17 @@ namespace PowerControl.Helpers
             }
         }
 
-        [DllImport("kernel32.dll", EntryPoint = "GetModuleHandleW", SetLastError = true)]
-        public static extern IntPtr GetModuleHandle(string moduleName);
+        public static uint EnableFlag(uint flag, bool status)
+        {
+            var current = SetFlags(~flag, status ? flag : 0);
+            UpdateSettings();
+            return current;
+        }
 
-        [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Ansi)]
-        static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string lpFileName);
+        public static void UpdateSettings()
+        {
+            PostMessage(WM_RTSS_UPDATESETTINGS, IntPtr.Zero, IntPtr.Zero);
+        }
 
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
@@ -118,6 +124,21 @@ namespace PowerControl.Helpers
         [DllImport("C:\\Program Files (x86)\\RivaTuner Statistics Server\\RTSSHooks64.dll", CharSet = CharSet.Ansi)]
         public static extern void UpdateProfiles();
 
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        private static uint? GetTopLevelProcessId()
+        {
+            var hWnd = GetForegroundWindow();
+            var result = GetWindowThreadProcessId(hWnd, out uint processId);
+            if (result != 0)
+                return processId;
+            return null;
+        }
+
         private static void PostMessage(uint Msg, IntPtr wParam, IntPtr lParam)
         {
             var hWnd = FindWindow(null, "RTSS");
@@ -126,18 +147,6 @@ namespace PowerControl.Helpers
 
             if (hWnd != IntPtr.Zero)
                 PostMessage(hWnd, Msg, wParam, lParam);
-        }
-
-        public static uint EnableFlag(uint flag, bool status)
-        {
-            var current = SetFlags(~flag, status ? flag : 0);
-            UpdateSettings();
-            return current;
-        }
-
-        public static void UpdateSettings()
-        {
-            PostMessage(WM_RTSS_UPDATESETTINGS, IntPtr.Zero, IntPtr.Zero);
         }
 
         public const uint WM_APP = 0x8000;

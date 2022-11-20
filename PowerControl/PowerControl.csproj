@@ -29,14 +29,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonHelpers\CommonHelpers.csproj" />
+    <ProjectReference Include="..\ExternalHelpers\ExternalHelpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="hidapi.net">
-      <HintPath>hidapi.net.dll</HintPath>
+      <HintPath>..\ExternalHelpers\hidapi.net.dll</HintPath>
     </Reference>
     <Reference Include="RTSSSharedMemoryNET">
-      <HintPath>..\CommonHelpers\RTSSSharedMemoryNET.dll</HintPath>
+      <HintPath>..\ExternalHelpers\RTSSSharedMemoryNET.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -61,12 +62,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="hidapi.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="hidapi.net.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Resources\RyzenAdj\inpoutx64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

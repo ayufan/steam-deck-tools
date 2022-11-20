@@ -1,5 +1,5 @@
 ﻿using CommonHelpers;
-using CommonHelpers.FromLibreHardwareMonitor;
+using ExternalHelpers;
 using Microsoft.VisualBasic.Logging;
 using PowerControl.External;
 using PowerControl.Helpers;
