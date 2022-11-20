@@ -64,5 +64,14 @@ namespace PerformanceOverlay {
                 return ((string)(this["CycleOSDShortcut"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableFullOnPowerControl {
+            get {
+                return ((bool)(this["EnableFullOnPowerControl"]));
+            }
+        }
     }
 }

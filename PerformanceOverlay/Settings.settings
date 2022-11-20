@@ -14,5 +14,8 @@
     <Setting Name="CycleOSDShortcut" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Shift+F11</Value>
     </Setting>
+    <Setting Name="EnableFullOnPowerControl" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

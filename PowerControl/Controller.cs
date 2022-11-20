@@ -35,6 +35,8 @@ namespace PowerControl
         DateTime? neptuneDeviceNextKey;
         System.Windows.Forms.Timer neptuneTimer;
 
+        SharedData<PowerControlSetting> sharedData = SharedData<PowerControlSetting>.CreateNew();
+
         public Controller()
         {
             Instance.RunOnce(TitleWithVersion, "Global\\PowerControl");
@@ -294,6 +296,11 @@ namespace PowerControl
 
         public void updateOSD()
         {
+            sharedData.SetValue(new PowerControlSetting()
+            {
+                Current = rootMenu.Visible ? PowerControlVisible.Yes : PowerControlVisible.No
+            });
+
             if (!rootMenu.Visible)
             {
                 osdClose();

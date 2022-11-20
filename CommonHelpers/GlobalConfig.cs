@@ -29,6 +29,12 @@ namespace CommonHelpers
         No
     }
 
+    public enum PowerControlVisible : uint
+    {
+        Yes = 371313,
+        No
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct FanModeSetting
     {
@@ -40,5 +46,11 @@ namespace CommonHelpers
     {
         public OverlayMode Current, Desired;
         public OverlayEnabled CurrentEnabled, DesiredEnabled;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct PowerControlSetting
+    {
+        public PowerControlVisible Current;
     }
 }

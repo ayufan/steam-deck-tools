@@ -199,7 +199,16 @@ namespace PerformanceOverlay
 
             sensors.Update();
 
-            var osdOverlay = Overlays.GetOSD(Settings.Default.OSDModeParsed, sensors);
+            var osdMode = Settings.Default.OSDModeParsed;
+
+            // If Power Control is visible use temporarily full OSD
+            if (Settings.Default.EnableFullOnPowerControl)
+            {
+                if (SharedData<PowerControlSetting>.GetExistingValue(out var value) && value.Current == PowerControlVisible.Yes)
+                    osdMode = OverlayMode.Full;
+            }
+
+            var osdOverlay = Overlays.GetOSD(osdMode, sensors);
 
             try
             {
