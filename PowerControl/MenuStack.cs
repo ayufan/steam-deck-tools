@@ -1,7 +1,9 @@
 using CommonHelpers;
 using PowerControl.Helpers;
+using PowerControl.Helpers.AMD;
 using PowerControl.Helpers.GPU;
 using System.Diagnostics;
+using static PowerControl.Helpers.AMD.DCE;
 
 namespace PowerControl
 {
@@ -45,12 +47,13 @@ namespace PowerControl
                         return Helpers.AudioManager.GetMasterVolume(5.0);
                     }
                 },
+                new Menu.MenuItemSeparator(),
                 new Menu.MenuItemWithOptions()
                 {
                     Name = "Resolution",
                     ApplyDelay = 1000,
                     ResetValue = () => {
-                        if (!AMDAdrenaline.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
+                        if (!GPUScaling.SafeResolutionChange && !Settings.Default.EnableExperimentalFeatures)
                             return null;
                         return DisplayResolutionController.GetAllResolutions().Last();
                     },
@@ -63,7 +66,7 @@ namespace PowerControl
                     },
                     CurrentValue = delegate()
                     {
-                        if (!AMDAdrenaline.IsGPUScalingEnabled() && !Settings.Default.EnableExperimentalFeatures)
+                        if (!GPUScaling.SafeResolutionChange && !Settings.Default.EnableExperimentalFeatures)
                             return null;
                         return DisplayResolutionController.GetResolution();
                     },
@@ -147,6 +150,61 @@ namespace PowerControl
                         return null;
                     }
                 },
+                new Menu.MenuItemWithOptions()
+                {
+                    Name = "GPU Scaling",
+                    ApplyDelay = 1000,
+                    Options = Enum.GetValues<GPUScaling.ScalingMode>().Cast<object>().Prepend("Off").ToArray(),
+                    CurrentValue = delegate()
+                    {
+                        if (!GPUScaling.IsSupported)
+                            return null;
+                        if (!GPUScaling.Enabled)
+                            return "Off";
+                        return GPUScaling.Mode;
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        if (!GPUScaling.IsSupported)
+                            return null;
+
+                        if (selected is GPUScaling.ScalingMode)
+                            GPUScaling.Mode = (GPUScaling.ScalingMode)selected;
+                        else
+                            GPUScaling.Enabled = false;
+
+                        // Since the RadeonSoftware will try to revert values
+                        RadeonSoftware.Kill();
+
+                        Root["Resolution"].Update();
+                        Root["Refresh Rate"].Update();
+                        Root["FPS Limit"].Update();
+
+                        if (!GPUScaling.Enabled)
+                            return "Off";
+                        return GPUScaling.Mode;
+                    }
+                },
+                new Menu.MenuItemWithOptions()
+                {
+                    Name = "Colors",
+                    ApplyDelay = 1000,
+                    Options = Enum.GetValues<DCE.Mode>().Cast<object>().ToList(),
+                    CurrentValue = delegate()
+                    {
+                        return DCE.Current;
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        if (DCE.Current is null)
+                            return null;
+
+                        DCE.Current = (DCE.Mode)selected;
+                        RadeonSoftware.Kill();
+                        return DCE.Current;
+                    }
+                },
+                new Menu.MenuItemSeparator(),
                 new Menu.MenuItemWithOptions()
                 {
                     Name = "TDP",

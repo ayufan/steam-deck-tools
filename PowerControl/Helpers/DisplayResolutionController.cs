@@ -56,12 +56,23 @@ namespace PowerControl.Helpers
             }
         }
 
-        private static DEVMODE? CurrentDisplaySettings()
+        internal static DEVMODE? CurrentDisplaySettings()
         {
             DEVMODE dm = new DEVMODE();
             if (EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref dm))
                 return dm;
             return null;
+        }
+
+        public static bool SetDisplaySettings(DEVMODE? best)
+        {
+            if (best == null)
+                return false;
+
+            DEVMODE dm = best.Value;
+
+            var dispChange = ChangeDisplaySettingsEx(null, ref dm, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_NONE, IntPtr.Zero);
+            return dispChange == DISP_CHANGE.Successful;
         }
 
         public static DisplayResolution[] GetAllResolutions()
@@ -174,7 +185,7 @@ namespace PowerControl.Helpers
         }
 
         [Flags()]
-        enum DM : int
+        internal enum DM : int
         {
             Orientation = 0x1,
             PaperSize = 0x2,
@@ -208,14 +219,14 @@ namespace PowerControl.Helpers
             DisplayFixedOutput = 0x20000000
         }
 
-        struct POINTL
+        internal struct POINTL
         {
             public Int32 x;
             public Int32 y;
         };
 
         [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Ansi)]
-        struct DEVMODE
+        internal struct DEVMODE
         {
             public const int CCHDEVICENAME = 32;
             public const int CCHFORMNAME = 32;
