@@ -143,7 +143,7 @@ after when such event occurs.
 
 ## 5. Anti-Cheat and Antivirus software
 
-Since this project uses direct manipulation of kernel memory via `inpoutx64.dll` and `WinRing0x64.dll`
+Since this project uses direct manipulation of kernel memory via `inpoutx64.dll`
 it might trigger Antivirus and Anti-Cheat software.
 
 You might consider disabling all tools if this happens. Unfortunatelly there's no worakound for that
