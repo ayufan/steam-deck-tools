@@ -9,5 +9,6 @@
 - Highly risky: Allow to change CPU and GPU frequency (enable `EnableExperimentalFeatures` in `PowerControl.dll.config`)
 - Show CPU/GPU frequency in Full overlay
 - Allow to control GPU Scaling and Display Color Correction
+- Do not use WinRing0 for GPU detection to control CPU/GPU frequency
 
 If you found it useful buy me [Ko-fi](https://ko-fi.com/ayufan).

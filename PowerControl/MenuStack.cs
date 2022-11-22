@@ -1,7 +1,6 @@
 using CommonHelpers;
 using PowerControl.Helpers;
 using PowerControl.Helpers.AMD;
-using PowerControl.Helpers.GPU;
 using System.Diagnostics;
 using static PowerControl.Helpers.AMD.DCE;
 

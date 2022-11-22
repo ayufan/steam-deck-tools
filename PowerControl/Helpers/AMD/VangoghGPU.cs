@@ -1,86 +1,18 @@
 ﻿using CommonHelpers;
 using System.Diagnostics;
+using Device = System.Tuple<string, ulong, ulong, uint>;
 
-namespace PowerControl.Helpers.GPU
+namespace PowerControl.Helpers.AMD
 {
     internal class VangoghGPU : IDisposable
     {
-        public struct SupportedDevice
-        {
-            public ushort VendorID, DeviceID;
-            public IntPtr MMIOAddress;
-            public uint MMIOSize;
-            public uint SMUVersion;
-
-            public SupportedDevice(ushort VendorID, ushort DeviceID, uint MMIOAddress, uint MMIOSize, uint SMUVersion)
-            {
-                this.VendorID = VendorID;
-                this.DeviceID = DeviceID;
-                this.MMIOAddress = new IntPtr(MMIOAddress);
-                this.MMIOSize = MMIOSize;
-                this.SMUVersion = SMUVersion;
-            }
-
-            private void Log(string format, params object?[]? arg)
-            {
-                Trace.WriteLine(string.Format("GPU: [{0:X4}:{1:X4}] ", VendorID, DeviceID) + string.Format(format, arg));
-            }
-
-            public bool Found()
-            {
-                // Strong validate device that it has our "memory layout"
-                var pciAddress = WinRing0.FindPciDeviceById(VendorID, DeviceID, 0);
-                if (pciAddress == WinRing0.NO_DEVICE)
-                {
-                    Log("PCI: not found");
-                    return false;
-                }
-
-                Log("PCI: [{0:X8}]", pciAddress);
-
-                var barAddr = WinRing0.ReadPciConfigDword(pciAddress, 0x24); // BAR6
-                if (MMIOAddress != new IntPtr(barAddr))
-                {
-                    Log("PCI: [{0:X8}] => BAR: {1:X8} vs {2:X8} => mismatch",
-                        pciAddress, MMIOAddress, barAddr);
-                    return false;
-                }
-
-                Log("PCI: [{0:X8}] => BAR: {1:X8} => OK",
-                    pciAddress, barAddr);
-                return true;
-            }
-
-            public VangoghGPU? Open(bool validateSMU = true)
-            {
-                var gpu = VangoghGPU.OpenMMIO(MMIOAddress, MMIOSize);
-                if (gpu == null)
-                    return null;
-
-                if (validateSMU)
-                {
-                    // Check supported SMU version
-                    var smuVersion = gpu.SMUVersion;
-                    if (smuVersion != SMUVersion)
-                    {
-                        Log("SMU: {0:X8} => not supported", smuVersion);
-                        return null;
-                    }
-
-                    Log("SMU: {0:X8} => detected", smuVersion);
-                }
-
-                return gpu;
-            }
-        };
-
-        public static readonly SupportedDevice[] SupportedDevices = new SupportedDevice[]
+        public static readonly Device[] SupportedDevices =
         {
             // SteamDeck
-            new SupportedDevice(0x1002, 0x163F, 0x80300000, 0x80380000 - 0x80300000, 0x43F3900)
+            new Device("AMD Custom GPU 0405", 0x80300000, 0x8037ffff, 0x43F3900)
         };
 
-        private static SupportedDevice? DetectedDevice;
+        private static Device? DetectedDevice;
 
         public static bool IsSupported
         {
@@ -89,26 +21,70 @@ namespace PowerControl.Helpers.GPU
 
         public static VangoghGPU? Open()
         {
-            return DetectedDevice?.Open(false);
+            if (DetectedDevice is null)
+                return null;
+
+            return Open(DetectedDevice);
+        }
+
+        public static VangoghGPU? Open(Device device)
+        {
+            if (device is null)
+                return null;
+
+            return OpenMMIO(new IntPtr((long)device.Item2), (uint)(device.Item3 - device.Item2 + 1));
         }
 
         public static bool Detect()
         {
+            var discoveredDevices = DeviceManager.GetDevices(DeviceManager.GUID_DISPLAY).ToDictionary((pnp) =>
+            {
+                return DeviceManager.GetDeviceDesc(pnp) ?? "";
+            });
+
             foreach (var device in SupportedDevices)
             {
-                if (!device.Found())
-                    continue;
+                var deviceName = device.Item1;
 
-                using (var gpu = device.Open())
+                if (!discoveredDevices.ContainsKey(deviceName))
                 {
-                    if (gpu is not null)
+                    TraceLine("GPU: {0}: Not matched.", deviceName);
+                    continue;
+                }
+
+                var devicePNP = discoveredDevices[deviceName];
+                var ranges = DeviceManager.GetDeviceMemResources(devicePNP);
+                if (ranges is null)
+                {
+                    TraceLine("GPU: {0}: {1}: No memory ranges", deviceName, devicePNP);
+                    continue;
+                }
+                if (!ranges.Contains(new Tuple<UIntPtr, UIntPtr>(new UIntPtr(device.Item2), new UIntPtr(device.Item3))))
+                {
+                    TraceLine("GPU: {0}: {1}: Memory range not found", deviceName, devicePNP);
+                    continue;
+                }
+
+                using (var gpu = Open(device))
+                {
+                    if (gpu is null)
                     {
-                        DetectedDevice = device;
-                        return true;
+                        TraceLine("GPU: {0}: {1}: Failed to open.", deviceName, devicePNP);
+                        continue;
                     }
+
+                    var smuVersion = gpu.SMUVersion;
+                    if (smuVersion != device.Item4)
+                    {
+                        TraceLine("GPU: {0}: {1}: SMU not supported: {2:X8}", deviceName, devicePNP, smuVersion);
+                        continue;
+                    }
+
+                    TraceLine("GPU: {0}: Matched!", deviceName);
+                    DetectedDevice = device;
+                    return true;
                 }
             }
-
             DetectedDevice = null;
             return false;
         }

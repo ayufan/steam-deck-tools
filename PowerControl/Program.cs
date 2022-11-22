@@ -1,6 +1,8 @@
 using CommonHelpers;
-using PowerControl.Helpers.GPU;
+using PowerControl.Helpers;
+using PowerControl.Helpers.AMD;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace PowerControl
 {
@@ -18,8 +20,6 @@ namespace PowerControl
 
             if (Settings.Default.EnableExperimentalFeatures)
             {
-                Trace.WriteLine("WinRing0 initialized=" + WinRing0.InitializeOls().ToString());
-
                 Instance.WithGlobalMutex(1000, () => VangoghGPU.Detect());
             }
 

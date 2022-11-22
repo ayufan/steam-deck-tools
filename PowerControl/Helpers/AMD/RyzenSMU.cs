@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PowerControl.Helpers.GPU
+namespace PowerControl.Helpers.AMD
 {
     public class RyzenSMU : IDisposable
     {
