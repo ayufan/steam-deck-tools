@@ -94,7 +94,7 @@ namespace PowerControl.Helpers.GPU
 
         public static bool Detect()
         {
-            foreach ( var device in SupportedDevices)
+            foreach (var device in SupportedDevices)
             {
                 if (!device.Found())
                     continue;
@@ -167,6 +167,16 @@ namespace PowerControl.Helpers.GPU
             get { return getValue(Message.PPSMC_MSG_GetDriverIfVersion); }
         }
 
+        public Features SmuFeatures
+        {
+            get
+            {
+                UInt64 low = getValue(Message.PPSMC_MSG_GetEnabledSmuFeatures, 0);
+                UInt64 high = getValue(Message.PPSMC_MSG_GetEnabledSmuFeatures, 1);
+                return (Features)((high << 32) | low);
+            }
+        }
+
         const uint MIN_TDP = 3000;
         const uint MAX_TDP = 15000;
 
@@ -229,7 +239,7 @@ namespace PowerControl.Helpers.GPU
             {
                 var dict = new Dictionary<string, uint>();
 
-                foreach(var key in ValuesGetters)
+                foreach (var key in ValuesGetters)
                 {
                     if (!this.smu.SendMsg(key, 0, out var value))
                         continue;
@@ -251,9 +261,9 @@ namespace PowerControl.Helpers.GPU
             }
         }
 
-        private uint getValue(Message msg)
+        private uint getValue(Message msg, UInt32 param = 0)
         {
-            this.smu.SendMsg(msg, 0, out var value);
+            this.smu.SendMsg(msg, param, out var value);
             return value;
         }
 
@@ -385,6 +395,72 @@ namespace PowerControl.Helpers.GPU
             PPSMC_MSG_GetSlowPPTLimit = 0x4C,
             PPSMC_Message_Count = 0x4D,
         }
+
+        [Flags]
+        public enum Features : UInt64
+        {
+            CCLK_DPM_BIT = 0,
+            FAN_CONTROLLER_BIT = 1,
+            DATA_CALCULATION_BIT = 2,
+            PPT_BIT = 3,
+            TDC_BIT = 4,
+            THERMAL_BIT = 5,
+            FIT_BIT = 6,
+            EDC_BIT = 7,
+            PLL_POWER_DOWN_BIT = 8,
+            ULV_BIT = 9,
+            VDDOFF_BIT = 10,
+            VCN_DPM_BIT = 11,
+            CSTATE_BOOST_BIT = 12,
+            FCLK_DPM_BIT = 13,
+            SOCCLK_DPM_BIT = 14,
+            MP0CLK_DPM_BIT = 15,
+            LCLK_DPM_BIT = 16,
+            SHUBCLK_DPM_BIT = 17,
+            DCFCLK_DPM_BIT = 18,
+            GFX_DPM_BIT = 19,
+            DS_GFXCLK_BIT = 20,
+            DS_SOCCLK_BIT = 21,
+            DS_LCLK_BIT = 22,
+            DS_DCFCLK_BIT = 23,
+            DS_SHUBCLK_BIT = 24,
+            GFX_TEMP_VMIN_BIT = 25,
+            S0I2_BIT = 26,
+            WHISPER_MODE_BIT = 27,
+            DS_FCLK_BIT = 28,
+            DS_SMNCLK_BIT = 29,
+            DS_MP1CLK_BIT = 30,
+            DS_MP0CLK_BIT = 31,
+            SMU_LOW_POWER_BIT = 32,
+            FUSE_PG_BIT = 33,
+            GFX_DEM_BIT = 34,
+            PSI_BIT = 35,
+            PROCHOT_BIT = 36,
+            CPUOFF_BIT = 37,
+            STAPM_BIT = 38,
+            S0I3_BIT = 39,
+            DF_CSTATES_BIT = 40,
+            PERF_LIMIT_BIT = 41,
+            CORE_DLDO_BIT = 42,
+            RSMU_LOW_POWER_BIT = 43,
+            SMN_LOW_POWER_BIT = 44,
+            THM_LOW_POWER_BIT = 45,
+            SMUIO_LOW_POWER_BIT = 46,
+            MP1_LOW_POWER_BIT = 47,
+            DS_VCN_BIT = 48,
+            CPPC_BIT = 49,
+            OS_CSTATES_BIT = 50,
+            ISP_DPM_BIT = 51,
+            A55_DPM_BIT = 52,
+            CVIP_DSP_DPM_BIT = 53,
+            MSMU_LOW_POWER_BIT = 54,
+            SOC_VOLTAGE_MON_BIT = 55,
+            ATHUB_PG_BIT = 56,
+            ECO_DEEPCSTATE_BIT = 57,
+            CC6_BIT = 58,
+            GFX_EDC_BIT = 59
+        }
+
         private static void TraceLine(string format, params object?[]? arg)
         {
             Trace.WriteLine(string.Format(format, arg));
