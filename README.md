@@ -43,7 +43,7 @@ Those are currently supported:
 
 ## 2. Performance Overlay
 
-This is a very simple application that requires [Rivatuner Statistics Server Download](https://www.rivatuner.org/)
+This is a very simple application that requires [Rivatuner Statistics Server Download](https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html))
 and provides asthetics of SteamOS Performance Overlay.
 
 Uninstall MSI Afterburner and any other OSD software.
