@@ -61,7 +61,7 @@ namespace FanControl
                 var fanMode = Enum.Parse(typeof(FanMode), Properties.Settings.Default.FanMode);
                 setFanMode((FanMode)fanMode);
             }
-            catch(System.ArgumentException)
+            catch (System.ArgumentException)
             {
                 setFanMode(FanMode.Default);
             }
@@ -73,18 +73,13 @@ namespace FanControl
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
         }
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-
-            Microsoft.Win32.SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
-        }
 
         private void SystemEvents_PowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
         {
             // Restore fan mode on resume
             if (e.Mode == Microsoft.Win32.PowerModes.Resume)
             {
+                Instance.HardwareComputer.Reset();
                 fanControl.SetMode(fanControl.Mode);
             }
         }

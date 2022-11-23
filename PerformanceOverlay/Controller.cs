@@ -36,7 +36,7 @@ namespace PerformanceOverlay
         public Controller()
         {
             contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
-            
+
             SharedData_Update();
             Instance.Open(TitleWithVersion, "Global\\PerformanceOverlay");
 
@@ -119,6 +119,16 @@ namespace PerformanceOverlay
                     updateContextItems(contextMenu);
                 });
             }
+
+            Microsoft.Win32.SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+        }
+
+        private void SystemEvents_PowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
+        {
+            if (e.Mode == Microsoft.Win32.PowerModes.Resume)
+            {
+                Instance.HardwareComputer.Reset();
+            }
         }
 
         private void updateContextItems(ContextMenuStrip contextMenu)
@@ -126,7 +136,7 @@ namespace PerformanceOverlay
             foreach (ToolStripItem item in contextMenu.Items)
             {
                 if (item.Tag is OverlayMode)
-                   ((ToolStripMenuItem)item).Checked = ((OverlayMode)item.Tag == Settings.Default.OSDModeParsed);
+                    ((ToolStripMenuItem)item).Checked = ((OverlayMode)item.Tag == Settings.Default.OSDModeParsed);
             }
 
             showItem.Checked = Settings.Default.ShowOSD;
@@ -224,7 +234,7 @@ namespace PerformanceOverlay
 
                 osd.Update(osdOverlay);
             }
-            catch(SystemException)
+            catch (SystemException)
             {
             }
         }

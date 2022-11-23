@@ -38,7 +38,7 @@ namespace CommonHelpers
                     return globalLockMutex;
                 return null;
             }
-            catch(AbandonedMutexException)
+            catch (AbandonedMutexException)
             {
                 return globalLockMutex;
             }
@@ -69,13 +69,13 @@ namespace CommonHelpers
 
             var mutex = WaitGlobalMutex(GLOBAL_DEFAULT_TIMEOUT);
 
+            if (mutex is null)
+            {
+                Fatal(title, "Failed to acquire global mutex.");
+            }
+
             try
             {
-                if (mutex is null)
-                {
-                    Fatal(title, "Failed to acquire global mutex.");
-                }
-
                 if (!Vlv0100.IsSupported())
                 {
                     String message = "";
