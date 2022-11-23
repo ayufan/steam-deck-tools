@@ -20,7 +20,12 @@ namespace PowerControl
 
             if (Settings.Default.EnableExperimentalFeatures)
             {
-                Instance.WithGlobalMutex(1000, () => VangoghGPU.Detect());
+                for (int i = 0; !VangoghGPU.IsSupported; i++)
+                {
+                    Instance.WithGlobalMutex(1000, () => VangoghGPU.Detect());
+                    if (VangoghGPU.IsSupported)
+                        Thread.Sleep(300);
+                }
             }
 
             // To customize application configuration such as set high DPI settings or default font,
