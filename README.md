@@ -77,7 +77,7 @@ There are 5 modes of presentation:
 
 ## 3. Power Control
 
-This is a very simple application that requires [Rivatuner Statistics Server Download](https://www.rivatuner.org/)
+This is a very simple application that requires [Rivatuner Statistics Server Download](https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html)
 and provides an easily accessible controls.
 
 Uninstall MSI Afterburner and any other OSD software.
