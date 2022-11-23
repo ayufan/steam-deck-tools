@@ -11,5 +11,6 @@
 - Allow to control GPU Scaling and Display Color Correction
 - Do not use WinRing0 for GPU detection to control CPU/GPU frequency
 - Reset `LibreHardware` on system resume to fix battery bug
+- Reset FPS limit if anything related to resolution changes
 
 If you found it useful buy me [Ko-fi](https://ko-fi.com/ayufan).

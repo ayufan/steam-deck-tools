@@ -72,8 +72,11 @@ namespace PowerControl
                     ApplyValue = delegate(object selected)
                     {
                         DisplayResolutionController.SetResolution((DisplayResolutionController.DisplayResolution)selected);
-                        Root["Refresh Rate"].Update(); // force refresh Refresh Rate
-                        Root["FPS Limit"].Update(); // force refresh FPS limit
+                        // force refresh Refresh Rate
+                        Root["Refresh Rate"].Update();
+                        // force reset and refresh of FPS limit
+                        Root["FPS Limit"].Reset();
+                        Root["FPS Limit"].Update();
                         return DisplayResolutionController.GetResolution();
                     }
                 },
@@ -96,7 +99,9 @@ namespace PowerControl
                     ApplyValue = delegate(object selected)
                     {
                         DisplayResolutionController.SetRefreshRate((int)selected);
-                        Root["FPS Limit"].Update(); // force refresh FPS limit
+                        // force reset and refresh of FPS limit
+                        Root["FPS Limit"].Reset();
+                        Root["FPS Limit"].Update();
                         return DisplayResolutionController.GetRefreshRate();
                     }
                 },
@@ -177,6 +182,7 @@ namespace PowerControl
 
                         Root["Resolution"].Update();
                         Root["Refresh Rate"].Update();
+                        Root["FPS Limit"].Reset();
                         Root["FPS Limit"].Update();
 
                         if (!GPUScaling.Enabled)
