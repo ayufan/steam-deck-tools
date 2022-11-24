@@ -92,7 +92,6 @@ namespace PowerControl.Helpers.AMD
     }
     #endregion ADLAdapterInfo
 
-        
     #region ADLDisplayInfo
     /// <summary> ADLDisplayID Structure</summary>
     [StructLayout(LayoutKind.Sequential)]
@@ -142,6 +141,25 @@ namespace PowerControl.Helpers.AMD
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)ADL.ADL_MAX_DISPLAYS)]
         internal ADLDisplayInfo[] ADLAdapterInfo;
     }
+    #endregion ADLDisplayInfo
+
+    #region Radeon Image Sharpening
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ADL_RIS_SETTINGS
+    {
+        internal int GlobalEnable; //Global enable value
+        internal int GlobalSharpeningDegree; //Global sharpening value
+        internal int GlobalSharpeningDegree_MinLimit; //Gloabl sharpening slider min limit value
+        internal int GlobalSharpeningDegree_MaxLimit; //Gloabl sharpening slider max limit value
+        internal int GlobalSharpeningDegree_Step; //Gloabl sharpening step  value
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ADL_RIS_NOTFICATION_REASON
+    {
+        internal int GlobalEnableChanged; //Set when Global enable value is changed
+        internal int GlobalSharpeningDegreeChanged; //Set when Global sharpening Degree value is changed
+    };
     #endregion ADLDisplayInfo
 
     #endregion Export Struct
@@ -195,22 +213,22 @@ namespace PowerControl.Helpers.AMD
 
         #region DLLImport
         [DllImport(Kernel32_FileName)]
-        internal static extern HMODULE GetModuleHandle (string moduleName);
+        internal static extern HMODULE GetModuleHandle(string moduleName);
 
         [DllImport(Atiadlxx_FileName)]
         internal static extern int ADL2_Main_Control_Create(ADL_Main_Memory_Alloc callback, int enumConnectedAdapters, out IntPtr context);
 
         [DllImport(Atiadlxx_FileName)]
-        internal static extern int ADL2_Main_Control_Destroy (IntPtr context);
+        internal static extern int ADL2_Main_Control_Destroy(IntPtr context);
 
         [DllImport(Atiadlxx_FileName)]
-        internal static extern int ADL2_Main_Control_IsFunctionValid (IntPtr context, HMODULE module, string procName);
+        internal static extern int ADL2_Main_Control_IsFunctionValid(IntPtr context, HMODULE module, string procName);
 
         [DllImport(Atiadlxx_FileName)]
-        internal static extern int ADL2_Adapter_NumberOfAdapters_Get (IntPtr context, out int numAdapters);
+        internal static extern int ADL2_Adapter_NumberOfAdapters_Get(IntPtr context, out int numAdapters);
 
         [DllImport(Atiadlxx_FileName)]
-        internal static extern int ADL2_Adapter_AdapterInfo_Get (IntPtr context, out ADLAdapterInfoArray info, int inputSize);
+        internal static extern int ADL2_Adapter_AdapterInfo_Get(IntPtr context, out ADLAdapterInfoArray info, int inputSize);
 
         [DllImport(Atiadlxx_FileName)]
         internal static extern int ADL2_Adapter_Active_Get(IntPtr context, int adapterIndex, out int status);
@@ -241,6 +259,12 @@ namespace PowerControl.Helpers.AMD
 
         [DllImport(Atiadlxx_FileName)]
         internal static extern int ADL2_Display_SCE_State_Set(IntPtr context, int adapterIndex, int displayIndex, int current);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_RIS_Settings_Get(IntPtr context, int adapterIndex, out ADL_RIS_SETTINGS settings);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_RIS_Settings_Set(IntPtr context, int adapterIndex, ADL_RIS_SETTINGS settings, ADL_RIS_NOTFICATION_REASON reason);
         #endregion DLLImport
 
         #region ADL_Main_Memory_Alloc

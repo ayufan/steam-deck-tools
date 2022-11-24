@@ -7,6 +7,7 @@
 - Reset `LibreHardware` on system resume to fix battery bug
 - Reset FPS limit if anything related to resolution changes
 - Retry Vangogh GPU detection 3 times
+- Add `Radeon Image Sharpening` option (Yes, or No)
 
 ## 0.3.x
 

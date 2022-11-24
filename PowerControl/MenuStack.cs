@@ -192,6 +192,28 @@ namespace PowerControl
                 },
                 new Menu.MenuItemWithOptions()
                 {
+                    Name = "Sharpening",
+                    ApplyDelay = 500,
+                    Options = { "Off", "On" },
+                    CurrentValue = delegate()
+                    {
+                        var value = ImageSharpening.Enabled;
+                        if (value is null)
+                            return null;
+                        return value.Value ? "On" : "Off";
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        ImageSharpening.Enabled = (string)selected == "On";
+
+                        var value = ImageSharpening.Enabled;
+                        if (value is null)
+                            return null;
+                        return value.Value ? "On" : "Off";
+                    }
+                },
+                new Menu.MenuItemWithOptions()
+                {
                     Name = "Colors",
                     ApplyDelay = 1000,
                     Options = Enum.GetValues<DCE.Mode>().Cast<object>().ToList(),
