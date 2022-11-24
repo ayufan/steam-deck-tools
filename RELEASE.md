@@ -1,3 +1,7 @@
+## 0.5.x
+
+- Introduce SteamController that provides 3 main modes of operation Desktop, X360 and Steam
+
 ## 0.4.x
 
 - Highly risky: Allow to change CPU and GPU frequency (enable `EnableExperimentalFeatures` in `PowerControl.dll.config`)

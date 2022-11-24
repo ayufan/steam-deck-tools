@@ -45,7 +45,8 @@ namespace PowerControl.External
         CONFIGURE_BT = 0x18,
     }
 
-    public enum SDCButton0
+    [Flags]
+    public enum SDCButton0 : ushort
     {
         BTN_L5 = 0b1000000000000000,
         BTN_OPTIONS = 0b0100000000000000,
@@ -65,22 +66,25 @@ namespace PowerControl.External
         BTN_R2 = 0b0000000000000001,
     }
 
-    public enum SDCButton1
+    [Flags]
+    public enum SDCButton1 : byte
     {
         BTN_LSTICK_PRESS = 0b01000000,
+        BTN_RPAD_TOUCH = 0b00010000,
         BTN_LPAD_TOUCH = 0b00001000,
+        BTN_RPAD_PRESS = 0b00000100,
         BTN_LPAD_PRESS = 0b00000010,
-        BTN_RPAD_PRESS = 0b00010000,
-        BTN_RPAD_TOUCH = 0b00000100,
         BTN_R5 = 0b00000001,
     }
 
-    public enum SDCButton2
+    [Flags]
+    public enum SDCButton2 : byte
     {
         BTN_RSTICK_PRESS = 0b00000100,
     }
 
-    public enum SDCButton4
+    [Flags]
+    public enum SDCButton4 : byte
     {
         BTN_LSTICK_TOUCH = 0b01000000,
         BTN_RSTICK_TOUCH = 0b10000000,
@@ -88,29 +92,30 @@ namespace PowerControl.External
         BTN_L4 = 0b00000010,
     }
 
-    public enum SDCButton5
+    [Flags]
+    public enum SDCButton5 : byte
     {
         BTN_QUICK_ACCESS = 0b00000100,
     }
-
 
     [StructLayout(LayoutKind.Sequential)]
     public struct SDCInput
     {
         public byte ptype;          //0x00
-        public byte _a1;            //0x01 
-        public byte _a2;            //0x02 
+        public byte _a1;            //0x01
+        public byte _a2;            //0x02
         public byte _a3;            //0x03
-        public uint seq;          //0x04 
-        public ushort buttons0;     //0x09 
-        public byte buttons1;       //0x0A
-        public byte buttons2;       //0x0C
-        public byte buttons3;       //0x0D
-        public byte buttons4;       //0x0E
-        public byte buttons5;       //0x0E
+        public uint seq;            //0x04
+        public SDCButton0 buttons0; //0x08
+        public SDCButton1 buttons1; //0x0A
+        public SDCButton2 buttons2; //0x0B
+        public byte buttons3;       //0x0C
+        public SDCButton4 buttons4; //0x0D
+        public SDCButton5 buttons5; //0x0E
+        public byte buttons6;       //0x0F
         public short lpad_x;        //0x10
         public short lpad_y;        //0x12
-        public short rpad_x;        //0x13
+        public short rpad_x;        //0x14
         public short rpad_y;        //0x16
         public short accel_x;       //0x18
         public short accel_y;       //0x1A
@@ -136,7 +141,7 @@ namespace PowerControl.External
             var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             try
             {
-                return (SDCInput)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(SDCInput));
+                return Marshal.PtrToStructure<SDCInput>(handle.AddrOfPinnedObject());
             }
             catch
             {

@@ -88,7 +88,7 @@ namespace PowerControl
 
             osdDismissTimer = new System.Windows.Forms.Timer(components);
             osdDismissTimer.Interval = 3000;
-            osdDismissTimer.Tick += delegate(object ? sender, EventArgs e)
+            osdDismissTimer.Tick += delegate (object? sender, EventArgs e)
             {
                 hideOSD();
             };
@@ -150,7 +150,7 @@ namespace PowerControl
             {
                 GlobalHotKey.RegisterHotKey("VolumeUp", () =>
                 {
-                    if ((neptuneDeviceState.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) != 0)
+                    if (neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS))
                         rootMenu.SelectNext("Brightness");
                     else
                         rootMenu.SelectNext("Volume");
@@ -160,7 +160,7 @@ namespace PowerControl
 
                 GlobalHotKey.RegisterHotKey("VolumeDown", () =>
                 {
-                    if ((neptuneDeviceState.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) != 0)
+                    if (neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS))
                         rootMenu.SelectPrev("Brightness");
                     else
                         rootMenu.SelectPrev("Volume");
@@ -207,7 +207,7 @@ namespace PowerControl
             }
 
             // Consume only some events to avoid under-running SWICD
-            if ((input.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) != 0)
+            if (neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS))
                 Thread.Sleep(1000 / 30);
             else
                 Thread.Sleep(250);
@@ -230,12 +230,12 @@ namespace PowerControl
                 return; // otherwise it did not yet trigger
 
             // Reset sequence: 3 dots + L4|R4|L5|R5
-            if (input.buttons0 == (ushort)SDCButton0.BTN_L5 &&
-                input.buttons1 == (byte)SDCButton1.BTN_R5 &&
+            if (input.buttons0 == SDCButton0.BTN_L5 &&
+                input.buttons1 == SDCButton1.BTN_R5 &&
                 input.buttons2 == 0 &&
                 input.buttons3 == 0 &&
-                input.buttons4 == (byte)(SDCButton4.BTN_L4 | SDCButton4.BTN_R4) &&
-                input.buttons5 == (byte)SDCButton5.BTN_QUICK_ACCESS)
+                input.buttons4 == (SDCButton4.BTN_L4 | SDCButton4.BTN_R4) &&
+                input.buttons5 == SDCButton5.BTN_QUICK_ACCESS)
             {
                 rootMenu.Show();
                 rootMenu.Reset();
@@ -243,7 +243,7 @@ namespace PowerControl
                 return;
             }
 
-            if ((input.buttons5 & (byte)SDCButton5.BTN_QUICK_ACCESS) == 0 || !RTSS.IsOSDForeground())
+            if (!neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS) || !RTSS.IsOSDForeground())
             {
                 // schedule next repeat far in the future
                 dismissNeptuneInput();
@@ -258,19 +258,19 @@ namespace PowerControl
             {
                 return;
             }
-            else if (input.buttons0 == (ushort)SDCButton0.BTN_DPAD_LEFT)
+            else if (input.buttons0 == SDCButton0.BTN_DPAD_LEFT)
             {
                 rootMenu.SelectPrev();
             }
-            else if (input.buttons0 == (ushort)SDCButton0.BTN_DPAD_RIGHT)
+            else if (input.buttons0 == SDCButton0.BTN_DPAD_RIGHT)
             {
                 rootMenu.SelectNext();
             }
-            else if (input.buttons0 == (ushort)SDCButton0.BTN_DPAD_UP)
+            else if (input.buttons0 == SDCButton0.BTN_DPAD_UP)
             {
                 rootMenu.Prev();
             }
-            else if (input.buttons0 == (ushort)SDCButton0.BTN_DPAD_DOWN)
+            else if (input.buttons0 == SDCButton0.BTN_DPAD_DOWN)
             {
                 rootMenu.Next();
             }

@@ -12,6 +12,14 @@ namespace PowerControl.Helpers
     /// </summary>
     public static class WindowsSettingsBrightnessController
     {
+        public static void Increase(int brightness)
+        {
+            var current = Get();
+            current += brightness;
+            current = Math.Clamp(current, 0, 100);
+            Set(current);
+        }
+
         public static int Get(double roundValue = 10.0)
         {
             return (int)(Math.Round(Get() / roundValue) * roundValue);
