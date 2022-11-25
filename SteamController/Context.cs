@@ -25,6 +25,7 @@ namespace SteamController
         public bool RequestDesktopMode { get; set; } = true;
         public bool SteamRunning { get; set; } = false;
         public bool SteamUsesController { get; set; } = false;
+        public bool ControllerHidden { get; set; } = false;
 
         public bool Enabled
         {

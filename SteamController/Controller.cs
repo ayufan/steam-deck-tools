@@ -55,6 +55,17 @@ namespace SteamController
             contextMenu.Opening += delegate { desktopModeItem.Checked = context.RequestDesktopMode; };
             contextMenu.Items.Add(desktopModeItem);
 
+            var hidHideItem = new ToolStripMenuItem("Use &HidHide");
+            hidHideItem.Checked = Settings.Default.EnableHidHide;
+            hidHideItem.Enabled = HidHideCLI.IsAvailable;
+            hidHideItem.Click += delegate
+            {
+                Settings.Default.EnableHidHide = !Settings.Default.EnableHidHide;
+                Settings.Default.Save();
+            };
+            contextMenu.Opening += delegate { hidHideItem.Checked = Settings.Default.EnableHidHide; };
+            contextMenu.Items.Add(hidHideItem);
+
             var steamDetectionItem = new ToolStripMenuItem("Auto-disable on &Steam");
             steamDetectionItem.Checked = Settings.Default.EnableSteamDetection;
             steamDetectionItem.Click += delegate
