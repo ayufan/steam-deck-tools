@@ -254,7 +254,10 @@ namespace SteamController.Devices
             }
 
             public static implicit operator bool(SteamAxis button) => button.Active;
-            public static implicit operator short(SteamAxis button) => button.Value;
+            public static implicit operator short(SteamAxis button)
+            {
+                return Math.Abs(button.Value) > button.Deadzone ? button.Value : (short)0;
+            }
 
             public bool Active
             {

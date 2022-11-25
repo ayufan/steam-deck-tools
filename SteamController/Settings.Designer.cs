@@ -22,5 +22,17 @@ namespace SteamController {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableSteamDetection {
+            get {
+                return ((bool)(this["EnableSteamDetection"]));
+            }
+            set {
+                this["EnableSteamDetection"] = value;
+            }
+        }
     }
 }

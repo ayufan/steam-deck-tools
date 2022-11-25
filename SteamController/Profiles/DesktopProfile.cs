@@ -38,26 +38,26 @@ namespace SteamController.Profiles
 
             if (c.Steam.LPadX)
             {
-                c.Mouse.HorizontalScroll(c.Steam.LPadX.Scaled(Context.ThumbToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
+                c.Mouse.HorizontalScroll(c.Steam.LPadX.Scaled(Context.PadToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
             }
             if (c.Steam.LPadY)
             {
-                c.Mouse.VerticalScroll(c.Steam.LPadY.Scaled(Context.ThumbToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
+                c.Mouse.VerticalScroll(c.Steam.LPadY.Scaled(Context.PadToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
             }
 
-            if (c.Steam.BtnVirtualLeftThumbUp.HoldRepeat(Consumed))
+            if (c.Steam.BtnVirtualLeftThumbUp.HoldRepeat(Context.ThumbToWhellFirstRepeat, Context.ThumbToWhellRepeat, Consumed))
             {
                 c.Mouse.VerticalScroll(Context.ThumbToWhellSensitivity);
             }
-            else if (c.Steam.BtnVirtualLeftThumbDown.HoldRepeat(Consumed))
+            else if (c.Steam.BtnVirtualLeftThumbDown.HoldRepeat(Context.ThumbToWhellFirstRepeat, Context.ThumbToWhellRepeat, Consumed))
             {
                 c.Mouse.VerticalScroll(-Context.ThumbToWhellSensitivity);
             }
-            else if (c.Steam.BtnVirtualLeftThumbLeft.HoldRepeat(Consumed))
+            else if (c.Steam.BtnVirtualLeftThumbLeft.HoldRepeat(Context.ThumbToWhellFirstRepeat, Context.ThumbToWhellRepeat, Consumed))
             {
                 c.Mouse.HorizontalScroll(-Context.ThumbToWhellSensitivity);
             }
-            else if (c.Steam.BtnVirtualLeftThumbRight.HoldRepeat(Consumed))
+            else if (c.Steam.BtnVirtualLeftThumbRight.HoldRepeat(Context.ThumbToWhellFirstRepeat, Context.ThumbToWhellRepeat, Consumed))
             {
                 c.Mouse.HorizontalScroll(Context.ThumbToWhellSensitivity);
             }

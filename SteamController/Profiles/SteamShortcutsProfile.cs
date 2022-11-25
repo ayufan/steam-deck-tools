@@ -108,10 +108,16 @@ namespace SteamController.Profiles
                 );
             }
 
-            if (!c.Steam.LizardMouse)
+            if (c.Steam.LPadX)
             {
-                EmulateLizardMouse(c);
+                c.Mouse.HorizontalScroll(c.Steam.LPadX.Scaled(Context.PadToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
             }
+            if (c.Steam.LPadY)
+            {
+                c.Mouse.VerticalScroll(c.Steam.LPadY.Scaled(Context.PadToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
+            }
+
+            EmulateLizardMouse(c);
 
             if (c.Steam.BtnVirtualLeftThumbUp.HoldRepeat(Consumed))
             {

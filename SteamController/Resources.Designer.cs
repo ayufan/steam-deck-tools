@@ -63,6 +63,26 @@ namespace SteamController {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon laptop {
+            get {
+                object obj = ResourceManager.GetObject("laptop", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon laptop_off {
+            get {
+                object obj = ResourceManager.GetObject("laptop_off", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon microsoft_xbox_controller {
             get {
                 object obj = ResourceManager.GetObject("microsoft_xbox_controller", resourceCulture);
@@ -116,6 +136,36 @@ namespace SteamController {
         internal static System.Drawing.Icon microsoft_xbox_controller_white {
             get {
                 object obj = ResourceManager.GetObject("microsoft_xbox_controller_white", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon monitor {
+            get {
+                object obj = ResourceManager.GetObject("monitor", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon monitor_off {
+            get {
+                object obj = ResourceManager.GetObject("monitor_off", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon steam {
+            get {
+                object obj = ResourceManager.GetObject("steam", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

@@ -22,7 +22,7 @@ namespace SteamController.Devices
             using (client) { }
         }
 
-        internal bool CreateClient()
+        internal bool Tick()
         {
             if (this.device is not null)
                 return true;

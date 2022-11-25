@@ -12,6 +12,10 @@ namespace SteamController.Profiles
 
         public abstract Status Run(Context context);
 
+        public virtual void Tick(Context context)
+        {
+        }
+
         public virtual void Skipped(Context context)
         {
         }
