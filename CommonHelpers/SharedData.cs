@@ -9,14 +9,18 @@ using System.Threading.Tasks;
 
 namespace CommonHelpers
 {
-    public class SharedData<T> : IDisposable where T : unmanaged
+    public class SharedData<T> : IDisposable where T : struct
     {
-        const int MMF_MAX_SIZE = 256;
+        const int MMF_MAX_SIZE = 16384;
+        const int MMF_ALIGN_SIZE = 256;
 
         private MemoryMappedFile mmf;
+        private int size;
 
-        private SharedData()
-        { }
+        private SharedData(int size)
+        {
+            this.size = size;
+        }
 
         public T NewValue()
         {
@@ -32,7 +36,7 @@ namespace CommonHelpers
                 if (!mmvStream.CanRead)
                     return false;
 
-                byte[] buffer = new byte[MMF_MAX_SIZE];
+                byte[] buffer = new byte[size];
                 mmvStream.Read(buffer, 0, buffer.Length);
 
                 var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
@@ -63,7 +67,7 @@ namespace CommonHelpers
                 if (!mmvStream.CanWrite)
                     return false;
 
-                byte[] buffer = new byte[MMF_MAX_SIZE];
+                byte[] buffer = new byte[size];
                 var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
                 try
                 {
@@ -126,17 +130,30 @@ namespace CommonHelpers
             return String.Format("Global_{0}_Setting", typeof(T).Name);
         }
 
+        private static int AlignedSize()
+        {
+            int size = Marshal.SizeOf<T>();
+            size = (size + MMF_ALIGN_SIZE - 1) / MMF_ALIGN_SIZE * MMF_ALIGN_SIZE;
+            if (size > MMF_MAX_SIZE)
+                throw new ArgumentException();
+            return size;
+        }
+
         public static SharedData<T> CreateNew(String? name = null)
         {
-            return new SharedData<T>()
+            int size = AlignedSize();
+
+            return new SharedData<T>(size)
             {
-                mmf = MemoryMappedFile.CreateOrOpen(name ?? GetUniqueName(), MMF_MAX_SIZE)
+                mmf = MemoryMappedFile.CreateOrOpen(name ?? GetUniqueName(), size)
             };
         }
 
         public static SharedData<T> OpenExisting(String? name = null)
         {
-            return new SharedData<T>()
+            int size = AlignedSize();
+
+            return new SharedData<T>(size)
             {
                 mmf = MemoryMappedFile.OpenExisting(name ?? GetUniqueName())
             };

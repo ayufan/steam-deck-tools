@@ -8,6 +8,8 @@ namespace SteamController.Devices
 {
     public class Xbox360Controller : IDisposable
     {
+        public readonly TimeSpan FeedbackTimeout = TimeSpan.FromMilliseconds(1000);
+
         private ViGEmClient? client;
         private IXbox360Controller? device;
         private bool isConnected;
@@ -49,8 +51,9 @@ namespace SteamController.Devices
 
             if (!isConnected)
             {
-                FeedbackLargeMotor = 0;
-                FeedbackSmallMotor = 0;
+                FeedbackLargeMotor = null;
+                FeedbackSmallMotor = null;
+                FeedbackReceived = null;
                 LedNumber = 0;
             }
 
@@ -77,6 +80,32 @@ namespace SteamController.Devices
             isConnected = Connected;
         }
 
+        internal void Disconnect()
+        {
+            if (!isConnected)
+                return;
+
+            device?.Disconnect();
+            isConnected = false;
+        }
+
+        internal void Beep()
+        {
+            // TODO: reconnect to beep
+            if (isConnected)
+            {
+                device?.Disconnect();
+                Thread.Sleep(100);
+                device?.Connect();
+            }
+            else
+            {
+                device?.Connect();
+                Thread.Sleep(100);
+                device?.Disconnect();
+            }
+        }
+
         internal void Update()
         {
             UpdateConnected();
@@ -84,6 +113,13 @@ namespace SteamController.Devices
             if (isConnected && submitReport)
             {
                 device?.SubmitReport();
+            }
+
+            if (FeedbackReceived is not null && FeedbackReceived.Value.Add(FeedbackTimeout) < DateTime.Now)
+            {
+                FeedbackLargeMotor = null;
+                FeedbackSmallMotor = null;
+                FeedbackReceived = null;
             }
         }
 
@@ -93,9 +129,10 @@ namespace SteamController.Devices
         }
 
         public bool Connected { get; set; }
-        public byte FeedbackLargeMotor { get; internal set; }
-        public byte FeedbackSmallMotor { get; internal set; }
+        public byte? FeedbackLargeMotor { get; internal set; }
+        public byte? FeedbackSmallMotor { get; internal set; }
         public byte LedNumber { get; internal set; }
+        public DateTime? FeedbackReceived { get; set; }
 
         public bool this[Xbox360Button button]
         {
@@ -150,11 +187,17 @@ namespace SteamController.Devices
             submitReport = true;
         }
 
+        public void ResetFeedback()
+        {
+            FeedbackReceived = null;
+        }
+
         private void X360Device_FeedbackReceived(object sender, Xbox360FeedbackReceivedEventArgs e)
         {
             FeedbackLargeMotor = e.LargeMotor;
             FeedbackSmallMotor = e.SmallMotor;
             LedNumber = e.LedNumber;
+            FeedbackReceived = DateTime.Now;
         }
     }
 }

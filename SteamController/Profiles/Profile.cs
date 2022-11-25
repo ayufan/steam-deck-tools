@@ -11,6 +11,8 @@ namespace SteamController.Profiles
         }
 
         public String Name { get; set; } = "";
+        public bool Visible { get; set; } = true;
+        public bool IsDesktop { get; set; }
 
         public abstract bool Selected(Context context);
 

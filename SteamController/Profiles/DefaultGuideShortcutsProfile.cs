@@ -6,7 +6,7 @@ using WindowsInput;
 
 namespace SteamController.Profiles
 {
-    public abstract class SteamShortcutsProfile : DefaultShortcutsProfile
+    public abstract class DefaultGuideShortcutsProfile : DefaultShortcutsProfile
     {
         public static bool SteamModeLizardButtons = false;
         public static bool SteamModeLizardMouse = true;

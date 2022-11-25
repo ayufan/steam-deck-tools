@@ -53,4 +53,17 @@ namespace CommonHelpers
     {
         public PowerControlVisible Current;
     }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct SteamControllerSetting
+    {
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public String CurrentProfile;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 2048)]
+        public String SelectableProfiles;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public String DesiredProfile;
+    }
 }

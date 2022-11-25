@@ -82,6 +82,19 @@ namespace SteamController
             }
         }
 
+        public Profiles.Profile? GetCurrentProfile()
+        {
+            foreach (var profile in OrderedProfiles)
+            {
+                if (profile.Selected(this))
+                {
+                    return profile;
+                }
+            }
+
+            return null;
+        }
+
         public bool Update()
         {
             Steam.BeforeUpdate();
@@ -91,13 +104,10 @@ namespace SteamController
 
             try
             {
-                foreach (var profile in OrderedProfiles)
+                var profile = GetCurrentProfile();
+                if (profile is not null)
                 {
-                    if (profile.Selected(this))
-                    {
-                        profile.Run(this);
-                        break;
-                    }
+                    profile.Run(this);
                 }
 
                 return true;
@@ -130,6 +140,8 @@ namespace SteamController
             var list = OrderedProfiles;
             list.Remove(profile);
             list.Insert(0, profile);
+            RequestDesktopMode = profile.IsDesktop;
+            Beep();
             return true;
         }
 
@@ -151,10 +163,16 @@ namespace SteamController
 
                 list.Remove(profile);
                 list.Insert(0, profile);
+                Beep();
                 return true;
             }
 
             return false;
+        }
+
+        public void Beep()
+        {
+            X360.Beep();
         }
     }
 }

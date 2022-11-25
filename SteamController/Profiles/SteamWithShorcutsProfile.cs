@@ -2,9 +2,9 @@ using Nefarius.ViGEm.Client.Targets.Xbox360;
 
 namespace SteamController.Profiles
 {
-    public sealed class SteamProfile : DefaultShortcutsProfile
+    public sealed class SteamWithShorcutsProfile : DefaultGuideShortcutsProfile
     {
-        public SteamProfile()
+        public SteamWithShorcutsProfile()
         {
         }
 

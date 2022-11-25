@@ -2,12 +2,13 @@ using WindowsInput;
 
 namespace SteamController.Profiles
 {
-    public sealed class DesktopProfile : SteamShortcutsProfile
+    public sealed class DesktopProfile : DefaultGuideShortcutsProfile
     {
         private const String Consumed = "DesktopProfileOwner";
 
         public DesktopProfile()
         {
+            IsDesktop = true;
         }
 
         public override bool Selected(Context context)

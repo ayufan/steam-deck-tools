@@ -19,9 +19,11 @@ namespace SteamController
         Context context = new Context()
         {
             Profiles = {
-                new Profiles.DesktopProfile(),
-                new Profiles.SteamProfile(),
-                new Profiles.X360Profile(),
+                new Profiles.DesktopProfile() { Name = "Desktop" },
+                new Profiles.SteamProfile() { Name = "Steam", Visible = false },
+                new Profiles.SteamWithShorcutsProfile() { Name = "Steam with Shortcuts", Visible = false },
+                new Profiles.X360Profile() { Name = "X360" },
+                new Profiles.X360RumbleProfile() { Name = "X360 with Rumble" }
             },
             Managers = {
                 new Managers.ProcessManager(),
@@ -37,6 +39,8 @@ namespace SteamController
         TimeSpan lastUpdatesReset;
         readonly TimeSpan updateResetInterval = TimeSpan.FromSeconds(1);
 
+        SharedData<SteamControllerSetting> sharedData = SharedData<SteamControllerSetting>.CreateNew();
+
         public Controller()
         {
             Instance.RunOnce(TitleWithVersion, "Global\\SteamController");
@@ -48,12 +52,34 @@ namespace SteamController
             enabledItem.Click += delegate { context.RequestEnable = !context.RequestEnable; };
             contextMenu.Opening += delegate { enabledItem.Checked = context.RequestEnable; };
             contextMenu.Items.Add(enabledItem);
+            contextMenu.Items.Add(new ToolStripSeparator());
 
-            var desktopModeItem = new ToolStripMenuItem("&Desktop Mode");
-            desktopModeItem.Checked = context.RequestDesktopMode;
-            desktopModeItem.Click += delegate { context.RequestDesktopMode = !context.RequestDesktopMode; };
-            contextMenu.Opening += delegate { desktopModeItem.Checked = context.RequestDesktopMode; };
-            contextMenu.Items.Add(desktopModeItem);
+            foreach (var profile in context.Profiles)
+            {
+                if (profile.Name == "" || !profile.Visible)
+                    continue;
+
+                var profileItem = new ToolStripMenuItem(profile.Name);
+                profileItem.Click += delegate { lock (context) { context.SelectProfile(profile.Name); } };
+                contextMenu.Opening += delegate { profileItem.Checked = context.GetCurrentProfile() == profile; };
+                contextMenu.Items.Add(profileItem);
+            }
+
+            contextMenu.Items.Add(new ToolStripSeparator());
+
+            var lizardMouseItem = new ToolStripMenuItem("Use Lizard &Mouse");
+            lizardMouseItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardMouse;
+            lizardMouseItem.Click += delegate { DefaultGuideShortcutsProfile.SteamModeLizardMouse = !DefaultGuideShortcutsProfile.SteamModeLizardMouse; };
+            contextMenu.Opening += delegate { lizardMouseItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardMouse; };
+            contextMenu.Items.Add(lizardMouseItem);
+
+            var lizardButtonsItem = new ToolStripMenuItem("Use Lizard &Buttons");
+            lizardButtonsItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardButtons;
+            lizardButtonsItem.Click += delegate { DefaultGuideShortcutsProfile.SteamModeLizardButtons = !DefaultGuideShortcutsProfile.SteamModeLizardButtons; };
+            contextMenu.Opening += delegate { lizardButtonsItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardButtons; };
+            contextMenu.Items.Add(lizardButtonsItem);
+
+            contextMenu.Items.Add(new ToolStripSeparator());
 
             var steamDetectionItem = new ToolStripMenuItem("Auto-disable on &Steam");
             steamDetectionItem.Checked = Settings.Default.EnableSteamDetection;
@@ -64,21 +90,6 @@ namespace SteamController
             };
             contextMenu.Opening += delegate { steamDetectionItem.Checked = Settings.Default.EnableSteamDetection; };
             contextMenu.Items.Add(steamDetectionItem);
-            contextMenu.Items.Add(new ToolStripSeparator());
-
-            var lizardMouseItem = new ToolStripMenuItem("Use Lizard &Mouse");
-            lizardMouseItem.Checked = SteamShortcutsProfile.SteamModeLizardMouse;
-            lizardMouseItem.Click += delegate { SteamShortcutsProfile.SteamModeLizardMouse = !SteamShortcutsProfile.SteamModeLizardMouse; };
-            contextMenu.Opening += delegate { lizardMouseItem.Checked = SteamShortcutsProfile.SteamModeLizardMouse; };
-            contextMenu.Items.Add(lizardMouseItem);
-
-            var lizardButtonsItem = new ToolStripMenuItem("Use Lizard &Buttons");
-            lizardButtonsItem.Checked = SteamShortcutsProfile.SteamModeLizardButtons;
-            lizardButtonsItem.Click += delegate { SteamShortcutsProfile.SteamModeLizardButtons = !SteamShortcutsProfile.SteamModeLizardButtons; };
-            contextMenu.Opening += delegate { lizardButtonsItem.Checked = SteamShortcutsProfile.SteamModeLizardButtons; };
-            contextMenu.Items.Add(lizardButtonsItem);
-
-            contextMenu.Items.Add(new ToolStripSeparator());
 
             if (startupManager.IsAvailable)
             {
@@ -139,12 +150,31 @@ namespace SteamController
             }
         }
 
+        private void SharedData_Update()
+        {
+            if (sharedData.GetValue(out var value) && value.DesiredProfile != "")
+            {
+                lock (context)
+                {
+                    context.SelectProfile(value.DesiredProfile);
+                }
+            }
+
+            sharedData.SetValue(new SteamControllerSetting()
+            {
+                CurrentProfile = context.Profiles.FirstOrDefault((profile) => profile.Selected(context))?.Name,
+                SelectableProfiles = context.Profiles.Where((profile) => profile.Selected(context) || profile.Visible).JoinWithN((profile) => profile.Name),
+            });
+        }
+
         private void ContextStateUpdate_Tick(object? sender, EventArgs e)
         {
             lock (context)
             {
                 context.Tick();
             }
+
+            SharedData_Update();
 
             if (!context.Mouse.Valid)
             {
@@ -165,6 +195,10 @@ namespace SteamController
             {
                 notifyIcon.Icon = context.DesktopMode ? Resources.monitor : Resources.microsoft_xbox_controller;
                 notifyIcon.Text = TitleWithVersion;
+
+                var profile = context.GetCurrentProfile();
+                if (profile is not null)
+                    notifyIcon.Text = TitleWithVersion + ". Profile: " + profile.Name;
             }
             else
             {
