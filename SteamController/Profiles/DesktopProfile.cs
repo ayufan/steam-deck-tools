@@ -1,24 +1,25 @@
-using PowerControl.Helpers;
 using WindowsInput;
 
 namespace SteamController.Profiles
 {
-    public sealed class DesktopProfile : Profile
+    public sealed class DesktopProfile : SteamShortcutsProfile
     {
-        public const bool LizardButtons = false;
-        public const bool LizardMouse = true;
-
-        public const String Consumed = "DesktopProfileOwner";
+        private const String Consumed = "DesktopProfileOwner";
 
         public DesktopProfile()
         {
         }
 
+        public override bool Selected(Context context)
+        {
+            return context.Enabled && context.DesktopMode && !context.SteamUsesController;
+        }
+
         public override Status Run(Context c)
         {
-            if (!c.DesktopMode)
+            if (base.Run(c).IsDone)
             {
-                return Status.Continue;
+                return Status.Done;
             }
 
             if (!c.Mouse.Valid)
@@ -27,24 +28,32 @@ namespace SteamController.Profiles
                 // Enable emergency Lizard
                 c.Steam.LizardButtons = true;
                 c.Steam.LizardMouse = true;
-                return Status.Continue;
+                return Status.Done;
             }
 
-            c.Steam.LizardButtons = LizardButtons;
-            c.Steam.LizardMouse = LizardMouse;
+            c.Steam.LizardButtons = SteamModeLizardButtons;
+            c.Steam.LizardMouse = SteamModeLizardMouse;
 
-            EmulateLizardButtons(c);
-            EmulateLizardMouse(c);
+            EmulateScrollOnLPad(c);
+            EmulateScrollOnLStick(c);
+            EmulateMouseOnRPad(c);
+            EmulateMouseOnRStick(c);
+            EmulateDPadArrows(c);
 
-            if (c.Steam.LPadX)
+            if (c.Steam.BtnA.Pressed())
             {
-                c.Mouse.HorizontalScroll(c.Steam.LPadX.Scaled(Context.PadToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
+                c.Keyboard.KeyPress(VirtualKeyCode.RETURN);
             }
-            if (c.Steam.LPadY)
+            if (c.Steam.BtnB.Pressed())
             {
-                c.Mouse.VerticalScroll(c.Steam.LPadY.Scaled(Context.PadToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
+                c.Keyboard.KeyPress(VirtualKeyCode.BACK);
             }
 
+            return Status.Continue;
+        }
+
+        private void EmulateScrollOnLStick(Context c)
+        {
             if (c.Steam.BtnVirtualLeftThumbUp.HoldRepeat(Context.ThumbToWhellFirstRepeat, Context.ThumbToWhellRepeat, Consumed))
             {
                 c.Mouse.VerticalScroll(Context.ThumbToWhellSensitivity);
@@ -61,26 +70,11 @@ namespace SteamController.Profiles
             {
                 c.Mouse.HorizontalScroll(Context.ThumbToWhellSensitivity);
             }
-
-            if (c.Steam.BtnRStickTouch && (c.Steam.RightThumbX || c.Steam.RightThumbY))
-            {
-                c.Mouse.MoveBy(
-                    c.Steam.RightThumbX.Scaled(Context.JoystickToMouseSensitivity, Devices.SteamController.SteamAxis.ScaledMode.AbsoluteTime),
-                    -c.Steam.RightThumbY.Scaled(Context.JoystickToMouseSensitivity, Devices.SteamController.SteamAxis.ScaledMode.AbsoluteTime)
-                );
-            }
-
-            return Status.Continue;
         }
 
-        private void EmulateLizardButtons(Context c)
+        private void EmulateDPadArrows(Context c)
         {
-            c.Mouse[Devices.MouseController.Button.Right] = c.Steam.BtnL2 || c.Steam.BtnLPadPress;
-            c.Mouse[Devices.MouseController.Button.Left] = c.Steam.BtnR2 || c.Steam.BtnRPadPress;
-
 #if true
-            if (c.Steam.BtnA.Pressed())
-                c.Keyboard.KeyPress(VirtualKeyCode.RETURN);
             if (c.Steam.BtnDpadLeft.HoldRepeat(Consumed))
                 c.Keyboard.KeyPress(VirtualKeyCode.LEFT);
             if (c.Steam.BtnDpadRight.HoldRepeat(Consumed))
@@ -96,17 +90,6 @@ namespace SteamController.Profiles
             c.Keyboard[VirtualKeyCode.UP] = c.Steam.BtnDpadUp;
             c.Keyboard[VirtualKeyCode.DOWN] = c.Steam.BtnDpadDown;
 #endif
-        }
-
-        private void EmulateLizardMouse(Context c)
-        {
-            if (c.Steam.RPadX || c.Steam.RPadY)
-            {
-                c.Mouse.MoveBy(
-                    c.Steam.RPadX.Scaled(Context.PadToMouseSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta),
-                    -c.Steam.RPadY.Scaled(Context.PadToMouseSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta)
-                );
-            }
         }
     }
 }

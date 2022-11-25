@@ -1,3 +1,4 @@
+using CommonHelpers;
 using hidapi;
 using PowerControl.External;
 using static CommonHelpers.Log;
@@ -36,21 +37,33 @@ namespace SteamController.Devices
         private void BeforeUpdate(byte[] buffer)
         {
             foreach (var action in AllActions)
-                action.BeforeUpdate(buffer, this);
+                action.BeforeUpdate(buffer);
         }
 
         internal void BeforeUpdate()
         {
-            byte[] data = neptuneDevice.Read(ReadTimeout);
-            if (data == null)
+            LizardButtons = true;
+            LizardMouse = true;
+
+            try
             {
+                byte[] data = neptuneDevice.Read(ReadTimeout);
+                if (data == null)
+                {
+                    Reset();
+                    Updated = false;
+                    return;
+                }
+
+                BeforeUpdate(data);
+                Updated = true;
+            }
+            catch (Exception e)
+            {
+                Log.TraceLine("STEAM: Exception: {0}", e);
                 Reset();
                 Updated = false;
-                return;
             }
-
-            BeforeUpdate(data);
-            Updated = true;
         }
 
         internal void Update()
@@ -58,8 +71,17 @@ namespace SteamController.Devices
             foreach (var action in AllActions)
                 action.Update();
 
-            UpdateLizardButtons();
-            UpdateLizardMouse();
+            try
+            {
+                UpdateLizardButtons();
+                UpdateLizardMouse();
+            }
+            catch (Exception e)
+            {
+                Log.TraceLine("STEAM: Exception: {0}", e);
+                Reset();
+                Updated = false;
+            }
         }
     }
 }

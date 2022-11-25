@@ -2,28 +2,33 @@ using Nefarius.ViGEm.Client.Targets.Xbox360;
 
 namespace SteamController.Profiles
 {
-    public sealed class X360Profile : Profile
+    public sealed class X360Profile : SteamShortcutsProfile
     {
-        public override void Skipped(Context context)
+        public override bool Selected(Context context)
         {
-            if (!context.DesktopMode)
-            {
-                context.X360.Connected = true;
-                ControlButtons(context);
-            }
+            return context.Enabled && !context.DesktopMode;
         }
 
         public override Status Run(Context context)
         {
-            if (context.DesktopMode)
+            context.Steam.LizardButtons = false;
+            context.Steam.LizardMouse = SteamModeLizardMouse;
+            context.X360.Connected = true;
+
+            // Controls
+            context.X360[Xbox360Button.Guide] = context.Steam.BtnSteam.Pressed();
+            context.X360[Xbox360Button.Back] = context.Steam.BtnMenu;
+            context.X360[Xbox360Button.Start] = context.Steam.BtnOptions;
+
+            if (base.Run(context).IsDone)
             {
-                context.X360.Connected = false;
-                return Status.Continue;
+                return Status.Done;
             }
 
-            context.Steam.LizardButtons = false;
-            context.Steam.LizardMouse = true;
-            context.X360.Connected = true;
+            // Default emulation
+            EmulateScrollOnLPad(context);
+            EmulateMouseOnRStick(context);
+            EmulateMouseOnRPad(context, false);
 
             // DPad
             context.X360[Xbox360Button.Up] = context.Steam.BtnDpadUp;
@@ -51,16 +56,7 @@ namespace SteamController.Profiles
             context.X360[Xbox360Button.LeftShoulder] = context.Steam.BtnL1;
             context.X360[Xbox360Button.RightShoulder] = context.Steam.BtnR1;
 
-            ControlButtons(context);
             return Status.Continue;
-        }
-
-        private void ControlButtons(Context context)
-        {
-            // Controls
-            context.X360[Xbox360Button.Guide] = context.Steam.BtnSteam.Pressed();
-            context.X360[Xbox360Button.Back] = context.Steam.BtnMenu;
-            context.X360[Xbox360Button.Start] = context.Steam.BtnOptions;
         }
     }
 }

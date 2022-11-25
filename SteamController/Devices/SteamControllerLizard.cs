@@ -22,9 +22,12 @@ namespace SteamController.Devices
             {
                 // We need to explicitly disable lizard every some time
                 // but don't fight enabling it, as someone else might be taking control (Steam?)
-                if (LizardMouse || lizardMouseUpdated.AddMilliseconds(LizardModeUpdateInterval) > DateTime.Now)
+                if (lizardMouseUpdated.AddMilliseconds(LizardModeUpdateInterval) > DateTime.Now)
                     return;
             }
+
+            savedLizardMouse = LizardMouse;
+            lizardMouseUpdated = DateTime.Now;
 
             if (LizardMouse)
             {
@@ -38,9 +41,6 @@ namespace SteamController.Devices
                 byte[] data = new byte[] { 0x87, 0x03, 0x08, 0x07 };
                 neptuneDevice.RequestFeatureReport(data);
             }
-
-            savedLizardMouse = LizardMouse;
-            lizardMouseUpdated = DateTime.Now;
         }
 
         private void UpdateLizardButtons()
@@ -49,9 +49,12 @@ namespace SteamController.Devices
             {
                 // We need to explicitly disable lizard every some time
                 // but don't fight enabling it, as someone else might be taking control (Steam?)
-                if (LizardButtons || lizardButtonUpdated.AddMilliseconds(LizardModeUpdateInterval) > DateTime.Now)
+                if (lizardButtonUpdated.AddMilliseconds(LizardModeUpdateInterval) > DateTime.Now)
                     return;
             }
+
+            savedLizardButtons = LizardButtons;
+            lizardButtonUpdated = DateTime.Now;
 
             if (LizardButtons)
             {
@@ -65,9 +68,6 @@ namespace SteamController.Devices
                 byte[] data = new byte[] { 0x81, 0x00 };
                 neptuneDevice.RequestFeatureReport(data);
             }
-
-            savedLizardButtons = LizardButtons;
-            lizardButtonUpdated = DateTime.Now;
         }
     }
 }

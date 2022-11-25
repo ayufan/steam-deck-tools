@@ -8,6 +8,7 @@ namespace SteamController.Devices
     {
         public abstract class SteamAction
         {
+            public SteamController? Controller { get; internal set; }
             public String Name { get; internal set; } = "";
 
             /// This is action controlled by Lizard mode
@@ -17,7 +18,7 @@ namespace SteamController.Devices
             public double DeltaTime { get; protected set; }
 
             internal abstract void Reset();
-            internal abstract bool BeforeUpdate(byte[] buffer, SteamController controller);
+            internal abstract bool BeforeUpdate(byte[] buffer);
             internal abstract void Update();
 
             protected void UpdateTime()
@@ -27,13 +28,16 @@ namespace SteamController.Devices
                 LastUpdated = now;
             }
 
-            protected bool UsedByLizard(SteamController controller)
+            protected bool ValueCanBeUsed
             {
-                if (LizardButton && controller.LizardButtons)
+                get
+                {
+                    if (LizardButton && Controller?.LizardButtons == true)
+                        return false;
+                    if (LizardMouse && Controller?.LizardMouse == true)
+                        return false;
                     return true;
-                if (LizardMouse && controller.LizardMouse)
-                    return true;
-                return false;
+                }
             }
         }
 
@@ -43,8 +47,16 @@ namespace SteamController.Devices
             public static readonly TimeSpan DefaultFirstHold = TimeSpan.FromMilliseconds(75);
             public static readonly TimeSpan DefaultRepeatHold = TimeSpan.FromMilliseconds(150);
 
-            public bool Value { get; private set; }
-            public bool LastValue { get; private set; }
+            private bool rawValue, rawLastValue;
+
+            public bool Value
+            {
+                get { return ValueCanBeUsed ? rawValue : false; }
+            }
+            public bool LastValue
+            {
+                get { return ValueCanBeUsed ? rawLastValue : false; }
+            }
 
             /// Last press was already consumed by other
             public object? Consumed { get; private set; }
@@ -131,6 +143,17 @@ namespace SteamController.Devices
                 return true;
             }
 
+            /// Generated when button was hold for a given period
+            /// but triggered exactly after previously being hold
+            public bool HoldNext(TimeSpan? duration, object previousConsume, object replaceConsme)
+            {
+                if (!Hold(duration, previousConsume))
+                    return false;
+
+                Consumed = replaceConsme;
+                return true;
+            }
+
             /// Generated when button was repeated for a given period
             /// but triggered exactly once
             public bool HoldRepeat(TimeSpan duration, TimeSpan repeatEvery, object consume)
@@ -166,27 +189,27 @@ namespace SteamController.Devices
 
             internal override void Reset()
             {
-                LastValue = Value;
-                Value = false;
+                rawLastValue = rawValue;
+                rawValue = false;
                 HoldSince = null;
                 HoldRepeated = null;
                 Consumed = null;
             }
 
-            internal void SetValue(bool value)
+            internal void SetValue(bool newValue)
             {
-                LastValue = Value;
-                Value = value;
+                rawLastValue = rawValue;
+                rawValue = newValue;
                 UpdateTime();
 
-                if (!LastValue && Value)
+                if (!rawLastValue && rawValue)
                 {
                     HoldSince = DateTime.Now;
                     HoldRepeated = null;
                 }
             }
 
-            internal override bool BeforeUpdate(byte[] buffer, SteamController controller)
+            internal override bool BeforeUpdate(byte[] buffer)
             {
                 return true;
             }
@@ -195,6 +218,13 @@ namespace SteamController.Devices
             {
                 if (!Value)
                     Consumed = null;
+            }
+
+            public override string? ToString()
+            {
+                if (Name != "")
+                    return String.Format("{0}: {1} (last: {2})", Name, Value, LastValue);
+                return base.ToString();
             }
         }
 
@@ -215,11 +245,8 @@ namespace SteamController.Devices
                 }
             }
 
-            internal override bool BeforeUpdate(byte[] buffer, SteamController controller)
+            internal override bool BeforeUpdate(byte[] buffer)
             {
-                if (UsedByLizard(controller))
-                    return false;
-
                 if (offset < buffer.Length)
                 {
                     SetValue((buffer[offset] & mask) != 0);
@@ -239,14 +266,22 @@ namespace SteamController.Devices
             public const short VirtualRightThreshold = short.MaxValue / 2;
 
             private int offset;
+            private short rawValue, rawLastValue;
 
             public SteamButton? ActiveButton { get; internal set; }
             public SteamButton? VirtualLeft { get; internal set; }
             public SteamButton? VirtualRight { get; internal set; }
-            public short Value { get; private set; }
-            public short LastValue { get; private set; }
             public short Deadzone { get; set; }
             public short MinChange { get; set; }
+
+            public short Value
+            {
+                get { return ValueCanBeUsed ? rawValue : (short)0; }
+            }
+            public short LastValue
+            {
+                get { return ValueCanBeUsed ? rawLastValue : (short)0; }
+            }
 
             public SteamAxis(int offset)
             {
@@ -331,32 +366,29 @@ namespace SteamController.Devices
 
             internal override void Reset()
             {
-                LastValue = Value;
-                Value = 0;
+                rawLastValue = rawValue;
+                rawValue = 0;
             }
 
-            internal void SetValue(short value)
+            internal void SetValue(short newValue)
             {
-                LastValue = Value;
-                Value = value;
+                rawLastValue = rawValue;
+                rawValue = newValue;
                 UpdateTime();
 
                 // first time pressed, reset value as this is a Pad
                 if (ActiveButton is not null && ActiveButton.JustPressed())
-                    LastValue = Value;
+                    rawLastValue = newValue;
 
                 if (VirtualRight is not null)
-                    VirtualRight.SetValue(value > VirtualRightThreshold);
+                    VirtualRight.SetValue(newValue > VirtualRightThreshold);
 
                 if (VirtualLeft is not null)
-                    VirtualLeft.SetValue(value < VirtualLeftThreshold);
+                    VirtualLeft.SetValue(newValue < VirtualLeftThreshold);
             }
 
-            internal override bool BeforeUpdate(byte[] buffer, SteamController controller)
+            internal override bool BeforeUpdate(byte[] buffer)
             {
-                if (UsedByLizard(controller))
-                    return false;
-
                 if (offset + 1 < buffer.Length)
                 {
                     SetValue(BitConverter.ToInt16(buffer, offset));
@@ -371,6 +403,13 @@ namespace SteamController.Devices
 
             internal override void Update()
             {
+            }
+
+            public override string? ToString()
+            {
+                if (Name != "")
+                    return String.Format("{0}: {1} (last: {2})", Name, Value, LastValue);
+                return base.ToString();
             }
         }
 
@@ -398,6 +437,7 @@ namespace SteamController.Devices
                 Select((field) => Tuple.Create(field, field.GetValue(this) as SteamAction)).
                 ToList();
 
+            allActions.ForEach((tuple) => tuple.Item2.Controller = this);
             allActions.ForEach((tuple) => tuple.Item2.Name = tuple.Item1.Name);
 
             AllActions = allActions.Select((tuple) => tuple.Item2).ToArray();

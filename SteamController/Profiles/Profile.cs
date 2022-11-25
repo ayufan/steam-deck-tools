@@ -2,22 +2,18 @@ namespace SteamController.Profiles
 {
     public abstract class Profile
     {
-        public enum Status
+        public struct Status
         {
-            Continue,
-            Stop
+            public static readonly Status Continue = new Status() { IsDone = false };
+            public static readonly Status Done = new Status() { IsDone = true };
+
+            public bool IsDone { get; set; }
         }
 
-        public bool RunAlways { get; set; }
+        public String Name { get; set; } = "";
+
+        public abstract bool Selected(Context context);
 
         public abstract Status Run(Context context);
-
-        public virtual void Tick(Context context)
-        {
-        }
-
-        public virtual void Skipped(Context context)
-        {
-        }
     }
 }

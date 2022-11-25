@@ -55,6 +55,7 @@ namespace SteamController.Devices
             }
 
             submitReport = false;
+            Connected = false;
         }
 
         private void UpdateConnected()

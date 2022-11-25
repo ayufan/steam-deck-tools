@@ -1,8 +1,8 @@
 using System.Diagnostics;
 
-namespace SteamController.Profiles
+namespace SteamController.Managers
 {
-    public sealed class ProcessProfile : Profile
+    public sealed class ProcessManager : Manager
     {
         public static readonly String[] ActivationProcessNames = new String[]
         {
@@ -42,11 +42,6 @@ namespace SteamController.Profiles
                     context.RequestDesktopMode = true;
                 }
             }
-        }
-
-        public override Status Run(Context context)
-        {
-            return Status.Continue;
         }
     }
 }

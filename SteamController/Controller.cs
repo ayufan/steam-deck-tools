@@ -1,9 +1,9 @@
 ﻿using CommonHelpers;
 using ExternalHelpers;
+using SteamController.Helpers;
 using SteamController.Profiles;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace SteamController
 {
@@ -19,12 +19,13 @@ namespace SteamController
         Context context = new Context()
         {
             Profiles = {
-                new Profiles.SteamShortcutsProfile(),
                 new Profiles.DesktopProfile(),
-                new Profiles.ProcessProfile(),
-                new Profiles.SteamDetectProfile(),
+                new Profiles.SteamProfile(),
                 new Profiles.X360Profile(),
-                new Profiles.DebugProfile()
+            },
+            Managers = {
+                new Managers.ProcessManager(),
+                new Managers.SteamManager()
             }
         };
 
@@ -36,34 +37,47 @@ namespace SteamController
         TimeSpan lastUpdatesReset;
         readonly TimeSpan updateResetInterval = TimeSpan.FromSeconds(1);
 
-        [DllImport("sas.dll")]
-        static extern void SendSAS(bool asUser);
-
         public Controller()
         {
             Instance.RunOnce(TitleWithVersion, "Global\\SteamController");
-            SendSAS(true);
 
             var contextMenu = new ContextMenuStrip(components);
 
             var enabledItem = new ToolStripMenuItem("&Enabled");
             enabledItem.Checked = context.RequestEnable;
-            enabledItem.Click += delegate { enabledItem.Checked = context.RequestEnable = !context.RequestEnable; };
+            enabledItem.Click += delegate { context.RequestEnable = !context.RequestEnable; };
+            contextMenu.Opening += delegate { enabledItem.Checked = context.RequestEnable; };
             contextMenu.Items.Add(enabledItem);
 
             var desktopModeItem = new ToolStripMenuItem("&Desktop Mode");
             desktopModeItem.Checked = context.RequestDesktopMode;
-            desktopModeItem.Click += delegate { desktopModeItem.Checked = context.RequestDesktopMode = !context.RequestDesktopMode; };
+            desktopModeItem.Click += delegate { context.RequestDesktopMode = !context.RequestDesktopMode; };
+            contextMenu.Opening += delegate { desktopModeItem.Checked = context.RequestDesktopMode; };
             contextMenu.Items.Add(desktopModeItem);
 
             var steamDetectionItem = new ToolStripMenuItem("Auto-disable on &Steam");
             steamDetectionItem.Checked = Settings.Default.EnableSteamDetection;
             steamDetectionItem.Click += delegate
             {
-                steamDetectionItem.Checked = Settings.Default.EnableSteamDetection = !Settings.Default.EnableSteamDetection;
+                Settings.Default.EnableSteamDetection = !Settings.Default.EnableSteamDetection;
                 Settings.Default.Save();
             };
+            contextMenu.Opening += delegate { steamDetectionItem.Checked = Settings.Default.EnableSteamDetection; };
             contextMenu.Items.Add(steamDetectionItem);
+            contextMenu.Items.Add(new ToolStripSeparator());
+
+            var lizardMouseItem = new ToolStripMenuItem("Use Lizard &Mouse");
+            lizardMouseItem.Checked = SteamShortcutsProfile.SteamModeLizardMouse;
+            lizardMouseItem.Click += delegate { SteamShortcutsProfile.SteamModeLizardMouse = !SteamShortcutsProfile.SteamModeLizardMouse; };
+            contextMenu.Opening += delegate { lizardMouseItem.Checked = SteamShortcutsProfile.SteamModeLizardMouse; };
+            contextMenu.Items.Add(lizardMouseItem);
+
+            var lizardButtonsItem = new ToolStripMenuItem("Use Lizard &Buttons");
+            lizardButtonsItem.Checked = SteamShortcutsProfile.SteamModeLizardButtons;
+            lizardButtonsItem.Click += delegate { SteamShortcutsProfile.SteamModeLizardButtons = !SteamShortcutsProfile.SteamModeLizardButtons; };
+            contextMenu.Opening += delegate { lizardButtonsItem.Checked = SteamShortcutsProfile.SteamModeLizardButtons; };
+            contextMenu.Items.Add(lizardButtonsItem);
+
             contextMenu.Items.Add(new ToolStripSeparator());
 
             if (startupManager.IsAvailable)
@@ -115,6 +129,7 @@ namespace SteamController
                 lock (context)
                 {
                     context.Update();
+                    context.Debug();
                 }
 
                 if (!context.Enabled)
@@ -141,15 +156,15 @@ namespace SteamController
                 notifyIcon.Text = TitleWithVersion + ". Missing ViGEm?";
                 notifyIcon.Icon = Resources.microsoft_xbox_controller_red;
             }
+            else if (context.Enabled && context.SteamUsesController)
+            {
+                notifyIcon.Icon = context.DesktopMode ? Resources.monitor_off : Resources.microsoft_xbox_controller_off;
+                notifyIcon.Text = TitleWithVersion + ". Steam Detected";
+            }
             else if (context.Enabled)
             {
                 notifyIcon.Icon = context.DesktopMode ? Resources.monitor : Resources.microsoft_xbox_controller;
                 notifyIcon.Text = TitleWithVersion;
-            }
-            else if (context.DisableDueToSteam)
-            {
-                notifyIcon.Icon = context.DesktopMode ? Resources.monitor_off : Resources.microsoft_xbox_controller_off;
-                notifyIcon.Text = TitleWithVersion + ". Steam Detected";
             }
             else
             {
