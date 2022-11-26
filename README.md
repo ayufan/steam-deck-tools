@@ -50,8 +50,8 @@ Uninstall MSI Afterburner and any other OSD software.
 
 It currently registers two global hotkeys:
 
-- **F11** - enable performance overlay
-- **Shift+F11** - cycle to next performance overlay (and enable it)
+- **Shift+F11** - enable performance overlay
+- **Alt+Shift+F11** - cycle to next performance overlay (and enable it)
 
 There are 5 modes of presentation:
 

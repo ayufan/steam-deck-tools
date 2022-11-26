@@ -8,6 +8,8 @@
 - Reset FPS limit if anything related to resolution changes
 - Retry Vangogh GPU detection 3 times
 - Add `Radeon Image Sharpening` option (Yes, or No)
+- Fix FanControl window not hidden on startup
+- Performance Overlay defaults are changed to `Shift+F11` (Toggle OSD) and `Alt+Shift+F11` (Switch OSD)
 
 ## 0.3.x
 

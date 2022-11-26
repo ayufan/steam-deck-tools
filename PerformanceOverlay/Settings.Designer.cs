@@ -49,7 +49,7 @@ namespace PerformanceOverlay {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F11")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Shift+F11")]
         public string ShowOSDShortcut {
             get {
                 return ((string)(this["ShowOSDShortcut"]));
@@ -58,7 +58,7 @@ namespace PerformanceOverlay {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Shift+F11")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Alt+Shift+F11")]
         public string CycleOSDShortcut {
             get {
                 return ((string)(this["CycleOSDShortcut"]));
