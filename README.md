@@ -217,7 +217,7 @@ to make `SteamController.exe` the one mapping those.
 1. In a new window click `DELETE`.
 1. Now click `B` or `DONE`.
 
-## 4. Risks
+## 5. Risks
 
 **This software is provided on best-effort basis and can break your SteamDeck.** It does a direct manipulation
 of kernel memory to control usage the EC (Embedded Controller) and setting desired fan RPM via VLV0100
@@ -231,7 +231,7 @@ The memory addresses used are hardcoded and can be changed any moment by the Bio
 Fortunately quite amount of people are using it with a success and no problems observed.
 However, you should be aware of the consequences.
 
-### 4.1. Risk of CPU and GPU frequency change
+### 5.1. Risk of CPU and GPU frequency change
 
 The APU manipulation of CPU and GPU frequency uses a ported implementation from Linux kernel.
 It is more unstable than Fan Control (since the Fan Control is controller managing EC on Windows).
@@ -242,13 +242,19 @@ power shutdown the device. Disconnect from charging, and hold power button for a
 Power device normally afterwards. This is rather unlikely to break the device if done right
 after when such event occurs.
 
-## 5. Anti-Cheat and Antivirus software
+## 6. Anti-Cheat and Antivirus software
 
 Since this project uses direct manipulation of kernel memory via `inpoutx64.dll`
 it might trigger Antivirus and Anti-Cheat software.
 
 You might consider disabling all tools if this happens. Unfortunatelly there's no worakound for that
 unless someone gets access to driver signing certificate for Windows.
+
+## 7. Development
+
+It should be enough to run `scripts/build.bat` to see binaries in `build-release/`.
+
+You might also run `scripts/test_debug.bat` which will build and run built version.
 
 ## Author
 
