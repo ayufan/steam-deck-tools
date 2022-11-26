@@ -178,11 +178,8 @@ namespace SteamController.Devices
 
         public void SetSliderValue(Xbox360Slider slider, short value)
         {
-            // rescale from -32767..32768 to 0..255
-            int result = value;
-            result -= short.MinValue;
-            result *= byte.MaxValue;
-            result /= ushort.MaxValue;
+            // rescale from 0..32767 to 0..255
+            int result = Math.Clamp(value, (short)0, short.MaxValue) * byte.MaxValue / short.MaxValue;
             device?.SetSliderValue(slider, (byte)result);
             submitReport = true;
         }
