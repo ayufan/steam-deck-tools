@@ -1,6 +1,5 @@
 ﻿using CommonHelpers;
 using ExternalHelpers;
-using SteamController.Helpers;
 using SteamController.Profiles;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -117,6 +116,18 @@ namespace SteamController
             contextStateUpdate.Interval = 250;
             contextStateUpdate.Enabled = true;
             contextStateUpdate.Tick += ContextStateUpdate_Tick;
+
+            context.ProfileChanged += (profile) =>
+            {
+#if false
+                notifyIcon.ShowBalloonTip(
+                    1000,
+                    TitleWithVersion,
+                    String.Format("Selected profile: {0}", profile.Name),
+                    ToolTipIcon.Info
+                );
+#endif
+            };
 
             stopwatch.Start();
 

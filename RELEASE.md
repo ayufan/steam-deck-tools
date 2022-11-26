@@ -5,6 +5,7 @@
 - Fix incorrect `CurrentProfile` of `SteamController`
 - Fix right stick serving as mouse in `X360` mode
 - Improve build scripts in `scripts/`
+- Show notification on controller changed
 
 ## 0.4.x
 

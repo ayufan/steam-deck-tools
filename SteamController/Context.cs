@@ -26,6 +26,8 @@ namespace SteamController
         public bool SteamRunning { get; set; } = false;
         public bool SteamUsesController { get; set; } = false;
 
+        public event Action<Profiles.Profile> ProfileChanged;
+
         public bool Enabled
         {
             get { return RequestEnable; }
@@ -55,6 +57,8 @@ namespace SteamController
             X360 = new Devices.Xbox360Controller();
             Keyboard = new Devices.KeyboardController();
             Mouse = new Devices.MouseController();
+
+            ProfileChanged += (_) => X360.Beep();
         }
 
         public void Dispose()
@@ -141,7 +145,9 @@ namespace SteamController
             list.Remove(profile);
             list.Insert(0, profile);
             RequestDesktopMode = profile.IsDesktop;
-            Beep();
+
+            if (profile.Selected(this))
+                ProfileChanged(profile);
             return true;
         }
 
@@ -163,16 +169,24 @@ namespace SteamController
 
                 list.Remove(profile);
                 list.Insert(0, profile);
-                Beep();
+                ProfileChanged(profile);
                 return true;
             }
 
             return false;
         }
 
-        public void Beep()
+        public void ToggleDesktopMode(bool? forceState = null)
         {
-            X360.Beep();
+            var oldProfile = GetCurrentProfile();
+            if (forceState is null)
+                RequestDesktopMode = !RequestDesktopMode;
+            else
+                RequestDesktopMode = forceState.Value;
+
+            var newProfile = GetCurrentProfile();
+            if (oldProfile != newProfile && newProfile is not null)
+                ProfileChanged(newProfile);
         }
     }
 }

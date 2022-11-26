@@ -28,13 +28,13 @@ namespace SteamController.Profiles
             {
                 if (!c.SelectNext())
                 {
-                    c.RequestDesktopMode = !c.RequestDesktopMode;
+                    c.ToggleDesktopMode();
                 }
                 return Status.Done;
             }
             else if (c.Steam.BtnOptions.HoldNext(HoldToSwitchDesktop, ShortcutConsumed, "SwitchToDesktop"))
             {
-                c.RequestDesktopMode = !c.RequestDesktopMode;
+                c.ToggleDesktopMode();
                 return Status.Done;
             }
 
