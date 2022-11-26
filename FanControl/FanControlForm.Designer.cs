@@ -1,4 +1,4 @@
-﻿namespace FanControl
+namespace FanControl
 {
     partial class FanControlForm
     {
@@ -77,7 +77,6 @@
             // 
             // contextMenu
             // 
-            this.contextMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem2,
             this.toolStripSeparator3,
