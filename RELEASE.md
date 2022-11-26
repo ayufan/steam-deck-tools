@@ -8,6 +8,7 @@
 - Show notification on controller changed
 - Try to disable usage of Kernel Drivers (when FAN in Default, and OSD Kernel Drivers are disabled)
   to allow apps to work with Anti-Cheat detections
+- Hide `Use Lizard Mouse/Buttons` as it does something different than people are used to
 
 ## 0.4.x
 

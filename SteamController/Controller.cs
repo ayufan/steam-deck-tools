@@ -66,19 +66,19 @@ namespace SteamController
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
+#if DEBUG
             var lizardMouseItem = new ToolStripMenuItem("Use Lizard &Mouse");
-            lizardMouseItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardMouse;
             lizardMouseItem.Click += delegate { DefaultGuideShortcutsProfile.SteamModeLizardMouse = !DefaultGuideShortcutsProfile.SteamModeLizardMouse; };
             contextMenu.Opening += delegate { lizardMouseItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardMouse; };
             contextMenu.Items.Add(lizardMouseItem);
 
             var lizardButtonsItem = new ToolStripMenuItem("Use Lizard &Buttons");
-            lizardButtonsItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardButtons;
             lizardButtonsItem.Click += delegate { DefaultGuideShortcutsProfile.SteamModeLizardButtons = !DefaultGuideShortcutsProfile.SteamModeLizardButtons; };
             contextMenu.Opening += delegate { lizardButtonsItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardButtons; };
             contextMenu.Items.Add(lizardButtonsItem);
 
             contextMenu.Items.Add(new ToolStripSeparator());
+#endif
 
             var steamDetectionItem = new ToolStripMenuItem("Auto-disable on &Steam");
             steamDetectionItem.Checked = Settings.Default.EnableSteamDetection;
