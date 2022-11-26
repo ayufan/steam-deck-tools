@@ -1,16 +1,7 @@
 ﻿using CommonHelpers;
 using ExternalHelpers;
-using Microsoft.VisualBasic.Logging;
 using RTSSSharedMemoryNET;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PerformanceOverlay
 {
@@ -38,7 +29,7 @@ namespace PerformanceOverlay
             contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
             SharedData_Update();
-            Instance.Open(TitleWithVersion, "Global\\PerformanceOverlay");
+            Instance.Open(TitleWithVersion, true, "Global\\PerformanceOverlay");
 
             showItem = new ToolStripMenuItem("&Show OSD");
             showItem.Click += ShowItem_Click;
@@ -59,6 +50,11 @@ namespace PerformanceOverlay
             updateContextItems(contextMenu);
 
             contextMenu.Items.Add(new ToolStripSeparator());
+
+            var kernelDriversItem = new ToolStripMenuItem("Use &Kernel Drivers");
+            kernelDriversItem.Click += delegate { Instance.UseKernelDrivers = !Instance.UseKernelDrivers; };
+            contextMenu.Opening += delegate { kernelDriversItem.Checked = Instance.UseKernelDrivers; };
+            contextMenu.Items.Add(kernelDriversItem);
 
             if (startupManager.IsAvailable)
             {
@@ -172,12 +168,19 @@ namespace PerformanceOverlay
                     Settings.Default.Save();
                     updateContextItems(contextMenu);
                 }
+
+                if (Enum.IsDefined<KernelDriversLoaded>(value.DesiredKernelDriversLoaded))
+                {
+                    Instance.UseKernelDrivers = (KernelDriversLoaded)value.DesiredKernelDriversLoaded == KernelDriversLoaded.Yes;
+                    updateContextItems(contextMenu);
+                }
             }
 
             sharedData.SetValue(new OverlayModeSetting()
             {
                 Current = Settings.Default.OSDModeParsed,
-                CurrentEnabled = Settings.Default.ShowOSD ? OverlayEnabled.Yes : OverlayEnabled.No
+                CurrentEnabled = Settings.Default.ShowOSD ? OverlayEnabled.Yes : OverlayEnabled.No,
+                KernelDriversLoaded = Instance.UseKernelDrivers ? KernelDriversLoaded.Yes : KernelDriversLoaded.No
             });
         }
 

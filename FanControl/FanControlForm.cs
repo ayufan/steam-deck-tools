@@ -1,24 +1,11 @@
 ﻿using CommonHelpers;
 using ExternalHelpers;
-using FanControl.Properties;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.Common;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace FanControl
 {
     public partial class FanControlForm : Form
     {
-        private FanController fanControl = new FanController();
+        private FanController fanControl;
         private StartupManager startupManager = new StartupManager(
             "Steam Deck Fan Control",
             "Starts Steam Deck Fan Control on Windows startup."
@@ -29,10 +16,12 @@ namespace FanControl
         public FanControlForm()
         {
             InitializeComponent();
-            SharedData_Update();
 
             Text += " v" + Application.ProductVersion.ToString();
-            Instance.Open(Text, "Global\\FanControlOnce");
+            Instance.Open(Text, true, "Global\\FanControlOnce");
+
+            fanControl = new FanController();
+            SharedData_Update();
 
             notifyIcon.Text = Text;
             notifyIcon.Visible = true;
@@ -155,13 +144,17 @@ namespace FanControl
                 setFanMode((FanMode)value.Desired);
             }
 
-            sharedData.SetValue(new FanModeSetting() { Current = fanControl.Mode });
+            sharedData.SetValue(new FanModeSetting()
+            {
+                Current = fanControl.Mode,
+                KernelDriversLoaded = Instance.UseKernelDrivers ? KernelDriversLoaded.Yes : KernelDriversLoaded.No
+            });
         }
 
         private void fanLoopTimer_Tick(object sender, EventArgs e)
         {
             SharedData_Update();
-            fanControl.Update();
+            fanControl.Update(Visible);
         }
 
         private void propertyGridUpdateTimer_Tick(object sender, EventArgs e)
@@ -171,7 +164,11 @@ namespace FanControl
 
             propertyGrid1.Refresh();
             sensorWarningLabel.Visible = fanControl.IsAnyInvalid();
-            notifyIcon.Text = String.Format("Fan: {0} RPM Mode: {1}", fanControl.CurrentRPM, fanControl.Mode);
+
+            if (fanControl.IsActive)
+                notifyIcon.Text = String.Format("Fan: {0} RPM Mode: {1}", fanControl.CurrentRPM, fanControl.Mode);
+            else
+                notifyIcon.Text = String.Format("Mode: {0}", fanControl.Mode);
         }
 
         private void toolStripMenuItemStartupOnBoot_Click(object sender, EventArgs e)

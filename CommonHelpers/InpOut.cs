@@ -7,29 +7,67 @@ using System.Threading.Tasks;
 
 namespace CommonHelpers
 {
-    public class InpOut
+    public class InpOut : IDisposable
     {
-        [DllImport("inpoutx64.dll", EntryPoint = "MapPhysToLin", CallingConvention = CallingConvention.StdCall)]
-        public static extern IntPtr MapPhysToLin(IntPtr pbPhysAddr, uint dwPhysSize, out IntPtr pPhysicalMemoryHandle);
+        public const String LibraryName = "inpoutx64.dll";
 
-        [DllImport("inpoutx64.dll", EntryPoint = "UnmapPhysicalMemory", CallingConvention = CallingConvention.StdCall)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool UnmapPhysicalMemory(IntPtr PhysicalMemoryHandle, IntPtr pbLinAddr);
+        private IntPtr libraryHandle;
+        public MapPhysToLinDelegate MapPhysToLin;
+        public UnmapPhysicalMemoryDelegate UnmapPhysicalMemory;
+        public DlPortReadPortUcharDelegate DlPortReadPortUchar;
+        public DlPortWritePortUcharDelegate DlPortWritePortUchar;
 
-        [DllImport("inpoutx64.dll", EntryPoint = "DlPortReadPortUchar", CallingConvention = CallingConvention.StdCall)]
-        [return: MarshalAs(UnmanagedType.U1)]
-        public static extern byte DlPortReadPortUchar(ushort port);
+        public InpOut()
+        {
+            libraryHandle = LoadLibrary(LibraryName);
+            try
+            {
+                var addr = GetProcAddress(libraryHandle, "MapPhysToLin");
+                if (addr == IntPtr.Zero)
+                    throw new ArgumentException("Missing MapPhysToLin");
+                MapPhysToLin = Marshal.GetDelegateForFunctionPointer<MapPhysToLinDelegate>(addr);
 
-        [DllImport("inpoutx64.dll", EntryPoint = "DlPortWritePortUchar", CallingConvention = CallingConvention.StdCall)]
-        public static extern byte DlPortWritePortUchar(ushort port, byte vlaue);
+                addr = GetProcAddress(libraryHandle, "UnmapPhysicalMemory");
+                if (addr == IntPtr.Zero)
+                    throw new ArgumentException("Missing UnmapPhysicalMemory");
+                UnmapPhysicalMemory = Marshal.GetDelegateForFunctionPointer<UnmapPhysicalMemoryDelegate>(addr);
 
-        [DllImport("inpoutx64.dll", CallingConvention = CallingConvention.StdCall)]
-        public static extern bool GetPhysLong(IntPtr pbPhysAddr, out uint physValue);
+                addr = GetProcAddress(libraryHandle, "UnmapPhysicalMemory");
+                if (addr == IntPtr.Zero)
+                    throw new ArgumentException("Missing UnmapPhysicalMemory");
+                UnmapPhysicalMemory = Marshal.GetDelegateForFunctionPointer<UnmapPhysicalMemoryDelegate>(addr);
 
-        [DllImport("inpoutx64.dll", CallingConvention = CallingConvention.StdCall)]
-        public static extern bool SetPhysLong(IntPtr pbPhysAddr, uint physValue);
+                addr = GetProcAddress(libraryHandle, "DlPortReadPortUchar");
+                if (addr == IntPtr.Zero)
+                    throw new ArgumentException("Missing DlPortReadPortUchar");
+                DlPortReadPortUchar = Marshal.GetDelegateForFunctionPointer<DlPortReadPortUcharDelegate>(addr);
 
-        public static byte[] ReadMemory(IntPtr baseAddress, uint size)
+                addr = GetProcAddress(libraryHandle, "DlPortWritePortUchar");
+                if (addr == IntPtr.Zero)
+                    throw new ArgumentException("Missing DlPortWritePortUchar");
+                DlPortWritePortUchar = Marshal.GetDelegateForFunctionPointer<DlPortWritePortUcharDelegate>(addr);
+            }
+            catch
+            {
+                FreeLibrary(libraryHandle);
+                libraryHandle = IntPtr.Zero;
+                throw;
+            }
+        }
+
+        ~InpOut()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            FreeLibrary(libraryHandle);
+            libraryHandle = IntPtr.Zero;
+        }
+
+        public byte[]? ReadMemory(IntPtr baseAddress, uint size)
         {
             IntPtr pdwLinAddr = MapPhysToLin(baseAddress, size, out IntPtr pPhysicalMemoryHandle);
             if (pdwLinAddr != IntPtr.Zero)
@@ -37,25 +75,37 @@ namespace CommonHelpers
                 byte[] bytes = new byte[size];
                 Marshal.Copy(pdwLinAddr, bytes, 0, bytes.Length);
                 UnmapPhysicalMemory(pPhysicalMemoryHandle, pdwLinAddr);
-
                 return bytes;
             }
-
             return null;
         }
 
-        public static bool WriteMemory(IntPtr baseAddress, byte[] data)
+        public bool WriteMemory(IntPtr baseAddress, byte[] data)
         {
             IntPtr pdwLinAddr = MapPhysToLin(baseAddress, (uint)data.Length, out IntPtr pPhysicalMemoryHandle);
             if (pdwLinAddr != IntPtr.Zero)
             {
                 Marshal.Copy(data, 0, pdwLinAddr, data.Length);
                 UnmapPhysicalMemory(pPhysicalMemoryHandle, pdwLinAddr);
-
                 return true;
             }
 
             return false;
         }
+
+        public delegate IntPtr MapPhysToLinDelegate(IntPtr pbPhysAddr, uint dwPhysSize, out IntPtr pPhysicalMemoryHandle);
+        public delegate bool UnmapPhysicalMemoryDelegate(IntPtr PhysicalMemoryHandle, IntPtr pbLinAddr);
+        public delegate byte DlPortReadPortUcharDelegate(ushort port);
+        public delegate byte DlPortWritePortUcharDelegate(ushort port, byte value);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr LoadLibrary(string lpFileName);
+
+        [DllImport("kernel32.dll", ExactSpelling = true)]
+        private static extern IntPtr GetProcAddress(IntPtr module, string methodName);
+
+        [DllImport("kernel32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool FreeLibrary(IntPtr module);
     }
 }

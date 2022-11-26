@@ -18,6 +18,7 @@ namespace PowerControl.Helpers.AMD
 
         IntPtr mappedAddress;
         IntPtr physicalHandle;
+        InpOut? inpOut;
 
         public RyzenSMU()
         {
@@ -42,7 +43,8 @@ namespace PowerControl.Helpers.AMD
 
             try
             {
-                mappedAddress = InpOut.MapPhysToLin(MMIO_ADDR, MMIO_SIZE, out physicalHandle);
+                inpOut = new InpOut();
+                mappedAddress = inpOut.MapPhysToLin(MMIO_ADDR, MMIO_SIZE, out physicalHandle);
             }
             catch (Exception e)
             {
@@ -59,9 +61,11 @@ namespace PowerControl.Helpers.AMD
                 return;
 
             GC.SuppressFinalize(this);
-            InpOut.UnmapPhysicalMemory(physicalHandle, mappedAddress);
+            inpOut?.UnmapPhysicalMemory(physicalHandle, mappedAddress);
             mappedAddress = IntPtr.Zero;
             physicalHandle = IntPtr.Zero;
+            using (inpOut) { }
+            inpOut = null;
         }
 
         private uint RregRaw(uint reg)

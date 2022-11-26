@@ -23,9 +23,31 @@ namespace CommonHelpers
 
         private static Mutex? runOnceMutex;
         private static Mutex? globalLockMutex;
+        private static bool useKernelDrivers;
 
         private const String GLOBAL_MUTEX_NAME = "Global\\SteamDeckToolsCommonHelpers";
         private const int GLOBAL_DEFAULT_TIMEOUT = 5000;
+
+        public static bool UseKernelDrivers
+        {
+            get { return useKernelDrivers; }
+            set
+            {
+                if (useKernelDrivers == value)
+                    return;
+
+                useKernelDrivers = value;
+
+                if (value)
+                    Vlv0100.Open();
+                else
+                    Vlv0100.Close();
+
+                // CPU requires reading RyzenSMU
+                HardwareComputer.IsCpuEnabled = value;
+                HardwareComputer.Reset();
+            }
+        }
 
         public static Mutex? WaitGlobalMutex(int timeoutMs)
         {
@@ -60,7 +82,7 @@ namespace CommonHelpers
             }
         }
 
-        public static void Open(String title, String? runOnce = null, int runOnceTimeout = 100)
+        public static void Open(String title, bool useKernelDrivers, String? runOnce = null, int runOnceTimeout = 100)
         {
             if (runOnce is not null)
             {
@@ -72,17 +94,20 @@ namespace CommonHelpers
             if (mutex is null)
             {
                 Fatal(title, "Failed to acquire global mutex.");
+                return;
             }
 
             try
             {
-                if (!Vlv0100.IsSupported())
+                UseKernelDrivers = useKernelDrivers;
+
+                if (Vlv0100.IsOpen && !Vlv0100.IsSupported)
                 {
                     String message = "";
                     message += "Current device is not supported.\n";
-                    message += "FirmwareVersion: " + Vlv0100.GetFirmwareVersion().ToString("X") + "\n";
-                    message += "BoardID: " + Vlv0100.GetBoardID().ToString("X") + "\n";
-                    message += "PDCS: " + Vlv0100.GetPDCS().ToString("X") + "\n";
+                    message += "FirmwareVersion: " + Vlv0100.FirmwareVersion.ToString("X") + "\n";
+                    message += "BoardID: " + Vlv0100.BoardID.ToString("X") + "\n";
+                    message += "PDCS: " + Vlv0100.PDCS.ToString("X") + "\n";
 
                     Fatal(title, message);
                 }

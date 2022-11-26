@@ -22,7 +22,7 @@ namespace FanControl
         [CategoryAttribute("Fan")]
         [NotifyParentProperty(true)]
 
-        public ushort CurrentRPM { get; private set; }
+        public ushort? CurrentRPM { get; private set; }
 
         [CategoryAttribute("Fan")]
         [NotifyParentProperty(true)]
@@ -30,7 +30,7 @@ namespace FanControl
         public ushort DesiredRPM { get; private set; }
 
         [CategoryAttribute("Board")]
-        public String PDVersion { get; private set; } = Vlv0100.GetFirmwareVersion().ToString("X");
+        public String PDVersion { get; private set; } = Vlv0100.FirmwareVersion.ToString("X");
 
         public FanController()
         {
@@ -71,10 +71,14 @@ namespace FanControl
             return rpm;
         }
 
-        public void Update()
+        public bool IsActive
+        {
+            get { return Vlv0100.IsOpen; }
+        }
+
+        public void Update(bool visible)
         {
             var mutex = Instance.WaitGlobalMutex(200);
-
             if (mutex is null)
             {
                 // If we cannot acquire mutex slightly increase FAN to compensate just in case
@@ -84,6 +88,17 @@ namespace FanControl
 
             try
             {
+                if (Mode == FanMode.Default && !visible)
+                {
+                    Instance.UseKernelDrivers = false;
+                    return;
+                }
+                else if (!Vlv0100.IsOpen)
+                {
+                    Instance.UseKernelDrivers = true;
+                    SetMode(Mode);
+                }
+
                 foreach (var sensor in allSensors.Values)
                     sensor.Reset();
 
@@ -112,6 +127,7 @@ namespace FanControl
                     break;
 
                 default:
+                    Instance.UseKernelDrivers = true;
                     Vlv0100.SetFanControl(true);
                     break;
             }

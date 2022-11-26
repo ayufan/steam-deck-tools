@@ -26,7 +26,7 @@ namespace CommonHelpers
         static ushort IO6C = 0x6C;
 
         public const ushort MAX_FAN_RPM = 0x1C84;
-        
+
         public static readonly ushort[] SupportedFirmwares = {
             0xB030 // 45104
         };
@@ -39,51 +39,86 @@ namespace CommonHelpers
             0x2B // 43
         };
 
-        public static bool IsSupported()
-        {
-            var firmwareVersion = GetFirmwareVersion();
-            var boardID = GetBoardID();
-            var pdcs = GetPDCS();
+        private static InpOut? inpOut;
 
-            return SupportedFirmwares.Contains(firmwareVersion) &&
-                SupportedBoardID.Contains(boardID);
+        public static bool IsOpen
+        {
+            get { return inpOut is not null; }
         }
 
-        public static ushort GetFirmwareVersion()
+        public static bool IsSupported
         {
-            byte[] data = InpOut.ReadMemory(PDFV, 2);
-            return BitConverter.ToUInt16(data);
+            get
+            {
+                return SupportedFirmwares.Contains(FirmwareVersion) &&
+                    SupportedBoardID.Contains(BoardID);
+            }
         }
 
-        public static byte GetBoardID()
+        public static ushort FirmwareVersion { get; private set; }
+        public static byte BoardID { get; private set; }
+        public static byte PDCS { get; private set; }
+
+        public static bool Open()
         {
-            byte[] data = InpOut.ReadMemory(XBID, 1);
-            return data[0];
+            if (inpOut != null)
+                return true;
+
+            try
+            {
+                inpOut = new InpOut();
+
+                var data = inpOut?.ReadMemory(PDFV, 2);
+                if (data is not null)
+                    FirmwareVersion = BitConverter.ToUInt16(data);
+
+                data = inpOut?.ReadMemory(XBID, 1);
+                if (data is not null)
+                    BoardID = data[0];
+
+                data = inpOut?.ReadMemory(PDCT, 1);
+                if (data is not null)
+                    PDCS = data[0];
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Log.TraceLine("VLV0100: InpOut: {0}", e);
+                Close();
+                return false;
+            }
         }
 
-        public static byte GetPDCS()
+        public static void Close()
         {
-            byte[] data = InpOut.ReadMemory(PDCT, 1);
-            return data[0];
+            SetFanControl(false);
+            using (inpOut) { }
+            inpOut = null;
         }
 
         public static ushort GetFanDesiredRPM()
         {
-            byte[] data = InpOut.ReadMemory(FSLO_FSHI, 2);
+            var data = inpOut?.ReadMemory(FSLO_FSHI, 2);
+            if (data is null)
+                return 0;
             return BitConverter.ToUInt16(data);
         }
 
-        public static ushort GetFanRPM()
+        public static ushort? GetFanRPM()
         {
-            byte[] data = InpOut.ReadMemory(FNRL_FNRH, 2);
+            var data = inpOut?.ReadMemory(FNRL_FNRH, 2);
+            if (data is null)
+                return null;
             return BitConverter.ToUInt16(data);
         }
+
         public static void SetFanControl(Boolean userControlled)
         {
             SetGain(10);
             SetRampRate(userControlled ? (byte)10 : (byte)20);
 
-            InpOut.DlPortWritePortUchar(IO6C, userControlled ? (byte)0xCC : (byte)0xCD);
+            inpOut?.DlPortWritePortUchar(IO6C, userControlled ? (byte)0xCC : (byte)0xCD);
         }
 
         public static void SetFanDesiredRPM(ushort rpm)
@@ -92,18 +127,22 @@ namespace CommonHelpers
                 rpm = MAX_FAN_RPM;
 
             byte[] data = BitConverter.GetBytes(rpm);
-            InpOut.WriteMemory(FSLO_FSHI, data);
+            inpOut?.WriteMemory(FSLO_FSHI, data);
         }
 
         public static bool GetFanCheck()
         {
-            byte[] data = InpOut.ReadMemory(FNCK, 1);
+            var data = inpOut?.ReadMemory(FNCK, 1);
+            if (data is null)
+                return false;
             return (data[0] & 0x1) != 0;
         }
 
         public static float GetBattTemperature()
         {
-            byte[] data = InpOut.ReadMemory(BATH_BATL, 2);
+            var data = inpOut?.ReadMemory(BATH_BATL, 2);
+            if (data is null)
+                return 0;
             int value = (data[0] << 8) + data[1];
             return (float)(value - 0x0AAC) / 10.0f;
         }
@@ -111,12 +150,12 @@ namespace CommonHelpers
         private static void SetGain(ushort gain)
         {
             byte[] data = BitConverter.GetBytes(gain);
-            InpOut.WriteMemory(GNLO_GNHI, data);
+            inpOut?.WriteMemory(GNLO_GNHI, data);
         }
         private static void SetRampRate(byte rampRate)
         {
             byte[] data = BitConverter.GetBytes(rampRate);
-            InpOut.WriteMemory(FRPR, data);
+            inpOut?.WriteMemory(FRPR, data);
         }
     }
 }

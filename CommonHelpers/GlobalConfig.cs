@@ -14,6 +14,12 @@ namespace CommonHelpers
         Max
     }
 
+    public enum KernelDriversLoaded : uint
+    {
+        Yes = 4363232,
+        No
+    }
+
     public enum OverlayMode : uint
     {
         FPS = 10032,
@@ -39,6 +45,7 @@ namespace CommonHelpers
     public struct FanModeSetting
     {
         public FanMode Current, Desired;
+        public KernelDriversLoaded KernelDriversLoaded;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -46,6 +53,8 @@ namespace CommonHelpers
     {
         public OverlayMode Current, Desired;
         public OverlayEnabled CurrentEnabled, DesiredEnabled;
+        public KernelDriversLoaded KernelDriversLoaded;
+        public KernelDriversLoaded DesiredKernelDriversLoaded;
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -6,6 +6,8 @@
 - Fix right stick serving as mouse in `X360` mode
 - Improve build scripts in `scripts/`
 - Show notification on controller changed
+- Try to disable usage of Kernel Drivers (when FAN in Default, and OSD Kernel Drivers are disabled)
+  to allow apps to work with Anti-Cheat detections
 
 ## 0.4.x
 

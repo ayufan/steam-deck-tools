@@ -39,7 +39,7 @@ namespace PerformanceOverlay
 
         public class UserValueSensor : ValueSensor
         {
-            public delegate float ValueDelegate();
+            public delegate float? ValueDelegate();
 
             public ValueDelegate Value { get; set; }
 
@@ -316,7 +316,7 @@ namespace PerformanceOverlay
                 {
                     Value = delegate ()
                     {
-                        return (float)CommonHelpers.Vlv0100.GetFanRPM();
+                        return CommonHelpers.Vlv0100.GetFanRPM();
                     },
                     Format = "F0"
                 }
@@ -352,7 +352,7 @@ namespace PerformanceOverlay
                 return true;
             });
         }
-        
+
         public string? GetValue(String name)
         {
             if (!AllSensors.ContainsKey(name))

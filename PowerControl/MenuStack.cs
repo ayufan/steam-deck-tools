@@ -434,6 +434,30 @@ namespace PowerControl
                 },
                 new Menu.MenuItemWithOptions()
                 {
+                    Name = "OSD Kernel Drivers",
+                    ApplyDelay = 500,
+                    OptionsValues = delegate()
+                    {
+                        return Enum.GetValues<KernelDriversLoaded>().Select(item => (object)item).ToArray();
+                    },
+                    CurrentValue = delegate()
+                    {
+                        if (SharedData<OverlayModeSetting>.GetExistingValue(out var value))
+                           return value.KernelDriversLoaded;
+                        return null;
+                    },
+                    ApplyValue = delegate(object selected)
+                    {
+                        if (!SharedData<OverlayModeSetting>.GetExistingValue(out var value))
+                            return null;
+                        value.DesiredKernelDriversLoaded = (KernelDriversLoaded)selected;
+                        if (!SharedData<OverlayModeSetting>.SetExistingValue(value))
+                            return null;
+                        return selected;
+                    }
+                },
+                new Menu.MenuItemWithOptions()
+                {
                     Name = "FAN",
                     ApplyDelay = 500,
                     OptionsValues = delegate()
