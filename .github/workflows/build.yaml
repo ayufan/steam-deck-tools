@@ -3,6 +3,9 @@ on:
     branches: [main]
     paths-ignore:
       - '**/**.md'
+      - '**/*.bat'
+      - '**/*.ps1'
+      - '**/*.png'
 
 env:
   RELEASE_NAME: SteamDeckTools
