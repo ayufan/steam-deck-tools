@@ -77,6 +77,7 @@
             // 
             // contextMenu
             // 
+            this.contextMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem2,
             this.toolStripSeparator3,
@@ -87,67 +88,67 @@
             this.toolStripSeparator1,
             this.toolStripMenuItem1});
             this.contextMenu.Name = "fanModeSelectMenu";
-            this.contextMenu.Size = new System.Drawing.Size(158, 132);
+            this.contextMenu.Size = new System.Drawing.Size(257, 212);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(256, 38);
             this.toolStripMenuItem2.Text = "&Show";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.formShow_Event);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(154, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(253, 6);
             // 
             // toolStripSeparatorEndOfModes
             // 
             this.toolStripSeparatorEndOfModes.Name = "toolStripSeparatorEndOfModes";
-            this.toolStripSeparatorEndOfModes.Size = new System.Drawing.Size(154, 6);
+            this.toolStripSeparatorEndOfModes.Size = new System.Drawing.Size(253, 6);
             // 
             // toolStripMenuItemStartupOnBootContext
             // 
             this.toolStripMenuItemStartupOnBootContext.Name = "toolStripMenuItemStartupOnBootContext";
-            this.toolStripMenuItemStartupOnBootContext.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemStartupOnBootContext.Size = new System.Drawing.Size(256, 38);
             this.toolStripMenuItemStartupOnBootContext.Text = "Startup on &Boot";
             this.toolStripMenuItemStartupOnBootContext.Click += new System.EventHandler(this.toolStripMenuItemStartupOnBoot_Click);
             // 
             // toolStripMenuItemAlwaysOnTopContext
             // 
             this.toolStripMenuItemAlwaysOnTopContext.Name = "toolStripMenuItemAlwaysOnTopContext";
-            this.toolStripMenuItemAlwaysOnTopContext.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemAlwaysOnTopContext.Size = new System.Drawing.Size(256, 38);
             this.toolStripMenuItemAlwaysOnTopContext.Text = "&Always on Top";
             this.toolStripMenuItemAlwaysOnTopContext.Click += new System.EventHandler(this.toolStripMenuItemAlwaysOnTop_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(256, 38);
             this.toolStripMenuItem3.Text = "Help";
             this.toolStripMenuItem3.Click += new System.EventHandler(this.help_DoubleClick);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(154, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(253, 6);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(256, 38);
             this.toolStripMenuItem1.Text = "&Exit";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.formClose_Event);
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fanModeSelectMenu,
             this.controlToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(3, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(383, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(711, 44);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -157,7 +158,7 @@
             this.fanModeSelectMenu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.fanModeSelectMenu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.fanModeSelectMenu.Name = "fanModeSelectMenu";
-            this.fanModeSelectMenu.Size = new System.Drawing.Size(136, 23);
+            this.fanModeSelectMenu.Size = new System.Drawing.Size(249, 40);
             this.fanModeSelectMenu.SelectedIndexChanged += new System.EventHandler(this.fanModeSelectMenu_SelectedIndexChanged);
             // 
             // controlToolStripMenuItem
@@ -169,39 +170,39 @@
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.controlToolStripMenuItem.Name = "controlToolStripMenuItem";
-            this.controlToolStripMenuItem.Size = new System.Drawing.Size(59, 23);
+            this.controlToolStripMenuItem.Size = new System.Drawing.Size(113, 40);
             this.controlToolStripMenuItem.Text = "&Control";
             // 
             // toolStripMenuItemStartupOnBoot
             // 
             this.toolStripMenuItemStartupOnBoot.Name = "toolStripMenuItemStartupOnBoot";
-            this.toolStripMenuItemStartupOnBoot.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemStartupOnBoot.Size = new System.Drawing.Size(315, 44);
             this.toolStripMenuItemStartupOnBoot.Text = "&Startup on Boot";
             this.toolStripMenuItemStartupOnBoot.Click += new System.EventHandler(this.toolStripMenuItemStartupOnBoot_Click);
             // 
             // toolStripMenuItemAlwaysOnTop
             // 
             this.toolStripMenuItemAlwaysOnTop.Name = "toolStripMenuItemAlwaysOnTop";
-            this.toolStripMenuItemAlwaysOnTop.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemAlwaysOnTop.Size = new System.Drawing.Size(315, 44);
             this.toolStripMenuItemAlwaysOnTop.Text = "&Always on Top";
             this.toolStripMenuItemAlwaysOnTop.Click += new System.EventHandler(this.toolStripMenuItemAlwaysOnTop_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(315, 44);
             this.toolStripMenuItem4.Text = "Help";
             this.toolStripMenuItem4.Click += new System.EventHandler(this.help_DoubleClick);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(312, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(315, 44);
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.formClose_Event);
             // 
@@ -220,8 +221,8 @@
             this.tableLayoutPanel1.Controls.Add(this.sensorWarningLabel, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.propertyGrid1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 25);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 44);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 4;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -229,7 +230,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(383, 486);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(711, 1046);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // label1
@@ -239,10 +240,10 @@
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(2, 441);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(4, 950);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(379, 30);
+            this.label1.Size = new System.Drawing.Size(703, 64);
             this.label1.TabIndex = 9;
             this.label1.Text = "This application is highly experimental.\r\nUse at your own risk!";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -255,10 +256,10 @@
             this.helpLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.helpLabel.Font = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
             this.helpLabel.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.helpLabel.Location = new System.Drawing.Point(2, 471);
-            this.helpLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.helpLabel.Location = new System.Drawing.Point(4, 1014);
+            this.helpLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.helpLabel.Name = "helpLabel";
-            this.helpLabel.Size = new System.Drawing.Size(379, 15);
+            this.helpLabel.Size = new System.Drawing.Size(703, 32);
             this.helpLabel.TabIndex = 8;
             this.helpLabel.Text = "https://github.com/ayufan-research/steam-deck-tools";
             this.helpLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -271,10 +272,10 @@
             this.sensorWarningLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.sensorWarningLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.sensorWarningLabel.ForeColor = System.Drawing.Color.Red;
-            this.sensorWarningLabel.Location = new System.Drawing.Point(2, 396);
-            this.sensorWarningLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.sensorWarningLabel.Location = new System.Drawing.Point(4, 854);
+            this.sensorWarningLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.sensorWarningLabel.Name = "sensorWarningLabel";
-            this.sensorWarningLabel.Size = new System.Drawing.Size(379, 45);
+            this.sensorWarningLabel.Size = new System.Drawing.Size(703, 96);
             this.sensorWarningLabel.TabIndex = 6;
             this.sensorWarningLabel.Text = "Some sensors are missing.\r\nThe fan behavior might be incorrect.\r\nWhich might resu" +
     "lt in device overheating.\r\n";
@@ -286,30 +287,30 @@
             this.propertyGrid1.DisabledItemForeColor = System.Drawing.SystemColors.ControlText;
             this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid1.HelpVisible = false;
-            this.propertyGrid1.Location = new System.Drawing.Point(2, 1);
-            this.propertyGrid1.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.propertyGrid1.Location = new System.Drawing.Point(4, 2);
+            this.propertyGrid1.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(379, 394);
+            this.propertyGrid1.Size = new System.Drawing.Size(703, 850);
             this.propertyGrid1.TabIndex = 1;
             this.propertyGrid1.ToolbarVisible = false;
             // 
             // FanControlForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(383, 511);
+            this.ClientSize = new System.Drawing.Size(711, 1090);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FanControlForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Steam Deck Fan Control";
-            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FanControlForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FanControlForm_FormClosed);
             this.contextMenu.ResumeLayout(false);

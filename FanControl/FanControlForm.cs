@@ -72,6 +72,15 @@ namespace FanControl
             notifyIcon.ShowBalloonTip(3000, Text, "Fan Control Started", ToolTipIcon.Info);
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+
+            Opacity = 0;
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            Visible = false;
+            Opacity = 100;
         }
 
         private void SystemEvents_PowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
@@ -122,7 +131,6 @@ namespace FanControl
 
         private void formShow_Event(object sender, EventArgs e)
         {
-            WindowState = FormWindowState.Normal;
             Show();
             Activate();
             propertyGrid1.Refresh();
