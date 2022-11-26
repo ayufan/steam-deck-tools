@@ -116,6 +116,105 @@ Additional shortcuts:
 
     <img src="images/power_control_swicd_1.png" height="150"/>
 
+## 4. Steam Controller (in general not supported, available in 0.5.x)
+
+This is highly experimental "opinionated" implementation of Steam Controller that is meant
+to replace [SWICD](https://github.com/mKenfenheuer/steam-deck-windows-usermode-driver/)
+and [Glossi](https://github.com/Alia5/GlosSI).
+
+It offers 3 main modes of operation:
+
+- Desktop
+- X360 emulation (optionally with Rumble) - activated automatically when entering Playnite Fullscreen
+- Steam - active automatically when running Steam Gamepad UI, Steam Big Screen UI or running Steam Game
+
+You can easily switch between Desktop and X360 by holding Options button (3 horizontal lines,
+on top of the right joystick). When profile is switched you will hear a beep.
+
+Requirements:
+
+1. Ensure that you have SWICD and Glossi disabled, stopped or uninstalled!
+1. Ensure that HidHide is disabled, or ensure that `Steam Controller.exe` can see `Neptune Valve Controller`.
+1. Install latest version of [https://github.com/ViGEm/ViGEmBus/releases](https://github.com/ViGEm/ViGEmBus/releases).
+
+### 4.1. The ideal setup
+
+The perfect way to use it:
+
+1. Keep Steam closed at all times
+1. Use Playnite Fullscreen to start game of Steam
+
+In general it is possible to run `Steam Controller` alongside running Steam in background,
+but additional configuration of Steam needs to be done (disabling all Desktop configuration shortcuts in Steam).
+This is sometimes fincky due to Steam always processing Steam Deck controller, but in general
+should be fairly stable.
+
+> Getting controllers support is hard especially with Steam not making it easy to disable it.
+> I'm doing this to solve my usage pattern. So, I might have limited will to fix all quirks
+> of handling Steam running in background alongside `Steam Controller`. This will never
+> be supported mode of operation.
+
+### 4.2. Mappings
+
+| Button                     | Desktop                | X360 (with Rumble)     | Steam                  | Steam With Shortcuts   |
+|----------------------------|------------------------|------------------------|------------------------|------------------------|
+| Options (hold for 1s)      | Switch to next profile | Switch to next profile | Switch to next profile | Switch to next profile |
+| Options (hold for 3s)      | Switch to desktop      | Switch to desktop      |                        |                        |
+| STEAM + Menu               | WIN + Tab              | WIN + Tab              | WIN + Tab              | WIN + Tab              |
+| STEAM + Options            | F11                    | F11                    | F11                    | F11                    |
+| STEAM + A                  | RETURN                 | RETURN                 |                        | RETURN                 |
+| STEAM + B (hold for 1s)    | ALT + F4               | ALT + F4               |                        | ALT + F4               |
+| STEAM + X                  | Toggle Keyboard        | Toggle Keyboard        |                        | Toggle Keyboard        |
+| STEAM + L1                 | Toggle Magnify         | Toggle Magnify         |                        | Toggle Magnify         |
+| STEAM + R1                 | Screenshot             | Screenshot             |                        | Screenshot             |
+| STEAM + Left Joystick Up   | Increase Brightness    | Increase Brightness    |                        | Increase Brightness    |
+| STEAM + Left Joystick Down | Decrease Brightness    | Decrease Brightness    |                        | Decrease Brightness    |
+| STEAM + DPad Right         | RETURN                 | RETURN                 |                        | RETURN                 |
+| STEAM + DPad Down          | TAB                    | TAB                    |                        | TAB                    |
+| STEAM + DPad Left          | ESCAPE                 | ESCAPE                 |                        | ESCAPE                 |
+| STEAM + Left Pad           | Mouse Scroll           | Mouse Scroll           |                        | Mouse Scroll           |
+| STEAM + Left Joystick      | Mouse Scroll           | Mouse Scroll           |                        | Mouse Scroll           |
+| STEAM + Right Joystick     | Mouse Trackpad         | Mouse Trackpad         |                        | Mouse Trackpad         |
+| STEAM + Right Pad          | Mouse Move             | Mouse Move             |                        | Mouse Move             |
+| STEAM + L2                 | Mouse Right Click      | Mouse Right Click      |                        | Mouse Right Click      |
+| STEAM + R2                 | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
+| STEAM + Left Pad Press     | Mouse Right Click      | Mouse Right Click      |                        | Mouse Right Click      |
+| STEAM + Right Pad Press    | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
+| Left Pad                   | Mouse Scroll           |                        |                        |                        |
+| Left Joystick              | Mouse Scroll           |                        |                        |                        |
+| Right Joystick             | Mouse Trackpad         |                        |                        |                        |
+| Right Pad                  | Mouse Move             |                        |                        |                        |
+| DPad Arrows                | Keyboard Arrows        |                        |                        |                        |
+| A                          | RETURN                 |                        |                        |                        |
+| B                          | BACKSPACE              |                        |                        |                        |
+
+### 4.3. Configure Steam
+
+If Steam is running in background it is essential to remove Desktop mode configuration
+to make `SteamController.exe` the one mapping those.
+
+#### 4.3.1. Disable Desktop mode in Steam Gamepad UI (preferred)
+
+1. Run `steam.exe` with `-gamepadui`.
+1. Click `Steam` button, go to `Settings` > `Controller`.
+1. Scroll down to find `Desktop Layout`, click `Edit` and `Edit Layout`.
+1. Go to `Action Sets` > `Add Action Set`.
+1. In `Add Action Set` type `Empty` and `Continue`.
+1. Now click on `Default`, `Remove Set` and `Confirm`.
+1. You can now exit with `B` (Back).
+
+#### 4.3.2. Disable Desktop mode in Steam Desktop (slightly buggy on Steam Deck)
+
+1. Run Steam.
+1. Go to `Steam` > `Settings` > `Controller` > `Desktop Configuration`.
+1. Click `Add Action Set`.
+1. In new window type `Empty` and click `OK`.
+1. At top select `Default`.
+1. Now click `Menu` button (the button on top of left joystick with two squares)
+   on Steam Deck (or `Manage Action Set` button).
+1. In a new window click `DELETE`.
+1. Now click `B` or `DONE`.
+
 ## 4. Risks
 
 **This software is provided on best-effort basis and can break your SteamDeck.** It does a direct manipulation
