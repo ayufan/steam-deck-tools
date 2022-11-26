@@ -3,7 +3,7 @@ if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
 :retry
 cd "%~dp0"
 
-set configuration=Debug
+set configuration=Release
 
 taskkill /F /IM FanControl.exe
 taskkill /F /IM PerformanceOverlay.exe
