@@ -159,8 +159,9 @@ should be fairly stable.
 
 | Button                     | Desktop                | X360 (with Rumble)     | Steam                  | Steam With Shortcuts   |
 |----------------------------|------------------------|------------------------|------------------------|------------------------|
+| X360 Controller            | Not connected          | Connected              | Not connected          | Not connected          |
 | Options (hold for 1s)      | Switch to next profile | Switch to next profile | Switch to next profile | Switch to next profile |
-| Options (hold for 3s)      | Switch to desktop      | Switch to desktop      |                        |                        |
+| Options (hold for 3s)      |                        | Switch to desktop      |                        |                        |
 | STEAM + Menu               | WIN + Tab              | WIN + Tab              | WIN + Tab              | WIN + Tab              |
 | STEAM + Options            | F11                    | F11                    | F11                    | F11                    |
 | STEAM + A                  | RETURN                 | RETURN                 |                        | RETURN                 |
