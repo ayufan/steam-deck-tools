@@ -116,17 +116,18 @@ Additional shortcuts:
 
     <img src="images/power_control_swicd_1.png" height="150"/>
 
-## 4. Steam Controller (in general not supported, available in 0.5.x)
+## 4. Steam Controller
 
 This is highly experimental "opinionated" implementation of Steam Controller that is meant
 to replace [SWICD](https://github.com/mKenfenheuer/steam-deck-windows-usermode-driver/)
-and [Glossi](https://github.com/Alia5/GlosSI).
+and [Glossi](https://github.com/Alia5/GlosSI). This is hard piece and it is rather
+unsupported (by me), so if it works it works.
 
 It offers 3 main modes of operation:
 
-- Desktop
-- X360 emulation (optionally with Rumble) - activated automatically when entering Playnite Fullscreen
-- Steam - active automatically when running Steam Gamepad UI, Steam Big Screen UI or running Steam Game
+- **Desktop**
+- **X360 emulation** (optionally with Rumble) - activated automatically when entering Playnite Fullscreen
+- **Steam** - active automatically when running Steam Gamepad UI, Steam Big Screen UI or running Steam Game
 
 You can easily switch between Desktop and X360 by holding Options button (3 horizontal lines,
 on top of the right joystick). When profile is switched you will hear a beep.
