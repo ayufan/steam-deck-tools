@@ -27,7 +27,6 @@ namespace SteamController.Profiles
 
             // Default emulation
             EmulateScrollOnLPad(context);
-            EmulateMouseOnRStick(context);
             EmulateMouseOnRPad(context, false);
 
             // DPad

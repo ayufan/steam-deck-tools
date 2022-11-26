@@ -3,6 +3,7 @@
 - Introduce SteamController that provides 3 main modes of operation Desktop, X360 and Steam
 - Fix `FanControl` broken context menu
 - Fix incorrect `CurrentProfile` of `SteamController`
+- Fix right stick serving as mouse in `X360` mode
 
 ## 0.4.x
 
