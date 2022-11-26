@@ -138,22 +138,57 @@ Requirements:
 1. Ensure that HidHide is disabled, or ensure that `Steam Controller.exe` can see `Neptune Valve Controller`.
 1. Install latest version of [https://github.com/ViGEm/ViGEmBus/releases](https://github.com/ViGEm/ViGEmBus/releases).
 
-### 4.1. The ideal setup
+### 4.1. Possible setups
+
+The are various ways how `Steam Controller` can work with Steam.
+If you do not use Steam this is simple, just run it and enjoy.
+Since when there's no Steam, there's no problem at all.
+
+#### 4.1.1. The ideal setup - run Steam when running game via Playnite
+
+It is **preffered** to configure Steam as described in [Configure Steam](#43-configure-steam).
 
 The perfect way to use it:
 
 1. Keep Steam closed at all times
 1. Use Playnite Fullscreen to start game of Steam
 
+This makes the `Steam Controller` to automatically detect Steam running game
+and disable itself for the duration of game play.
+
+This allows to use `Steam Input` for Steam games.
+
+Configure Playnite to close Steam after game session.
+
+#### 4.1.2. Less ideal (quirky) - Run Steam in background
+
+It is **required** to configure Steam as described in [Configure Steam](#43-configure-steam).
+
 In general it is possible to run `Steam Controller` alongside running Steam in background,
 but additional configuration of Steam needs to be done (disabling all Desktop configuration shortcuts in Steam).
 This is sometimes fincky due to Steam always processing Steam Deck controller, but in general
 should be fairly stable.
 
+This makes the `Steam Controller` to automatically detect Steam running game
+and disable itself for the duration of game play. This allows to use `Steam Input` for Steam games.
+
 > Getting controllers support is hard especially with Steam not making it easy to disable it.
 > I'm doing this to solve my usage pattern. So, I might have limited will to fix all quirks
 > of handling Steam running in background alongside `Steam Controller`. This will never
 > be supported mode of operation.
+
+#### 4.1.3. Optional - Always use X360 controller and completly disable Steam Input
+
+It is **not needed** to configure Steam as described in [Configure Steam](#43-configure-steam).
+
+Alternative way is to use [HidHide](https://github.com/ViGEm/HidHide) to hide `Valve Software Steam Controller`
+from Steam. You would then have to disable detection of Steam via `Auto-disable on Steam` in `SteamController`.
+
+In this mode you would use either Desktop or X360 controls, and all Steam games would use X360.
+When running in this mode you would have to switch between Desktop and X360 mode with `Options` button
+or with `PowerControl`.
+
+Of course you will have access to all described shortcuts.
 
 ### 4.2. Mappings
 
