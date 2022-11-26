@@ -154,15 +154,12 @@ namespace SteamController
         {
             if (sharedData.GetValue(out var value) && value.DesiredProfile != "")
             {
-                lock (context)
-                {
-                    context.SelectProfile(value.DesiredProfile);
-                }
+                context.SelectProfile(value.DesiredProfile);
             }
 
             sharedData.SetValue(new SteamControllerSetting()
             {
-                CurrentProfile = context.Profiles.FirstOrDefault((profile) => profile.Selected(context))?.Name,
+                CurrentProfile = context.OrderedProfiles.FirstOrDefault((profile) => profile.Selected(context))?.Name ?? "",
                 SelectableProfiles = context.Profiles.Where((profile) => profile.Selected(context) || profile.Visible).JoinWithN((profile) => profile.Name),
             });
         }
@@ -172,9 +169,8 @@ namespace SteamController
             lock (context)
             {
                 context.Tick();
+                SharedData_Update();
             }
-
-            SharedData_Update();
 
             if (!context.Mouse.Valid)
             {
