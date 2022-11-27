@@ -114,11 +114,11 @@ namespace SteamController.Profiles
         {
             if (c.Steam.LPadX)
             {
-                c.Mouse.HorizontalScroll(c.Steam.LPadX.Scaled(Context.PadToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
+                c.Mouse.HorizontalScroll(c.Steam.LPadX.Scaled(Context.PadToWhellSensitivity, Devices.SteamAxis.ScaledMode.Delta));
             }
             if (c.Steam.LPadY)
             {
-                c.Mouse.VerticalScroll(c.Steam.LPadY.Scaled(Context.PadToWhellSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta));
+                c.Mouse.VerticalScroll(c.Steam.LPadY.Scaled(Context.PadToWhellSensitivity, Devices.SteamAxis.ScaledMode.Delta));
             }
         }
 
@@ -127,8 +127,8 @@ namespace SteamController.Profiles
             if (c.Steam.RightThumbX || c.Steam.RightThumbY)
             {
                 c.Mouse.MoveBy(
-                    c.Steam.RightThumbX.Scaled(Context.JoystickToMouseSensitivity, Devices.SteamController.SteamAxis.ScaledMode.AbsoluteTime),
-                    -c.Steam.RightThumbY.Scaled(Context.JoystickToMouseSensitivity, Devices.SteamController.SteamAxis.ScaledMode.AbsoluteTime)
+                    c.Steam.RightThumbX.Scaled(Context.JoystickToMouseSensitivity, Devices.SteamAxis.ScaledMode.AbsoluteTime),
+                    -c.Steam.RightThumbY.Scaled(Context.JoystickToMouseSensitivity, Devices.SteamAxis.ScaledMode.AbsoluteTime)
                 );
             }
         }
@@ -149,8 +149,8 @@ namespace SteamController.Profiles
             if (c.Steam.RPadX || c.Steam.RPadY)
             {
                 c.Mouse.MoveBy(
-                    c.Steam.RPadX.Scaled(Context.PadToMouseSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta),
-                    -c.Steam.RPadY.Scaled(Context.PadToMouseSensitivity, Devices.SteamController.SteamAxis.ScaledMode.Delta)
+                    c.Steam.RPadX.Scaled(Context.PadToMouseSensitivity, Devices.SteamAxis.ScaledMode.Delta),
+                    -c.Steam.RPadY.Scaled(Context.PadToMouseSensitivity, Devices.SteamAxis.ScaledMode.Delta)
                 );
             }
         }

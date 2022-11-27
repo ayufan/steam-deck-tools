@@ -6,7 +6,7 @@ namespace SteamController.Devices
 {
     public partial class SteamController
     {
-        public const int LizardModeUpdateInterval = 250;
+        private const int LizardModeUpdateInterval = 250;
 
         public bool LizardMouse { get; set; } = true;
         public bool LizardButtons { get; set; } = true;
