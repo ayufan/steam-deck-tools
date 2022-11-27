@@ -15,12 +15,12 @@ namespace SteamController.Devices
         public readonly SteamButton BtnDpadRight = new SteamButton2(0x08, SDCButton0.BTN_DPAD_RIGHT) { LizardButton = true };
         public readonly SteamButton BtnDpadUp = new SteamButton2(0x08, SDCButton0.BTN_DPAD_UP) { LizardButton = true };
         public readonly SteamButton BtnA = new SteamButton2(0x08, SDCButton0.BTN_A) { LizardButton = true };
-        public readonly SteamButton BtnX = new SteamButton2(0x08, SDCButton0.BTN_X) { LizardButton = true };
+        public readonly SteamButton BtnX = new SteamButton2(0x08, SDCButton0.BTN_X);
         public readonly SteamButton BtnB = new SteamButton2(0x08, SDCButton0.BTN_B) { LizardButton = true };
-        public readonly SteamButton BtnY = new SteamButton2(0x08, SDCButton0.BTN_Y) { LizardButton = true };
-        public readonly SteamButton BtnL1 = new SteamButton2(0x08, SDCButton0.BTN_L1) { LizardButton = true };
+        public readonly SteamButton BtnY = new SteamButton2(0x08, SDCButton0.BTN_Y);
+        public readonly SteamButton BtnL1 = new SteamButton2(0x08, SDCButton0.BTN_L1);
         public readonly SteamButton BtnL2 = new SteamButton2(0x08, SDCButton0.BTN_L2) { LizardButton = true };
-        public readonly SteamButton BtnR1 = new SteamButton2(0x08, SDCButton0.BTN_R1) { LizardButton = true };
+        public readonly SteamButton BtnR1 = new SteamButton2(0x08, SDCButton0.BTN_R1);
         public readonly SteamButton BtnR2 = new SteamButton2(0x08, SDCButton0.BTN_R2) { LizardButton = true };
         public readonly SteamButton BtnLeftStickPress = new SteamButton2(0x0a, SDCButton1.BTN_LSTICK_PRESS);
         public readonly SteamButton BtnLPadTouch = new SteamButton2(0x0a, SDCButton1.BTN_LPAD_TOUCH);
