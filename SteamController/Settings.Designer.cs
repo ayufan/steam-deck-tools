@@ -34,5 +34,17 @@ namespace SteamController {
                 this["EnableSteamDetection"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Desktop")]
+        public string StartupProfile {
+            get {
+                return ((string)(this["StartupProfile"]));
+            }
+            set {
+                this["StartupProfile"] = value;
+            }
+        }
     }
 }

@@ -15,6 +15,7 @@
 - Configure Steam to switch between Steam Input or X360 Controller mode
 - Steam Games detection also works for X360 Controller mode
 - STEAM+B will kill foreground if hold longer than 3s
+- Allow to configure `StartupProfile` in `SteamController.dll.config`
 
 ## 0.4.x
 

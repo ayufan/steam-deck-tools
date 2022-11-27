@@ -125,6 +125,8 @@ namespace SteamController
 
             stopwatch.Start();
 
+            context.SelectProfile(Settings.Default.StartupProfile);
+
             contextThread = new Thread(ContextState_Update);
             contextThread.Start();
         }

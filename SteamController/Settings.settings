@@ -5,5 +5,8 @@
     <Setting Name="EnableSteamDetection" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="StartupProfile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Desktop</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
