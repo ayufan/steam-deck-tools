@@ -209,6 +209,7 @@ Of course you will have access to all described shortcuts.
 | STEAM + DPad Right         | RETURN                 | RETURN                 |                        | RETURN                 |
 | STEAM + DPad Down          | TAB                    | TAB                    |                        | TAB                    |
 | STEAM + DPad Left          | ESCAPE                 | ESCAPE                 |                        | ESCAPE                 |
+| STEAM + DPad Up            | CTRL + ALT + U         | CTRL + ALT + U         |                        | CTRL + ALT + U         |
 | STEAM + Left Pad           | Mouse Scroll           | Mouse Scroll           |                        | Mouse Scroll           |
 | STEAM + Left Joystick      | Mouse Scroll           | Mouse Scroll           |                        | Mouse Scroll           |
 | STEAM + Right Joystick     | Mouse Trackpad         | Mouse Trackpad         |                        | Mouse Trackpad         |
@@ -217,7 +218,6 @@ Of course you will have access to all described shortcuts.
 | STEAM + R2                 | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
 | STEAM + Left Pad Press     | Mouse Right Click      | Mouse Right Click      |                        | Mouse Right Click      |
 | STEAM + Right Pad Press    | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
-| STEAM + Up Pad Press       | CTRL + ALT + U         | CTRL + ALT + U         |                        | CTRL + ALT + U         |
 | Left Pad                   | Mouse Scroll           |                        |                        |                        |
 | Left Joystick              | Mouse Scroll           |                        |                        |                        |
 | Right Joystick             | Mouse Trackpad         |                        |                        |                        |
@@ -253,7 +253,7 @@ to make `SteamController.exe` the one mapping those.
 1. In a new window click `DELETE`.
 1. Now click `B` or `DONE`.
 
-### 4.4. Fullscreen Scaling Hotkey (STEAM + Up Pad Press)
+### 4.4. Fullscreen Scaling Hotkey (STEAM + Dpad Up)
 
 Many games in Windows will crash when attempting to start in fullscreen.  To have a fullscreen experience on the Steam Deck, you can use this keybind in any fullscreen scaling application to provide a shortcut capable of toggling the scaling.
 
