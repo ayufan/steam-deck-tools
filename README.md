@@ -194,7 +194,8 @@ and disable itself for the duration of game play. This allows to use `Steam Inpu
 | X360 Controller            | Not connected          | Connected              | Not connected          | Not connected          |
 | Options (hold for 1s)      | Switch to next profile | Switch to next profile | Switch to next profile | Switch to next profile |
 | Options (hold for 3s)      | Toggle desktop mode    | Toggle desktop mode    |                        |                        |
-| STEAM + Menu               | WIN + Tab              | WIN + Tab              | WIN + Tab              | WIN + Tab              |
+| STEAM + 3 dots             | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  |
+| STEAM + Menu               | WIN + TAB              | WIN + TAB              | WIN + TAB              | WIN + TAB              |
 | STEAM + Options            | F11                    | F11                    | F11                    | F11                    |
 | STEAM + A                  | RETURN                 | RETURN                 |                        | RETURN                 |
 | STEAM + B (hold for 1s)    | ALT + F4               | ALT + F4               |                        | ALT + F4               |

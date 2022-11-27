@@ -14,12 +14,13 @@ namespace SteamController.Profiles
 
         public override Status Run(Context c)
         {
-            // Steam + 3 dots simulate CTRL+ALT+DELETE
+            // Steam + 3 dots simulate CTRL+SHIFT+ESCAPE
             if (c.Steam.BtnSteam.Hold(HoldForShorcuts, ShortcutConsumed) && c.Steam.BtnQuickAccess.HoldOnce(HoldForShorcuts, ShortcutConsumed))
             {
-                // TODO: Not working due to missing `uiAccess=true`
-                c.Keyboard.KeyPress(new VirtualKeyCode[] { VirtualKeyCode.LCONTROL, VirtualKeyCode.LMENU }, VirtualKeyCode.DELETE);
-                SendSAS(true);
+                // Simulate CTRL+ALT+DELETE behavior (not working)
+                // c.Keyboard.KeyPress(new VirtualKeyCode[] { VirtualKeyCode.LCONTROL, VirtualKeyCode.LMENU }, VirtualKeyCode.DELETE);
+                // We can send CTRL+SHIFT+ESCAPE to bring up Task Manager at least
+                c.Keyboard.KeyPress(new VirtualKeyCode[] { VirtualKeyCode.LCONTROL, VirtualKeyCode.SHIFT }, VirtualKeyCode.ESCAPE);
                 return Status.Done;
             }
 
@@ -71,8 +72,5 @@ namespace SteamController.Profiles
 
             return false;
         }
-
-        [DllImport("sas.dll")]
-        private static extern void SendSAS(bool asUser);
     }
 }

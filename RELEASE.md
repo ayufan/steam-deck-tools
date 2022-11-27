@@ -19,6 +19,7 @@
 - Increase joystick speed and key repeats in Desktop Mode
 - Fix double presses of A(RETURN)/B(BACKSPACE) in Desktop mode
 - Fix detection of SAS to switch into full lizard
+- STEAM + 3 dots brings Task Manager (CTRL+SHIFT+ESCAPE)
 
 ## 0.4.x
 
