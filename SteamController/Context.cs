@@ -23,8 +23,8 @@ namespace SteamController
 
         public bool RequestEnable { get; set; } = true;
         public bool RequestDesktopMode { get; set; } = true;
-        public bool SteamRunning { get; set; } = false;
-        public bool SteamUsesController { get; set; } = false;
+        public bool SteamUsesX360Controller { get; set; } = false;
+        public bool SteamUsesSteamInput { get; set; } = false;
 
         public event Action<Profiles.Profile> ProfileChanged;
 

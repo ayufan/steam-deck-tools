@@ -12,6 +12,8 @@
 - Fix `LT/RT` to trigger up to 50%, instead of 100%
 - Add mapping for `STEAM+DPadUp`
 - Usage of `KeyboardController` will now generate key repeats
+- Configure Steam to switch between Steam Input or X360 Controller mode
+- Steam Games detection also works for X360 Controller mode
 
 ## 0.4.x
 

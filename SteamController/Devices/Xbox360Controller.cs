@@ -9,6 +9,8 @@ namespace SteamController.Devices
     public class Xbox360Controller : IDisposable
     {
         public readonly TimeSpan FeedbackTimeout = TimeSpan.FromMilliseconds(1000);
+        public const ushort VendorID = 0x045E;
+        public const ushort ProductID = 0x028E;
 
         private ViGEmClient? client;
         private IXbox360Controller? device;

@@ -5,31 +5,55 @@ namespace SteamController.Managers
 {
     public sealed class SteamManager : Manager
     {
+        private bool lastState;
+
         public override void Tick(Context context)
         {
             if (!Settings.Default.EnableSteamDetection)
             {
-                context.SteamRunning = true;
-                context.SteamUsesController = false;
+                context.SteamUsesSteamInput = false;
+                context.SteamUsesX360Controller = false;
+                lastState = false;
                 return;
             }
 
-            var usesController = UsesController();
+            var usesController = UsesController() ?? false;
+            if (lastState == usesController)
+                return;
 
-            // if controller is used, disable due to Steam unless it is hidden
-            context.SteamRunning = usesController is not null;
-            context.SteamUsesController = usesController ?? false;
+            if (usesController)
+            {
+                context.SteamUsesSteamInput = Helpers.SteamConfiguration.IsControllerBlacklisted(
+                    Devices.SteamController.VendorID,
+                    Devices.SteamController.ProductID
+                ) != true;
+
+                context.SteamUsesX360Controller = Helpers.SteamConfiguration.IsControllerBlacklisted(
+                    Devices.Xbox360Controller.VendorID,
+                    Devices.Xbox360Controller.ProductID
+                ) != true;
+
+                context.ToggleDesktopMode(false);
+            }
+            else
+            {
+                context.SteamUsesSteamInput = false;
+                context.SteamUsesX360Controller = false;
+                context.ToggleDesktopMode(true);
+            }
+
+            lastState = usesController;
         }
 
         private bool? UsesController()
         {
-            if (!SteamProcess.IsRunning.GetValueOrDefault(false))
+            if (!SteamConfiguration.IsRunning.GetValueOrDefault(false))
                 return null;
 
             return
-                SteamProcess.IsBigPictureMode.GetValueOrDefault(false) ||
-                SteamProcess.IsRunningGame.GetValueOrDefault(false) ||
-                SteamProcess.IsGamePadUI;
+                SteamConfiguration.IsBigPictureMode.GetValueOrDefault(false) ||
+                SteamConfiguration.IsRunningGame.GetValueOrDefault(false) ||
+                SteamConfiguration.IsGamePadUI;
         }
     }
 }

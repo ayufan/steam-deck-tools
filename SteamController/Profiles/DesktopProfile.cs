@@ -13,7 +13,7 @@ namespace SteamController.Profiles
 
         public override bool Selected(Context context)
         {
-            return context.Enabled && context.DesktopMode && !context.SteamUsesController;
+            return context.Enabled && context.DesktopMode;
         }
 
         public override Status Run(Context c)

@@ -25,25 +25,13 @@ namespace SteamController {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool EnableSteamDetection {
             get {
                 return ((bool)(this["EnableSteamDetection"]));
             }
             set {
                 this["EnableSteamDetection"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool EnableHidHide {
-            get {
-                return ((bool)(this["EnableHidHide"]));
-            }
-            set {
-                this["EnableHidHide"] = value;
             }
         }
     }

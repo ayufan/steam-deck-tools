@@ -146,7 +146,7 @@ Since when there's no Steam, there's no problem at all.
 
 #### 4.1.1. The ideal setup - run Steam when running game via Playnite
 
-It is **preffered** to configure Steam as described in [Configure Steam](#43-configure-steam).
+It is **preferred** to configure Steam as described in [Configure Steam](#43-configure-steam).
 
 The perfect way to use it:
 
@@ -160,7 +160,17 @@ This allows to use `Steam Input` for Steam games.
 
 Configure Playnite to close Steam after game session.
 
-#### 4.1.2. Less ideal (quirky) - Run Steam in background
+#### 4.1.2. Another great option - Always use X360 controller and completly disable Steam Input
+
+It is **not needed** to configure Steam as described in [Configure Steam](#43-configure-steam).
+
+In this mode you would use either Desktop or X360 controls, and all Steam games would use X360.
+When running in this mode you would have to switch between Desktop and X360 mode with `Options` button
+or with `PowerControl`.
+
+Of course you will have access to all described shortcuts.
+
+#### 4.1.3. Less ideal (quirky) - Run Steam in background
 
 It is **required** to configure Steam as described in [Configure Steam](#43-configure-steam).
 
@@ -176,19 +186,6 @@ and disable itself for the duration of game play. This allows to use `Steam Inpu
 > I'm doing this to solve my usage pattern. So, I might have limited will to fix all quirks
 > of handling Steam running in background alongside `Steam Controller`. This will never
 > be supported mode of operation.
-
-#### 4.1.3. Optional - Always use X360 controller and completly disable Steam Input
-
-It is **not needed** to configure Steam as described in [Configure Steam](#43-configure-steam).
-
-Alternative way is to use [HidHide](https://github.com/ViGEm/HidHide) to hide `Valve Software Steam Controller`
-from Steam. You would then have to disable detection of Steam via `Auto-disable on Steam` in `SteamController`.
-
-In this mode you would use either Desktop or X360 controls, and all Steam games would use X360.
-When running in this mode you would have to switch between Desktop and X360 mode with `Options` button
-or with `PowerControl`.
-
-Of course you will have access to all described shortcuts.
 
 ### 4.2. Mappings
 
@@ -217,7 +214,7 @@ Of course you will have access to all described shortcuts.
 | STEAM + R2                 | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
 | STEAM + Left Pad Press     | Mouse Right Click      | Mouse Right Click      |                        | Mouse Right Click      |
 | STEAM + Right Pad Press    | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
-| Steam + Up Pad Press       | Ctrl + Alt + U         | Ctrl + Alt + U         |                        |                        |
+| STEAM + Up Pad Press       | Ctrl + Alt + U         | Ctrl + Alt + U         |                        |                        |
 | Left Pad                   | Mouse Scroll           |                        |                        |                        |
 | Left Joystick              | Mouse Scroll           |                        |                        |                        |
 | Right Joystick             | Mouse Trackpad         |                        |                        |                        |

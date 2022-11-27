@@ -7,8 +7,8 @@ namespace SteamController.Devices
 {
     public partial class SteamController : IDisposable
     {
-        public const ushort SteamVendorID = 0x28DE;
-        public const ushort SteamProductID = 0x1205;
+        public const ushort VendorID = 0x28DE;
+        public const ushort ProductID = 0x1205;
         private const int ReadTimeout = 50;
 
         private hidapi.HidDevice neptuneDevice;
@@ -18,7 +18,7 @@ namespace SteamController.Devices
             InitializeButtons();
             InitializeActions();
 
-            neptuneDevice = new hidapi.HidDevice(SteamVendorID, SteamProductID, 64);
+            neptuneDevice = new hidapi.HidDevice(VendorID, ProductID, 64);
             neptuneDevice.OpenDevice();
         }
 
