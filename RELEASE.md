@@ -20,6 +20,7 @@
 - Fix double presses of A(RETURN)/B(BACKSPACE) in Desktop mode
 - Fix detection of SAS to switch into full lizard
 - STEAM + 3 dots brings Task Manager (CTRL+SHIFT+ESCAPE)
+- Append `controller_blacklist` to `config.vdf` if missing
 
 ## 0.4.x
 

@@ -176,7 +176,7 @@ namespace SteamController.Helpers
                 return value.Split(',', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
             }
 
-            return null;
+            return new HashSet<String>();
         }
 
         public static bool? IsControllerBlacklisted(ushort vendorId, ushort productId)
@@ -208,19 +208,27 @@ namespace SteamController.Helpers
             if (configPath is null)
                 return false;
 
-            var lines = File.ReadLines(configPath).ToArray();
-            bool result = true;
+            var lines = File.ReadLines(configPath).ToList();
+            var id = String.Format("{0:x}/{1:x}", vendorId, productId);
 
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
+                if (lines[i] == "}")
+                {
+                    if (add)
+                    {
+                        // append controller_blacklist
+                        lines.Insert(i, String.Format("\t\"controller_blacklist\"\t\t\"{0}\"", id));
+                        break;
+                    }
+                }
+
                 var match = ControllerBlacklistRegex.Match(lines[i]);
                 if (!match.Success)
                     continue;
 
                 var value = match.Groups[2].Captures[0].Value;
                 var controllers = value.Split(',', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
-
-                var id = String.Format("{0:x}/{1:x}", vendorId, productId);
 
                 if (add)
                     controllers.Add(id);
@@ -232,16 +240,12 @@ namespace SteamController.Helpers
                     String.Join(',', controllers),
                     match.Groups[3].Captures[0].Value
                 );
-                result = true;
                 break;
             }
 
-            if (result)
-            {
-                File.WriteAllLines(configPath, lines);
-            }
+            File.WriteAllLines(configPath, lines);
 
-            return result;
+            return true;
         }
 
         private static T? GetValue<T>(string key, string value) where T : struct
