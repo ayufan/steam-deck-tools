@@ -295,8 +295,9 @@ after when such event occurs.
 Since this project uses direct manipulation of kernel memory via `inpoutx64.dll`
 it might trigger Antivirus and Anti-Cheat software.
 
-You might consider disabling all tools if this happens. Unfortunatelly there's no worakound for that
-unless someone gets access to driver signing certificate for Windows.
+If you use at least version `0.5.x` you can disable kernel drivers usage that should
+avoid trippping Anti-Cheat detection. Set FAN to `Default` and disable `OSD Kernel Drivers`.
+Of course you will miss some metrics due to that.
 
 ## 7. Development
 
