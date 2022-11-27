@@ -103,6 +103,11 @@ namespace SteamController.Profiles
             {
                 c.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
             }
+            
+            // Additional binding for tool hotkeys (Lossless Fullscreen is nice)
+            if (c.Steam.BtnDpadUp.HoldOnce(ShortcutConsumed)) {
+                c.Keyboard.KeyPress(new List<VirtualKeyCode> { VirtualKeyCode.LCONTROL, VirtualKeyCode.LMENU }, VirtualKeyCode.VK_U);
+            }
         }
 
         protected void EmulateScrollOnLPad(Context c)
