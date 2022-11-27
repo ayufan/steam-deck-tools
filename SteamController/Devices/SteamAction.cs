@@ -61,7 +61,7 @@ namespace SteamController.Devices
         }
 
         /// Last press was already consumed by other
-        internal object? Consumed { get; private set; }
+        internal string? Consumed { get; private set; }
 
         /// Set on raising edge
         private DateTime? HoldSince { get; set; }
@@ -97,7 +97,7 @@ namespace SteamController.Devices
             return true;
         }
 
-        private bool Consume(object consume)
+        private bool Consume(string consume)
         {
             if (Consumed is not null && Consumed != consume)
                 return false;
@@ -106,13 +106,13 @@ namespace SteamController.Devices
             return true;
         }
 
-        public bool Hold(object? consume)
+        public bool Hold(string? consume)
         {
             return Hold(null, consume);
         }
 
         /// Generated when button was hold for a given period
-        public bool Hold(TimeSpan? duration, object? consume)
+        public bool Hold(TimeSpan? duration, string? consume)
         {
             if (!Value)
                 return false;
@@ -129,16 +129,16 @@ namespace SteamController.Devices
             return true;
         }
 
-        public bool HoldOnce(object consume)
+        public bool HoldOnce(string consume)
         {
             return HoldOnce(null, consume);
         }
 
         /// Generated when button was hold for a given period
         /// but triggered exactly once
-        public bool HoldOnce(TimeSpan? duration, object consume)
+        public bool HoldOnce(TimeSpan? duration, string consume)
         {
-            if (!Hold(duration))
+            if (!Hold(duration, null))
                 return false;
 
             Consumed = consume;
@@ -147,7 +147,7 @@ namespace SteamController.Devices
 
         /// Generated when button was hold for a given period
         /// but triggered exactly after previously being hold
-        public bool HoldChain(TimeSpan? duration, object previousConsume, object replaceConsme)
+        public bool HoldChain(TimeSpan? duration, string previousConsume, string replaceConsme)
         {
             if (!Hold(duration, previousConsume))
                 return false;
@@ -158,7 +158,7 @@ namespace SteamController.Devices
 
         /// Generated when button was repeated for a given period
         /// but triggered exactly once
-        public bool HoldRepeat(TimeSpan duration, TimeSpan repeatEvery, object consume)
+        public bool HoldRepeat(TimeSpan duration, TimeSpan repeatEvery, string consume)
         {
             // always generate at least one keypress
             if (Pressed(duration))
@@ -184,7 +184,7 @@ namespace SteamController.Devices
             return false;
         }
 
-        public bool HoldRepeat(object consume)
+        public bool HoldRepeat(string consume)
         {
             return HoldRepeat(DefaultFirstHold, DefaultRepeatHold, consume);
         }
