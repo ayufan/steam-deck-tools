@@ -83,12 +83,12 @@ namespace SteamController.Profiles
                 c.Keyboard.KeyPress(VirtualKeyCode.LWIN, VirtualKeyCode.SNAPSHOT);
             }
 
-            if (c.Steam.BtnVirtualLeftThumbUp.HoldRepeat(ShortcutConsumed))
+            if (c.Steam.BtnVirtualLeftThumbUp.JustPressed() || c.Steam.BtnVirtualLeftThumbUp.HoldRepeat(ShortcutConsumed))
             {
                 WindowsSettingsBrightnessController.Increase(5);
             }
 
-            if (c.Steam.BtnVirtualLeftThumbDown.HoldRepeat(ShortcutConsumed))
+            if (c.Steam.BtnVirtualLeftThumbDown.JustPressed() || c.Steam.BtnVirtualLeftThumbDown.HoldRepeat(ShortcutConsumed))
             {
                 WindowsSettingsBrightnessController.Increase(-5);
             }

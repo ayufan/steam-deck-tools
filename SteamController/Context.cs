@@ -7,9 +7,7 @@ namespace SteamController
         public const double JoystickToMouseSensitivity = 1200;
         public const double PadToMouseSensitivity = 150;
         public const double PadToWhellSensitivity = 4;
-        public const double ThumbToWhellSensitivity = 4;
-        public static readonly TimeSpan ThumbToWhellFirstRepeat = TimeSpan.FromMilliseconds(30 * ThumbToWhellSensitivity);
-        public static readonly TimeSpan ThumbToWhellRepeat = TimeSpan.FromMilliseconds(30 * ThumbToWhellSensitivity);
+        public const double ThumbToWhellSensitivity = 20;
 
         public Devices.SteamController Steam { get; private set; }
         public Devices.Xbox360Controller X360 { get; private set; }
@@ -81,7 +79,7 @@ namespace SteamController
                 }
                 catch (Exception e)
                 {
-                    TraceLine("Manager: {0}. Exception: {1}", e);
+                    TraceLine("Manager: {0}. Exception: {1}", manager, e);
                 }
             }
         }

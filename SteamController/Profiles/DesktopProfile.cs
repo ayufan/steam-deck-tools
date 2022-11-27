@@ -55,21 +55,13 @@ namespace SteamController.Profiles
 
         private void EmulateScrollOnLStick(Context c)
         {
-            if (c.Steam.BtnVirtualLeftThumbUp.HoldRepeat(Context.ThumbToWhellFirstRepeat, Context.ThumbToWhellRepeat, Consumed))
+            if (c.Steam.LeftThumbX)
             {
-                c.Mouse.VerticalScroll(Context.ThumbToWhellSensitivity);
+                c.Mouse.HorizontalScroll(c.Steam.LeftThumbX.DeltaValue * Context.ThumbToWhellSensitivity);
             }
-            else if (c.Steam.BtnVirtualLeftThumbDown.HoldRepeat(Context.ThumbToWhellFirstRepeat, Context.ThumbToWhellRepeat, Consumed))
+            if (c.Steam.LeftThumbY)
             {
-                c.Mouse.VerticalScroll(-Context.ThumbToWhellSensitivity);
-            }
-            else if (c.Steam.BtnVirtualLeftThumbLeft.HoldRepeat(Context.ThumbToWhellFirstRepeat, Context.ThumbToWhellRepeat, Consumed))
-            {
-                c.Mouse.HorizontalScroll(-Context.ThumbToWhellSensitivity);
-            }
-            else if (c.Steam.BtnVirtualLeftThumbRight.HoldRepeat(Context.ThumbToWhellFirstRepeat, Context.ThumbToWhellRepeat, Consumed))
-            {
-                c.Mouse.HorizontalScroll(Context.ThumbToWhellSensitivity);
+                c.Mouse.VerticalScroll(c.Steam.LeftThumbY.DeltaValue * Context.ThumbToWhellSensitivity);
             }
         }
 

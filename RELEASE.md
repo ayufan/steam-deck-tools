@@ -16,6 +16,7 @@
 - Steam Games detection also works for X360 Controller mode
 - STEAM+B will kill foreground if hold longer than 3s
 - Allow to configure `StartupProfile` in `SteamController.dll.config`
+- Increase joystick speed and key repeats in Desktop Mode
 
 ## 0.4.x
 

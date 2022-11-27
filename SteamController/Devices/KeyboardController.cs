@@ -5,8 +5,8 @@ namespace SteamController.Devices
 {
     public class KeyboardController : IDisposable
     {
-        public static readonly TimeSpan FirstRepeat = TimeSpan.FromMilliseconds(75);
-        public static readonly TimeSpan NextRepeats = TimeSpan.FromMilliseconds(150);
+        public static readonly TimeSpan FirstRepeat = TimeSpan.FromMilliseconds(400);
+        public static readonly TimeSpan NextRepeats = TimeSpan.FromMilliseconds(45);
 
         InputSimulator simulator = new InputSimulator();
 
