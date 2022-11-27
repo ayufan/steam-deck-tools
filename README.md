@@ -206,6 +206,7 @@ and disable itself for the duration of game play. This allows to use `Steam Inpu
 | STEAM + DPad Right         | RETURN                 | RETURN                 |                        | RETURN                 |
 | STEAM + DPad Down          | TAB                    | TAB                    |                        | TAB                    |
 | STEAM + DPad Left          | ESCAPE                 | ESCAPE                 |                        | ESCAPE                 |
+| STEAM + DPad Up            | CTRL + ALT + U         | CTRL + ALT + U         |                        | CTRL + ALT + U         |
 | STEAM + Left Pad           | Mouse Scroll           | Mouse Scroll           |                        | Mouse Scroll           |
 | STEAM + Left Joystick      | Mouse Scroll           | Mouse Scroll           |                        | Mouse Scroll           |
 | STEAM + Right Joystick     | Mouse Trackpad         | Mouse Trackpad         |                        | Mouse Trackpad         |
@@ -214,7 +215,6 @@ and disable itself for the duration of game play. This allows to use `Steam Inpu
 | STEAM + R2                 | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
 | STEAM + Left Pad Press     | Mouse Right Click      | Mouse Right Click      |                        | Mouse Right Click      |
 | STEAM + Right Pad Press    | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
-| STEAM + Up Pad Press       | Ctrl + Alt + U         | Ctrl + Alt + U         |                        |                        |
 | Left Pad                   | Mouse Scroll           |                        |                        |                        |
 | Left Joystick              | Mouse Scroll           |                        |                        |                        |
 | Right Joystick             | Mouse Trackpad         |                        |                        |                        |
@@ -260,8 +260,8 @@ To configure the hotkey in Lossless Scaling:
 1. Launch Lossless Scaling
 1. Open "Settings"
 1. Select the "Scale hotkey"
-1. Press "Steam+DPad Up"
-1. Verify that the hotkey was set to "Ctrl + Alt + U"
+1. Press "STEAM + DPad Up"
+1. Verify that the hotkey was set to "CTRL + ALT + U"
 1. Close the settings dialog
 
 ## 5. Risks

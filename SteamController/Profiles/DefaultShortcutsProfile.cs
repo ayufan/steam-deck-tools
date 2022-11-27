@@ -55,7 +55,7 @@ namespace SteamController.Profiles
             return Status.Continue;
         }
 
-        private bool AdditionalShortcuts(Context c)
+        protected virtual bool AdditionalShortcuts(Context c)
         {
             if (c.Steam.BtnMenu.Pressed())
             {
