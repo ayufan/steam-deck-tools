@@ -5,6 +5,10 @@ This repository contains my own personal set of tools to help running Windows on
 **This software is provided on best-effort basis and can break your SteamDeck.**
 To learn more go to [Risks](#4-risks).
 
+### If you found it useful buy me [Ko-fi](https://ko-fi.com/ayufan).
+
+<a href='https://ko-fi.com/ayufan' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' alt='Buy Me a Coffee at ko-fi.com' />
+
 ## 1. Steam Deck Fan Control
 
 This is a very early and highly experimental fan controller for Windows build based
