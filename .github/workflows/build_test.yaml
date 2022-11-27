@@ -1,4 +1,8 @@
 on:
+  push:
+    paths-ignore:
+      - '.github/workflows/build_release.yaml'
+      - 'RELEASE.md'
   pull_request:
 
 env:

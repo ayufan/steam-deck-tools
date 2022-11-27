@@ -1,11 +1,11 @@
 on:
   push:
-    branches: [main]
-    paths-ignore:
-      - '**/**.md'
-      - '**/*.bat'
-      - '**/*.ps1'
-      - '**/*.png'
+    branches:
+      - main
+      - '*-stable'
+    paths:
+      - '.github/workflows/build_release.yaml'
+      - 'RELEASE.md'
 
 env:
   RELEASE_NAME: SteamDeckTools
