@@ -11,6 +11,7 @@
 - Hide `Use Lizard Mouse/Buttons` as it does something different than people are used to
 - Fix `LT/RT` to trigger up to 50%, instead of 100%
 - Add mapping for `STEAM+DPadUp`
+- Usage of `KeyboardController` will now generate key repeats
 
 ## 0.4.x
 

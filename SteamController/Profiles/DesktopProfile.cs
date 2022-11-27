@@ -75,22 +75,11 @@ namespace SteamController.Profiles
 
         private void EmulateDPadArrows(Context c)
         {
-#if true
-            if (c.Steam.BtnDpadLeft.HoldRepeat(Consumed))
-                c.Keyboard.KeyPress(VirtualKeyCode.LEFT);
-            if (c.Steam.BtnDpadRight.HoldRepeat(Consumed))
-                c.Keyboard.KeyPress(VirtualKeyCode.RIGHT);
-            if (c.Steam.BtnDpadUp.HoldRepeat(Consumed))
-                c.Keyboard.KeyPress(VirtualKeyCode.UP);
-            if (c.Steam.BtnDpadDown.HoldRepeat(Consumed))
-                c.Keyboard.KeyPress(VirtualKeyCode.DOWN);
-#else
             c.Keyboard[VirtualKeyCode.RETURN] = c.Steam.BtnA;
             c.Keyboard[VirtualKeyCode.LEFT] = c.Steam.BtnDpadLeft;
             c.Keyboard[VirtualKeyCode.RIGHT] = c.Steam.BtnDpadRight;
             c.Keyboard[VirtualKeyCode.UP] = c.Steam.BtnDpadUp;
             c.Keyboard[VirtualKeyCode.DOWN] = c.Steam.BtnDpadDown;
-#endif
         }
     }
 }
