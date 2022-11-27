@@ -1,6 +1,3 @@
-#define ACCUM_MOUSE
-#define ACCUM_SCROLL
-
 using WindowsInput;
 using static CommonHelpers.Log;
 
@@ -40,7 +37,7 @@ namespace SteamController.Devices
         // TODO: Unsure what it is
         public const int XButtonID = 0;
         public const int YButtonID = 1;
-        public const int UpdateValidInterval = 250;
+        public const int UpdateValidInterval = 100;
 
         InputSimulator simulator = new InputSimulator();
 
@@ -218,8 +215,11 @@ namespace SteamController.Devices
                 {
                     int value = verticalScroll.Consume();
                     if (value != 0)
+                    {
                         simulator.Mouse.VerticalScroll(value);
-                    return true;
+                        return true;
+                    }
+                    return false;
                 });
             }
 
@@ -229,8 +229,11 @@ namespace SteamController.Devices
                 {
                     int value = horizontalScroll.Consume();
                     if (value != 0)
+                    {
                         simulator.Mouse.HorizontalScroll(value);
-                    return true;
+                        return true;
+                    }
+                    return false;
                 });
             }
 
@@ -303,19 +306,8 @@ namespace SteamController.Devices
 
         public void MoveBy(double pixelDeltaX, double pixelDeltaY)
         {
-#if ACCUM_MOUSE
             movedX.Add(pixelDeltaX);
             movedY.Add(pixelDeltaY);
-#else
-            if (pixelDeltaX == 0 && pixelDeltaY == 0)
-                return;
-
-            Safe(() =>
-            {
-                simulator.Mouse.MoveMouseBy((int)pixelDeltaX, (int)pixelDeltaY);
-                return true;
-            });
-#endif
         }
 
         public void MoveTo(double absoluteX, double absoluteY)
@@ -329,34 +321,12 @@ namespace SteamController.Devices
 
         public void VerticalScroll(double scrollAmountInClicks)
         {
-#if ACCUM_SCROLL
             verticalScroll.Add(scrollAmountInClicks);
-#else
-            if (scrollAmountInClicks == 0)
-                return;
-
-            Safe(() =>
-            {
-                simulator.Mouse.VerticalScroll((int)scrollAmountInClicks);
-                return true;
-            });
-#endif
         }
 
         public void HorizontalScroll(double scrollAmountInClicks)
         {
-#if ACCUM_SCROLL
             horizontalScroll.Add(scrollAmountInClicks);
-#else
-            if (scrollAmountInClicks == 0)
-                return;
-
-            Safe(() =>
-            {
-                simulator.Mouse.HorizontalScroll((int)scrollAmountInClicks);
-                return true;
-            });
-#endif
         }
     }
 }
