@@ -141,7 +141,6 @@ namespace FanControl
             // 
             // menuStrip1
             // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fanModeSelectMenu,
             this.controlToolStripMenuItem});
