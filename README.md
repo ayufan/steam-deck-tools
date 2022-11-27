@@ -198,6 +198,7 @@ and disable itself for the duration of game play. This allows to use `Steam Inpu
 | STEAM + Options            | F11                    | F11                    | F11                    | F11                    |
 | STEAM + A                  | RETURN                 | RETURN                 |                        | RETURN                 |
 | STEAM + B (hold for 1s)    | ALT + F4               | ALT + F4               |                        | ALT + F4               |
+| STEAM + B (hold for 3s)    | Kill active process    | Kill active process    |                        | Kill active process    |
 | STEAM + X                  | Toggle Keyboard        | Toggle Keyboard        |                        | Toggle Keyboard        |
 | STEAM + L1                 | Toggle Magnify         | Toggle Magnify         |                        | Toggle Magnify         |
 | STEAM + R1                 | Screenshot             | Screenshot             |                        | Screenshot             |

@@ -46,10 +46,14 @@ namespace SteamController.Profiles
 
             if (c.Steam.BtnB.HoldOnce(HoldForKill, ShortcutConsumed))
             {
-                // kill application
+                // We want to KILL only the process that
+                // was foreground last time
+                Helpers.ForegroundProcess.Kill(true);
             }
             else if (c.Steam.BtnB.HoldOnce(HoldForClose, ShortcutConsumed))
             {
+                Helpers.ForegroundProcess.Store();
+
                 // close application
                 c.Keyboard.KeyPress(VirtualKeyCode.LMENU, VirtualKeyCode.F4);
             }

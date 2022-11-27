@@ -14,6 +14,7 @@
 - Usage of `KeyboardController` will now generate key repeats
 - Configure Steam to switch between Steam Input or X360 Controller mode
 - Steam Games detection also works for X360 Controller mode
+- STEAM+B will kill foreground if hold longer than 3s
 
 ## 0.4.x
 
