@@ -17,6 +17,7 @@
 - STEAM+B will kill foreground if hold longer than 3s
 - Allow to configure `StartupProfile` in `SteamController.dll.config`
 - Increase joystick speed and key repeats in Desktop Mode
+- Fix double presses of A(RETURN)/B(BACKSPACE) in Desktop mode
 
 ## 0.4.x
 

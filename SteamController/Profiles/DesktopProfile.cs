@@ -41,14 +41,8 @@ namespace SteamController.Profiles
             EmulateMouseOnRStick(c);
             EmulateDPadArrows(c);
 
-            if (c.Steam.BtnA.Pressed())
-            {
-                c.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-            }
-            if (c.Steam.BtnB.Pressed())
-            {
-                c.Keyboard.KeyPress(VirtualKeyCode.BACK);
-            }
+            c.Keyboard[VirtualKeyCode.RETURN] = c.Steam.BtnA;
+            c.Keyboard[VirtualKeyCode.BACK] = c.Steam.BtnB;
 
             return Status.Continue;
         }
@@ -67,7 +61,6 @@ namespace SteamController.Profiles
 
         private void EmulateDPadArrows(Context c)
         {
-            c.Keyboard[VirtualKeyCode.RETURN] = c.Steam.BtnA;
             c.Keyboard[VirtualKeyCode.LEFT] = c.Steam.BtnDpadLeft;
             c.Keyboard[VirtualKeyCode.RIGHT] = c.Steam.BtnDpadRight;
             c.Keyboard[VirtualKeyCode.UP] = c.Steam.BtnDpadUp;
