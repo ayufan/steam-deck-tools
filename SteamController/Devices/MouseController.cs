@@ -83,7 +83,7 @@ namespace SteamController.Devices
             get { return mouseButtons.ToArray(); }
         }
 
-        public MouseController()
+        internal MouseController()
         {
         }
 

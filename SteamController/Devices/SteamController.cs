@@ -9,11 +9,11 @@ namespace SteamController.Devices
     {
         public const ushort SteamVendorID = 0x28DE;
         public const ushort SteamProductID = 0x1205;
-        public const int ReadTimeout = 50;
+        private const int ReadTimeout = 50;
 
         private hidapi.HidDevice neptuneDevice;
 
-        public SteamController()
+        internal SteamController()
         {
             InitializeButtons();
             InitializeActions();

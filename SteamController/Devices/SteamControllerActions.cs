@@ -12,14 +12,18 @@ namespace SteamController.Devices
             public String Name { get; internal set; } = "";
 
             /// This is action controlled by Lizard mode
-            public bool LizardButton { get; set; }
-            public bool LizardMouse { get; set; }
+            public bool LizardButton { get; internal set; }
+            public bool LizardMouse { get; internal set; }
             public DateTime LastUpdated { get; protected set; } = DateTime.Now;
             public double DeltaTime { get; protected set; }
 
             internal abstract void Reset();
             internal abstract bool BeforeUpdate(byte[] buffer);
             internal abstract void Update();
+
+            internal SteamAction()
+            {
+            }
 
             protected void UpdateTime()
             {
@@ -59,13 +63,13 @@ namespace SteamController.Devices
             }
 
             /// Last press was already consumed by other
-            public object? Consumed { get; private set; }
+            internal object? Consumed { get; private set; }
 
             /// Set on raising edge
-            public DateTime? HoldSince { get; private set; }
-            public DateTime? HoldRepeated { get; private set; }
+            private DateTime? HoldSince { get; set; }
+            private DateTime? HoldRepeated { get; set; }
 
-            public SteamButton()
+            internal SteamButton()
             {
             }
 
@@ -95,7 +99,7 @@ namespace SteamController.Devices
                 return true;
             }
 
-            public bool Consume(object consume)
+            private bool Consume(object consume)
             {
                 if (Consumed is not null && Consumed != consume)
                     return false;
@@ -145,7 +149,7 @@ namespace SteamController.Devices
 
             /// Generated when button was hold for a given period
             /// but triggered exactly after previously being hold
-            public bool HoldNext(TimeSpan? duration, object previousConsume, object replaceConsme)
+            public bool HoldChain(TimeSpan? duration, object previousConsume, object replaceConsme)
             {
                 if (!Hold(duration, previousConsume))
                     return false;
@@ -233,7 +237,7 @@ namespace SteamController.Devices
             private int offset;
             private uint mask;
 
-            public SteamButton2(int offset, object mask)
+            internal SteamButton2(int offset, object mask)
             {
                 this.offset = offset;
                 this.mask = (uint)mask.GetHashCode();
@@ -271,8 +275,8 @@ namespace SteamController.Devices
             public SteamButton? ActiveButton { get; internal set; }
             public SteamButton? VirtualLeft { get; internal set; }
             public SteamButton? VirtualRight { get; internal set; }
-            public short Deadzone { get; set; }
-            public short MinChange { get; set; }
+            public short Deadzone { get; internal set; }
+            public short MinChange { get; internal set; }
 
             public short Value
             {

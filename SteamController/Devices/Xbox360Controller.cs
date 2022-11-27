@@ -129,10 +129,10 @@ namespace SteamController.Devices
         }
 
         public bool Connected { get; set; }
-        public byte? FeedbackLargeMotor { get; internal set; }
-        public byte? FeedbackSmallMotor { get; internal set; }
-        public byte LedNumber { get; internal set; }
-        public DateTime? FeedbackReceived { get; set; }
+        public byte? FeedbackLargeMotor { get; private set; }
+        public byte? FeedbackSmallMotor { get; private set; }
+        public byte LedNumber { get; private set; }
+        public DateTime? FeedbackReceived { get; private set; }
 
         public bool this[Xbox360Button button]
         {

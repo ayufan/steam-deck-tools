@@ -10,9 +10,9 @@ namespace SteamController.Profiles
             public bool IsDone { get; set; }
         }
 
-        public String Name { get; set; } = "";
-        public bool Visible { get; set; } = true;
-        public bool IsDesktop { get; set; }
+        public virtual String Name { get; set; } = "";
+        public virtual bool Visible { get; set; } = true;
+        public virtual bool IsDesktop { get; set; }
 
         public abstract bool Selected(Context context);
 
