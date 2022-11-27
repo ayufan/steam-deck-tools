@@ -262,6 +262,14 @@ namespace SteamController.Devices
         }
     }
 
+    public enum DeltaValueMode
+    {
+        Absolute,
+        AbsoluteTime,
+        Delta,
+        DeltaTime
+    }
+
     public class SteamAxis : SteamAction
     {
         public const short VirtualLeftThreshold = short.MinValue / 2;
@@ -275,6 +283,7 @@ namespace SteamController.Devices
         public SteamButton? VirtualRight { get; internal set; }
         public short Deadzone { get; internal set; }
         public short MinChange { get; internal set; }
+        public DeltaValueMode DeltaValueMode { get; internal set; } = DeltaValueMode.Absolute;
 
         public short Value
         {
@@ -298,45 +307,39 @@ namespace SteamController.Devices
 
         public bool Active
         {
-            get
-            {
-                return ActiveButton?.Value ?? true;
-            }
+            get { return ActiveButton?.Value ?? true; }
         }
 
-        public enum ScaledMode
+        public double DeltaValue
         {
-            Absolute,
-            AbsoluteTime,
-            Delta,
-            DeltaTime
+            get { return GetDeltaValue(-1, 1, DeltaValueMode); }
         }
 
-        public double Scaled(double min, double max, ScaledMode mode)
+        public double GetDeltaValue(double min, double max, DeltaValueMode mode)
         {
             int value = 0;
 
             switch (mode)
             {
-                case ScaledMode.Absolute:
+                case DeltaValueMode.Absolute:
                     if (Math.Abs(Value) < Deadzone)
                         return 0.0;
                     value = Value;
                     break;
 
-                case ScaledMode.AbsoluteTime:
+                case DeltaValueMode.AbsoluteTime:
                     if (Math.Abs(Value) < Deadzone)
                         return 0.0;
                     value = (int)(Value * DeltaTime);
                     break;
 
-                case ScaledMode.Delta:
+                case DeltaValueMode.Delta:
                     value = Value - LastValue;
                     if (Math.Abs(Value) < MinChange)
                         return 0.0;
                     break;
 
-                case ScaledMode.DeltaTime:
+                case DeltaValueMode.DeltaTime:
                     value = Value - LastValue;
                     if (Math.Abs(Value) < MinChange)
                         return 0.0;
@@ -349,21 +352,6 @@ namespace SteamController.Devices
 
             double factor = (double)(value - short.MinValue) / (short.MaxValue - short.MinValue);
             return factor * (max - min) + min;
-        }
-
-        public double Scaled(double range, ScaledMode mode)
-        {
-            return Scaled(-range, range, mode);
-        }
-
-        public int Scaled(int min, int max, ScaledMode mode)
-        {
-            return (int)Scaled((double)min, (double)max, mode);
-        }
-
-        public int Scaled(int range, ScaledMode mode)
-        {
-            return Scaled(-range, range, mode);
         }
 
         internal override void Reset()

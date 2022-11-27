@@ -115,11 +115,11 @@ namespace SteamController.Profiles
         {
             if (c.Steam.LPadX)
             {
-                c.Mouse.HorizontalScroll(c.Steam.LPadX.Scaled(Context.PadToWhellSensitivity, Devices.SteamAxis.ScaledMode.Delta));
+                c.Mouse.HorizontalScroll(c.Steam.LPadX.DeltaValue * Context.PadToWhellSensitivity);
             }
             if (c.Steam.LPadY)
             {
-                c.Mouse.VerticalScroll(c.Steam.LPadY.Scaled(Context.PadToWhellSensitivity, Devices.SteamAxis.ScaledMode.Delta));
+                c.Mouse.VerticalScroll(c.Steam.LPadY.DeltaValue * Context.PadToWhellSensitivity);
             }
         }
 
@@ -128,8 +128,8 @@ namespace SteamController.Profiles
             if (c.Steam.RightThumbX || c.Steam.RightThumbY)
             {
                 c.Mouse.MoveBy(
-                    c.Steam.RightThumbX.Scaled(Context.JoystickToMouseSensitivity, Devices.SteamAxis.ScaledMode.AbsoluteTime),
-                    -c.Steam.RightThumbY.Scaled(Context.JoystickToMouseSensitivity, Devices.SteamAxis.ScaledMode.AbsoluteTime)
+                    c.Steam.RightThumbX.DeltaValue * Context.JoystickToMouseSensitivity,
+                    -c.Steam.RightThumbY.DeltaValue * Context.JoystickToMouseSensitivity
                 );
             }
         }
@@ -150,8 +150,8 @@ namespace SteamController.Profiles
             if (c.Steam.RPadX || c.Steam.RPadY)
             {
                 c.Mouse.MoveBy(
-                    c.Steam.RPadX.Scaled(Context.PadToMouseSensitivity, Devices.SteamAxis.ScaledMode.Delta),
-                    -c.Steam.RPadY.Scaled(Context.PadToMouseSensitivity, Devices.SteamAxis.ScaledMode.Delta)
+                    c.Steam.RPadX.DeltaValue * Context.PadToMouseSensitivity,
+                    -c.Steam.RPadY.DeltaValue * Context.PadToMouseSensitivity
                 );
             }
         }
