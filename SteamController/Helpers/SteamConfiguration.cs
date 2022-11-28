@@ -27,17 +27,8 @@ namespace SteamController.Helpers
                 var value = GetValue<int>(ActiveProcessKey, PIDValue);
                 if (value is null)
                     return null;
-                try
-                {
-                    using (var process = Process.GetProcessById(value.Value))
-                    {
-                        return !process.HasExited;
-                    }
-                }
-                catch (ArgumentException)
-                {
-                    return false;
-                }
+                using (var process = SteamProcess)
+                    return process is not null;
             }
         }
 
@@ -102,12 +93,14 @@ namespace SteamController.Helpers
                     return null;
                 try
                 {
-                    return Process.GetProcessById(value.Value);
+                    var process = Process.GetProcessById(value.Value);
+                    if (!process.ProcessName.Equals("Steam", StringComparison.CurrentCultureIgnoreCase))
+                        return null;
+                    if (process.HasExited)
+                        return null;
+                    return process;
                 }
-                catch (ArgumentException)
-                {
-                    return null;
-                }
+                catch { return null; }
             }
         }
 
