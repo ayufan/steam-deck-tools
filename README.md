@@ -136,9 +136,15 @@ It offers 3 main modes of operation:
 You can easily switch between Desktop and X360 by holding Options button (3 horizontal lines,
 on top of the right joystick). When profile is switched you will hear a beep.
 
+It is strongly advised that you uninstall (unless you know what are you doing):
+
+1. SWICD
+1. Glossi
+1. HidHide
+
 Requirements:
 
-1. Ensure that you have SWICD and Glossi disabled, stopped or uninstalled!
+1. Ensure that you have SWICD, Glossi and HidHide disabled, stopped or uninstalled!
 1. Ensure that HidHide is disabled, or ensure that `Steam Controller.exe` can see `Neptune Valve Controller`.
 1. Install latest version of [https://github.com/ViGEm/ViGEmBus/releases](https://github.com/ViGEm/ViGEmBus/releases).
 
@@ -148,23 +154,43 @@ The are various ways how `Steam Controller` can work with Steam.
 If you do not use Steam this is simple, just run it and enjoy.
 Since when there's no Steam, there's no problem at all.
 
-#### 4.1.1. The ideal setup - run Steam when running game via Playnite
+#### 4.1.1. Most compatible - Use X360 Controller with Steam
 
-It is **preferred** to configure Steam as described in [Configure Steam](#43-configure-steam).
+This pretty much work always. It hides the `Valve Software Steam Controller` from Steam.
 
-The perfect way to use it:
+It is out of box experience. In this mode you would use either Desktop or X360 controls,
+and all Steam games would use X360.
 
-1. Keep Steam closed at all times
-1. Use Playnite Fullscreen to start game of Steam
+The Back Panel buttons can be assigned to some user-defined keys.
 
-This makes the `Steam Controller` to automatically detect Steam running game
-and disable itself for the duration of game play.
+#### 4.1.2. Works, but sometimes finicky - Use Steam Input with Steam
 
-This allows to use `Steam Input` for Steam games.
+It is **required** to configure Steam as described in [Configure Steam](#43-configure-steam).
 
-Configure Playnite to close Steam after game session.
+This is setup that allows you to enable `Steam Input` and use community provided profiles
+on Steam. However, this requires special configuration and in some cases is finicky.
 
-#### 4.1.2. Another great option - Always use X360 controller and completly disable Steam Input
+The `SteamController.exe` automatically detects Steam running game and disable itself
+for the duration of game play switch to specially currated `Steam profile` (non selectable, and hidden).
+
+The are two primary ways how to use it. The best experience is achieved when
+**STEAM IS NOT RUNNING IN BACKGROUND**. Use Playnite Fullscreen to start game on the Steam
+and close it after session (there's an option in Playnite settings). Keep Steam closed
+otherwise at all times.
+
+Alternative if Steam is running in background it should be pretty stable when
+[configured desktop mode buttons](#43-configure-steam). There will be sometimes finicky behavior
+when using STEAM button shortcuts. However, this is mostly stable otherwise.
+
+> Getting controllers support is hard especially with Steam not making it easy to disable it.
+> I'm doing this to solve my usage pattern. So, I might have limited will to fix all quirks
+> of handling Steam running in background alongside `Steam Controller`. This will never
+> be supported mode of operation.
+
+#### 4.1.3. If you know what you do - Ignore Steam
+
+This makes `Steam Controller` to disable Steam detection. Now, you would have to do everything
+you were doing before: like HidHide, additional controllers, etc.
 
 It is **not needed** to configure Steam as described in [Configure Steam](#43-configure-steam).
 
@@ -173,23 +199,6 @@ When running in this mode you would have to switch between Desktop and X360 mode
 or with `PowerControl`.
 
 Of course you will have access to all described shortcuts.
-
-#### 4.1.3. Less ideal (quirky) - Run Steam in background
-
-It is **required** to configure Steam as described in [Configure Steam](#43-configure-steam).
-
-In general it is possible to run `Steam Controller` alongside running Steam in background,
-but additional configuration of Steam needs to be done (disabling all Desktop configuration shortcuts in Steam).
-This is sometimes fincky due to Steam always processing Steam Deck controller, but in general
-should be fairly stable.
-
-This makes the `Steam Controller` to automatically detect Steam running game
-and disable itself for the duration of game play. This allows to use `Steam Input` for Steam games.
-
-> Getting controllers support is hard especially with Steam not making it easy to disable it.
-> I'm doing this to solve my usage pattern. So, I might have limited will to fix all quirks
-> of handling Steam running in background alongside `Steam Controller`. This will never
-> be supported mode of operation.
 
 ### 4.2. Mappings
 
