@@ -30,3 +30,4 @@ It does help this project on being supported.
 - Add configurable BackPanel keys (allowed mappings are subject to change)
 - Fix delay in X360Rumble: Do not send repeated haptic if disabled
 - Fix `AccessDenied` in Steam Detection
+- Properly apply X360 mappings for Back Panel keys

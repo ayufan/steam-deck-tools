@@ -11,7 +11,7 @@ namespace SteamController.Profiles
 
         internal override ProfilesSettings.BackPanelSettings BackPanelSettings
         {
-            get { return ProfilesSettings.BackPanelSettings.Desktop; }
+            get { return ProfilesSettings.BackPanelSettings.X360; }
         }
 
         public override Status Run(Context context)
