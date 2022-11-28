@@ -1,5 +1,4 @@
 using WindowsInput;
-using KeyRepeats = System.Tuple<System.DateTime, int>;
 
 namespace SteamController.Devices
 {
@@ -10,8 +9,8 @@ namespace SteamController.Devices
 
         InputSimulator simulator = new InputSimulator();
 
-        Dictionary<VirtualKeyCode, KeyRepeats> keyCodes = new Dictionary<VirtualKeyCode, KeyRepeats>();
-        Dictionary<VirtualKeyCode, KeyRepeats> lastKeyCodes = new Dictionary<VirtualKeyCode, KeyRepeats>();
+        Dictionary<VirtualKeyCode, DateTime> keyCodes = new Dictionary<VirtualKeyCode, DateTime>();
+        Dictionary<VirtualKeyCode, DateTime> lastKeyCodes = new Dictionary<VirtualKeyCode, DateTime>();
 
         public KeyboardController()
         {
@@ -69,7 +68,8 @@ namespace SteamController.Devices
                 {
                     if (keyCodes.ContainsKey(key))
                         return;
-                    var keyRepeat = lastKeyCodes.GetValueOrDefault(key) ?? new KeyRepeats(DateTime.Now.Add(FirstRepeat), 0);
+                    if (!lastKeyCodes.TryGetValue(key, out var keyRepeat))
+                        keyRepeat = DateTime.Now.Add(FirstRepeat);
                     keyCodes.Add(key, keyRepeat);
                 }
             }
@@ -83,7 +83,7 @@ namespace SteamController.Devices
         internal void BeforeUpdate()
         {
             lastKeyCodes = keyCodes;
-            keyCodes = new Dictionary<VirtualKeyCode, KeyRepeats>();
+            keyCodes = new Dictionary<VirtualKeyCode, DateTime>();
         }
 
         internal void Update()
@@ -91,20 +91,14 @@ namespace SteamController.Devices
             // Key Up: it is missing now
             foreach (var keyUp in lastKeyCodes.Except(keyCodes))
             {
-                try
-                {
-                    // if key was not yet pressed, send it
-                    if (keyUp.Value.Item2 < 0)
-                        simulator.Keyboard.KeyPress(keyUp.Key);
-                    simulator.Keyboard.KeyUp(keyUp.Key);
-                }
+                try { simulator.Keyboard.KeyUp(keyUp.Key); }
                 catch (InvalidOperationException) { }
             }
 
             // Key Down: new keys being down
-            foreach (var keyUp in keyCodes.Except(lastKeyCodes))
+            foreach (var keyDown in keyCodes.Except(lastKeyCodes))
             {
-                try { simulator.Keyboard.KeyDown(keyUp.Key); }
+                try { simulator.Keyboard.KeyDown(keyDown.Key); }
                 catch (InvalidOperationException) { }
             }
 
@@ -112,16 +106,13 @@ namespace SteamController.Devices
             var now = DateTime.Now;
             foreach (var keyPress in keyCodes)
             {
-                if (keyPress.Value.Item1 > now)
+                if (keyPress.Value > now)
                     continue;
 
                 try { simulator.Keyboard.KeyPress(keyPress.Key); }
                 catch (InvalidOperationException) { }
 
-                keyCodes[keyPress.Key] = new KeyRepeats(
-                    DateTime.Now.Add(NextRepeats),
-                    keyPress.Value.Item2 + 1
-                );
+                keyCodes[keyPress.Key] = DateTime.Now.Add(NextRepeats);
             }
         }
 
