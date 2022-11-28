@@ -17,7 +17,7 @@ namespace SteamController
         public List<Profiles.Profile> Profiles { get; } = new List<Profiles.Profile>();
         public List<Managers.Manager> Managers { get; } = new List<Managers.Manager>();
 
-        public List<Profiles.Profile>? orderedProfiles;
+        private List<Profiles.Profile>? orderedProfiles;
 
         public bool RequestEnable { get; set; } = true;
         public bool RequestDesktopMode { get; set; } = true;

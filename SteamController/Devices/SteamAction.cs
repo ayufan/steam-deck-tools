@@ -12,8 +12,6 @@ namespace SteamController.Devices
         /// This is action controlled by Lizard mode
         public bool LizardButton { get; internal set; }
         public bool LizardMouse { get; internal set; }
-        public DateTime LastUpdated { get; protected set; } = DateTime.Now;
-        public double DeltaTime { get; protected set; }
 
         internal abstract void Reset();
         internal abstract bool BeforeUpdate(byte[] buffer);
@@ -21,13 +19,6 @@ namespace SteamController.Devices
 
         internal SteamAction()
         {
-        }
-
-        protected void UpdateTime()
-        {
-            var now = DateTime.Now;
-            DeltaTime = (now - LastUpdated).TotalSeconds;
-            LastUpdated = now;
         }
 
         protected bool ValueCanBeUsed
@@ -202,7 +193,6 @@ namespace SteamController.Devices
         {
             rawLastValue = rawValue;
             rawValue = newValue;
-            UpdateTime();
 
             if (!rawLastValue && rawValue)
             {
@@ -330,7 +320,7 @@ namespace SteamController.Devices
                 case DeltaValueMode.AbsoluteTime:
                     if (Math.Abs(Value) < Deadzone)
                         return 0.0;
-                    value = (int)(Value * DeltaTime);
+                    value = (int)(Value * (Controller?.DeltaTime ?? 0.0));
                     break;
 
                 case DeltaValueMode.Delta:
@@ -343,7 +333,7 @@ namespace SteamController.Devices
                     value = Value - LastValue;
                     if (Math.Abs(Value) < MinChange)
                         return 0.0;
-                    value = (int)(value * DeltaTime);
+                    value = (int)(value * (Controller?.DeltaTime ?? 0.0));
                     break;
             }
 
@@ -364,7 +354,6 @@ namespace SteamController.Devices
         {
             rawLastValue = rawValue;
             rawValue = newValue;
-            UpdateTime();
 
             // first time pressed, reset value as this is a Pad
             if (ActiveButton is not null && ActiveButton.JustPressed())

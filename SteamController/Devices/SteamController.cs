@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CommonHelpers;
 using hidapi;
 using PowerControl.External;
@@ -12,6 +13,9 @@ namespace SteamController.Devices
         private const int ReadTimeout = 50;
 
         private hidapi.HidDevice neptuneDevice;
+        private Stopwatch stopwatch = new Stopwatch();
+        private TimeSpan? lastUpdate;
+        public double DeltaTime { get; private set; }
 
         internal SteamController()
         {
@@ -20,6 +24,8 @@ namespace SteamController.Devices
 
             neptuneDevice = new hidapi.HidDevice(VendorID, ProductID, 64);
             neptuneDevice.OpenDevice();
+
+            stopwatch.Start();
         }
 
         public void Dispose()
@@ -42,6 +48,11 @@ namespace SteamController.Devices
 
         internal void BeforeUpdate()
         {
+            var ts = stopwatch.Elapsed;
+            DeltaTime = lastUpdate is not null ? (ts - lastUpdate.Value).TotalSeconds : 0.0;
+            DeltaTime = Math.Min(DeltaTime, 0.1); // max update is 100ms
+            lastUpdate = ts;
+
             LizardButtons = true;
             LizardMouse = true;
 
