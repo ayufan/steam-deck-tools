@@ -8,7 +8,9 @@ namespace SteamController.Devices
 {
     public partial class SteamController
     {
-        public bool SetHaptic(byte position, ushort amplitude, ushort period, ushort count = 0)
+        private bool[] hapticEnabled = new bool[byte.MaxValue];
+
+        private bool sendHaptic(byte position, ushort amplitude, ushort period, ushort count = 0)
         {
             var haptic = new SDCHapticPacket()
             {
@@ -19,6 +21,9 @@ namespace SteamController.Devices
                 period = period,
                 count = count
             };
+
+            Log.TraceLine("STEAM: Haptic: pos={0}, amplitude={1}, period={2}, count={3}",
+                position, amplitude, period, count);
 
             var bytes = new byte[Marshal.SizeOf<SDCHapticPacket>()];
             var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
@@ -33,6 +38,17 @@ namespace SteamController.Devices
                 Log.TraceLine("STEAM: Haptic: Exception: {0}", e);
                 return false;
             }
+        }
+
+        public bool SetHaptic(byte position, ushort amplitude, ushort period, ushort count = 0)
+        {
+            // do not send repeated haptic queries if was disabled
+            bool enabled = amplitude != 0 && period != 0;
+            if (!hapticEnabled[position] && !enabled)
+                return false;
+            hapticEnabled[position] = enabled;
+
+            return sendHaptic(position, amplitude, period, count);
         }
     }
 }

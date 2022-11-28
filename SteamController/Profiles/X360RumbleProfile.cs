@@ -23,14 +23,12 @@ namespace SteamController.Profiles
 
             if (context.X360.FeedbackLargeMotor.HasValue)
             {
-                Log.TraceLine("X360: Feedback Large: {0}", context.X360.FeedbackLargeMotor.Value);
                 context.Steam.SetHaptic(
                     1, GetHapticAmplitude(context.X360.FeedbackLargeMotor), RumbleSettings.Period, FeedbackCount);
             }
 
             if (context.X360.FeedbackSmallMotor.HasValue)
             {
-                Log.TraceLine("X360: Feedback Small: {0}", context.X360.FeedbackSmallMotor.Value);
                 context.Steam.SetHaptic(
                     0, GetHapticAmplitude(context.X360.FeedbackSmallMotor), RumbleSettings.Period, FeedbackCount);
             }

@@ -28,3 +28,4 @@ It does help this project on being supported.
 - STEAM + 3 dots brings Task Manager (CTRL+SHIFT+ESCAPE)
 - Append `controller_blacklist` to `config.vdf` if missing
 - Add configurable BackPanel keys (allowed mappings are subject to change)
+- Fix delay in X360Rumble: Do not send repeated haptic if disabled
