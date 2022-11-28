@@ -2,13 +2,18 @@ using WindowsInput;
 
 namespace SteamController.Profiles
 {
-    public sealed class DesktopProfile : DefaultGuideShortcutsProfile
+    public sealed class DesktopProfile : DefaultBackPanelShortcutsProfile
     {
         private const String Consumed = "DesktopProfileOwner";
 
         public DesktopProfile()
         {
             IsDesktop = true;
+        }
+
+        internal override ProfilesSettings.BackPanelSettings BackPanelSettings
+        {
+            get { return ProfilesSettings.BackPanelSettings.Desktop; }
         }
 
         public override bool Selected(Context context)

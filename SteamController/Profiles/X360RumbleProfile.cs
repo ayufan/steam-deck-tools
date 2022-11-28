@@ -9,6 +9,11 @@ namespace SteamController.Profiles
         public const ushort FeedbackPeriod = 10;
         public const ushort FeedbackCount = 1;
 
+        private ProfilesSettings.X360RumbleSettings RumbleSettings
+        {
+            get { return ProfilesSettings.X360RumbleSettings.Default; }
+        }
+
         public override Status Run(Context context)
         {
             if (base.Run(context).IsDone)
@@ -20,14 +25,14 @@ namespace SteamController.Profiles
             {
                 Log.TraceLine("X360: Feedback Large: {0}", context.X360.FeedbackLargeMotor.Value);
                 context.Steam.SetHaptic(
-                    1, GetHapticAmplitude(context.X360.FeedbackLargeMotor), FeedbackPeriod, FeedbackCount);
+                    1, GetHapticAmplitude(context.X360.FeedbackLargeMotor), RumbleSettings.Period, FeedbackCount);
             }
 
             if (context.X360.FeedbackSmallMotor.HasValue)
             {
                 Log.TraceLine("X360: Feedback Small: {0}", context.X360.FeedbackSmallMotor.Value);
                 context.Steam.SetHaptic(
-                    0, GetHapticAmplitude(context.X360.FeedbackSmallMotor), FeedbackPeriod, FeedbackCount);
+                    0, GetHapticAmplitude(context.X360.FeedbackSmallMotor), RumbleSettings.Period, FeedbackCount);
             }
 
             context.X360.ResetFeedback();
@@ -37,7 +42,10 @@ namespace SteamController.Profiles
 
         private ushort GetHapticAmplitude(byte? value)
         {
-            return (ushort)(FeedbackMaxAmplitude * (value ?? 0) / byte.MaxValue);
+            if (RumbleSettings.FixedAmplitude > 0)
+                return value is not null ? (ushort)RumbleSettings.FixedAmplitude : (ushort)0;
+            else
+                return (ushort)(RumbleSettings.MaxAmplitude * (value ?? 0) / byte.MaxValue);
         }
     }
 }

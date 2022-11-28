@@ -26,6 +26,9 @@ namespace SteamController.Devices
             get { return keyCodes.ContainsKey(button); }
             set
             {
+                if (button == VirtualKeyCode.None)
+                    return;
+
                 if (value)
                 {
                     if (keyCodes.ContainsKey(button))

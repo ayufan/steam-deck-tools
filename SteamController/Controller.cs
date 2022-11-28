@@ -92,8 +92,16 @@ namespace SteamController
                 contextMenu.Items.Add(startupItem);
             }
 
+            var settingsItem = contextMenu.Items.Add("&Settings");
+            settingsItem.Click += Settings_Click;
+
+            contextMenu.Items.Add(new ToolStripSeparator());
+
             var helpItem = contextMenu.Items.Add("&Help");
-            helpItem.Click += delegate { Process.Start("explorer.exe", "http://github.com/ayufan-research/steam-deck-tools"); };
+            helpItem.Click += delegate { Process.Start("explorer.exe", "http://github.com/ayufan/steam-deck-tools"); };
+
+            var mappingItem = contextMenu.Items.Add("&Mappings");
+            mappingItem.Click += delegate { Process.Start("explorer.exe", "https://github.com/ayufan/steam-deck-tools#42-mappings"); };
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
@@ -337,6 +345,31 @@ namespace SteamController
                     ToolTipIcon.Warning
                 );
             }
+        }
+
+        private void Settings_Click(object? sender, EventArgs e)
+        {
+            var form = new Form()
+            {
+                Text = TitleWithVersion + " Settings",
+                StartPosition = FormStartPosition.CenterScreen,
+                Size = new Size(400, 600)
+            };
+
+            var propertyGrid = new PropertyGrid()
+            {
+                Dock = DockStyle.Fill,
+                SelectedObject = new
+                {
+                    Desktop = ProfilesSettings.BackPanelSettings.Desktop,
+                    X360 = ProfilesSettings.BackPanelSettings.X360,
+                    X360Rumble = ProfilesSettings.X360RumbleSettings.Default
+                }
+            };
+
+            propertyGrid.ExpandAllGridItems();
+            form.Controls.Add(propertyGrid);
+            form.ShowDialog();
         }
     }
 }

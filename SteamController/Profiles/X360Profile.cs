@@ -2,11 +2,16 @@ using Nefarius.ViGEm.Client.Targets.Xbox360;
 
 namespace SteamController.Profiles
 {
-    public class X360Profile : DefaultGuideShortcutsProfile
+    public class X360Profile : DefaultBackPanelShortcutsProfile
     {
         public override bool Selected(Context context)
         {
             return context.Enabled && !context.DesktopMode && !context.SteamUsesSteamInput;
+        }
+
+        internal override ProfilesSettings.BackPanelSettings BackPanelSettings
+        {
+            get { return ProfilesSettings.BackPanelSettings.Desktop; }
         }
 
         public override Status Run(Context context)
