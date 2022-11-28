@@ -93,19 +93,15 @@ namespace SteamController.Devices
 
         internal void Beep()
         {
-            // TODO: reconnect to beep
-            if (isConnected)
-            {
-                device?.Disconnect();
-                Thread.Sleep(100);
-                device?.Connect();
-            }
-            else
-            {
-                device?.Connect();
-                Thread.Sleep(100);
-                device?.Disconnect();
-            }
+            var client = this.client;
+            if (client is null)
+                return;
+
+            // Generate dummy xbox360 controller to generate notification
+            var device = client.CreateXbox360Controller();
+            device.Connect();
+            Thread.Sleep(100);
+            device.Disconnect();
         }
 
         internal void Update()
