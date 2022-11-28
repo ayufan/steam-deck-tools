@@ -206,7 +206,7 @@ Of course you will have access to all described shortcuts.
 |----------------------------|------------------------|------------------------|------------------------|------------------------|
 | X360 Controller            | Not connected          | Connected              | Not connected          | Not connected          |
 | Options (hold for 1s)      | Switch to next profile | Switch to next profile | Switch to next profile | Switch to next profile |
-| Options (hold for 3s)      | Toggle desktop mode    | Toggle desktop mode    |                        |                        |
+| Options (hold for 2s)      | Toggle desktop mode    | Toggle desktop mode    |                        |                        |
 | STEAM + 3 dots             | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  |
 | STEAM + Menu               | WIN + TAB              | WIN + TAB              | WIN + TAB              | WIN + TAB              |
 | STEAM + Options            | F11                    | F11                    | F11                    | F11                    |
