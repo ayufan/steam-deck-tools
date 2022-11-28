@@ -21,20 +21,56 @@ namespace SteamController.Devices
         {
         }
 
-        public bool this[VirtualKeyCode button]
+        public bool this[ProfilesSettings.VirtualKeyCode key]
         {
-            get { return keyCodes.ContainsKey(button); }
+            get { return this[(VirtualKeyCode)key]; }
+            set { this[(VirtualKeyCode)key] = value; }
+        }
+
+        public bool this[System.Windows.Input.Key key]
+        {
+            get { return this[(VirtualKeyCode)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key)]; }
+            set { this[(VirtualKeyCode)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key)] = value; }
+        }
+
+        public bool this[System.Windows.Forms.Keys key]
+        {
+            get
+            {
+                if (key.HasFlag(System.Windows.Forms.Keys.Shift) && !this[VirtualKeyCode.SHIFT])
+                    return false;
+                if (key.HasFlag(System.Windows.Forms.Keys.Alt) && !this[VirtualKeyCode.MENU])
+                    return false;
+                if (key.HasFlag(System.Windows.Forms.Keys.Control) && !this[VirtualKeyCode.CONTROL])
+                    return false;
+                return this[(VirtualKeyCode)(key & System.Windows.Forms.Keys.KeyCode)];
+            }
             set
             {
-                if (button == VirtualKeyCode.None)
+                if (value)
+                {
+                    this[VirtualKeyCode.SHIFT] = key.HasFlag(System.Windows.Forms.Keys.Shift);
+                    this[VirtualKeyCode.MENU] = key.HasFlag(System.Windows.Forms.Keys.Alt);
+                    this[VirtualKeyCode.CONTROL] = key.HasFlag(System.Windows.Forms.Keys.Control);
+                    this[(VirtualKeyCode)(key & System.Windows.Forms.Keys.KeyCode)] = true;
+                }
+            }
+        }
+
+        public bool this[VirtualKeyCode key]
+        {
+            get { return keyCodes.ContainsKey(key); }
+            set
+            {
+                if (key == VirtualKeyCode.None)
                     return;
 
                 if (value)
                 {
-                    if (keyCodes.ContainsKey(button))
+                    if (keyCodes.ContainsKey(key))
                         return;
-                    var keyRepeat = lastKeyCodes.GetValueOrDefault(button) ?? new KeyRepeats(DateTime.Now.Add(FirstRepeat), 0);
-                    keyCodes.Add(button, keyRepeat);
+                    var keyRepeat = lastKeyCodes.GetValueOrDefault(key) ?? new KeyRepeats(DateTime.Now.Add(FirstRepeat), 0);
+                    keyCodes.Add(key, keyRepeat);
                 }
             }
         }

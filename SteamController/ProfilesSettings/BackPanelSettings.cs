@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Configuration;
-using WindowsInput;
 
 namespace SteamController.ProfilesSettings
 {

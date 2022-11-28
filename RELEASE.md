@@ -34,3 +34,4 @@ It does help this project on being supported.
 - Setting `Keyboard[KEY] = false` and `Mouse[KEY] = false` does not cancel the press
 - Fix crash on startup when Steam is missing
 - Fix crash on resume when X360 Controller is in use
+- Provide currated list of mapping keys in settings (might be extended in the future)
