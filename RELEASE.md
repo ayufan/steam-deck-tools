@@ -31,3 +31,4 @@ It does help this project on being supported.
 - Fix delay in X360Rumble: Do not send repeated haptic if disabled
 - Fix `AccessDenied` in Steam Detection
 - Properly apply X360 mappings for Back Panel keys
+- Setting `Keyboard[KEY] = false` and `Mouse[KEY] = false` does not cancel the press

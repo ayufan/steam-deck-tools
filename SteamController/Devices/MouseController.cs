@@ -65,8 +65,6 @@ namespace SteamController.Devices
             {
                 if (value)
                     mouseButtons.Add(button);
-                else
-                    mouseButtons.Remove(button);
             }
         }
 

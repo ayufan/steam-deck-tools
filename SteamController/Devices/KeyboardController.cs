@@ -36,10 +36,6 @@ namespace SteamController.Devices
                     var keyRepeat = lastKeyCodes.GetValueOrDefault(button) ?? new KeyRepeats(DateTime.Now.Add(FirstRepeat), 0);
                     keyCodes.Add(button, keyRepeat);
                 }
-                else
-                {
-                    keyCodes.Remove(button);
-                }
             }
         }
 
