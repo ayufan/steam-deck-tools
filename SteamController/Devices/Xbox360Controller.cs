@@ -114,7 +114,15 @@ namespace SteamController.Devices
 
             if (isConnected && submitReport)
             {
-                device?.SubmitReport();
+                try
+                {
+                    device?.SubmitReport();
+                }
+                catch (VigemInvalidTargetException)
+                {
+                    device?.Disconnect();
+                    isConnected = false;
+                }
             }
 
             if (FeedbackReceived is not null && FeedbackReceived.Value.Add(FeedbackTimeout) < DateTime.Now)

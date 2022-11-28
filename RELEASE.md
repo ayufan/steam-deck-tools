@@ -33,3 +33,4 @@ It does help this project on being supported.
 - Properly apply X360 mappings for Back Panel keys
 - Setting `Keyboard[KEY] = false` and `Mouse[KEY] = false` does not cancel the press
 - Fix crash on startup when Steam is missing
+- Fix crash on resume when X360 Controller is in use
