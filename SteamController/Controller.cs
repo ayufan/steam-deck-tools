@@ -47,7 +47,6 @@ namespace SteamController
             var contextMenu = new ContextMenuStrip(components);
 
             var enabledItem = new ToolStripMenuItem("&Enabled");
-            enabledItem.Checked = context.RequestEnable;
             enabledItem.Click += delegate { context.RequestEnable = !context.RequestEnable; };
             contextMenu.Opening += delegate { enabledItem.Checked = context.RequestEnable; };
             contextMenu.Items.Add(enabledItem);
@@ -60,7 +59,7 @@ namespace SteamController
 
                 var profileItem = new ToolStripMenuItem(profile.Name);
                 profileItem.Click += delegate { context.SelectProfile(profile.Name); };
-                contextMenu.Opening += delegate { profileItem.Checked = context.GetCurrentProfile() == profile; };
+                contextMenu.Opening += delegate { profileItem.Checked = context.CurrentProfile == profile; };
                 contextMenu.Items.Add(profileItem);
             }
 
@@ -117,6 +116,12 @@ namespace SteamController
             contextStateUpdate.Enabled = true;
             contextStateUpdate.Tick += ContextStateUpdate_Tick;
 
+            context.SelectDefault = () =>
+            {
+                context.SelectProfile(Settings.Default.StartupProfile);
+            };
+            context.BackToDefault();
+
             context.ProfileChanged += (profile) =>
             {
 #if false
@@ -130,8 +135,6 @@ namespace SteamController
             };
 
             stopwatch.Start();
-
-            context.SelectProfile(Settings.Default.StartupProfile);
 
             contextThread = new Thread(ContextState_Update);
             contextThread.Start();
@@ -168,7 +171,7 @@ namespace SteamController
 
             sharedData.SetValue(new SteamControllerSetting()
             {
-                CurrentProfile = context.OrderedProfiles.FirstOrDefault((profile) => profile.Selected(context))?.Name ?? "",
+                CurrentProfile = context.CurrentProfile?.Name ?? "",
                 SelectableProfiles = context.Profiles.Where((profile) => profile.Selected(context) || profile.Visible).JoinWithN((profile) => profile.Name),
             });
         }
@@ -177,6 +180,8 @@ namespace SteamController
         {
             context.Tick();
             SharedData_Update();
+
+            var isDesktop = context.CurrentProfile?.IsDesktop ?? false;
 
             if (!context.Mouse.Valid)
             {
@@ -192,22 +197,22 @@ namespace SteamController
             {
                 if (context.SteamUsesSteamInput)
                 {
-                    notifyIcon.Icon = context.DesktopMode ? Resources.monitor_off : Resources.microsoft_xbox_controller_off;
+                    notifyIcon.Icon = isDesktop ? Resources.monitor_off : Resources.microsoft_xbox_controller_off;
                     notifyIcon.Text = TitleWithVersion + ". Steam uses Steam Input";
                 }
                 else
                 {
-                    notifyIcon.Icon = context.DesktopMode ? Resources.monitor : Resources.microsoft_xbox_controller;
+                    notifyIcon.Icon = isDesktop ? Resources.monitor : Resources.microsoft_xbox_controller;
                     notifyIcon.Text = TitleWithVersion;
                 }
 
-                var profile = context.GetCurrentProfile();
+                var profile = context.CurrentProfile;
                 if (profile is not null)
                     notifyIcon.Text = TitleWithVersion + ". Profile: " + profile.Name;
             }
             else
             {
-                notifyIcon.Icon = context.DesktopMode ? Resources.monitor_off : Resources.microsoft_xbox_controller_off;
+                notifyIcon.Icon = isDesktop ? Resources.monitor_off : Resources.microsoft_xbox_controller_off;
                 notifyIcon.Text = TitleWithVersion + ". Disabled";
             }
 

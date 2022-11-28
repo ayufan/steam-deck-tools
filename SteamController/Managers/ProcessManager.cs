@@ -31,7 +31,7 @@ namespace SteamController.Managers
                 if (!activated)
                 {
                     activated = true;
-                    context.ToggleDesktopMode(false);
+                    context.SelectController();
                 }
             }
             else
@@ -39,7 +39,7 @@ namespace SteamController.Managers
                 if (activated)
                 {
                     activated = false;
-                    context.ToggleDesktopMode(true);
+                    context.BackToDefault();
                 }
             }
         }

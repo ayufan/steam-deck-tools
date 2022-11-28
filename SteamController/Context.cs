@@ -17,35 +17,32 @@ namespace SteamController
         public List<Profiles.Profile> Profiles { get; } = new List<Profiles.Profile>();
         public List<Managers.Manager> Managers { get; } = new List<Managers.Manager>();
 
-        private List<Profiles.Profile>? orderedProfiles;
+        private int selectedProfile;
 
         public bool RequestEnable { get; set; } = true;
-        public bool RequestDesktopMode { get; set; } = true;
         public bool SteamUsesX360Controller { get; set; } = false;
         public bool SteamUsesSteamInput { get; set; } = false;
 
         public event Action<Profiles.Profile> ProfileChanged;
+        public Action? SelectDefault;
 
         public bool Enabled
         {
             get { return RequestEnable; }
         }
 
-        public bool DesktopMode
+        public Profiles.Profile? CurrentProfile
         {
             get
             {
-                return RequestDesktopMode || !X360.Valid || !Mouse.Valid;
-            }
-        }
+                for (int i = 0; i < Profiles.Count; i++)
+                {
+                    var profile = Profiles[(selectedProfile + i) % Profiles.Count];
+                    if (profile.Selected(this))
+                        return profile;
+                }
 
-        public List<Profiles.Profile> OrderedProfiles
-        {
-            get
-            {
-                if (orderedProfiles == null)
-                    orderedProfiles = Profiles.ToList();
-                return orderedProfiles;
+                return null;
             }
         }
 
@@ -84,19 +81,6 @@ namespace SteamController
             }
         }
 
-        public Profiles.Profile? GetCurrentProfile()
-        {
-            foreach (var profile in OrderedProfiles)
-            {
-                if (profile.Selected(this))
-                {
-                    return profile;
-                }
-            }
-
-            return null;
-        }
-
         public bool Update()
         {
             Steam.BeforeUpdate();
@@ -106,11 +90,9 @@ namespace SteamController
 
             try
             {
-                var profile = GetCurrentProfile();
+                var profile = CurrentProfile;
                 if (profile is not null)
-                {
                     profile.Run(this);
-                }
 
                 return true;
             }
@@ -128,62 +110,71 @@ namespace SteamController
             }
         }
 
-        private bool SelectProfile(Profiles.Profile profile)
+        public bool SelectProfile(String name)
         {
             lock (this)
             {
-                var list = OrderedProfiles.ToList();
-                if (!list.Remove(profile))
-                    return false;
-                list.Insert(0, profile);
-                orderedProfiles = list;
-                RequestDesktopMode = profile.IsDesktop;
-
-                if (profile.Selected(this))
+                for (int i = 0; i < Profiles.Count; i++)
                 {
-                    ProfileChanged(profile);
+                    var profile = Profiles[i];
+                    if (profile.Name != name)
+                        continue;
+                    if (!profile.Selected(this))
+                        continue;
+
+                    if (i != selectedProfile)
+                    {
+                        selectedProfile = i;
+                        ProfileChanged(profile);
+                    }
                     return true;
                 }
-                return false;
             }
-        }
-
-        public bool SelectProfile(String name)
-        {
-            var profile = Profiles.Find((profile) => profile.Name == name);
-            if (profile is null)
-                return false;
-
-            return SelectProfile(profile);
-        }
-
-        public bool SelectNext()
-        {
-            var profile = OrderedProfiles.
-                Where((profile) => profile.Selected(this)).
-                Skip(1).
-                FirstOrDefault();
-
-            if (profile is not null)
-                return SelectProfile(profile);
 
             return false;
         }
 
-        public void ToggleDesktopMode(bool? forceState = null)
+        public void SelectController()
+        {
+            var current = CurrentProfile;
+            if (current is null)
+                return;
+            if (current.IsDesktop)
+                SelectNext();
+        }
+
+        public bool SelectNext()
         {
             lock (this)
             {
-                var oldProfile = GetCurrentProfile();
-                if (forceState is null)
-                    RequestDesktopMode = !RequestDesktopMode;
-                else
-                    RequestDesktopMode = forceState.Value;
+                // Update selectedProfile index
+                var current = CurrentProfile;
+                if (current is null)
+                    return false;
+                selectedProfile = Profiles.IndexOf(current);
 
-                var newProfile = GetCurrentProfile();
-                if (oldProfile != newProfile && newProfile is not null)
-                    ProfileChanged(newProfile);
+                for (int i = 1; i < Profiles.Count; i++)
+                {
+                    var idx = (selectedProfile + i) % Profiles.Count;
+                    var profile = Profiles[idx];
+                    if (profile.IsDesktop)
+                        continue;
+                    if (!profile.Selected(this))
+                        continue;
+
+                    selectedProfile = idx;
+                    ProfileChanged(profile);
+                    return true;
+                }
             }
+
+            return false;
+        }
+
+        public void BackToDefault()
+        {
+            if (SelectDefault is not null)
+                SelectDefault();
         }
     }
 }

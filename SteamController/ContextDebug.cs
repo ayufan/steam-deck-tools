@@ -10,7 +10,8 @@ namespace SteamController
         {
             var items = new List<string>();
 
-            if (DesktopMode)
+            var profile = CurrentProfile;
+            if (profile?.IsDesktop ?? false)
                 items.Add("[DESKTOP]");
             else
                 items.Add("[CONTROLLER]");

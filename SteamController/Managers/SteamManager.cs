@@ -33,13 +33,13 @@ namespace SteamController.Managers
                     Devices.Xbox360Controller.ProductID
                 ) != true;
 
-                context.ToggleDesktopMode(false);
+                context.SelectController();
             }
             else
             {
                 context.SteamUsesSteamInput = false;
                 context.SteamUsesX360Controller = false;
-                context.ToggleDesktopMode(true);
+                context.BackToDefault();
             }
 
             lastState = usesController;
