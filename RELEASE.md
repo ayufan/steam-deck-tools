@@ -35,3 +35,4 @@ It does help this project on being supported.
 - Fix crash on startup when Steam is missing
 - Fix crash on resume when X360 Controller is in use
 - Provide currated list of mapping keys in settings (might be extended in the future)
+- Improve performance on critical loop (code is lock-less)

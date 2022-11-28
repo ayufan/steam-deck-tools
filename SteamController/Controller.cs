@@ -59,7 +59,7 @@ namespace SteamController
                     continue;
 
                 var profileItem = new ToolStripMenuItem(profile.Name);
-                profileItem.Click += delegate { lock (context) { context.SelectProfile(profile.Name); } };
+                profileItem.Click += delegate { context.SelectProfile(profile.Name); };
                 contextMenu.Opening += delegate { profileItem.Checked = context.GetCurrentProfile() == profile; };
                 contextMenu.Items.Add(profileItem);
             }
@@ -149,12 +149,8 @@ namespace SteamController
                 }
 
                 updatesReceived++;
-
-                lock (context)
-                {
-                    context.Update();
-                    context.Debug();
-                }
+                context.Update();
+                context.Debug();
 
                 if (!context.Enabled)
                 {
@@ -179,11 +175,8 @@ namespace SteamController
 
         private void ContextStateUpdate_Tick(object? sender, EventArgs e)
         {
-            lock (context)
-            {
-                context.Tick();
-                SharedData_Update();
-            }
+            context.Tick();
+            SharedData_Update();
 
             if (!context.Mouse.Valid)
             {

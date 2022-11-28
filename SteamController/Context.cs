@@ -128,63 +128,62 @@ namespace SteamController
             }
         }
 
-        public Profiles.Profile? FindProfile(String name)
+        private bool SelectProfile(Profiles.Profile profile)
         {
-            return Profiles.Find((profile) => profile.Name == name);
+            lock (this)
+            {
+                var list = OrderedProfiles.ToList();
+                if (!list.Remove(profile))
+                    return false;
+                list.Insert(0, profile);
+                orderedProfiles = list;
+                RequestDesktopMode = profile.IsDesktop;
+
+                if (profile.Selected(this))
+                {
+                    ProfileChanged(profile);
+                    return true;
+                }
+                return false;
+            }
         }
 
-        public bool SelectProfile(String name, bool enable = true)
+        public bool SelectProfile(String name)
         {
-            var profile = FindProfile(name);
+            var profile = Profiles.Find((profile) => profile.Name == name);
             if (profile is null)
                 return false;
 
-            var list = OrderedProfiles;
-            list.Remove(profile);
-            list.Insert(0, profile);
-            RequestDesktopMode = profile.IsDesktop;
-
-            if (profile.Selected(this))
-                ProfileChanged(profile);
-            return true;
+            return SelectProfile(profile);
         }
 
         public bool SelectNext()
         {
-            bool firstSelected = false;
+            var profile = OrderedProfiles.
+                Where((profile) => profile.Selected(this)).
+                Skip(1).
+                FirstOrDefault();
 
-            var list = OrderedProfiles;
-            foreach (var profile in list)
-            {
-                if (!profile.Selected(this))
-                    continue;
-
-                if (!firstSelected)
-                {
-                    firstSelected = true;
-                    continue;
-                }
-
-                list.Remove(profile);
-                list.Insert(0, profile);
-                ProfileChanged(profile);
-                return true;
-            }
+            if (profile is not null)
+                return SelectProfile(profile);
 
             return false;
         }
 
         public void ToggleDesktopMode(bool? forceState = null)
         {
-            var oldProfile = GetCurrentProfile();
-            if (forceState is null)
-                RequestDesktopMode = !RequestDesktopMode;
-            else
-                RequestDesktopMode = forceState.Value;
+            lock (this)
+            {
+                var oldProfile = GetCurrentProfile();
+                if (forceState is null)
+                    RequestDesktopMode = !RequestDesktopMode;
+                else
+                    RequestDesktopMode = forceState.Value;
 
-            var newProfile = GetCurrentProfile();
-            if (oldProfile != newProfile && newProfile is not null)
-                ProfileChanged(newProfile);
+                var newProfile = GetCurrentProfile();
+                if (oldProfile != newProfile && newProfile is not null)
+                    ProfileChanged(newProfile);
+            }
         }
     }
 }
