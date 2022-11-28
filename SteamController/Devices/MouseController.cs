@@ -108,16 +108,14 @@ namespace SteamController.Devices
 
         private void UpdateValid()
         {
-            Safe(() =>
+            if (valid is null || lastValid.AddMilliseconds(UpdateValidInterval) < DateTime.Now)
             {
-                if (valid is null || lastValid.AddMilliseconds(UpdateValidInterval) < DateTime.Now)
+                Safe(() =>
                 {
                     simulator.Mouse.MoveMouseBy(0, 0);
                     return true;
-                }
-
-                return false;
-            });
+                });
+            }
         }
 
         internal void BeforeUpdate()
@@ -201,40 +199,43 @@ namespace SteamController.Devices
             // Move cursor
             if (movedX.Used || movedY.Used)
             {
-                Safe(() =>
+                int x = movedX.Consume();
+                int y = movedY.Consume();
+                if (x != 0 || y != 0)
                 {
-                    simulator.Mouse.MoveMouseBy(movedX.Consume(), movedY.Consume());
-                    return true;
-                });
+                    Safe(() =>
+                    {
+                        simulator.Mouse.MoveMouseBy(x, y);
+                        return true;
+                    });
+                }
             }
 
             // Scroll
             if (verticalScroll.Used)
             {
-                Safe(() =>
+                int value = verticalScroll.Consume();
+                if (value != 0)
                 {
-                    int value = verticalScroll.Consume();
-                    if (value != 0)
+                    Safe(() =>
                     {
                         simulator.Mouse.VerticalScroll(value);
                         return true;
-                    }
-                    return false;
-                });
+                    });
+                }
             }
 
             if (horizontalScroll.Used)
             {
-                Safe(() =>
+                int value = horizontalScroll.Consume();
+                if (value != 0)
                 {
-                    int value = horizontalScroll.Consume();
-                    if (value != 0)
+                    Safe(() =>
                     {
                         simulator.Mouse.HorizontalScroll(value);
                         return true;
-                    }
-                    return false;
-                });
+                    });
+                }
             }
 
             UpdateValid();
