@@ -87,7 +87,6 @@ namespace SteamController.Helpers
         {
             get
             {
-
                 var value = GetValue<int>(ActiveProcessKey, PIDValue);
                 if (value is null)
                     return null;
@@ -154,22 +153,29 @@ namespace SteamController.Helpers
 
         public static HashSet<String>? GetControllerBlacklist()
         {
-            var configPath = SteamConfigPath;
-            if (configPath is null)
-                return null;
-
-            foreach (var line in File.ReadLines(configPath))
+            try
             {
-                var match = ControllerBlacklistRegex.Match(line);
-                if (!match.Success)
-                    continue;
+                var configPath = SteamConfigPath;
+                if (configPath is null)
+                    return null;
 
-                // matches `"controller_blacklist" "<value>"`
-                var value = match.Groups[2].Captures[0].Value;
-                return value.Split(',', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+                foreach (var line in File.ReadLines(configPath))
+                {
+                    var match = ControllerBlacklistRegex.Match(line);
+                    if (!match.Success)
+                        continue;
+
+                    // matches `"controller_blacklist" "<value>"`
+                    var value = match.Groups[2].Captures[0].Value;
+                    return value.Split(',', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+                }
+
+                return new HashSet<String>();
             }
-
-            return new HashSet<String>();
+            catch (IOException)
+            {
+                return null;
+            }
         }
 
         public static bool? IsControllerBlacklisted(ushort vendorId, ushort productId)
@@ -182,14 +188,22 @@ namespace SteamController.Helpers
             return controllers.Contains(id);
         }
 
-        public static void BackupSteamConfig()
+        public static bool BackupSteamConfig()
         {
             var configPath = SteamConfigPath;
             if (configPath is null)
-                return;
+                return true;
 
-            var suffix = DateTime.Now.ToString("yyyyMMddHHmmss");
-            File.Copy(configPath, String.Format("{0}.{1}.bak", configPath, suffix));
+            try
+            {
+                var suffix = DateTime.Now.ToString("yyyyMMddHHmmss");
+                File.Copy(configPath, String.Format("{0}.{1}.bak", configPath, suffix));
+                return true;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
         }
 
         public static bool UpdateControllerBlacklist(ushort vendorId, ushort productId, bool add)
@@ -201,44 +215,50 @@ namespace SteamController.Helpers
             if (configPath is null)
                 return false;
 
-            var lines = File.ReadLines(configPath).ToList();
-            var id = String.Format("{0:x}/{1:x}", vendorId, productId);
-
-            for (int i = 0; i < lines.Count; i++)
+            try
             {
-                if (lines[i] == "}")
+                var lines = File.ReadLines(configPath).ToList();
+                var id = String.Format("{0:x}/{1:x}", vendorId, productId);
+
+                for (int i = 0; i < lines.Count; i++)
                 {
-                    if (add)
+                    if (lines[i] == "}")
                     {
-                        // append controller_blacklist
-                        lines.Insert(i, String.Format("\t\"controller_blacklist\"\t\t\"{0}\"", id));
-                        break;
+                        if (add)
+                        {
+                            // append controller_blacklist
+                            lines.Insert(i, String.Format("\t\"controller_blacklist\"\t\t\"{0}\"", id));
+                            break;
+                        }
                     }
+
+                    var match = ControllerBlacklistRegex.Match(lines[i]);
+                    if (!match.Success)
+                        continue;
+
+                    var value = match.Groups[2].Captures[0].Value;
+                    var controllers = value.Split(',', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+
+                    if (add)
+                        controllers.Add(id);
+                    else
+                        controllers.Remove(id);
+
+                    lines[i] = String.Format("{0}{1}{2}",
+                        match.Groups[1].Captures[0].Value,
+                        String.Join(',', controllers),
+                        match.Groups[3].Captures[0].Value
+                    );
+                    break;
                 }
 
-                var match = ControllerBlacklistRegex.Match(lines[i]);
-                if (!match.Success)
-                    continue;
-
-                var value = match.Groups[2].Captures[0].Value;
-                var controllers = value.Split(',', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
-
-                if (add)
-                    controllers.Add(id);
-                else
-                    controllers.Remove(id);
-
-                lines[i] = String.Format("{0}{1}{2}",
-                    match.Groups[1].Captures[0].Value,
-                    String.Join(',', controllers),
-                    match.Groups[3].Captures[0].Value
-                );
-                break;
+                File.WriteAllLines(configPath, lines);
+                return true;
             }
-
-            File.WriteAllLines(configPath, lines);
-
-            return true;
+            catch (IOException)
+            {
+                return false;
+            }
         }
 
         private static T? GetValue<T>(string key, string value) where T : struct

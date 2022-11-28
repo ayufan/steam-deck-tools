@@ -42,8 +42,6 @@ namespace SteamController
 
         public Controller()
         {
-            var blacklist = Helpers.SteamConfiguration.GetControllerBlacklist();
-
             Instance.RunOnce(TitleWithVersion, "Global\\SteamController");
 
             var contextMenu = new ContextMenuStrip(components);
