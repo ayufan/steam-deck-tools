@@ -47,7 +47,7 @@ namespace SteamController.Managers
 
         private bool? UsesController()
         {
-            if (!SteamConfiguration.IsRunning.GetValueOrDefault(false))
+            if (!SteamConfiguration.IsRunning)
                 return null;
 
             return

@@ -20,15 +20,14 @@ namespace SteamController.Helpers
 
         private static readonly Regex ControllerBlacklistRegex = new Regex("^(\\s*\"controller_blacklist\"\\s*\")([^\"]*)(\"\\s*)$");
 
-        public static bool? IsRunning
+        public static bool IsRunning
         {
             get
             {
-                var value = GetValue<int>(ActiveProcessKey, PIDValue);
-                if (value is null)
-                    return null;
                 using (var process = SteamProcess)
+                {
                     return process is not null;
+                }
             }
         }
 
@@ -143,7 +142,7 @@ namespace SteamController.Helpers
 
             while (DateTimeOffset.Now < waitTill)
             {
-                if (IsRunning != true)
+                if (!IsRunning)
                     return true;
                 Application.DoEvents();
                 Thread.Sleep(50);
@@ -159,7 +158,7 @@ namespace SteamController.Helpers
                 if (configPath is null)
                     return null;
 
-                foreach (var line in File.ReadLines(configPath))
+                foreach (var line in File.ReadLines(configPath).Reverse())
                 {
                     var match = ControllerBlacklistRegex.Match(line);
                     if (!match.Success)
@@ -208,7 +207,7 @@ namespace SteamController.Helpers
 
         public static bool UpdateControllerBlacklist(ushort vendorId, ushort productId, bool add)
         {
-            if (IsRunning == true)
+            if (IsRunning)
                 return false;
 
             var configPath = SteamConfigPath;
