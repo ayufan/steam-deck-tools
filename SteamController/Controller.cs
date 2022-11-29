@@ -26,7 +26,8 @@ namespace SteamController
             },
             Managers = {
                 new Managers.ProcessManager(),
-                new Managers.SteamManager()
+                new Managers.SteamManager(),
+                new Managers.ProfileSwitcher()
             }
         };
 

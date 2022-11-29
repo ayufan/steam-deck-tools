@@ -20,6 +20,7 @@ namespace SteamController
         private int selectedProfile;
 
         public bool RequestEnable { get; set; } = true;
+        public bool GameProcessRunning { get; set; } = false;
         public bool SteamUsesX360Controller { get; set; } = false;
         public bool SteamUsesSteamInput { get; set; } = false;
 
@@ -54,6 +55,7 @@ namespace SteamController
             Mouse = new Devices.MouseController();
 
             ProfileChanged += (_) => X360.Beep();
+            ProfileChanged += (profile) => TraceLine("Context: Selected Profile: {0}", profile.Name);
         }
 
         public void Dispose()
@@ -139,8 +141,12 @@ namespace SteamController
             var current = CurrentProfile;
             if (current is null)
                 return;
+
             if (current.IsDesktop)
+            {
+                TraceLine("Context: SelectController");
                 SelectNext();
+            }
         }
 
         public bool SelectNext()
@@ -173,6 +179,7 @@ namespace SteamController
 
         public void BackToDefault()
         {
+            TraceLine("Context: Back To Default.");
             if (SelectDefault is not null)
                 SelectDefault();
         }

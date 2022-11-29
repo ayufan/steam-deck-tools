@@ -21,3 +21,4 @@ It does help this project on being supported.
 - Fix `Process Kill` action (STEAM+B for 3s)
 - Go back to `Startup Profile` on `Toggle deskptop mode`
 - The `X360.Beep()` cycles currently connected device (fixes Playnite error)
+- Fix using Playnite to launch Steam game where on exit Desktop was activated

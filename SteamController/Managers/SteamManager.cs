@@ -32,14 +32,11 @@ namespace SteamController.Managers
                     Devices.Xbox360Controller.VendorID,
                     Devices.Xbox360Controller.ProductID
                 ) != true;
-
-                context.SelectController();
             }
             else
             {
                 context.SteamUsesSteamInput = false;
                 context.SteamUsesX360Controller = false;
-                context.BackToDefault();
             }
 
             lastState = usesController;

@@ -9,8 +9,6 @@ namespace SteamController.Managers
             "Playnite.FullscreenApp"
         };
 
-        private bool activated;
-
         private Process? FindActivationProcess()
         {
             foreach (var processName in ActivationProcessNames)
@@ -25,23 +23,7 @@ namespace SteamController.Managers
 
         public override void Tick(Context context)
         {
-            // React to state change
-            if (FindActivationProcess() is not null)
-            {
-                if (!activated)
-                {
-                    activated = true;
-                    context.SelectController();
-                }
-            }
-            else
-            {
-                if (activated)
-                {
-                    activated = false;
-                    context.BackToDefault();
-                }
-            }
+            context.GameProcessRunning = FindActivationProcess() is not null;
         }
     }
 }
