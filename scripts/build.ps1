@@ -11,14 +11,16 @@ if ($args[1]) {
 }
 
 $majorVer = Get-Content VERSION
-$lastVer = git tag --sort version:refname --list "$majorVer.*" | Select -last 1
+if (Get-Command "git.exe" -ErrorAction SilentlyContinue) {
+    $lastVer = git tag --sort version:refname --list "$majorVer.*" | Select -last 1
+}
 
 echo "Configuration: $configuration"
 echo "BuildPath: $path"
 echo "Major: $majorVer"
 echo "lastVer: $lastVer"
 
-if ($lastVer -ne "") {
+if ($lastVer) {
     $nextVer = $lastVer.Split('.')
     $lastItem = $nextVer.Length-1
     $nextVer[$lastItem] = [int]$nextVer[$lastItem] + 1
@@ -26,6 +28,7 @@ if ($lastVer -ne "") {
 } else {
     $nextVer="$majorVer.0"
 }
+echo "nextVer: $nextVer"
 
 dotnet --list-sdks -or winget install Microsoft.DotNet.SDK.6
 dotnet build --configuration "$configuration" "/property:Version=$nextVer" --output "$path"
