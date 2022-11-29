@@ -71,17 +71,6 @@ namespace SteamController.Helpers
             get { return GetValue2<string>(SteamKey, SteamPathValue); }
         }
 
-        public static String? SteamConfigPath
-        {
-            get
-            {
-                var path = SteamPath;
-                if (path is null)
-                    return null;
-                return Path.Join(SteamPath, RelativeConfigPath);
-            }
-        }
-
         private static Process? SteamProcess
         {
             get
@@ -100,6 +89,14 @@ namespace SteamController.Helpers
                 }
                 catch { return null; }
             }
+        }
+
+        public static String? GetConfigPath(String configPath)
+        {
+            var path = SteamPath;
+            if (path is null)
+                return null;
+            return Path.Join(SteamPath, configPath);
         }
 
         public static bool ShutdownSteam()
@@ -154,7 +151,7 @@ namespace SteamController.Helpers
         {
             try
             {
-                var configPath = SteamConfigPath;
+                var configPath = GetConfigPath(RelativeConfigPath);
                 if (configPath is null)
                     return null;
 
@@ -187,9 +184,9 @@ namespace SteamController.Helpers
             return controllers.Contains(id);
         }
 
-        public static bool BackupSteamConfig()
+        public static bool BackupSteamConfig(String path)
         {
-            var configPath = SteamConfigPath;
+            var configPath = GetConfigPath(path);
             if (configPath is null)
                 return true;
 
@@ -205,12 +202,17 @@ namespace SteamController.Helpers
             }
         }
 
+        public static bool BackupSteamConfig()
+        {
+            return BackupSteamConfig(RelativeConfigPath);
+        }
+
         public static bool UpdateControllerBlacklist(ushort vendorId, ushort productId, bool add)
         {
             if (IsRunning)
                 return false;
 
-            var configPath = SteamConfigPath;
+            var configPath = GetConfigPath(RelativeConfigPath);
             if (configPath is null)
                 return false;
 
