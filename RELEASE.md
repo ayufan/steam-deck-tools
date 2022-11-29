@@ -20,3 +20,4 @@ It does help this project on being supported.
 - Reduce hold for `Toggle desktop mode` to 2s
 - Fix `Process Kill` action (STEAM+B for 3s)
 - Go back to `Startup Profile` on `Toggle deskptop mode`
+- The `X360.Beep()` cycles currently connected device (fixes Playnite error)

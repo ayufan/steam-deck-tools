@@ -63,12 +63,12 @@ namespace SteamController.Devices
             Connected = false;
         }
 
-        private void UpdateConnected()
+        private void SetConnected(bool connected)
         {
             if (Connected == isConnected)
                 return;
 
-            if (Connected)
+            if (connected)
             {
                 device?.Connect();
                 TraceLine("Connected X360 Controller.");
@@ -82,31 +82,28 @@ namespace SteamController.Devices
             isConnected = Connected;
         }
 
-        internal void Disconnect()
-        {
-            if (!isConnected)
-                return;
-
-            device?.Disconnect();
-            isConnected = false;
-        }
-
         internal void Beep()
         {
-            var client = this.client;
-            if (client is null)
+            if (device is null)
                 return;
 
-            // Generate dummy xbox360 controller to generate notification
-            var device = client.CreateXbox360Controller();
-            device.Connect();
-            Thread.Sleep(100);
-            device.Disconnect();
+            lock (this)
+            {
+                // cycle currently connected device
+                SetConnected(!isConnected);
+                Thread.Sleep(100);
+            }
         }
 
         internal void Update()
         {
-            UpdateConnected();
+            if (device is not null && Connected != isConnected)
+            {
+                lock (this)
+                {
+                    SetConnected(Connected);
+                }
+            }
 
             if (isConnected && submitReport)
             {
