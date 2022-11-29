@@ -1,4 +1,4 @@
-# Steam Deck Tools
+# (Unofficial) Steam Deck Tools
 
 This repository contains my own personal set of tools to help running Windows on Steam Deck.
 
@@ -322,6 +322,8 @@ You might also run `scripts/test_debug.bat` which will build and run built versi
 ## Author
 
 Kamil Trzciński, 2022
+
+Steam Deck Tools is not affiliated with Valve, Steam, or any of their partners.
 
 ## License
 
