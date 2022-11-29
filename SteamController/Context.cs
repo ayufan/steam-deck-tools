@@ -19,10 +19,20 @@ namespace SteamController
 
         private int selectedProfile;
 
+        public struct ContextState
+        {
+            public bool GameProcessRunning { get; set; }
+            public bool SteamUsesX360Controller { get; set; }
+            public bool SteamUsesSteamInput { get; set; }
+
+            public bool IsActive
+            {
+                get { return GameProcessRunning || SteamUsesSteamInput || SteamUsesSteamInput; }
+            }
+        }
+
         public bool RequestEnable { get; set; } = true;
-        public bool GameProcessRunning { get; set; } = false;
-        public bool SteamUsesX360Controller { get; set; } = false;
-        public bool SteamUsesSteamInput { get; set; } = false;
+        public ContextState State;
 
         public event Action<Profiles.Profile> ProfileChanged;
         public Action? SelectDefault;

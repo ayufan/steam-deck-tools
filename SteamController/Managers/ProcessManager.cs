@@ -23,7 +23,7 @@ namespace SteamController.Managers
 
         public override void Tick(Context context)
         {
-            context.GameProcessRunning = FindActivationProcess() is not null;
+            context.State.GameProcessRunning = FindActivationProcess() is not null;
         }
     }
 }

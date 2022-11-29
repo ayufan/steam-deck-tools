@@ -6,7 +6,7 @@ namespace SteamController.Profiles
     {
         public override bool Selected(Context context)
         {
-            return context.Enabled && context.X360.Valid && context.Mouse.Valid && !context.SteamUsesSteamInput;
+            return context.Enabled && context.X360.Valid && context.Mouse.Valid && !context.State.SteamUsesSteamInput;
         }
 
         internal override ProfilesSettings.BackPanelSettings BackPanelSettings

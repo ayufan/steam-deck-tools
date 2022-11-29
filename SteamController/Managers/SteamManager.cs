@@ -11,8 +11,8 @@ namespace SteamController.Managers
         {
             if (!Settings.Default.EnableSteamDetection)
             {
-                context.SteamUsesSteamInput = false;
-                context.SteamUsesX360Controller = false;
+                context.State.SteamUsesSteamInput = false;
+                context.State.SteamUsesX360Controller = false;
                 lastState = false;
                 return;
             }
@@ -23,20 +23,20 @@ namespace SteamController.Managers
 
             if (usesController)
             {
-                context.SteamUsesSteamInput = Helpers.SteamConfiguration.IsControllerBlacklisted(
+                context.State.SteamUsesSteamInput = Helpers.SteamConfiguration.IsControllerBlacklisted(
                     Devices.SteamController.VendorID,
                     Devices.SteamController.ProductID
                 ) != true;
 
-                context.SteamUsesX360Controller = Helpers.SteamConfiguration.IsControllerBlacklisted(
+                context.State.SteamUsesX360Controller = Helpers.SteamConfiguration.IsControllerBlacklisted(
                     Devices.Xbox360Controller.VendorID,
                     Devices.Xbox360Controller.ProductID
                 ) != true;
             }
             else
             {
-                context.SteamUsesSteamInput = false;
-                context.SteamUsesX360Controller = false;
+                context.State.SteamUsesSteamInput = false;
+                context.State.SteamUsesX360Controller = false;
             }
 
             lastState = usesController;

@@ -196,7 +196,7 @@ namespace SteamController
             }
             else if (context.Enabled)
             {
-                if (context.SteamUsesSteamInput)
+                if (context.State.SteamUsesSteamInput)
                 {
                     notifyIcon.Icon = isDesktop ? Resources.monitor_off : Resources.microsoft_xbox_controller_off;
                     notifyIcon.Text = TitleWithVersion + ". Steam uses Steam Input";
