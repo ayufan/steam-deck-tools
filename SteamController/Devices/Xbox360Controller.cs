@@ -63,12 +63,12 @@ namespace SteamController.Devices
             Connected = false;
         }
 
-        private void SetConnected(bool connected)
+        private void SetConnected(bool wantsConnected)
         {
-            if (Connected == isConnected)
+            if (wantsConnected == isConnected)
                 return;
 
-            if (connected)
+            if (wantsConnected)
             {
                 device?.Connect();
                 TraceLine("Connected X360 Controller.");
@@ -79,7 +79,7 @@ namespace SteamController.Devices
                 TraceLine("Disconnected X360 Controller.");
             }
 
-            isConnected = Connected;
+            isConnected = wantsConnected;
         }
 
         internal void Beep()
