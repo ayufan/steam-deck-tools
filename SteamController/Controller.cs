@@ -27,11 +27,10 @@ namespace SteamController
             Managers = {
                 new Managers.ProcessManager(),
                 new Managers.SteamManager(),
-                new Managers.ProfileSwitcher()
+                new Managers.ProfileSwitcher(),
+                new Managers.SharedDataManager()
             }
         };
-
-        SharedData<SteamControllerSetting> sharedData = SharedData<SteamControllerSetting>.CreateNew();
 
         public Controller()
         {
@@ -130,24 +129,9 @@ namespace SteamController
             context.Start();
         }
 
-        private void SharedData_Update()
-        {
-            if (sharedData.GetValue(out var value) && value.DesiredProfile != "")
-            {
-                context.SelectProfile(value.DesiredProfile);
-            }
-
-            sharedData.SetValue(new SteamControllerSetting()
-            {
-                CurrentProfile = context.CurrentProfile?.Name ?? "",
-                SelectableProfiles = context.Profiles.Where((profile) => profile.Selected(context) || profile.Visible).JoinWithN((profile) => profile.Name),
-            });
-        }
-
         private void ContextStateUpdate_Tick(object? sender, EventArgs e)
         {
             context.Tick();
-            SharedData_Update();
 
             var isDesktop = context.CurrentProfile?.IsDesktop ?? false;
 
