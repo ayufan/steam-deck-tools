@@ -19,12 +19,12 @@ namespace SteamController.Profiles
 
             if (context.X360.FeedbackLargeMotor.GetValueOrDefault() > 0)
             {
-                context.Steam.SendHaptic(1, 0);
+                context.Steam.SendHaptic(1, HapticSettings.LeftIntensity);
             }
 
             if (context.X360.FeedbackSmallMotor.GetValueOrDefault() > 0)
             {
-                context.Steam.SendHaptic(0, 0);
+                context.Steam.SendHaptic(0, HapticSettings.RightIntensity);
             }
 
             context.X360.ResetFeedback();

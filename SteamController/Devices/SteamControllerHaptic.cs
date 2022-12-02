@@ -36,7 +36,7 @@ namespace SteamController.Devices
             try
             {
                 Marshal.StructureToPtr(haptic, handle.AddrOfPinnedObject(), false);
-                neptuneDevice.RequestFeatureReport(bytes);
+                neptuneDevice.RequestFeatureReportAsync(bytes);
                 return true;
             }
             catch (Exception e)
@@ -69,7 +69,7 @@ namespace SteamController.Devices
             var haptic = new SDCHapticPacket2()
             {
                 position = position,
-                intensity = intensity,
+                intensity = (sbyte)(intensity - 5), // convert from dB to values
                 tsA = ts,
                 tsB = ts
             };
@@ -82,7 +82,7 @@ namespace SteamController.Devices
             try
             {
                 Marshal.StructureToPtr(haptic, handle.AddrOfPinnedObject(), false);
-                neptuneDevice.RequestFeatureReport(bytes);
+                neptuneDevice.RequestFeatureReportAsync(bytes);
                 return true;
             }
             catch (Exception e)

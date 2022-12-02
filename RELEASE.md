@@ -18,3 +18,4 @@ It does help this project on being supported.
 - Build DEBUG that has all experimental features
 - Introduce X360 Haptic profile to improve vibration (in DEBUG)
 - Re-open Neptune controller every 10 failures
+- Manage Steam default controller configs to prevent double inputs (in DEBUG, change Settings)

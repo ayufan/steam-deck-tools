@@ -262,6 +262,83 @@ namespace SteamController.Helpers
             }
         }
 
+        public static bool? IsConfigFileOverwritten(String path, byte[] content)
+        {
+            try
+            {
+                var configPath = GetConfigPath(path);
+                if (configPath is null)
+                    return null;
+
+                byte[] diskContent = File.ReadAllBytes(configPath);
+                return content.SequenceEqual(diskContent);
+            }
+            catch (IOException)
+            {
+                return null;
+            }
+        }
+
+        public static bool? ResetConfigFile(String path)
+        {
+            try
+            {
+                var configPath = GetConfigPath(path);
+                if (configPath is null)
+                    return null;
+
+                File.Copy(configPath + ".orig", configPath, true);
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+            catch (System.Security.SecurityException)
+            {
+                return false;
+            }
+            catch (IOException)
+            {
+                return null;
+            }
+        }
+
+        public static bool? OverwriteConfigFile(String path, byte[] content, bool backup)
+        {
+            try
+            {
+                var configPath = GetConfigPath(path);
+                if (configPath is null)
+                    return null;
+
+                try
+                {
+                    byte[] diskContent = File.ReadAllBytes(configPath);
+                    if (content.Equals(diskContent))
+                        return false;
+                }
+                catch (IOException) { }
+
+                if (backup)
+                    File.Copy(configPath, configPath + ".orig", true);
+                File.WriteAllBytes(configPath, content);
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+            catch (System.Security.SecurityException)
+            {
+                return false;
+            }
+            catch (IOException)
+            {
+                return null;
+            }
+        }
+
         private static T? GetValue<T>(string key, string value) where T : struct
         {
             try

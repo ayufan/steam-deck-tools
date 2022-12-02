@@ -31,6 +31,7 @@ namespace SteamController
                 new Managers.ProcessManager(),
                 new Managers.SteamManager(),
                 new Managers.ProfileSwitcher(),
+                new Managers.SteamConfigsManager(),
                 new Managers.SharedDataManager()
             }
         };
@@ -231,8 +232,8 @@ namespace SteamController
 
                 ignoreSteamItem.Visible = blacklistedSteamController is not null;
                 useX360WithSteamItem.Visible = blacklistedSteamController is not null;
-                steamSeparatorItem.Visible = blacklistedSteamController is not null;
                 useSteamInputItem.Visible = blacklistedSteamController is not null;
+                steamSeparatorItem.Visible = blacklistedSteamController is not null;
 
                 ignoreSteamItem.Checked = !Settings.Default.EnableSteamDetection || blacklistedSteamController == null;
                 useX360WithSteamItem.Checked = Settings.Default.EnableSteamDetection && blacklistedSteamController == true;
@@ -260,6 +261,7 @@ namespace SteamController
             Helpers.SteamConfiguration.KillSteam();
             Helpers.SteamConfiguration.WaitForSteamClose(5000);
             Helpers.SteamConfiguration.BackupSteamConfig();
+
             var steamControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
                 Devices.SteamController.VendorID,
                 Devices.SteamController.ProductID,
@@ -271,7 +273,6 @@ namespace SteamController
                 blacklistX360Controller
             );
             Settings.Default.EnableSteamDetection = steamDetection;
-            Settings.Default.Save();
 
             if (steamControllerUpdate && x360ControllerUpdate)
             {

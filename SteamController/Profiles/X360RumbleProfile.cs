@@ -21,17 +21,6 @@ namespace SteamController.Profiles
                 return Status.Done;
             }
 
-#if false
-            if (context.X360.FeedbackLargeMotor.GetValueOrDefault() > 0)
-            {
-                context.Steam.SetHaptic2(1, 0);
-            }
-
-            if (context.X360.FeedbackSmallMotor.GetValueOrDefault() > 0)
-            {
-                context.Steam.SetHaptic2(0, 0);
-            }
-#else
             if (context.X360.FeedbackLargeMotor.HasValue)
             {
                 context.Steam.SetFeedback(
@@ -43,7 +32,6 @@ namespace SteamController.Profiles
                 context.Steam.SetFeedback(
                     0, GetHapticAmplitude(context.X360.FeedbackSmallMotor), RumbleSettings.Period, FeedbackCount);
             }
-#endif
 
             context.X360.ResetFeedback();
 
