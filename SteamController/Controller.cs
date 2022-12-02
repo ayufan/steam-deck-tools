@@ -31,14 +31,6 @@ namespace SteamController
             }
         };
 
-        Thread? contextThread;
-        bool running = true;
-        Stopwatch stopwatch = new Stopwatch();
-        int updatesReceived = 0;
-        int lastUpdatesReceived = 0;
-        TimeSpan lastUpdatesReset;
-        readonly TimeSpan updateResetInterval = TimeSpan.FromSeconds(1);
-
         SharedData<SteamControllerSetting> sharedData = SharedData<SteamControllerSetting>.CreateNew();
 
         public Controller()
@@ -135,32 +127,7 @@ namespace SteamController
 #endif
             };
 
-            stopwatch.Start();
-
-            contextThread = new Thread(ContextState_Update);
-            contextThread.Start();
-        }
-
-        private void ContextState_Update(object? obj)
-        {
-            while (running)
-            {
-                if (lastUpdatesReset + updateResetInterval < stopwatch.Elapsed)
-                {
-                    lastUpdatesReset = stopwatch.Elapsed;
-                    lastUpdatesReceived = updatesReceived;
-                    updatesReceived = 0;
-                }
-
-                updatesReceived++;
-                context.Update();
-                context.Debug();
-
-                if (!context.Enabled)
-                {
-                    Thread.Sleep(100);
-                }
-            }
+            context.Start();
         }
 
         private void SharedData_Update()
@@ -217,20 +184,13 @@ namespace SteamController
                 notifyIcon.Text = TitleWithVersion + ". Disabled";
             }
 
-            notifyIcon.Text += String.Format(". Updates: {0}/s", lastUpdatesReceived);
+            notifyIcon.Text += String.Format(". Updates: {0}/s", context.UpdatesPerSec);
         }
 
         public void Dispose()
         {
             notifyIcon.Visible = false;
-            running = false;
-
-            if (contextThread != null)
-            {
-                contextThread.Interrupt();
-                contextThread.Join();
-            }
-
+            context.Stop();
             using (context) { }
         }
 
