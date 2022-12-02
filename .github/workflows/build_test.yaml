@@ -21,11 +21,11 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build without Version
-      run: dotnet build --configuration Release --output ${{ env.SteamDeckTools }}-develop/
+      run: dotnet build --configuration Debug --output ${{ env.SteamDeckTools }}-debug/
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - uses: vimtor/action-zip@v1
       with:
-        files: ${{ env.SteamDeckTools }}-develop
-        dest: ${{ env.SteamDeckTools }}-develop.zip
+        files: ${{ env.SteamDeckTools }}-debug
+        dest: ${{ env.SteamDeckTools }}-debug.zip
         recursive: true
