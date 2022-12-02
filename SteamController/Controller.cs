@@ -1,4 +1,4 @@
-﻿using CommonHelpers;
+using CommonHelpers;
 using ExternalHelpers;
 using SteamController.Profiles;
 using System.ComponentModel;
@@ -304,7 +304,8 @@ namespace SteamController
                 {
                     Desktop = ProfilesSettings.BackPanelSettings.Desktop,
                     X360 = ProfilesSettings.BackPanelSettings.X360,
-                    X360Rumble = ProfilesSettings.X360RumbleSettings.Default
+                    X360Rumble = ProfilesSettings.X360RumbleSettings.Default,
+                    Application = Settings.Default
                 }
             };
 

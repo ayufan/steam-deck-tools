@@ -82,14 +82,8 @@ namespace SteamController
 
             foreach (var manager in Managers)
             {
-                try
-                {
-                    manager.Tick(this);
-                }
-                catch (Exception e)
-                {
-                    TraceLine("Manager: {0}. Exception: {1}", manager, e);
-                }
+                try { manager.Tick(this); }
+                catch (Exception e) { TraceLine("Manager: Tick: {0}. Exception: {1}", manager, e); }
             }
         }
 
