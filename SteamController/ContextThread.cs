@@ -43,7 +43,7 @@ namespace SteamController
                 Update();
                 Debug();
 
-                if (!Enabled)
+                if (!Enabled || !Steam.Updated)
                 {
                     Thread.Sleep(100);
                 }

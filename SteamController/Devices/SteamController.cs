@@ -11,10 +11,12 @@ namespace SteamController.Devices
         public const ushort VendorID = 0x28DE;
         public const ushort ProductID = 0x1205;
         private const int ReadTimeout = 50;
+        public const int MaxFailures = 10;
 
         private hidapi.HidDevice neptuneDevice;
         private Stopwatch stopwatch = new Stopwatch();
         private TimeSpan? lastUpdate;
+        private int failures;
         public double DeltaTime { get; private set; }
 
         internal SteamController()
@@ -22,8 +24,7 @@ namespace SteamController.Devices
             InitializeButtons();
             InitializeActions();
 
-            neptuneDevice = new hidapi.HidDevice(VendorID, ProductID, 64);
-            neptuneDevice.OpenDevice();
+            OpenDevice();
 
             stopwatch.Start();
         }
@@ -34,10 +35,25 @@ namespace SteamController.Devices
 
         public bool Updated { get; private set; }
 
-        internal void Reset()
+        private void OpenDevice()
+        {
+            using (neptuneDevice) { }
+            neptuneDevice = new hidapi.HidDevice(VendorID, ProductID, 64);
+            neptuneDevice.OpenDevice();
+        }
+
+        internal void Fail()
         {
             foreach (var action in AllActions)
                 action.Reset();
+
+            // Try to re-open every MaxFailures
+            failures++;
+            if (failures % MaxFailures == 0)
+            {
+                OpenDevice();
+                failures = 0;
+            }
         }
 
         private void BeforeUpdate(byte[] buffer)
@@ -61,7 +77,7 @@ namespace SteamController.Devices
                 byte[] data = neptuneDevice.Read(ReadTimeout);
                 if (data == null)
                 {
-                    Reset();
+                    Fail();
                     Updated = false;
                     return;
                 }
@@ -72,7 +88,7 @@ namespace SteamController.Devices
             catch (Exception e)
             {
                 Log.TraceLine("STEAM: Exception: {0}", e);
-                Reset();
+                Fail();
                 Updated = false;
             }
         }
@@ -90,8 +106,7 @@ namespace SteamController.Devices
             catch (Exception e)
             {
                 Log.TraceLine("STEAM: Exception: {0}", e);
-                Reset();
-                Updated = false;
+                Fail();
             }
         }
     }
