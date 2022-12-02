@@ -70,6 +70,9 @@ namespace SteamController
 
         public void Dispose()
         {
+            foreach (var manager in Managers)
+                manager.Dispose();
+
             using (Steam) { }
             using (X360) { }
             using (Keyboard) { }
