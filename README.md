@@ -1,4 +1,4 @@
-# (Unofficial) Windows (Steam) Deck Tools
+# Windows Deck Tools for Steam Deck
 
 This repository contains my own personal set of tools to help running Windows on Steam Deck.
 
