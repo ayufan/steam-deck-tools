@@ -22,7 +22,10 @@ namespace SteamController
                 new Profiles.SteamProfile() { Name = "Steam", Visible = false },
                 new Profiles.SteamWithShorcutsProfile() { Name = "Steam with Shortcuts", Visible = false },
                 new Profiles.X360Profile() { Name = "X360" },
-                new Profiles.X360RumbleProfile() { Name = "X360 with Rumble" }
+                new Profiles.X360RumbleProfile() { Name = "X360 with Rumble" },
+                #if DEBUG
+                new Profiles.X360HapticProfile() { Name = "X360 with Haptic" }
+                #endif
             },
             Managers = {
                 new Managers.ProcessManager(),
@@ -305,6 +308,9 @@ namespace SteamController
                     Desktop = ProfilesSettings.BackPanelSettings.Desktop,
                     X360 = ProfilesSettings.BackPanelSettings.X360,
                     X360Rumble = ProfilesSettings.X360RumbleSettings.Default,
+#if DEBUG
+                    X360Haptic = ProfilesSettings.X360HapticSettings.Default,
+#endif
                     Application = Settings.Default
                 }
             };
