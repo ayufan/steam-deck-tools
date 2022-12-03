@@ -17,3 +17,4 @@ It does help this project on being supported.
 - Fix using Playnite to launch Steam game where on exit Desktop was activated
 - Build DEBUG that has all experimental features
 - Introduce X360 Haptic profile to improve vibration (in DEBUG)
+- Re-open Neptune controller every 10 failures
