@@ -19,3 +19,4 @@ It does help this project on being supported.
 - Introduce X360 Haptic profile to improve vibration (in DEBUG)
 - Re-open Neptune controller every 10 failures
 - Manage Steam default controller configs to prevent double inputs (in DEBUG, change Settings)
+- Fix bug with unable to select controller profile from OSD

@@ -16,7 +16,7 @@ namespace SteamController.Managers
             sharedData.SetValue(new SteamControllerSetting()
             {
                 CurrentProfile = context.CurrentProfile?.Name ?? "",
-                SelectableProfiles = SelectableProfiles(context).JoinWith0(),
+                SelectableProfiles = SelectableProfiles(context).JoinWithN(),
             });
         }
 
