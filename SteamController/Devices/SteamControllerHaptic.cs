@@ -62,8 +62,13 @@ namespace SteamController.Devices
             public SDCHapticPacket2() { }
         }
 
+        private Task? hapticTask;
+
         public bool SendHaptic(byte position, sbyte intensity)
         {
+            if (hapticTask?.IsCompleted == false)
+                return false;
+
             var ts = Random.Shared.Next();
 
             var haptic = new SDCHapticPacket2()
@@ -82,7 +87,7 @@ namespace SteamController.Devices
             try
             {
                 Marshal.StructureToPtr(haptic, handle.AddrOfPinnedObject(), false);
-                neptuneDevice.RequestFeatureReportAsync(bytes);
+                hapticTask = neptuneDevice.RequestFeatureReportAsync(bytes);
                 return true;
             }
             catch (Exception e)
