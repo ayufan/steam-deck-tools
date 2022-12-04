@@ -38,6 +38,11 @@ namespace SteamController
 
         public Controller()
         {
+            // Set available profiles
+            ProfilesSettings.Helpers.ProfileNameConverter.Profiles = context.Profiles.
+                Where((profile) => profile.Visible).
+                Select((profile) => profile.Name).ToArray();
+
             Instance.RunOnce(TitleWithVersion, "Global\\SteamController");
 
             var contextMenu = new ContextMenuStrip(components);
@@ -114,7 +119,8 @@ namespace SteamController
 
             context.SelectDefault = () =>
             {
-                context.SelectProfile(Settings.Default.StartupProfile);
+                if (!context.SelectProfile(Settings.Default.DefaultProfile))
+                    context.SelectProfile(context.Profiles.First().Name);
             };
             context.BackToDefault();
 

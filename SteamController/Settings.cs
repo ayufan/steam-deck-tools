@@ -3,6 +3,7 @@ using System.Configuration;
 
 namespace SteamController
 {
+
     [Category("Settings")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     internal sealed partial class Settings : ApplicationSettingsBase
@@ -26,13 +27,14 @@ namespace SteamController
             set { this["EnableSteamDetection"] = value; }
         }
 
-        [ApplicationScopedSetting]
+        [UserScopedSetting]
         [DefaultSettingValue("Desktop")]
-        [BrowsableAttribute(false)]
-        public string StartupProfile
+        [Description("Default profile used when going back to Desktop mode")]
+        [BrowsableAttribute(true)]
+        public ProfilesSettings.Helpers.ProfileName DefaultProfile
         {
-            get { return ((string)(this["StartupProfile"])); }
-            set { this["StartupProfile"] = value; }
+            get { return ((ProfilesSettings.Helpers.ProfileName)(this["DefaultProfile"])); }
+            set { this["DefaultProfile"] = value; }
         }
 
 #if DEBUG
