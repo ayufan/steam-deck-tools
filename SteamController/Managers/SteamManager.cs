@@ -5,7 +5,7 @@ namespace SteamController.Managers
 {
     public sealed class SteamManager : Manager
     {
-        private bool lastState;
+        private string? lastState;
 
         public override void Tick(Context context)
         {
@@ -13,15 +13,15 @@ namespace SteamController.Managers
             {
                 context.State.SteamUsesSteamInput = false;
                 context.State.SteamUsesX360Controller = false;
-                lastState = false;
+                lastState = null;
                 return;
             }
 
-            var usesController = UsesController() ?? false;
+            var usesController = UsesController();
             if (lastState == usesController)
                 return;
 
-            if (usesController)
+            if (usesController is not null)
             {
                 context.State.SteamUsesSteamInput = Helpers.SteamConfiguration.IsControllerBlacklisted(
                     Devices.SteamController.VendorID,
@@ -40,17 +40,29 @@ namespace SteamController.Managers
             }
 
             lastState = usesController;
+
+#if DEBUG
+            CommonHelpers.Log.TraceLine(
+                "SteamManager: uses={0}, isRunning={1}, usesSteamInput={2}, usesX360={3}",
+                usesController,
+                SteamConfiguration.IsRunning,
+                context.State.SteamUsesSteamInput,
+                context.State.SteamUsesX360Controller
+            );
+#endif
         }
 
-        private bool? UsesController()
+        private string? UsesController()
         {
             if (!SteamConfiguration.IsRunning)
                 return null;
-
-            return
-                SteamConfiguration.IsBigPictureMode.GetValueOrDefault(false) ||
-                SteamConfiguration.IsRunningGame.GetValueOrDefault(false) ||
-                SteamConfiguration.IsGamePadUI;
+            if (SteamConfiguration.IsBigPictureMode.GetValueOrDefault(false))
+                return "bigpicture";
+            if (SteamConfiguration.IsRunningGame.GetValueOrDefault(false))
+                return "game";
+            if (SteamConfiguration.IsGamePadUI)
+                return "gamepadui";
+            return null;
         }
     }
 }

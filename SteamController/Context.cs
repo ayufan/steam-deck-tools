@@ -29,6 +29,15 @@ namespace SteamController
             {
                 get { return GameProcessRunning || SteamUsesSteamInput || SteamUsesSteamInput; }
             }
+
+            public override string ToString()
+            {
+                string reason = "state";
+                if (GameProcessRunning) reason += " game";
+                if (SteamUsesX360Controller) reason += " steamX360";
+                if (SteamUsesSteamInput) reason += " steamInput";
+                return reason;
+            }
         }
 
         public bool RequestEnable { get; set; } = true;
@@ -151,7 +160,7 @@ namespace SteamController
 
             if (current.IsDesktop)
             {
-                TraceLine("Context: SelectController");
+                TraceLine("Context: SelectController. State={0}", State);
                 SelectNext();
             }
         }
