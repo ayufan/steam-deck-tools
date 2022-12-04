@@ -5,7 +5,10 @@ namespace SteamController.Managers
 {
     public sealed class SteamManager : Manager
     {
+        public const int DebounceStates = 1;
+
         private string? lastState;
+        private int stateChanged;
 
         public override void Tick(Context context)
         {
@@ -14,12 +17,21 @@ namespace SteamController.Managers
                 context.State.SteamUsesSteamInput = false;
                 context.State.SteamUsesX360Controller = false;
                 lastState = null;
+                stateChanged = 0;
                 return;
             }
 
             var usesController = UsesController();
             if (lastState == usesController)
+            {
+                stateChanged = 0;
                 return;
+            }
+            else if (stateChanged < DebounceStates)
+            {
+                stateChanged++;
+                return;
+            }
 
             if (usesController is not null)
             {
@@ -40,6 +52,7 @@ namespace SteamController.Managers
             }
 
             lastState = usesController;
+            stateChanged = 0;
 
 #if DEBUG
             CommonHelpers.Log.TraceLine(

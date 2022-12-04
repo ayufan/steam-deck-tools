@@ -23,3 +23,4 @@ It does help this project on being supported.
 - Skip repeated haptic requests
 - Allow to select Default profile (Desktop-mode profile)
 - Allow to change scroll direction
+- Debounce controller changes from Steam
