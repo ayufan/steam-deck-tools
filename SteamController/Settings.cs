@@ -52,6 +52,12 @@ namespace SteamController
             set { this["ScrollDirection"] = value; }
         }
 
+        public enum SteamControllerConfigsMode
+        {
+            DoNotTouch,
+            Overwrite
+        }
+
 #if DEBUG
         [UserScopedSetting]
         [BrowsableAttribute(true)]
@@ -59,13 +65,12 @@ namespace SteamController
         [ApplicationScopedSetting]
         [BrowsableAttribute(false)]
 #endif
-        [DefaultSettingValue("False")]
-        [DisplayName("Manage Steam Controller Configs")]
+        [DefaultSettingValue("DoNotTouch")]
         [Description("This does replace Steam configuration for controllers to prevent double inputs")]
-        public bool ManageSteamControllerConfigs
+        public SteamControllerConfigsMode SteamControllerConfigs
         {
-            get { return ((bool)(this["ManageSteamControllerConfigs"])); }
-            set { this["ManageSteamControllerConfigs"] = value; }
+            get { return ((SteamControllerConfigsMode)(this["SteamControllerConfigs"])); }
+            set { this["SteamControllerConfigs"] = value; }
         }
 
         public override string ToString()

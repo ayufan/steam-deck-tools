@@ -28,7 +28,7 @@ namespace SteamController.Managers
 
         private bool IsActive
         {
-            get { return Settings.Default.ManageSteamControllerConfigs && Settings.Default.EnableSteamDetection; }
+            get { return Settings.Default.SteamControllerConfigs == Settings.SteamControllerConfigsMode.Overwrite && Settings.Default.EnableSteamDetection; }
         }
 
         public override void Dispose()

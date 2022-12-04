@@ -10,7 +10,7 @@ namespace SteamController.Profiles
 
         public override bool Selected(Context context)
         {
-            return context.Enabled && context.State.SteamUsesSteamInput && !Settings.Default.ManageSteamControllerConfigs;
+            return context.Enabled && context.State.SteamUsesSteamInput && Settings.Default.SteamControllerConfigs != Settings.SteamControllerConfigsMode.Overwrite;
         }
 
         public override Status Run(Context context)
