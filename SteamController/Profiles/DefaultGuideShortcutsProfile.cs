@@ -60,7 +60,10 @@ namespace SteamController.Profiles
 
             if (c.Steam.BtnX.Pressed())
             {
-                OnScreenKeyboard.Toggle();
+                if (Settings.Default.ShowTouchKeyboard)
+                    OnScreenKeyboard.Toggle();
+                else
+                    c.Keyboard.KeyPress(new VirtualKeyCode[] { VirtualKeyCode.LCONTROL, VirtualKeyCode.LWIN }, VirtualKeyCode.VK_O);
             }
 
             if (c.Steam.BtnL1.Pressed())

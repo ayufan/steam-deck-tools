@@ -73,6 +73,16 @@ namespace SteamController
             set { this["SteamControllerConfigs"] = value; }
         }
 
+        [UserScopedSetting]
+        [BrowsableAttribute(true)]
+        [DefaultSettingValue("True")]
+        [Description("Show Touch Keyboard or CTRL+WIN+O")]
+        public bool ShowTouchKeyboard
+        {
+            get { return ((bool)(this["ShowTouchKeyboard"])); }
+            set { this["ShowTouchKeyboard"] = value; }
+        }
+
         public override string ToString()
         {
             return "";
