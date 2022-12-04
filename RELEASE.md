@@ -22,3 +22,4 @@ It does help this project on being supported.
 - Fix bug with unable to select controller profile from OSD
 - Skip repeated haptic requests
 - Allow to select Default profile (Desktop-mode profile)
+- Allow to change scroll direction

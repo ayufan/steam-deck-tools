@@ -60,7 +60,7 @@ namespace SteamController.Profiles
             }
             if (c.Steam.LeftThumbY)
             {
-                c.Mouse.VerticalScroll(c.Steam.LeftThumbY.DeltaValue * Context.ThumbToWhellSensitivity);
+                c.Mouse.VerticalScroll(c.Steam.LeftThumbY.DeltaValue * Context.ThumbToWhellSensitivity * (double)Settings.Default.ScrollDirection);
             }
         }
 

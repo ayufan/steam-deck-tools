@@ -3,7 +3,6 @@ using System.Configuration;
 
 namespace SteamController
 {
-
     [Category("Settings")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     internal sealed partial class Settings : ApplicationSettingsBase
@@ -35,6 +34,22 @@ namespace SteamController
         {
             get { return ((ProfilesSettings.Helpers.ProfileName)(this["DefaultProfile"])); }
             set { this["DefaultProfile"] = value; }
+        }
+
+        public enum ScrollMode : int
+        {
+            DownScrollUp = -1,
+            DownScrollDown = 1
+        }
+
+        [UserScopedSetting]
+        [DefaultSettingValue("DownScrollDown")]
+        [Description("Scroll direction for right pad and joystick.")]
+        [BrowsableAttribute(true)]
+        public ScrollMode ScrollDirection
+        {
+            get { return ((ScrollMode)(this["ScrollDirection"])); }
+            set { this["ScrollDirection"] = value; }
         }
 
 #if DEBUG

@@ -132,7 +132,7 @@ namespace SteamController.Profiles
             }
             if (c.Steam.LPadY)
             {
-                c.Mouse.VerticalScroll(c.Steam.LPadY.DeltaValue * Context.PadToWhellSensitivity);
+                c.Mouse.VerticalScroll(c.Steam.LPadY.DeltaValue * Context.PadToWhellSensitivity * (double)Settings.Default.ScrollDirection);
             }
         }
 
