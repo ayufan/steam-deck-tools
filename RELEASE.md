@@ -28,3 +28,4 @@ It does help this project on being supported.
 - Fix haptics not being fired both sides
 - Scale haptic intensity
 - Add haptic style setting (disabled, weak, strong)
+- Merge `X360 with Haptic` into `X360` profile
