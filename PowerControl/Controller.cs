@@ -137,7 +137,7 @@ namespace PowerControl
             if (Settings.Default.EnableNeptuneController)
             {
                 neptuneTimer = new System.Windows.Forms.Timer(components);
-                neptuneTimer.Interval = 1000 / 30;
+                neptuneTimer.Interval = 1000 / 60;
                 neptuneTimer.Tick += NeptuneTimer_Tick;
                 neptuneTimer.Enabled = true;
 
@@ -207,10 +207,8 @@ namespace PowerControl
             }
 
             // Consume only some events to avoid under-running SWICD
-            if (neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS))
-                Thread.Sleep(1000 / 30);
-            else
-                Thread.Sleep(250);
+            if (!neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS))
+                Thread.Sleep(50);
         }
 
         private void dismissNeptuneInput()
