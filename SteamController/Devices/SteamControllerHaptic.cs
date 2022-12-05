@@ -51,43 +51,62 @@ namespace SteamController.Devices
         {
             public byte packet_type = 0xea;
             public byte len = 0xd;
-            public byte position = 0x00;
-            public byte amplitude = 0x2; // 
+            public HapticPad position = HapticPad.Left;
+            public HapticStyle style = HapticStyle.Strong; //
             public byte unsure2 = 0x0;
             public sbyte intensity = 0x00; // -7..5 => -2dB..10dB
             public byte unsure3 = 0x4;
             public int tsA = 0; // timestamp?
             public int tsB = 0;
 
-            public SDCHapticPacket2() { }
+            public SDCHapticPacket2()
+            {
+                var ts = Random.Shared.Next();
+                this.tsA = ts;
+                this.tsB = ts;
+            }
+
+            public SDCHapticPacket2(HapticPad position, HapticStyle style, sbyte intensityDB) : this()
+            {
+                this.position = position;
+                this.style = style;
+                this.intensity = (sbyte)(intensityDB - 5); // convert from dB to values
+            }
         }
 
-        private Task?[] hapticTask = new Task?[byte.MaxValue];
+        private Dictionary<HapticPad, Task?> hapticTasks = new Dictionary<HapticPad, Task?>();
 
-        public bool SendHaptic(byte position, sbyte intensity)
+        public enum HapticPad : byte
         {
-            if (hapticTask[position]?.IsCompleted == false)
+            Left,
+            Right
+        };
+
+        public enum HapticStyle : byte
+        {
+            Disabled = 0,
+            Weak = 1,
+            Strong = 2
+        };
+
+        public bool SendHaptic(HapticPad position, HapticStyle style, sbyte intensityDB)
+        {
+            if (hapticTasks.GetValueOrDefault(position)?.IsCompleted == false)
                 return false;
+            if (style == HapticStyle.Disabled)
+                return true;
 
-            var ts = Random.Shared.Next();
+            var haptic = new SDCHapticPacket2(position, style, intensityDB);
 
-            var haptic = new SDCHapticPacket2()
-            {
-                position = position,
-                intensity = (sbyte)(intensity - 5), // convert from dB to values
-                tsA = ts,
-                tsB = ts
-            };
-
-            Log.TraceLine("STEAM: Haptic: pos={0}, intensity={1}",
-                position, intensity);
+            Log.TraceLine("STEAM: Haptic: position={0}, style={1}, intensity={2}",
+                position, style, intensityDB);
 
             var bytes = new byte[Marshal.SizeOf<SDCHapticPacket2>()];
             var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             try
             {
                 Marshal.StructureToPtr(haptic, handle.AddrOfPinnedObject(), false);
-                hapticTask[position] = neptuneDevice.RequestFeatureReportAsync(bytes);
+                hapticTasks[position] = neptuneDevice.RequestFeatureReportAsync(bytes);
                 return true;
             }
             catch (Exception e)

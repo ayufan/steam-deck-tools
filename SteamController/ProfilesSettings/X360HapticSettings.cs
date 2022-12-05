@@ -18,6 +18,14 @@ namespace SteamController.ProfilesSettings
         }
 
         [UserScopedSettingAttribute()]
+        [DefaultSettingValueAttribute("Weak")]
+        public Devices.SteamController.HapticStyle HapticStyle
+        {
+            get { return ((Devices.SteamController.HapticStyle)(this["HapticStyle"])); }
+            set { this["HapticStyle"] = value; }
+        }
+
+        [UserScopedSettingAttribute()]
         [DefaultSettingValueAttribute("5")]
         [Description("Haptic intensity between -2dB and 10dB")]
         public sbyte LeftIntensity

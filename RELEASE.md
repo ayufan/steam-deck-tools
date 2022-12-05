@@ -27,3 +27,4 @@ It does help this project on being supported.
 - Allow to select between touch keyboard or CTRL+WIN+O
 - Fix haptics not being fired both sides
 - Scale haptic intensity
+- Add haptic style setting (disabled, weak, strong)

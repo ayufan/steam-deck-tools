@@ -1,4 +1,5 @@
 using SteamController.ProfilesSettings;
+using HapticPad = SteamController.Devices.SteamController.HapticPad;
 
 namespace SteamController.Profiles
 {
@@ -15,10 +16,10 @@ namespace SteamController.Profiles
                 return Status.Done;
 
             if (GetHapticIntensity(context.X360.FeedbackLargeMotor, HapticSettings.LeftIntensity, out var leftIntensity))
-                context.Steam.SendHaptic(1, leftIntensity);
+                context.Steam.SendHaptic(HapticPad.Right, HapticSettings.HapticStyle, leftIntensity);
 
             if (GetHapticIntensity(context.X360.FeedbackSmallMotor, HapticSettings.RightIntensity, out var rightIntensity))
-                context.Steam.SendHaptic(0, rightIntensity);
+                context.Steam.SendHaptic(HapticPad.Left, HapticSettings.HapticStyle, rightIntensity);
 
             context.X360.ResetFeedback();
 
