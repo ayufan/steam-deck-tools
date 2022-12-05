@@ -110,7 +110,7 @@ namespace FanControl
             // 
             this.toolStripMenuItemStartupOnBootContext.Name = "toolStripMenuItemStartupOnBootContext";
             this.toolStripMenuItemStartupOnBootContext.Size = new System.Drawing.Size(256, 38);
-            this.toolStripMenuItemStartupOnBootContext.Text = "Startup on &Boot";
+            this.toolStripMenuItemStartupOnBootContext.Text = "Run On &Startup";
             this.toolStripMenuItemStartupOnBootContext.Click += new System.EventHandler(this.toolStripMenuItemStartupOnBoot_Click);
             // 
             // toolStripMenuItemAlwaysOnTopContext
