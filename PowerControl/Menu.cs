@@ -18,7 +18,7 @@ namespace PowerControl
         };
 
         public enum Colors : int
-        { 
+        {
             Green,
             Blue,
             Redish,
@@ -160,7 +160,7 @@ namespace PowerControl
 
                 onUpdateToolStrip();
             }
-            
+
             private void scheduleApply()
             {
                 if (delayTimer != null)
@@ -272,12 +272,12 @@ namespace PowerControl
             private String optionText(Object option)
             {
                 String text;
-                
+
                 if (option == null)
                     text = Color("?", Colors.White);
                 else if (Object.Equals(option, SelectedOption ?? ActiveOption))
                     text = Color(option.ToString(), Colors.Red);
-                else if(Object.Equals(option, ActiveOption))
+                else if (Object.Equals(option, ActiveOption))
                     text = Color(option.ToString(), Colors.White);
                 else
                     text = Color(option.ToString(), Colors.Green);
@@ -316,7 +316,7 @@ namespace PowerControl
             {
                 get
                 {
-                    foreach(var item in Items)
+                    foreach (var item in Items)
                     {
                         if (item.Name == name)
                             return item;
@@ -327,7 +327,7 @@ namespace PowerControl
 
             public override void CreateMenu(ToolStripItemCollection collection)
             {
-                foreach(var item in Items)
+                foreach (var item in Items)
                     item.CreateMenu(collection);
             }
             public override void Update()
@@ -384,12 +384,15 @@ namespace PowerControl
                     return;
 
                 int index = Items.IndexOf(Selected);
+                if (index < 0)
+                    index = Items.Count; // select last item
 
                 for (int i = 0; i < Items.Count; i++)
                 {
                     index = (index - 1 + Items.Count) % Items.Count;
                     var item = Items[index];
-                    if (item.Visible && item.Selectable) {
+                    if (item.Visible && item.Selectable)
+                    {
                         Selected = item;
                         if (VisibleChanged != null)
                             VisibleChanged();
@@ -404,6 +407,8 @@ namespace PowerControl
                     return;
 
                 int index = Items.IndexOf(Selected);
+                if (index < 0)
+                    index = -1; // select first item
 
                 for (int i = 0; i < Items.Count; i++)
                 {
