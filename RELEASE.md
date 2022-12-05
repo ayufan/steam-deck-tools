@@ -30,3 +30,4 @@ It does help this project on being supported.
 - Add haptic style setting (disabled, weak, strong)
 - Merge `X360 with Haptic` into `X360` profile
 - Improve responsiveness of PowerControl (read input more frequently)
+- Fix selecting `DefaultProfile` on startup

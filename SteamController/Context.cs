@@ -128,7 +128,7 @@ namespace SteamController
             }
         }
 
-        public bool SelectProfile(String name)
+        public bool SelectProfile(String name, bool force = false)
         {
             lock (this)
             {
@@ -137,7 +137,7 @@ namespace SteamController
                     var profile = Profiles[i];
                     if (profile.Name != name)
                         continue;
-                    if (!profile.Selected(this))
+                    if (!profile.Selected(this) && !force)
                         continue;
 
                     if (i != selectedProfile)
