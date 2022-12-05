@@ -1,5 +1,4 @@
-using CommonHelpers;
-using Nefarius.ViGEm.Client.Targets.Xbox360;
+using SteamController.ProfilesSettings;
 
 namespace SteamController.Profiles
 {
@@ -13,23 +12,28 @@ namespace SteamController.Profiles
         public override Status Run(Context context)
         {
             if (base.Run(context).IsDone)
-            {
                 return Status.Done;
-            }
 
-            if (context.X360.FeedbackLargeMotor.GetValueOrDefault() > 0)
-            {
-                context.Steam.SendHaptic(1, HapticSettings.LeftIntensity);
-            }
+            if (GetHapticIntensity(context.X360.FeedbackLargeMotor, HapticSettings.LeftIntensity, out var leftIntensity))
+                context.Steam.SendHaptic(1, leftIntensity);
 
-            if (context.X360.FeedbackSmallMotor.GetValueOrDefault() > 0)
-            {
-                context.Steam.SendHaptic(0, HapticSettings.RightIntensity);
-            }
+            if (GetHapticIntensity(context.X360.FeedbackSmallMotor, HapticSettings.RightIntensity, out var rightIntensity))
+                context.Steam.SendHaptic(0, rightIntensity);
 
             context.X360.ResetFeedback();
 
             return Status.Continue;
+        }
+
+        private bool GetHapticIntensity(byte? input, sbyte maxIntensity, out sbyte output)
+        {
+            output = default;
+            if (input is null || input.Value == 0)
+                return false;
+
+            int value = X360HapticSettings.MinIntensity + (maxIntensity - X360HapticSettings.MinIntensity) * input.Value / 255;
+            output = (sbyte)value;
+            return true;
         }
     }
 }

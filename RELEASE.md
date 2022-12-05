@@ -26,3 +26,4 @@ It does help this project on being supported.
 - Debounce controller changes from Steam
 - Allow to select between touch keyboard or CTRL+WIN+O
 - Fix haptics not being fired both sides
+- Scale haptic intensity
