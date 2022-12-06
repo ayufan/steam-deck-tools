@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
@@ -54,10 +55,29 @@ namespace SteamController.Helpers
             get
             {
                 var steamWindow = FindWindow("SDL_app", "SP");
-                if (steamWindow == null)
+                if (steamWindow == IntPtr.Zero)
                     return false;
 
                 return GetForegroundWindow() == steamWindow;
+            }
+        }
+
+        public static bool IsPossibleGamePadUI
+        {
+            get
+            {
+                IntPtr hWnd = GetForegroundWindow();
+                if (hWnd == IntPtr.Zero)
+                    return false;
+
+                StringBuilder className = new StringBuilder(256);
+                if (GetClassName(hWnd, className, className.Capacity) == 0)
+                    return false;
+
+                if (className.ToString() != "SDL_app")
+                    return false;
+
+                return ForegroundProcess.Find(hWnd)?.ProcessName == "steamwebhelper";
             }
         }
 
@@ -374,5 +394,11 @@ namespace SteamController.Helpers
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
     }
 }

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using CommonHelpers;
 using SteamController.Helpers;
 
 namespace SteamController.Managers
@@ -58,6 +59,8 @@ namespace SteamController.Managers
         {
             if (!IsActive)
                 return;
+
+            Log.TraceLine("SetSteamControllerFilesLock: {0}", lockConfigs);
 
             if (lockConfigs)
             {

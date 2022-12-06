@@ -30,12 +30,16 @@ namespace SteamController.Helpers
                 return false;
             }
         }
-
         public static Process? Find()
+        {
+            return Find(GetForegroundWindow());
+        }
+
+        public static Process? Find(IntPtr hWnd)
         {
             try
             {
-                var id = GetTopLevelProcessId();
+                var id = GetProcessId(hWnd);
                 if (id is null)
                     return null;
 
@@ -50,9 +54,11 @@ namespace SteamController.Helpers
 
         private static int? GetTopLevelProcessId()
         {
-            var hWnd = GetForegroundWindow();
-            if (hWnd == IntPtr.Zero)
-                return null;
+            return GetProcessId(GetForegroundWindow());
+        }
+
+        private static int? GetProcessId(IntPtr hWnd)
+        {
             var result = GetWindowThreadProcessId(hWnd, out var processId);
             if (result != 0)
                 return processId;

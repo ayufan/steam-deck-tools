@@ -75,6 +75,8 @@ namespace SteamController.Managers
                 return "game";
             if (SteamConfiguration.IsGamePadUI)
                 return "gamepadui";
+            if (SteamConfiguration.IsPossibleGamePadUI)
+                return "possiblegamepadui";
             return null;
         }
     }

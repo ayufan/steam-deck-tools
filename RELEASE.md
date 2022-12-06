@@ -31,3 +31,4 @@ It does help this project on being supported.
 - Merge `X360 with Haptic` into `X360` profile
 - Improve responsiveness of PowerControl (read input more frequently)
 - Fix selecting `DefaultProfile` on startup
+- Detect GamePad UI open temporarily for controller layout
