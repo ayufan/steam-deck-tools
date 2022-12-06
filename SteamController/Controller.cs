@@ -300,12 +300,16 @@ namespace SteamController
             {
                 Text = TitleWithVersion + " Settings",
                 StartPosition = FormStartPosition.CenterScreen,
-                Size = new Size(400, 600)
+                Size = new Size(400, 500),
+                AutoScaleMode = AutoScaleMode.Font,
+                AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F)
             };
 
             var propertyGrid = new PropertyGrid()
             {
                 Dock = DockStyle.Fill,
+                ToolbarVisible = false,
+                LargeButtons = true,
                 SelectedObject = new
                 {
                     Desktop = ProfilesSettings.BackPanelSettings.Desktop,
