@@ -61,7 +61,9 @@ namespace SteamController
         [UserScopedSetting]
         [BrowsableAttribute(true)]
         [DefaultSettingValue("Overwrite")]
-        [Description("This does replace Steam configuration for controllers to prevent double inputs")]
+        [Description("This does replace Steam configuration for controllers to prevent double inputs. " +
+            "Might require going to Steam > Settings > Controller > Desktop to apply " +
+            "'SteamController provided empty configuration'.")]
         public SteamControllerConfigsMode SteamControllerConfigs
         {
             get { return ((SteamControllerConfigsMode)(this["SteamControllerConfigs"])); }
