@@ -26,7 +26,7 @@ namespace SteamController.ProfilesSettings
         }
 
         [UserScopedSettingAttribute()]
-        [DefaultSettingValueAttribute("5")]
+        [DefaultSettingValueAttribute("2")]
         [Description("Haptic intensity between -2dB and 10dB")]
         public sbyte LeftIntensity
         {
@@ -35,7 +35,7 @@ namespace SteamController.ProfilesSettings
         }
 
         [UserScopedSettingAttribute()]
-        [DefaultSettingValueAttribute("5")]
+        [DefaultSettingValueAttribute("2")]
         [Description("Haptic intensity between -2dB and 10dB")]
         public sbyte RightIntensity
         {
