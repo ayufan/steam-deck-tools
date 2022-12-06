@@ -58,14 +58,9 @@ namespace SteamController
             Overwrite
         }
 
-#if DEBUG
         [UserScopedSetting]
         [BrowsableAttribute(true)]
-#else
-        [ApplicationScopedSetting]
-        [BrowsableAttribute(false)]
-#endif
-        [DefaultSettingValue("DoNotTouch")]
+        [DefaultSettingValue("Overwrite")]
         [Description("This does replace Steam configuration for controllers to prevent double inputs")]
         public SteamControllerConfigsMode SteamControllerConfigs
         {

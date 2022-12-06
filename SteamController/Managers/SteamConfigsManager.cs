@@ -14,7 +14,8 @@ namespace SteamController.Managers
             { "controller_base/desktop_neptune.vdf", Resources.empty_neptune },
             { "controller_base/chord_neptune.vdf", Resources.chord_neptune }
         };
-        static readonly Dictionary<String, byte[]> installedSteamControllerFiles = new Dictionary<string, byte[]> {
+        static readonly Dictionary<String, byte[]> installedSteamControllerFiles = new Dictionary<string, byte[]>
+        {
             { "controller_base/templates/controller_neptune_steamcontroller.vdf", Resources.empty_neptune },
         };
 
