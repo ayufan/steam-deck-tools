@@ -9,27 +9,9 @@ It does help this project on being supported.
 - Introduce SteamController that provides 3 main modes of operation Desktop, X360 and Steam
 - Try to disable usage of Kernel Drivers (when FAN in Default, and OSD Kernel Drivers are disabled)
   to allow apps to work with Anti-Cheat detections
-- Configure Steam to switch between Steam Input or X360 Controller mode
 - STEAM + 3 dots brings Task Manager (CTRL+SHIFT+ESCAPE)
 - Add configurable BackPanel keys (allowed mappings are subject to change)
-- Go back to `Startup Profile` on `Toggle deskotop mode`
-- The `X360.Beep()` cycles currently connected device (fixes Playnite error)
-- Fix using Playnite to launch Steam game where on exit Desktop was activated
 - Build DEBUG that has all experimental features
-- Introduce X360 Haptic profile to improve vibration (in DEBUG)
-- Re-open Neptune controller every 10 failures
-- Manage Steam default controller configs to prevent double inputs (in DEBUG, change Settings)
-- Fix bug with unable to select controller profile from OSD
-- Skip repeated haptic requests
-- Allow to select Default profile (Desktop-mode profile)
-- Allow to change scroll direction
-- Debounce controller changes from Steam
-- Allow to select between touch keyboard or CTRL+WIN+O
-- Fix haptics not being fired both sides
-- Scale haptic intensity
-- Add haptic style setting (disabled, weak, strong)
-- Merge `X360 with Haptic` into `X360` profile
-- Improve responsiveness of PowerControl (read input more frequently)
-- Fix selecting `DefaultProfile` on startup
+- The X360 has Haptics enabled by default
 - Detect GamePad UI open temporarily for controller layout
 - Automatically manage steam controller configs when using Steam Input
