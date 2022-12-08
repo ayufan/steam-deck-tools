@@ -42,7 +42,7 @@ namespace PerformanceOverlay
                 modeItem.Tag = mode;
                 modeItem.Click += delegate
                 {
-                    Settings.Default.OSDModeParsed = mode;
+                    Settings.Default.OSDMode = mode;
                     updateContextItems(contextMenu);
                 };
                 contextMenu.Items.Add(modeItem);
@@ -95,7 +95,6 @@ namespace PerformanceOverlay
                 GlobalHotKey.RegisterHotKey(Settings.Default.ShowOSDShortcut, () =>
                 {
                     Settings.Default.ShowOSD = !Settings.Default.ShowOSD;
-                    Settings.Default.Save();
 
                     updateContextItems(contextMenu);
                 });
@@ -107,10 +106,9 @@ namespace PerformanceOverlay
                 {
                     var values = Enum.GetValues<OverlayMode>().ToList();
 
-                    int index = values.IndexOf(Settings.Default.OSDModeParsed);
-                    Settings.Default.OSDModeParsed = values[(index + 1) % values.Count];
+                    int index = values.IndexOf(Settings.Default.OSDMode);
+                    Settings.Default.OSDMode = values[(index + 1) % values.Count];
                     Settings.Default.ShowOSD = true;
-                    Settings.Default.Save();
 
                     updateContextItems(contextMenu);
                 });
@@ -132,7 +130,7 @@ namespace PerformanceOverlay
             foreach (ToolStripItem item in contextMenu.Items)
             {
                 if (item.Tag is OverlayMode)
-                    ((ToolStripMenuItem)item).Checked = ((OverlayMode)item.Tag == Settings.Default.OSDModeParsed);
+                    ((ToolStripMenuItem)item).Checked = ((OverlayMode)item.Tag == Settings.Default.OSDMode);
             }
 
             showItem.Checked = Settings.Default.ShowOSD;
@@ -146,7 +144,6 @@ namespace PerformanceOverlay
         private void ShowItem_Click(object? sender, EventArgs e)
         {
             Settings.Default.ShowOSD = !Settings.Default.ShowOSD;
-            Settings.Default.Save();
             updateContextItems(contextMenu);
         }
 
@@ -156,16 +153,14 @@ namespace PerformanceOverlay
             {
                 if (Enum.IsDefined<OverlayMode>(value.Desired))
                 {
-                    Settings.Default.OSDModeParsed = (OverlayMode)value.Desired;
+                    Settings.Default.OSDMode = (OverlayMode)value.Desired;
                     Settings.Default.ShowOSD = true;
-                    Settings.Default.Save();
                     updateContextItems(contextMenu);
                 }
 
                 if (Enum.IsDefined<OverlayEnabled>(value.DesiredEnabled))
                 {
                     Settings.Default.ShowOSD = (OverlayEnabled)value.DesiredEnabled == OverlayEnabled.Yes;
-                    Settings.Default.Save();
                     updateContextItems(contextMenu);
                 }
 
@@ -178,7 +173,7 @@ namespace PerformanceOverlay
 
             sharedData.SetValue(new OverlayModeSetting()
             {
-                Current = Settings.Default.OSDModeParsed,
+                Current = Settings.Default.OSDMode,
                 CurrentEnabled = Settings.Default.ShowOSD ? OverlayEnabled.Yes : OverlayEnabled.No,
                 KernelDriversLoaded = Instance.UseKernelDrivers ? KernelDriversLoaded.Yes : KernelDriversLoaded.No
             });
@@ -212,7 +207,7 @@ namespace PerformanceOverlay
 
             sensors.Update();
 
-            var osdMode = Settings.Default.OSDModeParsed;
+            var osdMode = Settings.Default.OSDMode;
 
             // If Power Control is visible use temporarily full OSD
             if (Settings.Default.EnableFullOnPowerControl)

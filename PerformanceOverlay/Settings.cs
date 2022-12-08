@@ -1,33 +1,44 @@
 ﻿using CommonHelpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static PerformanceOverlay.Overlays;
 
 namespace PerformanceOverlay
 {
-    internal partial class Settings
+    internal sealed class Settings : BaseSettings
     {
-        public OverlayMode OSDModeParsed
+        public static readonly Settings Default = new Settings();
+
+        public Settings() : base("Settings")
         {
-            get
-            {
-                try
-                {
-                    return (OverlayMode)Enum.Parse<OverlayMode>(OSDMode);
-                }
-                catch (ArgumentException)
-                {
-                    return OverlayMode.FPS;
-                }
-            }
-            set
-            {
-                OSDMode = value.ToString();
-                Save();
-            }
+            TouchSettings = true;
+        }
+
+        public OverlayMode OSDMode
+        {
+            get { return Get<OverlayMode>("OSDMode", OverlayMode.FPS); }
+            set { Set("OSDMode", value); }
+        }
+
+        public string ShowOSDShortcut
+        {
+            get { return Get<string>("ShowOSDShortcut", "Shift+F11"); }
+            set { Set("ShowOSDShortcut", value); }
+        }
+
+        public string CycleOSDShortcut
+        {
+            get { return Get<string>("CycleOSDShortcut", "Alt+Shift+F11"); }
+            set { Set("CycleOSDShortcut", value); }
+        }
+
+        public bool ShowOSD
+        {
+            get { return Get<bool>("ShowOSD", true); }
+            set { Set("ShowOSD", value); }
+        }
+
+        public bool EnableFullOnPowerControl
+        {
+            get { return Get<bool>("EnableFullOnPowerControl", false); }
+            set { Set("EnableFullOnPowerControl", value); }
         }
     }
 }
