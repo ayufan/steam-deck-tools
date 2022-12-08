@@ -29,3 +29,9 @@ jobs:
         files: ${{ env.SteamDeckTools }}-debug
         dest: ${{ env.SteamDeckTools }}-debug.zip
         recursive: true
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: debug-build
+        path: ${{ env.SteamDeckTools }}-debug
+        retention-days: 14
