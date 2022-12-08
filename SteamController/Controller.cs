@@ -1,6 +1,5 @@
 using CommonHelpers;
 using ExternalHelpers;
-using SteamController.Profiles;
 using System.ComponentModel;
 using System.Diagnostics;
 
@@ -18,10 +17,10 @@ namespace SteamController
         Context context = new Context()
         {
             Profiles = {
-                new Profiles.DesktopProfile() { Name = "Desktop" },
-                new Profiles.SteamProfile() { Name = "Steam", Visible = false },
-                new Profiles.SteamWithShorcutsProfile() { Name = "Steam with Shortcuts", Visible = false },
-                new Profiles.X360HapticProfile() { Name = "X360" }
+                new Profiles.Predefined.DesktopProfile() { Name = "Desktop" },
+                new Profiles.Predefined.SteamProfile() { Name = "Steam", Visible = false },
+                new Profiles.Predefined.SteamWithShorcutsProfile() { Name = "Steam with Shortcuts", Visible = false },
+                new Profiles.Predefined.X360HapticProfile() { Name = "X360" }
             },
             Managers = {
                 new Managers.ProcessManager(),

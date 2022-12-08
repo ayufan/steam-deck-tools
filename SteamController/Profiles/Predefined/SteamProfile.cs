@@ -1,16 +1,14 @@
-using Nefarius.ViGEm.Client.Targets.Xbox360;
-
-namespace SteamController.Profiles
+namespace SteamController.Profiles.Predefined
 {
-    public sealed class SteamWithShorcutsProfile : DefaultGuideShortcutsProfile
+    public sealed class SteamProfile : Default.ShortcutsProfile
     {
-        public SteamWithShorcutsProfile()
+        public SteamProfile()
         {
         }
 
         public override bool Selected(Context context)
         {
-            return context.Enabled && context.State.SteamUsesSteamInput;
+            return context.Enabled && context.State.SteamUsesSteamInput && Settings.Default.SteamControllerConfigs != Settings.SteamControllerConfigsMode.Overwrite;
         }
 
         public override Status Run(Context context)

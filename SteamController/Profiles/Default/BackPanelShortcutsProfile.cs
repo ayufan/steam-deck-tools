@@ -1,8 +1,8 @@
 using SteamController.ProfilesSettings;
 
-namespace SteamController.Profiles
+namespace SteamController.Profiles.Default
 {
-    public abstract class DefaultBackPanelShortcutsProfile : DefaultGuideShortcutsProfile
+    public abstract class BackPanelShortcutsProfile : GuideShortcutsProfile
     {
         internal abstract ProfilesSettings.BackPanelSettings BackPanelSettings { get; }
 

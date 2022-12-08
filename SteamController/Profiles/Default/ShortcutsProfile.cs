@@ -1,11 +1,8 @@
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using ExternalHelpers;
 using WindowsInput;
 
-namespace SteamController.Profiles
+namespace SteamController.Profiles.Default
 {
-    public abstract class DefaultShortcutsProfile : Profile
+    public abstract class ShortcutsProfile : Profile
     {
         public const String ShortcutConsumed = "ShortcutsProfile";
         public readonly TimeSpan HoldForShorcuts = TimeSpan.FromMilliseconds(200);

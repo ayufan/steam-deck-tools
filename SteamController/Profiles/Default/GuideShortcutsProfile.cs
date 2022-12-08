@@ -1,12 +1,11 @@
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using ExternalHelpers;
 using PowerControl.Helpers;
 using WindowsInput;
 
-namespace SteamController.Profiles
+namespace SteamController.Profiles.Default
 {
-    public abstract class DefaultGuideShortcutsProfile : DefaultShortcutsProfile
+    public abstract class GuideShortcutsProfile : ShortcutsProfile
     {
         public readonly TimeSpan HoldForKill = TimeSpan.FromSeconds(3);
         public readonly TimeSpan HoldForClose = TimeSpan.FromSeconds(1);

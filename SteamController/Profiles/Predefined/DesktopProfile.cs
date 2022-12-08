@@ -1,8 +1,8 @@
 using WindowsInput;
 
-namespace SteamController.Profiles
+namespace SteamController.Profiles.Predefined
 {
-    public sealed class DesktopProfile : DefaultBackPanelShortcutsProfile
+    public sealed class DesktopProfile : Default.BackPanelShortcutsProfile
     {
         private const String Consumed = "DesktopProfileOwner";
 

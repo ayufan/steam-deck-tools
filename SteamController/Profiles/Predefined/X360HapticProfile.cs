@@ -1,7 +1,7 @@
 using SteamController.ProfilesSettings;
 using HapticPad = SteamController.Devices.SteamController.HapticPad;
 
-namespace SteamController.Profiles
+namespace SteamController.Profiles.Predefined
 {
     public class X360HapticProfile : X360Profile
     {
