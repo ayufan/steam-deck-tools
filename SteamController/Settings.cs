@@ -8,7 +8,6 @@ namespace SteamController
     internal sealed partial class Settings : CommonHelpers.BaseSettings
     {
         public static readonly Settings Default = new Settings();
-        private static readonly ProfilesSettings.Helpers.ProfileName DefaultProfileDefault = new ProfilesSettings.Helpers.ProfileName("Default");
 
         public Settings() : base("Settings")
         {
@@ -23,9 +22,10 @@ namespace SteamController
 
         [Description("Default profile used when going back to Desktop mode")]
         [BrowsableAttribute(true)]
-        public ProfilesSettings.Helpers.ProfileName DefaultProfile
+        [TypeConverter(typeof(ProfilesSettings.Helpers.ProfileStringConverter))]
+        public string DefaultProfile
         {
-            get { return Get<ProfilesSettings.Helpers.ProfileName>("DefaultProfile", DefaultProfileDefault); }
+            get { return Get<string>("DefaultProfile", "Desktop"); }
             set { Set("DefaultProfile", value); }
         }
 

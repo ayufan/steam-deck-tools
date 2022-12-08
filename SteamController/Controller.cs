@@ -35,7 +35,7 @@ namespace SteamController
         public Controller()
         {
             // Set available profiles
-            ProfilesSettings.Helpers.ProfileNameConverter.Profiles = context.Profiles.
+            ProfilesSettings.Helpers.ProfileStringConverter.Profiles = context.Profiles.
                 Where((profile) => profile.Visible).
                 Select((profile) => profile.Name).ToArray();
 
