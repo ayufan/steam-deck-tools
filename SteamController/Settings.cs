@@ -5,35 +5,28 @@ namespace SteamController
 {
     [Category("Settings")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
-    internal sealed partial class Settings : ApplicationSettingsBase
+    internal sealed partial class Settings : CommonHelpers.BaseSettings
     {
-        public static readonly Settings Default = (Settings)Synchronized(new Settings());
+        public static readonly Settings Default = new Settings();
+        private static readonly ProfilesSettings.Helpers.ProfileName DefaultProfileDefault = new ProfilesSettings.Helpers.ProfileName("Default");
 
-        public Settings()
+        public Settings() : base("Settings")
         {
-            PropertyChanged += delegate
-            {
-                Save();
-            };
         }
 
-        [UserScopedSetting]
-        [DefaultSettingValue("False")]
         [BrowsableAttribute(false)]
         public bool EnableSteamDetection
         {
-            get { return ((bool)(this["EnableSteamDetection"])); }
-            set { this["EnableSteamDetection"] = value; }
+            get { return Get<bool>("EnableSteamDetection", false); }
+            set { Set("EnableSteamDetection", value); }
         }
 
-        [UserScopedSetting]
-        [DefaultSettingValue("Desktop")]
         [Description("Default profile used when going back to Desktop mode")]
         [BrowsableAttribute(true)]
         public ProfilesSettings.Helpers.ProfileName DefaultProfile
         {
-            get { return ((ProfilesSettings.Helpers.ProfileName)(this["DefaultProfile"])); }
-            set { this["DefaultProfile"] = value; }
+            get { return Get<ProfilesSettings.Helpers.ProfileName>("DefaultProfile", DefaultProfileDefault); }
+            set { Set("DefaultProfile", value); }
         }
 
         public enum ScrollMode : int
@@ -42,14 +35,12 @@ namespace SteamController
             DownScrollDown = 1
         }
 
-        [UserScopedSetting]
-        [DefaultSettingValue("DownScrollDown")]
         [Description("Scroll direction for right pad and joystick.")]
         [BrowsableAttribute(true)]
         public ScrollMode ScrollDirection
         {
-            get { return ((ScrollMode)(this["ScrollDirection"])); }
-            set { this["ScrollDirection"] = value; }
+            get { return Get<ScrollMode>("ScrollDirection", ScrollMode.DownScrollDown); }
+            set { Set("ScrollDirection", value); }
         }
 
         public enum SteamControllerConfigsMode
@@ -58,16 +49,14 @@ namespace SteamController
             Overwrite
         }
 
-        [UserScopedSetting]
         [BrowsableAttribute(true)]
-        [DefaultSettingValue("Overwrite")]
         [Description("This does replace Steam configuration for controllers to prevent double inputs. " +
             "Might require going to Steam > Settings > Controller > Desktop to apply " +
             "'SteamController provided empty configuration'.")]
         public SteamControllerConfigsMode SteamControllerConfigs
         {
-            get { return ((SteamControllerConfigsMode)(this["SteamControllerConfigs"])); }
-            set { this["SteamControllerConfigs"] = value; }
+            get { return Get<SteamControllerConfigsMode>("SteamControllerConfigs", SteamControllerConfigsMode.Overwrite); }
+            set { Set("SteamControllerConfigs", value); }
         }
 
         [UserScopedSetting]
@@ -76,8 +65,8 @@ namespace SteamController
         [Description("Show Touch Keyboard or CTRL+WIN+O")]
         public bool ShowTouchKeyboard
         {
-            get { return ((bool)(this["ShowTouchKeyboard"])); }
-            set { this["ShowTouchKeyboard"] = value; }
+            get { return Get<bool>("ShowTouchKeyboard", true); }
+            set { Set("ShowTouchKeyboard", value); }
         }
 
         public override string ToString()

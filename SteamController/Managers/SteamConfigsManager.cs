@@ -39,7 +39,7 @@ namespace SteamController.Managers
             Settings.Default.SettingChanging -= UnlockControllerFiles;
         }
 
-        private void UnlockControllerFiles(object sender, System.Configuration.SettingChangingEventArgs e)
+        private void UnlockControllerFiles(string key)
         {
             SetSteamControllerFilesLock(false);
         }

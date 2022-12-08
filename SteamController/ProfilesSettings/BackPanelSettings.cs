@@ -4,7 +4,7 @@ using System.Configuration;
 namespace SteamController.ProfilesSettings
 {
     [Category("Mappings")]
-    internal abstract class BackPanelSettings : BaseSettings
+    internal abstract class BackPanelSettings : CommonHelpers.BaseSettings
     {
         private const String MappingsDescription = @"Only some of those keys do work. Allowed mappings are to be changed in future release.";
 
@@ -12,40 +12,32 @@ namespace SteamController.ProfilesSettings
         {
         }
 
-        [UserScopedSettingAttribute()]
-        [DefaultSettingValueAttribute("None")]
         [Description(MappingsDescription)]
         public VirtualKeyCode L4_KEY
         {
-            get { return ((VirtualKeyCode)(this["L4_KEY"])); }
-            set { this["L4_KEY"] = value; }
+            get { return Get<VirtualKeyCode>("L4_KEY", VirtualKeyCode.None); }
+            set { Set("L4_KEY", value); }
         }
 
-        [UserScopedSettingAttribute()]
-        [DefaultSettingValueAttribute("None")]
         [Description(MappingsDescription)]
         public VirtualKeyCode L5_KEY
         {
-            get { return ((VirtualKeyCode)(this["L5_KEY"])); }
-            set { this["L5_KEY"] = value; }
+            get { return Get<VirtualKeyCode>("L5_KEY", VirtualKeyCode.None); }
+            set { Set("L5_KEY", value); }
         }
 
-        [UserScopedSettingAttribute()]
-        [DefaultSettingValueAttribute("None")]
         [Description(MappingsDescription)]
         public VirtualKeyCode R4_KEY
         {
-            get { return ((VirtualKeyCode)(this["R4_KEY"])); }
-            set { this["R4_KEY"] = value; }
+            get { return Get<VirtualKeyCode>("R4_KEY", VirtualKeyCode.None); }
+            set { Set("R4_KEY", value); }
         }
 
-        [UserScopedSettingAttribute()]
-        [DefaultSettingValueAttribute("None")]
         [Description(MappingsDescription)]
         public VirtualKeyCode R5_KEY
         {
-            get { return ((VirtualKeyCode)(this["R5_KEY"])); }
-            set { this["R5_KEY"] = value; }
+            get { return Get<VirtualKeyCode>("R5_KEY", VirtualKeyCode.None); }
+            set { Set("R5_KEY", value); }
         }
     }
 }

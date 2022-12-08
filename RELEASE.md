@@ -16,3 +16,4 @@ It does help this project on being supported.
 - Detect GamePad UI open temporarily for controller layout
 - Automatically manage steam controller configs when using Steam Input
 - Allow to assign BackPanel keys to X360 controller (breaks all current configs to set mappings)
+- All SteamController settings are stored in `.ini` file in root folder
