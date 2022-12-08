@@ -11,7 +11,7 @@ namespace SteamController.Profiles
 
         internal override ProfilesSettings.BackPanelSettings BackPanelSettings
         {
-            get { return ProfilesSettings.BackPanelSettings.X360; }
+            get { return ProfilesSettings.X360BackPanelSettings.Default; }
         }
 
         public override Status Run(Context context)
@@ -61,6 +61,18 @@ namespace SteamController.Profiles
             context.X360[Xbox360Button.RightShoulder] = context.Steam.BtnR1;
 
             return Status.Continue;
+        }
+
+        protected override void BackPanelShortcuts(Context c)
+        {
+            base.BackPanelShortcuts(c);
+
+            var settings = ProfilesSettings.X360BackPanelSettings.Default;
+
+            c.X360[settings.L4_X360] = c.Steam.BtnL4;
+            c.X360[settings.L5_X360] = c.Steam.BtnL5;
+            c.X360[settings.R4_X360] = c.Steam.BtnR4;
+            c.X360[settings.R5_X360] = c.Steam.BtnR5;
         }
     }
 }

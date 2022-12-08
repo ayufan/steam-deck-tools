@@ -16,14 +16,14 @@ namespace SteamController.Profiles
             return Status.Continue;
         }
 
-        private void BackPanelShortcuts(Context c)
+        protected virtual void BackPanelShortcuts(Context c)
         {
             var settings = BackPanelSettings;
 
-            c.Keyboard[settings.L4] = c.Steam.BtnL4;
-            c.Keyboard[settings.L5] = c.Steam.BtnL5;
-            c.Keyboard[settings.R4] = c.Steam.BtnR4;
-            c.Keyboard[settings.R5] = c.Steam.BtnR5;
+            c.Keyboard[settings.L4_KEY] = c.Steam.BtnL4;
+            c.Keyboard[settings.L5_KEY] = c.Steam.BtnL5;
+            c.Keyboard[settings.R4_KEY] = c.Steam.BtnR4;
+            c.Keyboard[settings.R5_KEY] = c.Steam.BtnR5;
         }
     }
 }

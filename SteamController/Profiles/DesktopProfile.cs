@@ -13,7 +13,7 @@ namespace SteamController.Profiles
 
         internal override ProfilesSettings.BackPanelSettings BackPanelSettings
         {
-            get { return ProfilesSettings.BackPanelSettings.Desktop; }
+            get { return ProfilesSettings.DesktopPanelSettings.Default; }
         }
 
         public override bool Selected(Context context)

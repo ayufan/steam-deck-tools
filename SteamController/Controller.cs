@@ -312,8 +312,8 @@ namespace SteamController
                 LargeButtons = true,
                 SelectedObject = new
                 {
-                    Desktop = ProfilesSettings.BackPanelSettings.Desktop,
-                    X360 = ProfilesSettings.BackPanelSettings.X360,
+                    Desktop = ProfilesSettings.DesktopPanelSettings.Default,
+                    X360 = ProfilesSettings.X360BackPanelSettings.Default,
                     X360Haptic = ProfilesSettings.X360HapticSettings.Default,
                     Application = Settings.Default
                 }

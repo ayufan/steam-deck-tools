@@ -4,14 +4,9 @@ using System.Configuration;
 namespace SteamController.ProfilesSettings
 {
     [Category("Mappings")]
-    internal sealed class BackPanelSettings : BaseSettings
+    internal abstract class BackPanelSettings : BaseSettings
     {
         private const String MappingsDescription = @"Only some of those keys do work. Allowed mappings are to be changed in future release.";
-
-        public static BackPanelSettings X360 { get; } = (BackPanelSettings)ApplicationSettingsBase.Synchronized(
-          new BackPanelSettings("X360BackPanelSettings"));
-        public static BackPanelSettings Desktop { get; } = (BackPanelSettings)ApplicationSettingsBase.Synchronized(
-          new BackPanelSettings("DesktopBackPanelSettings"));
 
         public BackPanelSettings(String settingsKey) : base(settingsKey)
         {
@@ -20,37 +15,37 @@ namespace SteamController.ProfilesSettings
         [UserScopedSettingAttribute()]
         [DefaultSettingValueAttribute("None")]
         [Description(MappingsDescription)]
-        public VirtualKeyCode L4
+        public VirtualKeyCode L4_KEY
         {
-            get { return ((VirtualKeyCode)(this["L4"])); }
-            set { this["L4"] = value; }
+            get { return ((VirtualKeyCode)(this["L4_KEY"])); }
+            set { this["L4_KEY"] = value; }
         }
 
         [UserScopedSettingAttribute()]
         [DefaultSettingValueAttribute("None")]
         [Description(MappingsDescription)]
-        public VirtualKeyCode L5
+        public VirtualKeyCode L5_KEY
         {
-            get { return ((VirtualKeyCode)(this["L5"])); }
-            set { this["L5"] = value; }
+            get { return ((VirtualKeyCode)(this["L5_KEY"])); }
+            set { this["L5_KEY"] = value; }
         }
 
         [UserScopedSettingAttribute()]
         [DefaultSettingValueAttribute("None")]
         [Description(MappingsDescription)]
-        public VirtualKeyCode R4
+        public VirtualKeyCode R4_KEY
         {
-            get { return ((VirtualKeyCode)(this["R4"])); }
-            set { this["R4"] = value; }
+            get { return ((VirtualKeyCode)(this["R4_KEY"])); }
+            set { this["R4_KEY"] = value; }
         }
 
         [UserScopedSettingAttribute()]
         [DefaultSettingValueAttribute("None")]
         [Description(MappingsDescription)]
-        public VirtualKeyCode R5
+        public VirtualKeyCode R5_KEY
         {
-            get { return ((VirtualKeyCode)(this["R5"])); }
-            set { this["R5"] = value; }
+            get { return ((VirtualKeyCode)(this["R5_KEY"])); }
+            set { this["R5_KEY"] = value; }
         }
     }
 }

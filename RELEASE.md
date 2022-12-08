@@ -15,3 +15,4 @@ It does help this project on being supported.
 - The X360 has Haptics enabled by default
 - Detect GamePad UI open temporarily for controller layout
 - Automatically manage steam controller configs when using Steam Input
+- Allow to assign BackPanel keys to X360 controller (breaks all current configs to set mappings)
