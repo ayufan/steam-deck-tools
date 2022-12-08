@@ -17,6 +17,8 @@ namespace SteamController.Devices
         private IXbox360Controller? device;
         private bool isConnected;
         private bool submitReport;
+        private Dictionary<Xbox360Button, DateTime> lastPressed = new Dictionary<Xbox360Button, DateTime>();
+        private Dictionary<Xbox360Button, DateTime> pressed = new Dictionary<Xbox360Button, DateTime>();
 
         public Xbox360Controller()
         {
@@ -72,6 +74,8 @@ namespace SteamController.Devices
                 LedNumber = 0;
             }
 
+            lastPressed = pressed;
+            pressed = new Dictionary<Xbox360Button, DateTime>();
             submitReport = false;
             Connected = SettingsDebug.Default.KeepX360AlwaysConnected;
         }
@@ -138,6 +142,8 @@ namespace SteamController.Devices
                 }
             }
 
+            UpdateMinimumPressedTime();
+
             if (isConnected && submitReport)
             {
                 try
@@ -156,6 +162,25 @@ namespace SteamController.Devices
                 FeedbackLargeMotor = null;
                 FeedbackSmallMotor = null;
                 FeedbackReceived = null;
+            }
+        }
+
+        private void UpdateMinimumPressedTime()
+        {
+            var now = DateTime.Now;
+
+            foreach (var key in lastPressed)
+            {
+                if (pressed.ContainsKey(key.Key))
+                    continue;
+
+                // until time elapsed, keep setting button state
+                if (key.Value < DateTime.Now)
+                    continue;
+
+                device?.SetButtonState(key.Key, true);
+                pressed.Add(key.Key, key.Value);
+                submitReport = true;
             }
         }
 
@@ -197,6 +222,19 @@ namespace SteamController.Devices
                 int result = Math.Clamp(value, (short)0, short.MaxValue) * byte.MaxValue / short.MaxValue;
                 device?.SetSliderValue(slider, (byte)result);
                 submitReport = true;
+            }
+        }
+
+        public void Overwrite(Xbox360Button button, bool value, int minPresTimeMs = 0)
+        {
+            device?.SetButtonState(button, value);
+            submitReport = true;
+
+            if (value && minPresTimeMs > 0)
+            {
+                if (!lastPressed.TryGetValue(button, out var firstPressed))
+                    firstPressed = DateTime.Now.AddMilliseconds(minPresTimeMs);
+                pressed.Add(button, firstPressed);
             }
         }
 
