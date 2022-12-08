@@ -26,7 +26,7 @@ namespace FanControl
             notifyIcon.Text = Text;
             notifyIcon.Visible = true;
 
-            TopMost = Properties.Settings.Default.AlwaysOnTop;
+            TopMost = Settings.Default.AlwaysOnTop;
             toolStripMenuItemAlwaysOnTop.Checked = TopMost;
             toolStripMenuItemAlwaysOnTopContext.Checked = TopMost;
 
@@ -45,15 +45,7 @@ namespace FanControl
                 fanModeSelectMenu.Items.Add(item);
             }
 
-            try
-            {
-                var fanMode = Enum.Parse(typeof(FanMode), Properties.Settings.Default.FanMode);
-                setFanMode((FanMode)fanMode);
-            }
-            catch (System.ArgumentException)
-            {
-                setFanMode(FanMode.Default);
-            }
+            setFanMode(Settings.Default.FanMode);
 
             propertyGrid1.SelectedObject = fanControl;
             propertyGrid1.ExpandAllGridItems();
@@ -85,8 +77,7 @@ namespace FanControl
         private void setFanMode(FanMode mode)
         {
             fanControl.SetMode(mode);
-            Properties.Settings.Default["FanMode"] = mode.ToString();
-            Properties.Settings.Default.Save();
+            Settings.Default.FanMode = mode;
 
             foreach (ToolStripItem menuItem in contextMenu.Items)
             {
@@ -188,8 +179,7 @@ namespace FanControl
             TopMost = !TopMost;
             toolStripMenuItemAlwaysOnTop.Checked = TopMost;
             toolStripMenuItemAlwaysOnTopContext.Checked = TopMost;
-            Properties.Settings.Default.AlwaysOnTop = toolStripMenuItemAlwaysOnTop.Checked;
-            Properties.Settings.Default.Save();
+            Settings.Default.AlwaysOnTop = toolStripMenuItemAlwaysOnTop.Checked;
         }
     }
 }
