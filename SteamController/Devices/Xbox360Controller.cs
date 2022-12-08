@@ -141,7 +141,9 @@ namespace SteamController.Devices
         {
             set
             {
-                SetButtonState(button, value);
+                if (value)
+                    device?.SetButtonState(button, value);
+                submitReport = true;
             }
         }
 
@@ -149,7 +151,8 @@ namespace SteamController.Devices
         {
             set
             {
-                SetAxisValue(axis, value);
+                device?.SetAxisValue(axis, value);
+                submitReport = true;
             }
         }
 
@@ -157,34 +160,11 @@ namespace SteamController.Devices
         {
             set
             {
-                SetSliderValue(slider, value);
+                // rescale from 0..32767 to 0..255
+                int result = Math.Clamp(value, (short)0, short.MaxValue) * byte.MaxValue / short.MaxValue;
+                device?.SetSliderValue(slider, (byte)result);
+                submitReport = true;
             }
-        }
-
-        public void SetAxisValue(Xbox360Axis axis, short value)
-        {
-            device?.SetAxisValue(axis, value);
-            submitReport = true;
-        }
-
-        public void SetButtonState(Xbox360Button button, bool pressed)
-        {
-            device?.SetButtonState(button, pressed);
-            submitReport = true;
-        }
-
-        public void SetSliderValue(Xbox360Slider slider, byte value)
-        {
-            device?.SetSliderValue(slider, value);
-            submitReport = true;
-        }
-
-        public void SetSliderValue(Xbox360Slider slider, short value)
-        {
-            // rescale from 0..32767 to 0..255
-            int result = Math.Clamp(value, (short)0, short.MaxValue) * byte.MaxValue / short.MaxValue;
-            device?.SetSliderValue(slider, (byte)result);
-            submitReport = true;
         }
 
         public void ResetFeedback()
