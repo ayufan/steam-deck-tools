@@ -14,10 +14,6 @@ namespace PowerControl
         [STAThread]
         static void Main()
         {
-#if DEBUG
-            Settings.Default.EnableExperimentalFeatures = true;
-#endif
-
             if (Settings.Default.EnableExperimentalFeatures)
             {
                 for (int i = 0; !VangoghGPU.IsSupported; i++)
