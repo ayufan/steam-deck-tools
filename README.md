@@ -13,13 +13,11 @@ This repository contains my own personal set of tools to help running Windows on
 - Consider donating to keep this project alive.
 - Donating also helps to fund new features.
 
-<a href='https://ko-fi.com/ayufan' target='_blank'><img style='border:0px;height:50px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' alt='Buy Me a Coffee at ko-fi.com' />
-<a href="https://www.paypal.com/donate/?hosted_button_id=DHNBE2YR9D5Y2" target='_blank'><img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" style='border:0px;height:55px;'/>
-</a>
+<a href='https://ko-fi.com/ayufan' target='_blank'><img height='35' style='border:0px;height:50px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' alt='Buy Me a Coffee at ko-fi.com' /></a> <a href="https://www.paypal.com/donate/?hosted_button_id=DHNBE2YR9D5Y2" target='_blank'><img height='35' src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" style='border:0px;height:55px;'/></a>
 
 ## Applications
 
-This project provides the following application:
+This project provides the following applications:
 
 - [Fan Control](docs/fan-control.md) - control Fan on Windows
 - [Performance Overlay](docs/performance-overlay.md) - see FPS and other stats
@@ -29,7 +27,7 @@ This project provides the following application:
 ## Install
 
 - Download latest `SteamDeckTools-<version>.zip` from [Latest GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases/latest).
-- Unpack into `C:\SteamDeckTools` folder.
+- Unpack to `C:\SteamDeckTools` folder.
 - Install bellow dependencies.
 - Run each application, and mark `Run On Startup`.
 
@@ -49,8 +47,8 @@ It is strongly advised that following software is uninstalled or disabled:
 
 - [Controller Shortcuts](docs/shortcuts.md) - default shortcuts when using [Steam Controller](docs/steam-controller.md).
 - [Development](docs/development.md) - how to compile this project.
-- [Risks](docs/risks.md) - this project users kernel manipulation and might result in unstable system.
-- The latest development version can be found in [GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases/latest).
+- [Risks](docs/risks.md) - this project uses kernel manipulation and might result in unstable system.
+- The latest development version can be found in [GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases).
 - The variant with `SteamDeckTools-<version>-debug.zip` enables all experimental features enabled, but might be unstable and buggy.
 
 ## Anti-Cheat and Antivirus software
