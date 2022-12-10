@@ -4,6 +4,8 @@ This repository contains my own personal set of tools to help running Windows on
 
 **This software is provided on best-effort basis and can break your SteamDeck.**
 
+<img src="docs/images/power_control.png" height="250"/>
+
 ## Help this project
 
 **This project is provided free of charge, but development of it is not free**:
@@ -24,17 +26,12 @@ This project provides the following application:
 - [Power Control](docs/power-control.md) - change TDP or refresh rate
 - [Steam Controller](docs/steam-controller.md) - use Steam Deck with Game Pass
 
-## Additional informations
+## Install
 
-- [Controller Shortcuts](docs/shortcuts.md) - default shortcuts when using [Steam Controller](docs/steam-controller.md)
-- [Development](docs/development.md) - how to compile this project
-- [Risks](docs/risks.md) - this project users kernel manipulation and might result in unstable system
-
-## Screenshots
-
-<img src="docs/images/power_control.png" height="250"/>
-
-## Requirements
+- Download latest **SteamDeckTools-<version>.zip** from [Latest GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases/latest).
+- Unpack into `C:\SteamDeckTools` folder.
+- Install bellow dependencies.
+- Run each application, and mark `Run On Startup`.
 
 This project requires those dependencies to be installed in order to function properly:
 
@@ -47,6 +44,14 @@ It is strongly advised that following software is uninstalled or disabled:
 - [SWICD](https://github.com/mKenfenheuer/steam-deck-windows-usermode-driver)
 - [GlosSI](https://github.com/Alia5/GlosSI)
 - [HidHide](https://github.com/ViGEm/HidHide)
+
+## Additional informations
+
+- [Controller Shortcuts](docs/shortcuts.md) - default shortcuts when using [Steam Controller](docs/steam-controller.md).
+- [Development](docs/development.md) - how to compile this project.
+- [Risks](docs/risks.md) - this project users kernel manipulation and might result in unstable system.
+- The latest development version can be found in [GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases/latest).
+- The variant with `SteamDeckTools-<version>-debug.zip` enables all experimental features enabled, but might be unstable and buggy.
 
 ## Anti-Cheat and Antivirus software
 
