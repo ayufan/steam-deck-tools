@@ -21,3 +21,4 @@
 - Detect SAS (Secure Attention Sequence) in a way that does not prevent screen sleep
 - Recreate X360 device on fatal failure (might happen after resume)
 - DEBUG allows to keep X360 controller always connected
+- Swap `STEAM+Menu` and `STEAM+Options`. It makes more sense to switch windows with STEAM+3 horizontal lines

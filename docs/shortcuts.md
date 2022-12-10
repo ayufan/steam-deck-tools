@@ -6,8 +6,8 @@
 | Options (hold for 1s)      | Switch to next profile | Switch to next profile | Switch to next profile | Switch to next profile |
 | Options (hold for 2s)      | Toggle desktop mode    | Toggle desktop mode    |                        |                        |
 | STEAM + 3 dots             | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  |
-| STEAM + Menu               | WIN + TAB              | WIN + TAB              | WIN + TAB              | WIN + TAB              |
-| STEAM + Options            | F11                    | F11                    | F11                    | F11                    |
+| STEAM + Options            | WIN + TAB              | WIN + TAB              | WIN + TAB              | WIN + TAB              |
+| STEAM + Menu               | F11                    | F11                    | F11                    | F11                    |
 | STEAM + A                  | RETURN                 | RETURN                 |                        | RETURN                 |
 | STEAM + B (hold for 1s)    | ALT + F4               | ALT + F4               |                        | ALT + F4               |
 | STEAM + B (hold for 3s)    | Kill active process    | Kill active process    |                        | Kill active process    |

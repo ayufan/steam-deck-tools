@@ -56,13 +56,13 @@ namespace SteamController.Profiles
 
         protected virtual bool AdditionalShortcuts(Context c)
         {
-            if (c.Steam.BtnMenu.Pressed())
+            if (c.Steam.BtnOptions.Pressed())
             {
                 c.Keyboard.KeyPress(VirtualKeyCode.LWIN, VirtualKeyCode.TAB);
                 return true;
             }
 
-            if (c.Steam.BtnOptions.Pressed())
+            if (c.Steam.BtnMenu.Pressed())
             {
                 c.Keyboard.KeyPress(VirtualKeyCode.F11);
                 return true;
