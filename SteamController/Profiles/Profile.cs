@@ -10,12 +10,25 @@ namespace SteamController.Profiles
             public bool IsDone { get; set; }
         }
 
+        public event Action<string[]> ErrorsChanged;
+
         public virtual String Name { get; set; } = "";
         public virtual bool Visible { get; set; } = true;
         public virtual bool IsDesktop { get; set; }
+        public virtual string[]? Errors { get; set; }
 
         public abstract bool Selected(Context context);
 
         public abstract Status Run(Context context);
+
+        public Profile()
+        {
+            ErrorsChanged += delegate { };
+        }
+
+        protected void OnErrorsChanged()
+        {
+            ErrorsChanged(this.Errors ?? new string[0]);
+        }
     }
 }
