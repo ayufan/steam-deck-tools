@@ -14,6 +14,7 @@ namespace SteamController.Devices
         private Stopwatch stopwatch = new Stopwatch();
         private TimeSpan? lastUpdate;
         private int failures;
+        public long ElapsedMilliseconds { get => stopwatch.ElapsedMilliseconds; }
         public double DeltaTime { get; private set; }
 
         internal SteamController()
