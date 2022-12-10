@@ -20,10 +20,9 @@ namespace SteamController
                 items.Add("[LB]");
             if (Steam.LizardMouse)
                 items.Add("[LM]");
-            if (X360.Connected)
-                items.Add("[X360]");
-            else if (X360.Valid)
-                items.Add("[no-X360]");
+
+            items.Add(X360.Connected ? "[X360]" : X360.Valid ? "[no-X360]" : "[inv-X360]");
+            items.Add(KeyboardMouseValid ? "[KM]" : "[inv-KM]");
 
             foreach (var button in Steam.AllButtons)
             {

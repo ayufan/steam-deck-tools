@@ -86,20 +86,32 @@ namespace SteamController.Devices
             keyCodes = new Dictionary<VirtualKeyCode, DateTime>();
         }
 
+        private void Safe(Action action)
+        {
+            try
+            {
+                action();
+
+                Managers.SASManager.Valid = true;
+            }
+            catch (InvalidOperationException)
+            {
+                Managers.SASManager.Valid = false;
+            }
+        }
+
         internal void Update()
         {
             // Key Up: it is missing now
             foreach (var keyUp in lastKeyCodes.Except(keyCodes))
             {
-                try { simulator.Keyboard.KeyUp(keyUp.Key); }
-                catch (InvalidOperationException) { }
+                Safe(() => simulator.Keyboard.KeyUp(keyUp.Key));
             }
 
             // Key Down: new keys being down
             foreach (var keyDown in keyCodes.Except(lastKeyCodes))
             {
-                try { simulator.Keyboard.KeyDown(keyDown.Key); }
-                catch (InvalidOperationException) { }
+                Safe(() => simulator.Keyboard.KeyDown(keyDown.Key));
             }
 
             // Key Repeats
@@ -109,29 +121,24 @@ namespace SteamController.Devices
                 if (keyPress.Value > now)
                     continue;
 
-                try { simulator.Keyboard.KeyPress(keyPress.Key); }
-                catch (InvalidOperationException) { }
-
+                Safe(() => simulator.Keyboard.KeyPress(keyPress.Key));
                 keyCodes[keyPress.Key] = DateTime.Now.Add(NextRepeats);
             }
         }
 
         public void KeyPress(params VirtualKeyCode[] keyCodes)
         {
-            try { simulator.Keyboard.KeyPress(keyCodes); }
-            catch (InvalidOperationException) { }
+            Safe(() => simulator.Keyboard.KeyPress(keyCodes));
         }
 
         public void KeyPress(VirtualKeyCode modifierKey, params VirtualKeyCode[] keyCodes)
         {
-            try { simulator.Keyboard.ModifiedKeyStroke(modifierKey, keyCodes); }
-            catch (InvalidOperationException) { }
+            Safe(() => simulator.Keyboard.ModifiedKeyStroke(modifierKey, keyCodes));
         }
 
         public void KeyPress(IEnumerable<VirtualKeyCode> modifierKeys, params VirtualKeyCode[] keyCodes)
         {
-            try { simulator.Keyboard.ModifiedKeyStroke(modifierKeys, keyCodes); }
-            catch (InvalidOperationException) { }
+            Safe(() => simulator.Keyboard.ModifiedKeyStroke(modifierKeys, keyCodes));
         }
     }
 }
