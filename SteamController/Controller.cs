@@ -307,8 +307,37 @@ namespace SteamController
                 }
             };
 
+            var helpLabel = new Label()
+            {
+                Cursor = Cursors.Hand,
+                Dock = DockStyle.Top,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Underline),
+                ForeColor = SystemColors.HotTrack,
+                Text = "https://steam-deck-tools.ayufan.dev",
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            var donateLabel = new Label()
+            {
+                Cursor = Cursors.Hand,
+                Dock = DockStyle.Top,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Text = String.Join("\n",
+                    "This project is provided free of charge, but development of it is not free:",
+                    "- Consider donating to keep this project alive.",
+                    "- Donating also helps to fund new features."
+                ),
+                TextAlign = ContentAlignment.MiddleLeft,
+                Height = 100
+            };
+
+            helpLabel.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev"); };
+            donateLabel.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/#help-this-project"); };
             propertyGrid.ExpandAllGridItems();
+
             form.Controls.Add(propertyGrid);
+            form.Controls.Add(donateLabel);
+            form.Controls.Add(helpLabel);
             form.ShowDialog();
         }
     }
