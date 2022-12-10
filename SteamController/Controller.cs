@@ -63,20 +63,6 @@ namespace SteamController
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
-#if DEBUG
-            var lizardMouseItem = new ToolStripMenuItem("Use Lizard &Mouse");
-            lizardMouseItem.Click += delegate { DefaultGuideShortcutsProfile.SteamModeLizardMouse = !DefaultGuideShortcutsProfile.SteamModeLizardMouse; };
-            contextMenu.Opening += delegate { lizardMouseItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardMouse; };
-            contextMenu.Items.Add(lizardMouseItem);
-
-            var lizardButtonsItem = new ToolStripMenuItem("Use Lizard &Buttons");
-            lizardButtonsItem.Click += delegate { DefaultGuideShortcutsProfile.SteamModeLizardButtons = !DefaultGuideShortcutsProfile.SteamModeLizardButtons; };
-            contextMenu.Opening += delegate { lizardButtonsItem.Checked = DefaultGuideShortcutsProfile.SteamModeLizardButtons; };
-            contextMenu.Items.Add(lizardButtonsItem);
-
-            contextMenu.Items.Add(new ToolStripSeparator());
-#endif
-
             AddSteamOptions(contextMenu);
 
             if (startupManager.IsAvailable)
@@ -316,7 +302,8 @@ namespace SteamController
                     Desktop = ProfilesSettings.DesktopPanelSettings.Default,
                     X360 = ProfilesSettings.X360BackPanelSettings.Default,
                     X360Haptic = ProfilesSettings.X360HapticSettings.Default,
-                    Application = Settings.Default
+                    Application = Settings.Default,
+                    DEBUG = SettingsDebug.Default
                 }
             };
 

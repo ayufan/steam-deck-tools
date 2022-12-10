@@ -8,9 +8,6 @@ namespace SteamController.Profiles
 {
     public abstract class DefaultGuideShortcutsProfile : DefaultShortcutsProfile
     {
-        public static bool SteamModeLizardButtons = false;
-        public static bool SteamModeLizardMouse = true;
-
         public readonly TimeSpan HoldForKill = TimeSpan.FromSeconds(3);
         public readonly TimeSpan HoldForClose = TimeSpan.FromSeconds(1);
 
@@ -32,8 +29,8 @@ namespace SteamController.Profiles
 
         private void SteamShortcuts(Context c)
         {
-            c.Steam.LizardButtons = SteamModeLizardButtons;
-            c.Steam.LizardMouse = SteamModeLizardMouse;
+            c.Steam.LizardButtons = SettingsDebug.Default.LizardButtons;
+            c.Steam.LizardMouse = SettingsDebug.Default.LizardMouse;
 
             EmulateScrollOnLPad(c);
             EmulateMouseOnRPad(c);

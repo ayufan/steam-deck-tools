@@ -17,7 +17,7 @@ namespace SteamController.Profiles
         public override Status Run(Context context)
         {
             context.Steam.LizardButtons = false;
-            context.Steam.LizardMouse = SteamModeLizardMouse;
+            context.Steam.LizardMouse = SettingsDebug.Default.LizardMouse;
             context.X360.Connected = true;
 
             // Controls

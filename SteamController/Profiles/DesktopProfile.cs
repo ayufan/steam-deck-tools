@@ -37,8 +37,8 @@ namespace SteamController.Profiles
             }
             else
             {
-                c.Steam.LizardButtons = SteamModeLizardButtons;
-                c.Steam.LizardMouse = SteamModeLizardMouse;
+                c.Steam.LizardButtons = SettingsDebug.Default.LizardButtons;
+                c.Steam.LizardMouse = SettingsDebug.Default.LizardMouse;
             }
 
             EmulateScrollOnLPad(c);
