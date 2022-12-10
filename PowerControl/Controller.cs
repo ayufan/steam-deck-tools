@@ -19,8 +19,8 @@ namespace PowerControl
     {
         public const String Title = "Power Control";
         public readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
-        public const int KeyPressRepeatTime = 300;
-        public const int KeyPressNextRepeatTime = 150;
+        public const int KeyPressRepeatTime = 400;
+        public const int KeyPressNextRepeatTime = 90;
 
         Container components = new Container();
         System.Windows.Forms.NotifyIcon notifyIcon;
