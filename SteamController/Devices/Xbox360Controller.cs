@@ -91,7 +91,7 @@ namespace SteamController.Devices
             }
 
             submitReport = false;
-            Connected = false;
+            Connected = SettingsDebug.Default.KeepX360AlwaysConnected;
         }
 
         private void SetConnected(bool wantsConnected)
@@ -133,6 +133,8 @@ namespace SteamController.Devices
 
         internal void Beep()
         {
+            if (SettingsDebug.Default.KeepX360AlwaysConnected)
+                return;
             if (device is null)
                 return;
 
