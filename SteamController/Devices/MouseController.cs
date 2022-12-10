@@ -37,7 +37,6 @@ namespace SteamController.Devices
         // TODO: Unsure what it is
         public const int XButtonID = 0;
         public const int YButtonID = 1;
-        public const int UpdateValidInterval = 100;
 
         InputSimulator simulator = new InputSimulator();
 
@@ -45,9 +44,6 @@ namespace SteamController.Devices
         HashSet<Button> lastMouseButtons = new HashSet<Button>();
 
         Accum movedX, movedY, verticalScroll, horizontalScroll;
-
-        bool? valid = null;
-        DateTime lastValid = DateTime.Now;
 
         public enum Button
         {
@@ -68,11 +64,6 @@ namespace SteamController.Devices
             }
         }
 
-        public bool Valid
-        {
-            get { return valid ?? true; }
-        }
-
         public Button[] DownButtons
         {
             get { return mouseButtons.ToArray(); }
@@ -90,29 +81,10 @@ namespace SteamController.Devices
         {
             try
             {
-                if (action())
-                {
-                    valid = true;
-                    lastValid = DateTime.Now;
-                }
-
+                action();
             }
             catch (InvalidOperationException)
             {
-                valid = false;
-                lastValid = DateTime.Now;
-            }
-        }
-
-        private void UpdateValid()
-        {
-            if (valid is null || lastValid.AddMilliseconds(UpdateValidInterval) < DateTime.Now)
-            {
-                Safe(() =>
-                {
-                    simulator.Mouse.MoveMouseBy(0, 0);
-                    return true;
-                });
             }
         }
 
@@ -235,8 +207,6 @@ namespace SteamController.Devices
                     });
                 }
             }
-
-            UpdateValid();
         }
 
         public void MouseClick(Button button)

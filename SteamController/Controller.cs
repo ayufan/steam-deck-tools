@@ -28,7 +28,8 @@ namespace SteamController
                 new Managers.SteamManager(),
                 new Managers.ProfileSwitcher(),
                 new Managers.SteamConfigsManager(),
-                new Managers.SharedDataManager()
+                new Managers.SharedDataManager(),
+                new Managers.SASManager()
             }
         };
 
@@ -141,7 +142,7 @@ namespace SteamController
 
             var isDesktop = context.CurrentProfile?.IsDesktop ?? false;
 
-            if (!context.Mouse.Valid)
+            if (!context.KeyboardMouseValid)
             {
                 notifyIcon.Text = TitleWithVersion + ". Cannot send input.";
                 notifyIcon.Icon = Resources.microsoft_xbox_controller_off_red;

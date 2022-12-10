@@ -41,6 +41,7 @@ namespace SteamController
         }
 
         public bool RequestEnable { get; set; } = true;
+        public bool KeyboardMouseValid { get; set; } = true;
         public ContextState State;
 
         public event Action<Profiles.Profile> ProfileChanged;

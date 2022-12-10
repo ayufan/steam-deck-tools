@@ -28,17 +28,18 @@ namespace SteamController.Profiles
                 return Status.Done;
             }
 
-            if (!c.Mouse.Valid)
+            if (!c.KeyboardMouseValid)
             {
                 // Failed to acquire secure context
                 // Enable emergency Lizard
                 c.Steam.LizardButtons = true;
                 c.Steam.LizardMouse = true;
-                return Status.Done;
             }
-
-            c.Steam.LizardButtons = SteamModeLizardButtons;
-            c.Steam.LizardMouse = SteamModeLizardMouse;
+            else
+            {
+                c.Steam.LizardButtons = SteamModeLizardButtons;
+                c.Steam.LizardMouse = SteamModeLizardMouse;
+            }
 
             EmulateScrollOnLPad(c);
             EmulateScrollOnLStick(c);

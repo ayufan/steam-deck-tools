@@ -18,3 +18,4 @@
 - Automatically manage steam controller configs when using Steam Input
 - Allow to assign BackPanel keys to X360 controller (breaks all current configs to set mappings)
 - All SteamDeckTools settings are stored in `.ini` file in root folder
+- Detect SAS (Secure Attention Sequence) in a way that does not prevent screen sleep
