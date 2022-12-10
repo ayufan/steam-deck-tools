@@ -57,10 +57,16 @@ namespace SteamController.Profiles
 
             if (c.Steam.BtnX.Pressed())
             {
-                if (Settings.Default.ShowTouchKeyboard)
-                    OnScreenKeyboard.Toggle();
-                else
-                    c.Keyboard.KeyPress(new VirtualKeyCode[] { VirtualKeyCode.LCONTROL, VirtualKeyCode.LWIN }, VirtualKeyCode.VK_O);
+                switch (Settings.Default.KeyboardStyle)
+                {
+                    case Settings.KeyboardStyles.CTRL_WIN_O:
+                        c.Keyboard.KeyPress(new VirtualKeyCode[] { VirtualKeyCode.LCONTROL, VirtualKeyCode.LWIN }, VirtualKeyCode.VK_O);
+                        break;
+
+                    case Settings.KeyboardStyles.WindowsTouch:
+                        OnScreenKeyboard.Toggle();
+                        break;
+                }
             }
 
             if (c.Steam.BtnL1.Pressed())

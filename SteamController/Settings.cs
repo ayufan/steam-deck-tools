@@ -59,12 +59,19 @@ namespace SteamController
             set { Set("SteamControllerConfigs", value); }
         }
 
+        public enum KeyboardStyles
+        {
+            DoNotShow,
+            WindowsTouch,
+            CTRL_WIN_O
+        }
+
         [Browsable(true)]
         [Description("Show Touch Keyboard or CTRL+WIN+O")]
-        public bool ShowTouchKeyboard
+        public KeyboardStyles KeyboardStyle
         {
-            get { return Get<bool>("ShowTouchKeyboard", true); }
-            set { Set("ShowTouchKeyboard", value); }
+            get { return Get<KeyboardStyles>("KeyboardStyle", KeyboardStyles.WindowsTouch); }
+            set { Set("KeyboardStyle", value); }
         }
 
         public override string ToString()
