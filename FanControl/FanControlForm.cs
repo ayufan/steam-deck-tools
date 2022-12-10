@@ -171,7 +171,7 @@ namespace FanControl
 
         private void help_DoubleClick(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("explorer.exe", "http://github.com/ayufan-research/steam-deck-tools");
+            System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev");
         }
 
         private void toolStripMenuItemAlwaysOnTop_Click(object sender, EventArgs e)

@@ -71,7 +71,7 @@ namespace PerformanceOverlay
             var helpItem = contextMenu.Items.Add("&Help");
             helpItem.Click += delegate
             {
-                System.Diagnostics.Process.Start("explorer.exe", "http://github.com/ayufan-research/steam-deck-tools");
+                System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev");
             };
 
             contextMenu.Items.Add(new ToolStripSeparator());

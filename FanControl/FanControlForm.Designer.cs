@@ -259,7 +259,7 @@ namespace FanControl
             this.helpLabel.Name = "helpLabel";
             this.helpLabel.Size = new System.Drawing.Size(703, 32);
             this.helpLabel.TabIndex = 8;
-            this.helpLabel.Text = "https://github.com/ayufan-research/steam-deck-tools";
+            this.helpLabel.Text = "https://steam-deck-tools.ayufan.dev";
             this.helpLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.helpLabel.DoubleClick += new System.EventHandler(this.help_DoubleClick);
             // 

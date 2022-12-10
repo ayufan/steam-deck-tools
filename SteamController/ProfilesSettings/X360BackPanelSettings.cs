@@ -5,7 +5,7 @@ namespace SteamController.ProfilesSettings
 {
     internal class X360BackPanelSettings : BackPanelSettings
     {
-        private const String MappingsDescription = @"Mappings are to be changed in future release.";
+        private const String MappingsDescription = @"Shortcuts are to be changed in future release.";
 
         public static X360BackPanelSettings Default { get; } = new X360BackPanelSettings();
 

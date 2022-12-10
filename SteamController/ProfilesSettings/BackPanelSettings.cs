@@ -3,10 +3,10 @@ using System.Configuration;
 
 namespace SteamController.ProfilesSettings
 {
-    [Category("Mappings")]
+    [Category("Shortcuts")]
     internal abstract class BackPanelSettings : CommonHelpers.BaseSettings
     {
-        private const String MappingsDescription = @"Only some of those keys do work. Allowed mappings are to be changed in future release.";
+        private const String MappingsDescription = @"Only some of those keys do work. Allowed shortcuts are to be changed in future release.";
 
         public BackPanelSettings(String settingsKey) : base(settingsKey)
         {
