@@ -13,24 +13,6 @@ namespace SteamController.Devices
         public const ushort VendorID = 0x045E;
         public const ushort ProductID = 0x028E;
 
-        public static readonly Dictionary<VirtualX360Code, Xbox360Button> codeToButton = new Dictionary<VirtualX360Code, Xbox360Button>()
-        {
-            { VirtualX360Code.X360_UP, Xbox360Button.Up },
-            { VirtualX360Code.X360_DOWN, Xbox360Button.Down },
-            { VirtualX360Code.X360_LEFT, Xbox360Button.Left },
-            { VirtualX360Code.X360_RIGHT, Xbox360Button.Right },
-            { VirtualX360Code.X360_BACK, Xbox360Button.Back },
-            { VirtualX360Code.X360_START, Xbox360Button.Start },
-            { VirtualX360Code.X360_A, Xbox360Button.A },
-            { VirtualX360Code.X360_B, Xbox360Button.B },
-            { VirtualX360Code.X360_X, Xbox360Button.X },
-            { VirtualX360Code.X360_Y, Xbox360Button.Y },
-            { VirtualX360Code.X360_LB, Xbox360Button.LeftShoulder },
-            { VirtualX360Code.X360_RB, Xbox360Button.RightShoulder },
-            { VirtualX360Code.X360_LS, Xbox360Button.LeftThumb },
-            { VirtualX360Code.X360_RS, Xbox360Button.RightThumb }
-        };
-
         private ViGEmClient? client;
         private IXbox360Controller? device;
         private bool isConnected;
@@ -188,22 +170,11 @@ namespace SteamController.Devices
         public byte LedNumber { get; private set; }
         public DateTime? FeedbackReceived { get; private set; }
 
-        public bool this[VirtualX360Code code]
+        public bool this[Xbox360Button? button]
         {
             set
             {
-                if (codeToButton.TryGetValue(code, out var button))
-                {
-                    this[button] = value;
-                }
-            }
-        }
-
-        public bool this[Xbox360Button button]
-        {
-            set
-            {
-                if (value)
+                if (value && button is not null)
                     device?.SetButtonState(button, value);
                 submitReport = true;
             }

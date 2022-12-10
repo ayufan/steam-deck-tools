@@ -1,4 +1,5 @@
 using Nefarius.ViGEm.Client.Targets.Xbox360;
+using SteamController.ProfilesSettings;
 
 namespace SteamController.Profiles
 {
@@ -69,10 +70,10 @@ namespace SteamController.Profiles
 
             var settings = ProfilesSettings.X360BackPanelSettings.Default;
 
-            c.X360[settings.L4_X360] = c.Steam.BtnL4;
-            c.X360[settings.L5_X360] = c.Steam.BtnL5;
-            c.X360[settings.R4_X360] = c.Steam.BtnR4;
-            c.X360[settings.R5_X360] = c.Steam.BtnR5;
+            c.X360[settings.L4_X360.ToViGEm()] = c.Steam.BtnL4;
+            c.X360[settings.L5_X360.ToViGEm()] = c.Steam.BtnL5;
+            c.X360[settings.R4_X360.ToViGEm()] = c.Steam.BtnR4;
+            c.X360[settings.R5_X360.ToViGEm()] = c.Steam.BtnR5;
         }
     }
 }
