@@ -149,7 +149,7 @@ namespace SteamController.Devices
 
         /// Generated when button was repeated for a given period
         /// but triggered exactly once
-        public bool HoldRepeat(TimeSpan duration, TimeSpan repeatEvery, string consume)
+        public bool HoldRepeat(TimeSpan duration, TimeSpan repeatEvery, string? consume)
         {
             // always generate at least one keypress
             if (Pressed(duration))
