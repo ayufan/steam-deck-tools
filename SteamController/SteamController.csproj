@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\microsoft-xbox-controller.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="H.InputSimulator" Version="1.3.0" />
     <PackageReference Include="Nefarius.ViGEm.Client" Version="1.21.232" />
   </ItemGroup>

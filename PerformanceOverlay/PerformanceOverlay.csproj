@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\poll.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.1" />
   </ItemGroup>
 
