@@ -66,6 +66,18 @@ namespace SteamController.Devices
             }
         }
 
+        private void Fail()
+        {
+            var client = this.client;
+
+            // unset current device
+            this.client = null;
+            this.device = null;
+
+            try { using (client) { } }
+            catch (Exception) { }
+        }
+
         internal void BeforeUpdate()
         {
             device?.ResetReport();
@@ -89,13 +101,31 @@ namespace SteamController.Devices
 
             if (wantsConnected)
             {
-                device?.Connect();
-                TraceLine("Connected X360 Controller.");
+                try
+                {
+                    device?.Connect();
+                    TraceLine("Connected X360 Controller.");
+                }
+                catch (Exception e)
+                {
+                    TraceLine("X360: Connect: {0}", e);
+                    Fail();
+                    return;
+                }
             }
             else
             {
-                device?.Disconnect();
-                TraceLine("Disconnected X360 Controller.");
+                try
+                {
+                    device?.Disconnect();
+                    TraceLine("Disconnected X360 Controller.");
+                }
+                catch (Exception e)
+                {
+                    TraceLine("X360: Disconnect: {0}", e);
+                    Fail();
+                    return;
+                }
             }
 
             isConnected = wantsConnected;
