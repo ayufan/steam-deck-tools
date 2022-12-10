@@ -31,6 +31,9 @@ namespace PerformanceOverlay
             SharedData_Update();
             Instance.Open(TitleWithVersion, true, "Global\\PerformanceOverlay");
 
+            if (Instance.WantsRunOnStartup)
+                startupManager.Startup = true;
+
             showItem = new ToolStripMenuItem("&Show OSD");
             showItem.Click += ShowItem_Click;
             showItem.Checked = Settings.Default.ShowOSD;

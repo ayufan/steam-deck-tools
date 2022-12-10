@@ -22,3 +22,4 @@
 - Recreate X360 device on fatal failure (might happen after resume)
 - DEBUG allows to keep X360 controller always connected
 - Swap `STEAM+Menu` and `STEAM+Options`. It makes more sense to switch windows with STEAM+3 horizontal lines
+- If application is run with `-run-on-startup` it will self-set to run on system start

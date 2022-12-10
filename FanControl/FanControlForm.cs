@@ -20,6 +20,9 @@ namespace FanControl
             Text += " v" + Application.ProductVersion.ToString();
             Instance.Open(Text, true, "Global\\FanControlOnce");
 
+            if (Instance.WantsRunOnStartup)
+                startupManager.Startup = true;
+
             fanControl = new FanController();
             SharedData_Update();
 

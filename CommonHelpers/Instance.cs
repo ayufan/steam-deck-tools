@@ -28,6 +28,11 @@ namespace CommonHelpers
         private const String GLOBAL_MUTEX_NAME = "Global\\SteamDeckToolsCommonHelpers";
         private const int GLOBAL_DEFAULT_TIMEOUT = 5000;
 
+        public static bool WantsRunOnStartup
+        {
+            get { return Environment.GetCommandLineArgs().Contains("-run-on-startup"); }
+        }
+
         public static bool UseKernelDrivers
         {
             get { return useKernelDrivers; }

@@ -42,6 +42,9 @@ namespace SteamController
 
             Instance.RunOnce(TitleWithVersion, "Global\\SteamController");
 
+            if (Instance.WantsRunOnStartup)
+                startupManager.Startup = true;
+
             var contextMenu = new ContextMenuStrip(components);
 
             var enabledItem = new ToolStripMenuItem("&Enabled");

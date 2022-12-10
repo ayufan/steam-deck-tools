@@ -41,6 +41,9 @@ namespace PowerControl
         {
             Instance.RunOnce(TitleWithVersion, "Global\\PowerControl");
 
+            if (Instance.WantsRunOnStartup)
+                startupManager.Startup = true;
+
             var contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
             contextMenu.Opening += delegate (object? sender, CancelEventArgs e)
