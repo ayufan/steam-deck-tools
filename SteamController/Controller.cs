@@ -10,6 +10,12 @@ namespace SteamController
         public const String Title = "Steam Controller";
         public readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
 
+        public static readonly Dictionary<String, Profiles.Profile> PreconfiguredUserProfiles = new Dictionary<String, Profiles.Profile>()
+        {
+            { "*.desktop.cs", new Profiles.Predefined.DesktopProfile() { Name = "Desktop" } },
+            { "*.x360.cs", new Profiles.Predefined.X360HapticProfile() { Name = "X360" } }
+        };
+
         Container components = new Container();
         NotifyIcon notifyIcon;
         StartupManager startupManager = new StartupManager(Title);
@@ -50,16 +56,38 @@ namespace SteamController
                 startupManager.Startup = false;
             });
 
-            // Set available profiles
-            ProfilesSettings.Helpers.ProfileStringConverter.Profiles = context.Profiles.
-                Where((profile) => profile.Visible).
-                Select((profile) => profile.Name).ToArray();
-
             Instance.RunOnce(TitleWithVersion, "Global\\SteamController");
             Instance.RunUpdater(TitleWithVersion);
 
             if (Instance.WantsRunOnStartup)
                 startupManager.Startup = true;
+
+            notifyIcon = new NotifyIcon(components);
+            notifyIcon.Icon = Resources.microsoft_xbox_controller_off;
+            notifyIcon.Text = TitleWithVersion;
+            notifyIcon.Visible = true;
+
+#if DEBUG
+            foreach (var profile in Profiles.Dynamic.RoslynDynamicProfile.GetUserProfiles(PreconfiguredUserProfiles))
+            {
+                profile.ErrorsChanged += (errors) =>
+                {
+                    notifyIcon.ShowBalloonTip(
+                        3000, profile.Name,
+                        String.Join("\n", errors),
+                        ToolTipIcon.Error
+                    );
+                };
+                profile.Compile();
+                profile.Watch();
+                context.Profiles.Add(profile);
+            }
+#endif
+
+            // Set available profiles
+            ProfilesSettings.Helpers.ProfileStringConverter.Profiles = context.Profiles.
+                Where((profile) => profile.Visible).
+                Select((profile) => profile.Name).ToArray();
 
             var contextMenu = new ContextMenuStrip(components);
 
@@ -76,7 +104,12 @@ namespace SteamController
 
                 var profileItem = new ToolStripMenuItem(profile.Name);
                 profileItem.Click += delegate { context.SelectProfile(profile.Name); };
-                contextMenu.Opening += delegate { profileItem.Checked = context.CurrentProfile == profile; };
+                contextMenu.Opening += delegate
+                {
+                    profileItem.Checked = context.CurrentProfile == profile;
+                    profileItem.ToolTipText = String.Join("\n", profile.Errors ?? new string[0]);
+                    profileItem.Enabled = profile.Errors is null;
+                };
                 contextMenu.Items.Add(profileItem);
             }
 
@@ -111,10 +144,6 @@ namespace SteamController
             var exitItem = contextMenu.Items.Add("&Exit");
             exitItem.Click += delegate { Application.Exit(); };
 
-            notifyIcon = new NotifyIcon(components);
-            notifyIcon.Icon = Resources.microsoft_xbox_controller_off;
-            notifyIcon.Text = TitleWithVersion;
-            notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
 
             var contextStateUpdate = new System.Windows.Forms.Timer(components);
