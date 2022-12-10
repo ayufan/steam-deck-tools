@@ -190,6 +190,7 @@ namespace PowerControl
                         return GPUScaling.Mode;
                     }
                 },
+                #if DEBUG
                 new Menu.MenuItemWithOptions()
                 {
                     Name = "Sharpening",
@@ -212,6 +213,7 @@ namespace PowerControl
                         return value.Value ? "On" : "Off";
                     }
                 },
+                #endif
                 new Menu.MenuItemWithOptions()
                 {
                     Name = "Colors",
