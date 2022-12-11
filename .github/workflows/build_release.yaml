@@ -50,7 +50,7 @@ jobs:
     - uses: vimtor/action-zip@v1
       with:
         files: ${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}
-        dest: ${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}.zip
+        dest: ${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}-portable.zip
         recursive: true
     - uses: vimtor/action-zip@v1
       with:

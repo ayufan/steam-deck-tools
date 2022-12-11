@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
   <version>0.5.33</version>
-  <url>https://github.com/ayufan/steam-deck-tools/releases/download/0.5.33/SteamDeckTools-0.5.33-debug.zip</url>
+  <url>https://github.com/ayufan/steam-deck-tools/releases/download/0.5.33/SteamDeckTools-0.5.33-setup.exe</url>
   <changelog2>https://github.com/ayufan/steam-deck-tools/releases/tag/0.5.33</changelog2>
   <mandatory>false</mandatory>
 </item>
