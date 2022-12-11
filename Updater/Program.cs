@@ -25,7 +25,7 @@ namespace Updater
 
             Instance.OnUninstall(() =>
             {
-                Application_Exit();
+                KillApps();
             });
 
             if (updated)
@@ -62,7 +62,12 @@ namespace Updater
             AutoUpdater.UpdateFormSize = new Size(800, 300);
             AutoUpdater.ShowSkipButton = true;
             AutoUpdater.Synchronous = true;
-            AutoUpdater.ApplicationExitEvent += Application_Exit;
+
+            if (!IsUsingInstaller)
+            {
+                // Only when not using installer we have to kill apps
+                AutoUpdater.ApplicationExitEvent += KillApps;
+            }
 
             AppendArg(UpdatedArg);
             TrackProcess("FanControl");
@@ -86,7 +91,7 @@ namespace Updater
                 AppendArg(RunPrefix + processFilerName);
         }
 
-        private static void Application_Exit()
+        private static void KillApps()
         {
             ExitProcess("FanControl");
             ExitProcess("PowerControl");
