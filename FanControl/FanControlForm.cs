@@ -19,6 +19,7 @@ namespace FanControl
 
             Text += " v" + Application.ProductVersion.ToString();
             Instance.Open(Text, true, "Global\\FanControlOnce");
+            Instance.RunUpdater(Text);
 
             if (Instance.WantsRunOnStartup)
                 startupManager.Startup = true;
@@ -147,6 +148,9 @@ namespace FanControl
 
         private void fanLoopTimer_Tick(object sender, EventArgs e)
         {
+            if (fanControl is null)
+                return;
+
             SharedData_Update();
             fanControl.Update(Visible);
         }
@@ -183,6 +187,11 @@ namespace FanControl
             toolStripMenuItemAlwaysOnTop.Checked = TopMost;
             toolStripMenuItemAlwaysOnTopContext.Checked = TopMost;
             Settings.Default.AlwaysOnTop = toolStripMenuItemAlwaysOnTop.Checked;
+        }
+
+        private void checkForUpdates_Click(object sender, EventArgs e)
+        {
+            Instance.RunUpdater(Text, true);
         }
     }
 }

@@ -40,6 +40,7 @@ namespace PowerControl
         public Controller()
         {
             Instance.RunOnce(TitleWithVersion, "Global\\PowerControl");
+            Instance.RunUpdater(TitleWithVersion);
 
             if (Instance.WantsRunOnStartup)
                 startupManager.Startup = true;
@@ -72,12 +73,11 @@ namespace PowerControl
                 contextMenu.Items.Add(startupItem);
             }
 
-            var helpItem = contextMenu.Items.Add("&Help");
-            helpItem.Click += delegate
-            {
-                System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev");
-            };
+            var checkForUpdatesItem = contextMenu.Items.Add("&Check for Updates");
+            checkForUpdatesItem.Click += delegate { Instance.RunUpdater(TitleWithVersion, true); };
 
+            var helpItem = contextMenu.Items.Add("&Help");
+            helpItem.Click += delegate { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev"); };
             contextMenu.Items.Add(new ToolStripSeparator());
 
             var exitItem = contextMenu.Items.Add("&Exit");

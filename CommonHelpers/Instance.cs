@@ -1,12 +1,8 @@
-
-using System;
-using System.IO;
-using System.Linq;
-using System.Security;
 using System.Security.Principal;
 using System.Security.AccessControl;
-using System.Windows.Forms;
-using System.Runtime.CompilerServices;
+using AutoUpdaterDotNET;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace CommonHelpers
 {
@@ -125,7 +121,7 @@ namespace CommonHelpers
             }
         }
 
-        public static void RunOnce(String title, String mutexName, int runOnceTimeout = 1000)
+        public static void RunOnce(String? title, String mutexName, int runOnceTimeout = 1000)
         {
             runOnceMutex = TryCreateOrOpenExistingMutex(mutexName);
 
@@ -135,9 +131,58 @@ namespace CommonHelpers
             }
         }
 
-        public static void Fatal(String title, String message)
+        public static String MachineID
         {
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            get
+            {
+                try
+                {
+                    using (var registryKey = Registry.CurrentUser.OpenSubKey(@"Software\SteamDeckTools"))
+                    {
+                        var machineID = registryKey?.GetValue("MachineID") as string;
+                        if (machineID is not null)
+                            return machineID;
+
+                        machineID = Guid.NewGuid().ToString();
+                        registryKey?.SetValue("MachineID", machineID);
+                        return machineID;
+                    }
+                }
+                catch (Exception)
+                {
+                    return "exception";
+                }
+            }
+        }
+
+        public static Version? ApplicationVersion
+        {
+            get => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        }
+
+        public static String ProductVersion
+        {
+            get => Application.ProductVersion;
+        }
+
+        public static void RunUpdater(string Title, bool user = false)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo()
+                {
+                    FileName = "Updater.exe",
+                    ArgumentList = { user ? "-user" : "-first" },
+                    UseShellExecute = false
+                });
+            }
+            catch { }
+        }
+
+        public static void Fatal(String? title, String message)
+        {
+            if (title is not null)
+                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             Environment.Exit(1);
         }
 

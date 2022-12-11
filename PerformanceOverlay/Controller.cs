@@ -30,6 +30,7 @@ namespace PerformanceOverlay
 
             SharedData_Update();
             Instance.Open(TitleWithVersion, true, "Global\\PerformanceOverlay");
+            Instance.RunUpdater(TitleWithVersion);
 
             if (Instance.WantsRunOnStartup)
                 startupManager.Startup = true;
@@ -71,11 +72,11 @@ namespace PerformanceOverlay
                 contextMenu.Items.Add(startupItem);
             }
 
+            var checkForUpdatesItem = contextMenu.Items.Add("&Check for Updates");
+            checkForUpdatesItem.Click += delegate { Instance.RunUpdater(TitleWithVersion, true); };
+
             var helpItem = contextMenu.Items.Add("&Help");
-            helpItem.Click += delegate
-            {
-                System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev");
-            };
+            helpItem.Click += delegate { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev"); };
 
             contextMenu.Items.Add(new ToolStripSeparator());
 

@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerControl", "PowerContro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalHelpers", "ExternalHelpers\ExternalHelpers.csproj", "{A3FD29A4-844F-42B1-80C5-0301BD053AC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamController", "SteamController\SteamController.csproj", "{A5A9DCD4-4686-49A6-836A-81498226B94B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamController", "SteamController\SteamController.csproj", "{A5A9DCD4-4686-49A6-836A-81498226B94B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,18 @@ Global
 		{A5A9DCD4-4686-49A6-836A-81498226B94B}.Release|x64.Build.0 = Release|Any CPU
 		{A5A9DCD4-4686-49A6-836A-81498226B94B}.Release|x86.ActiveCfg = Release|Any CPU
 		{A5A9DCD4-4686-49A6-836A-81498226B94B}.Release|x86.Build.0 = Release|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Debug|x64.Build.0 = Debug|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Debug|x86.Build.0 = Debug|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Release|x64.ActiveCfg = Release|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Release|x64.Build.0 = Release|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Release|x86.ActiveCfg = Release|Any CPU
+		{7FBC87CE-5C6E-4A8E-AF07-E310AD311073}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

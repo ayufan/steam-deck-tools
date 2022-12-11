@@ -24,3 +24,4 @@
 - Swap `STEAM+Menu` and `STEAM+Options`. It makes more sense to switch windows with STEAM+3 horizontal lines
 - If application is run with `-run-on-startup` it will self-set to run on system start
 - Depend on `GetCursorPos` to detect `SAS`
+- Add `Updater.exe` that can update to latest release and debug
