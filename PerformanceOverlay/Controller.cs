@@ -26,6 +26,11 @@ namespace PerformanceOverlay
 
         public Controller()
         {
+            Instance.OnUninstall(() =>
+            {
+                startupManager.Startup = false;
+            });
+
             contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
             SharedData_Update();

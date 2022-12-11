@@ -29,6 +29,32 @@ namespace CommonHelpers
             get { return Environment.GetCommandLineArgs().Contains("-run-on-startup"); }
         }
 
+        public static bool Uninstall
+        {
+            get { return Environment.GetCommandLineArgs().Contains("-uninstall"); }
+        }
+
+        public static bool IsDEBUG
+        {
+            get
+            {
+#if DEBUG
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
+        public static void OnUninstall(Action action)
+        {
+            if (Uninstall)
+            {
+                action();
+                Environment.Exit(0);
+            }
+        }
+
         public static bool UseKernelDrivers
         {
             get { return useKernelDrivers; }

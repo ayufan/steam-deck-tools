@@ -15,6 +15,11 @@ namespace FanControl
 
         public FanControlForm()
         {
+            Instance.OnUninstall(() =>
+            {
+                startupManager.Startup = false;
+            });
+
             InitializeComponent();
 
             Text += " v" + Application.ProductVersion.ToString();

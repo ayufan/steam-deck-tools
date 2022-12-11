@@ -23,6 +23,11 @@ namespace Updater
             bool updated = Environment.GetCommandLineArgs().Contains(UpdatedArg);
             bool cmdLine = !firstRun && !userCheck;
 
+            Instance.OnUninstall(() =>
+            {
+                Application_Exit();
+            });
+
             if (updated)
             {
                 foreach (var arg in Environment.GetCommandLineArgs())
@@ -65,11 +70,14 @@ namespace Updater
             TrackProcess("PerformanceOverlay");
             TrackProcess("SteamController");
 
-#if DEBUG
-            AutoUpdater.Start("https://steam-deck-tools.ayufan.dev/docs/updates/debug_zip.xml");
-#else
-            AutoUpdater.Start("https://steam-deck-tools.ayufan.dev/docs/updates/release_zip.xml");
-#endif
+            var updateURL = String.Format(
+                "https://steam-deck-tools.ayufan.dev/docs/updates/{0}_{1}.xml?version={2}",
+                Instance.IsDEBUG ? "debug" : "release",
+                IsUsingInstaller ? "setup" : "zip",
+                Instance.ProductVersion
+            );
+
+            AutoUpdater.Start(updateURL);
         }
 
         private static void TrackProcess(String processFilerName)
@@ -122,6 +130,20 @@ namespace Updater
             }
 
             return found;
+        }
+
+        private static bool IsUsingInstaller
+        {
+            get
+            {
+                var currentProcess = Process.GetCurrentProcess();
+                var currentDir = Path.GetDirectoryName(currentProcess.MainModule?.FileName);
+                if (currentDir is null)
+                    return false;
+
+                var uninstallExe = Path.Combine(currentDir, "Uninstall.exe");
+                return File.Exists(uninstallExe);
+            }
         }
 
         private static IEnumerable<Process> FindProcesses(String processFilerName)

@@ -5,3 +5,5 @@ obj/
 build-Release/
 build-Debug/
 .vscode/
+scripts/Redist/
+SteamDeckTools_Setup*.exe

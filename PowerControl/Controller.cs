@@ -39,6 +39,11 @@ namespace PowerControl
 
         public Controller()
         {
+            Instance.OnUninstall(() =>
+            {
+                startupManager.Startup = false;
+            });
+
             Instance.RunOnce(TitleWithVersion, "Global\\PowerControl");
             Instance.RunUpdater(TitleWithVersion);
 

@@ -35,6 +35,22 @@ namespace SteamController
 
         public Controller()
         {
+            Instance.OnUninstall(() =>
+            {
+                Helpers.SteamConfiguration.KillSteam();
+                Helpers.SteamConfiguration.WaitForSteamClose(5000);
+                Helpers.SteamConfiguration.BackupSteamConfig();
+
+                var steamControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
+                    Devices.SteamController.VendorID, Devices.SteamController.ProductID, false
+                );
+                var x360ControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
+                    Devices.Xbox360Controller.VendorID, Devices.Xbox360Controller.ProductID, false
+                );
+                Settings.Default.EnableSteamDetection = false;
+                startupManager.Startup = false;
+            });
+
             // Set available profiles
             ProfilesSettings.Helpers.ProfileStringConverter.Profiles = context.Profiles.
                 Where((profile) => profile.Visible).
@@ -261,7 +277,7 @@ namespace SteamController
             var steamControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
                 Devices.SteamController.VendorID,
                 Devices.SteamController.ProductID,
-                blacklistSteamController
+                false
             );
             var x360ControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
                 Devices.Xbox360Controller.VendorID,

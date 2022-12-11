@@ -57,10 +57,22 @@ jobs:
         files: ${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}-debug
         dest: ${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}-debug.zip
         recursive: true
+    - name: Install NSIS
+      run: choco install nsis
+    - name: Create release installer
+      uses: joncloud/makensis-action@v3.7
+      with:
+        script-file: scripts/SteamDeckTools_Setup.nsi
+        arguments:
+          /V3
+          /DUSE_WINGET
+          /DVERSION=${{ env.RELEASE_VERSION }}
+          /DBUILD_DIR=../${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}
+          /DOUTPUT_FILE=../${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}-setup.exe
     - uses: ncipollo/release-action@v1
       with:
         tag: ${{ env.RELEASE_VERSION }}
-        artifacts: "*.zip"
+        artifacts: "*.zip,*-setup.exe"
         prerelease: true
         generateReleaseNotes: true
         bodyFile: RELEASE.md

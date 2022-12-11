@@ -25,3 +25,4 @@
 - If application is run with `-run-on-startup` it will self-set to run on system start
 - Depend on `GetCursorPos` to detect `SAS`
 - Add `Updater.exe` that can update to latest release and debug
+- Add `Setup.exe` installer to install all except RTSS
