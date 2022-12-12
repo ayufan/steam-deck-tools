@@ -20,6 +20,13 @@ namespace SteamController
             set { Set("KeepX360AlwaysConnected", value); }
         }
 
+        [Description("If current foreground process uses overlay, treat it as a game.")]
+        public bool DetectRTSSForeground
+        {
+            get { return Get<bool>("DetectRTSSForeground", false); }
+            set { Set("DetectRTSSForeground", value); }
+        }
+
         [Description("Use Lizard Buttons instead of emulated. This option is only for testing purposes.")]
         public bool LizardButtons { get; set; } = false;
 
