@@ -277,7 +277,7 @@ namespace SteamController
             var steamControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
                 Devices.SteamController.VendorID,
                 Devices.SteamController.ProductID,
-                false
+                blacklistSteamController
             );
             var x360ControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
                 Devices.Xbox360Controller.VendorID,
