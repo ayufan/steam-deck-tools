@@ -15,6 +15,10 @@ This repository contains my own personal set of tools to help running Windows on
 
 <a href='https://ko-fi.com/ayufan' target='_blank'><img height='35' style='border:0px;height:50px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' alt='Buy Me a Coffee at ko-fi.com' /></a> <a href="https://www.paypal.com/donate/?hosted_button_id=DHNBE2YR9D5Y2" target='_blank'><img height='35' src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" style='border:0px;height:55px;'/></a>
 
+## Install
+
+See all instructions here: [https://steam-deck-tools.ayufan.dev/](https://steam-deck-tools.ayufan.dev/).
+
 ## Applications
 
 This project provides the following applications:
@@ -24,9 +28,12 @@ This project provides the following applications:
 - [Power Control](https://steam-deck-tools.ayufan.dev/power-control.html) - change TDP or refresh rate
 - [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller.html) - use Steam Deck with Game Pass
 
-## Install
+## Additional informations
 
-See all instructions here: [https://steam-deck-tools.ayufan.dev/](https://steam-deck-tools.ayufan.dev/).
+- [Controller Shortcuts](https://steam-deck-tools.ayufan.dev/shortcuts.html) - default shortcuts when using [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller.html).
+- [Development](https://steam-deck-tools.ayufan.dev/development.html) - how to compile this project.
+- [Risks](https://steam-deck-tools.ayufan.dev/risks.html) - this project uses kernel manipulation and might result in unstable system.
+- [Troubleshooting](https://steam-deck-tools.ayufan.dev/troubleshooting.html) - if you encounter any problems.
 
 ## Author
 
