@@ -114,6 +114,14 @@ namespace SteamController.Devices
             }
         }
 
+        public void Overwrite(VirtualKeyCode key, bool value)
+        {
+            if (value)
+                this[key] = true;
+            else
+                keyCodes.Remove(key);
+        }
+
         public void KeyPress(params VirtualKeyCode[] keyCodes)
         {
             Safe(() => simulator.Keyboard.KeyPress(keyCodes));

@@ -239,6 +239,14 @@ namespace SteamController.Devices
             }
         }
 
+        public void Overwrite(Button button, bool value)
+        {
+            if (value)
+                mouseButtons.Add(button);
+            else
+                mouseButtons.Remove(button);
+        }
+
         public void MoveBy(double pixelDeltaX, double pixelDeltaY)
         {
             movedX.Add(pixelDeltaX);
