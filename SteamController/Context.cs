@@ -18,6 +18,7 @@ namespace SteamController
         public List<Managers.Manager> Managers { get; } = new List<Managers.Manager>();
 
         private int selectedProfile;
+        private int controllerProfile;
 
         public struct ContextState
         {
@@ -135,7 +136,7 @@ namespace SteamController
             }
         }
 
-        public bool SelectProfile(String name, bool force = false)
+        public bool SelectProfile(String name, bool userDefault = false)
         {
             lock (this)
             {
@@ -144,12 +145,14 @@ namespace SteamController
                     var profile = Profiles[i];
                     if (profile.Name != name)
                         continue;
-                    if (!profile.Selected(this) && !force)
+                    if (!profile.Selected(this) && !userDefault)
                         continue;
 
                     if (i != selectedProfile)
                     {
                         selectedProfile = i;
+                        if (!profile.IsDesktop && !userDefault)
+                            controllerProfile = i;
                         ProfileChanged(profile);
                     }
                     return true;
@@ -161,12 +164,21 @@ namespace SteamController
 
         public void SelectController()
         {
-            var current = CurrentProfile;
-            if (current is null)
-                return;
-
-            if (current.IsDesktop)
+            lock (this)
             {
+                var current = CurrentProfile;
+                if (current is null)
+                    return;
+                if (!current.IsDesktop)
+                    return;
+
+                // Use last selected controller profile
+                selectedProfile = controllerProfile;
+                var currentController = CurrentProfile;
+                if (current != currentController && currentController?.IsDesktop != true)
+                    return;
+
+                // Otherwise use next one
                 TraceLine("Context: SelectController. State={0}", State);
                 SelectNext();
             }
@@ -192,6 +204,7 @@ namespace SteamController
                         continue;
 
                     selectedProfile = idx;
+                    controllerProfile = idx;
                     ProfileChanged(profile);
                     return true;
                 }
