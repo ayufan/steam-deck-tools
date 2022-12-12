@@ -19,46 +19,14 @@ This repository contains my own personal set of tools to help running Windows on
 
 This project provides the following applications:
 
-- [Fan Control](docs/fan-control.md) - control Fan on Windows
-- [Performance Overlay](docs/performance-overlay.md) - see FPS and other stats
-- [Power Control](docs/power-control.md) - change TDP or refresh rate
-- [Steam Controller](docs/steam-controller.md) - use Steam Deck with Game Pass
+- [Fan Control](https://steam-deck-tools.ayufan.dev/fan-control.md) - control Fan on Windows
+- [Performance Overlay](https://steam-deck-tools.ayufan.dev/performance-overlay.md) - see FPS and other stats
+- [Power Control](https://steam-deck-tools.ayufan.dev/power-control.md) - change TDP or refresh rate
+- [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller.md) - use Steam Deck with Game Pass
 
 ## Install
 
-- Download latest `SteamDeckTools-<version>.zip` from [Latest GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases/latest).
-- Unpack to `C:\SteamDeckTools` folder.
-- Install bellow dependencies.
-- Run each application, and mark `Run On Startup`.
-
-This project requires those dependencies to be installed in order to function properly:
-
-- [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe)
-- [Rivatuner Statistics Server](https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html)
-- [ViGEmBus](https://github.com/ViGEm/ViGEmBus/releases)
-
-It is strongly advised that following software is uninstalled or disabled:
-
-- [SWICD](https://github.com/mKenfenheuer/steam-deck-windows-usermode-driver)
-- [GlosSI](https://github.com/Alia5/GlosSI)
-- [HidHide](https://github.com/ViGEm/HidHide)
-
-## Additional informations
-
-- [Controller Shortcuts](docs/shortcuts.md) - default shortcuts when using [Steam Controller](docs/steam-controller.md).
-- [Development](docs/development.md) - how to compile this project.
-- [Risks](docs/risks.md) - this project uses kernel manipulation and might result in unstable system.
-- The latest development version can be found in [GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases).
-- The variant with `SteamDeckTools-<version>-debug.zip` enables all experimental features enabled, but might be unstable and buggy.
-
-## Anti-Cheat and Antivirus software
-
-Since this project uses direct manipulation of kernel memory via `inpoutx64.dll`
-it might trigger Antivirus and Anti-Cheat software.
-
-If you use at least version `0.5.x` you can disable kernel drivers usage that should
-avoid trippping Anti-Cheat detection. Set FAN to `Default` and disable `OSD Kernel Drivers`.
-Of course you will miss some metrics due to that.
+See all instructions here: [https://steam-deck-tools.ayufan.dev/](https://steam-deck-tools.ayufan.dev/).
 
 ## Author
 

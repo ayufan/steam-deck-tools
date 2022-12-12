@@ -1,0 +1,22 @@
+title: (Windows) Steam Deck Tools
+description: >-
+  Fan, Overlay, Power Control and Steam Controller for Windows.
+baseurl: ""
+url: https://steam-deck-tools.ayufan.dev # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: ayufanpl
+github_username: ayufan
+repository: ayufan/steam-deck-tools
+
+include:
+  - _redirects
+
+theme: jekyll-theme-primer
+plugins:
+  #- jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-titles-from-headings
+  - jekyll-relative-links
+  - jekyll-default-layout
