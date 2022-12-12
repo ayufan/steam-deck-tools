@@ -84,6 +84,14 @@ namespace SteamController
 
             AddSteamOptions(contextMenu);
 
+            var settingsItem = contextMenu.Items.Add("&Settings");
+            settingsItem.Click += Settings_Click;
+
+            var shortcutsItem = contextMenu.Items.Add("&Shortcuts");
+            shortcutsItem.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/shortcuts.html"); };
+
+            contextMenu.Items.Add(new ToolStripSeparator());
+
             if (startupManager.IsAvailable)
             {
                 var startupItem = new ToolStripMenuItem("Run On Startup");
@@ -92,16 +100,8 @@ namespace SteamController
                 contextMenu.Items.Add(startupItem);
             }
 
-            var settingsItem = contextMenu.Items.Add("&Settings");
-            settingsItem.Click += Settings_Click;
-
-            contextMenu.Items.Add(new ToolStripSeparator());
-
             var checkForUpdatesItem = contextMenu.Items.Add("&Check for Updates");
             checkForUpdatesItem.Click += delegate { Instance.RunUpdater(TitleWithVersion, true); };
-
-            var shortcutsItem = contextMenu.Items.Add("&Shortcuts");
-            shortcutsItem.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/shortcuts.html"); };
 
             var helpItem = contextMenu.Items.Add("&Help");
             helpItem.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev"); };

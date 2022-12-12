@@ -82,8 +82,8 @@ namespace FanControl
             this.toolStripMenuItem2,
             this.toolStripSeparator3,
             this.toolStripSeparatorEndOfModes,
-            this.toolStripMenuItemStartupOnBootContext,
             this.toolStripMenuItemAlwaysOnTopContext,
+            this.toolStripMenuItemStartupOnBootContext,
             this.toolStripMenuItem3,
             this.toolStripMenuItem5,
             this.toolStripSeparator1,
@@ -106,7 +106,13 @@ namespace FanControl
             // toolStripSeparatorEndOfModes
             // 
             this.toolStripSeparatorEndOfModes.Name = "toolStripSeparatorEndOfModes";
-            this.toolStripSeparatorEndOfModes.Size = new System.Drawing.Size(207, 6);
+            this.toolStripSeparatorEndOfModes.Size = new System.Drawing.Size(207, 6);            // 
+            // toolStripMenuItemAlwaysOnTopContext
+            // 
+            this.toolStripMenuItemAlwaysOnTopContext.Name = "toolStripMenuItemAlwaysOnTopContext";
+            this.toolStripMenuItemAlwaysOnTopContext.Size = new System.Drawing.Size(210, 24);
+            this.toolStripMenuItemAlwaysOnTopContext.Text = "&Always on Top";
+            this.toolStripMenuItemAlwaysOnTopContext.Click += new System.EventHandler(this.toolStripMenuItemAlwaysOnTop_Click);
             // 
             // toolStripMenuItemStartupOnBootContext
             // 
@@ -114,13 +120,6 @@ namespace FanControl
             this.toolStripMenuItemStartupOnBootContext.Size = new System.Drawing.Size(210, 24);
             this.toolStripMenuItemStartupOnBootContext.Text = "Run On &Startup";
             this.toolStripMenuItemStartupOnBootContext.Click += new System.EventHandler(this.toolStripMenuItemStartupOnBoot_Click);
-            // 
-            // toolStripMenuItemAlwaysOnTopContext
-            // 
-            this.toolStripMenuItemAlwaysOnTopContext.Name = "toolStripMenuItemAlwaysOnTopContext";
-            this.toolStripMenuItemAlwaysOnTopContext.Size = new System.Drawing.Size(210, 24);
-            this.toolStripMenuItemAlwaysOnTopContext.Text = "&Always on Top";
-            this.toolStripMenuItemAlwaysOnTopContext.Click += new System.EventHandler(this.toolStripMenuItemAlwaysOnTop_Click);
             // 
             // toolStripMenuItem3
             // 
@@ -165,8 +164,8 @@ namespace FanControl
             // controlToolStripMenuItem
             // 
             this.controlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemStartupOnBoot,
             this.toolStripMenuItemAlwaysOnTop,
+            this.toolStripMenuItemStartupOnBoot,
             this.toolStripMenuItem4,
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
@@ -174,19 +173,19 @@ namespace FanControl
             this.controlToolStripMenuItem.Size = new System.Drawing.Size(72, 28);
             this.controlToolStripMenuItem.Text = "&Control";
             // 
-            // toolStripMenuItemStartupOnBoot
-            // 
-            this.toolStripMenuItemStartupOnBoot.Name = "toolStripMenuItemStartupOnBoot";
-            this.toolStripMenuItemStartupOnBoot.Size = new System.Drawing.Size(192, 26);
-            this.toolStripMenuItemStartupOnBoot.Text = "Run On &Startup";
-            this.toolStripMenuItemStartupOnBoot.Click += new System.EventHandler(this.toolStripMenuItemStartupOnBoot_Click);
-            // 
             // toolStripMenuItemAlwaysOnTop
             // 
             this.toolStripMenuItemAlwaysOnTop.Name = "toolStripMenuItemAlwaysOnTop";
             this.toolStripMenuItemAlwaysOnTop.Size = new System.Drawing.Size(192, 26);
             this.toolStripMenuItemAlwaysOnTop.Text = "&Always on Top";
             this.toolStripMenuItemAlwaysOnTop.Click += new System.EventHandler(this.toolStripMenuItemAlwaysOnTop_Click);
+            // 
+            // toolStripMenuItemStartupOnBoot
+            // 
+            this.toolStripMenuItemStartupOnBoot.Name = "toolStripMenuItemStartupOnBoot";
+            this.toolStripMenuItemStartupOnBoot.Size = new System.Drawing.Size(192, 26);
+            this.toolStripMenuItemStartupOnBoot.Text = "Run On &Startup";
+            this.toolStripMenuItemStartupOnBoot.Click += new System.EventHandler(this.toolStripMenuItemStartupOnBoot_Click);
             // 
             // toolStripMenuItem4
             // 

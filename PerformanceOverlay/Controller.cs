@@ -65,6 +65,8 @@ namespace PerformanceOverlay
             contextMenu.Opening += delegate { kernelDriversItem.Checked = Instance.UseKernelDrivers; };
             contextMenu.Items.Add(kernelDriversItem);
 
+            contextMenu.Items.Add(new ToolStripSeparator());
+
             if (startupManager.IsAvailable)
             {
                 var startupItem = new ToolStripMenuItem("Run On Startup");
