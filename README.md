@@ -19,10 +19,10 @@ This repository contains my own personal set of tools to help running Windows on
 
 This project provides the following applications:
 
-- [Fan Control](https://steam-deck-tools.ayufan.dev/fan-control.md) - control Fan on Windows
-- [Performance Overlay](https://steam-deck-tools.ayufan.dev/performance-overlay.md) - see FPS and other stats
-- [Power Control](https://steam-deck-tools.ayufan.dev/power-control.md) - change TDP or refresh rate
-- [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller.md) - use Steam Deck with Game Pass
+- [Fan Control](https://steam-deck-tools.ayufan.dev/fan-control.html) - control Fan on Windows
+- [Performance Overlay](https://steam-deck-tools.ayufan.dev/performance-overlay.html) - see FPS and other stats
+- [Power Control](https://steam-deck-tools.ayufan.dev/power-control.html) - change TDP or refresh rate
+- [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller.html) - use Steam Deck with Game Pass
 
 ## Install
 
