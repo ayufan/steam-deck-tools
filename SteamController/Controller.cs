@@ -101,7 +101,7 @@ namespace SteamController
             checkForUpdatesItem.Click += delegate { Instance.RunUpdater(TitleWithVersion, true); };
 
             var shortcutsItem = contextMenu.Items.Add("&Shortcuts");
-            shortcutsItem.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/docs/shortcuts.html"); };
+            shortcutsItem.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/shortcuts.html"); };
 
             var helpItem = contextMenu.Items.Add("&Help");
             helpItem.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev"); };
@@ -225,7 +225,7 @@ namespace SteamController
                     "This will hide X360 Controller from Steam, and will try to detect Steam presence " +
                     "to disable usage of this application when running Steam Games.\n\n" +
                     "This does REQUIRE disabling DESKTOP MODE shortcuts in Steam.\n" +
-                    "Follow guide found at https://steam-deck-tools.ayufan.dev/docs/steam-controller.html.",
+                    "Follow guide found at https://steam-deck-tools.ayufan.dev/steam-controller.html.",
                     true, false, true
                 );
             };
