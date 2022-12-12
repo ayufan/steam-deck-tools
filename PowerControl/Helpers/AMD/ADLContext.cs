@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
+using CommonHelpers;
 
 namespace PowerControl.Helpers.AMD
 {
@@ -125,7 +120,7 @@ namespace PowerControl.Helpers.AMD
             }
             else
             {
-                using(var context = new ADLContext())
+                using (var context = new ADLContext())
                 {
                     return context.WithSafe(() => func(context));
                 }
@@ -141,16 +136,11 @@ namespace PowerControl.Helpers.AMD
             {
                 return func();
             }
-            catch (DllNotFoundException e) { TraceLine("ADL: Method not found: {0}", e); }
-            catch (EntryPointNotFoundException e) { TraceLine("ADL: Entry point not found: {0}", e); }
-            catch (Exception e) { TraceLine("ADL: Generic Exception: {0}", e); }
+            catch (DllNotFoundException e) { Log.TraceException("ADL: Method not found", e); }
+            catch (EntryPointNotFoundException e) { Log.TraceException("ADL: Entry point not found", e); }
+            catch (Exception e) { Log.TraceException("ADL: Generic Exception", e); }
 
             return default;
-        }
-
-        private static void TraceLine(string format, params object?[]? arg)
-        {
-            Trace.WriteLine(string.Format(format, arg));
         }
     }
 }

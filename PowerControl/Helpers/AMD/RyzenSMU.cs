@@ -1,11 +1,5 @@
 ﻿using CommonHelpers;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PowerControl.Helpers.AMD
 {
@@ -48,7 +42,7 @@ namespace PowerControl.Helpers.AMD
             }
             catch (Exception e)
             {
-                TraceLine("RyzenSMU: {0}", e);
+                Log.TraceException("RyzenSMU", e);
                 return false;
             }
 
@@ -109,7 +103,7 @@ namespace PowerControl.Helpers.AMD
             }
             finally
             {
-                TraceLine("Wreg: reg={0:X}, value={1:X} => success={2}",
+                Log.TraceLine("Wreg: reg={0:X}, value={1:X} => success={2}",
                        reg, value, success);
             }
         }
@@ -140,7 +134,7 @@ namespace PowerControl.Helpers.AMD
             }
             finally
             {
-                TraceLine("Rreg: reg={0:X} => read={1}/{1:X}, success={2}",
+                Log.TraceLine("Rreg: reg={0:X} => read={1}/{1:X}, success={2}",
                        reg, value, success);
             }
         }
@@ -195,7 +189,7 @@ namespace PowerControl.Helpers.AMD
             }
             finally
             {
-                TraceLine(">> SendMsg: msg={0:X}, param={1:X} => arg={2}/{2:X}, success={3}",
+                Log.TraceLine(">> SendMsg: msg={0:X}, param={1:X} => arg={2}/{2:X}, success={3}",
                        msg, param, arg, success);
             }
         }
@@ -208,11 +202,6 @@ namespace PowerControl.Helpers.AMD
         public bool SendMsg<T>(T msg, uint param, out uint arg) where T : unmanaged
         {
             return SendMsg((ushort)(object)msg, param, out arg);
-        }
-
-        private static void TraceLine(string format, params object?[]? arg)
-        {
-            Trace.WriteLine(string.Format(format, arg));
         }
     }
 }

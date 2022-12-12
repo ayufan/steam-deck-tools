@@ -42,6 +42,16 @@ namespace CommonHelpers
                 Console.WriteLine(line);
         }
 
+        public static void TraceException(String type, Object? name, Exception e)
+        {
+            TraceLine("{0}: {1}: Exception: {2}", type, name, e);
+            Sentry.SentrySdk.CaptureException(e, scope =>
+            {
+                scope.SetTag("type", type);
+                scope.SetTag("name", name?.ToString() ?? "null");
+            });
+        }
+
         public static void TraceException(String type, Exception e)
         {
             TraceLine("{0}: Exception: {1}", type, e);

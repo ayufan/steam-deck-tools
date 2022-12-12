@@ -1,7 +1,4 @@
 using System.Diagnostics;
-using CommonHelpers;
-using hidapi;
-using PowerControl.External;
 using static CommonHelpers.Log;
 
 namespace SteamController.Devices
@@ -87,7 +84,7 @@ namespace SteamController.Devices
             }
             catch (Exception e)
             {
-                Log.TraceLine("STEAM: Exception: {0}", e);
+                TraceException("STEAM", "BeforeUpdate", e);
                 Fail();
                 Updated = false;
             }
@@ -105,7 +102,7 @@ namespace SteamController.Devices
             }
             catch (Exception e)
             {
-                Log.TraceLine("STEAM: Exception: {0}", e);
+                TraceException("STEAM", "Update", e);
                 Fail();
             }
         }

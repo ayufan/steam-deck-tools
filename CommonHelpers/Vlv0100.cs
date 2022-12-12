@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CommonHelpers
+﻿namespace CommonHelpers
 {
     public class Vlv0100
     {
@@ -84,7 +76,7 @@ namespace CommonHelpers
             }
             catch (Exception e)
             {
-                Log.TraceLine("VLV0100: InpOut: {0}", e);
+                Log.TraceException("VLV0100", "InpOut", e);
                 Close();
                 return false;
             }

@@ -2,7 +2,6 @@ using Nefarius.ViGEm.Client;
 using Nefarius.ViGEm.Client.Exceptions;
 using Nefarius.ViGEm.Client.Targets;
 using Nefarius.ViGEm.Client.Targets.Xbox360;
-using SteamController.ProfilesSettings;
 using static CommonHelpers.Log;
 
 namespace SteamController.Devices
@@ -94,7 +93,7 @@ namespace SteamController.Devices
                 }
                 catch (Exception e)
                 {
-                    TraceLine("X360: Connect: {0}", e);
+                    TraceException("X360", "Connect", e);
                     Fail();
                     return;
                 }
@@ -108,7 +107,7 @@ namespace SteamController.Devices
                 }
                 catch (Exception e)
                 {
-                    TraceLine("X360: Disconnect: {0}", e);
+                    TraceException("X360", "Disconnect", e);
                     Fail();
                     return;
                 }
@@ -150,8 +149,9 @@ namespace SteamController.Devices
                 {
                     device?.SubmitReport();
                 }
-                catch (VigemInvalidTargetException)
+                catch (VigemInvalidTargetException e)
                 {
+                    TraceException("X360", "SubmitReport", e);
                     device?.Disconnect();
                     isConnected = false;
                 }

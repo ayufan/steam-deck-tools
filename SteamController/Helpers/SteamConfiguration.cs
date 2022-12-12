@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using CommonHelpers;
 using Microsoft.Win32;
 
 namespace SteamController.Helpers
@@ -188,8 +189,9 @@ namespace SteamController.Helpers
 
                 return new HashSet<String>();
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                Log.TraceException("STEAM", "Config", e);
                 return null;
             }
         }
@@ -216,8 +218,9 @@ namespace SteamController.Helpers
                 File.Copy(configPath, String.Format("{0}.{1}.bak", configPath, suffix));
                 return true;
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                Log.TraceException("STEAM", "Config", e);
                 return false;
             }
         }
@@ -276,8 +279,9 @@ namespace SteamController.Helpers
                 File.WriteAllLines(configPath, lines);
                 return true;
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                Log.TraceException("STEAM", "Config", e);
                 return false;
             }
         }
@@ -293,8 +297,9 @@ namespace SteamController.Helpers
                 byte[] diskContent = File.ReadAllBytes(configPath);
                 return content.SequenceEqual(diskContent);
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                Log.TraceException("STEAM", "Config", e);
                 return null;
             }
         }
@@ -318,8 +323,9 @@ namespace SteamController.Helpers
             {
                 return false;
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                Log.TraceException("STEAM", "Config", e);
                 return null;
             }
         }
@@ -353,8 +359,9 @@ namespace SteamController.Helpers
             {
                 return false;
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                Log.TraceException("STEAM", "Config", e);
                 return null;
             }
         }

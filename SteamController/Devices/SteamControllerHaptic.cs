@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using CommonHelpers;
-using hidapi;
 using PowerControl.External;
 using static CommonHelpers.Log;
 
@@ -41,7 +40,7 @@ namespace SteamController.Devices
             }
             catch (Exception e)
             {
-                Log.TraceLine("STEAM: Feedback: Exception: {0}", e);
+                TraceException("STEAM", "Feedback", e);
                 return false;
             }
         }
@@ -111,7 +110,7 @@ namespace SteamController.Devices
             }
             catch (Exception e)
             {
-                Log.TraceLine("STEAM: Haptic: Exception: {0}", e);
+                TraceException("STEAM", "Haptic", e);
                 return false;
             }
         }
