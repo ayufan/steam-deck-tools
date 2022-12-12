@@ -76,7 +76,7 @@ namespace Updater
             TrackProcess("SteamController");
 
             var updateURL = String.Format(
-                "https://steam-deck-tools.ayufan.dev/docs/updates/{0}_{1}.xml?version={2}",
+                "https://steam-deck-tools.ayufan.dev/updates/{0}_{1}.xml?version={2}",
                 Instance.IsDEBUG ? "debug" : "release",
                 IsUsingInstaller ? "setup" : "zip",
                 Instance.ProductVersion
