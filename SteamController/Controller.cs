@@ -160,7 +160,7 @@ namespace SteamController
             context.SelectDefault = () =>
             {
                 if (!context.SelectProfile(Settings.Default.DefaultProfile, true))
-                    context.SelectProfile(context.Profiles.First().Name);
+                    context.SelectProfile(context.Profiles.First().Name, true);
             };
             context.BackToDefault();
 
