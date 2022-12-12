@@ -150,9 +150,16 @@ namespace CommonHelpers
         {
             runOnceMutex = TryCreateOrOpenExistingMutex(mutexName);
 
-            if (!runOnceMutex.WaitOne(runOnceTimeout))
+            try
             {
-                Fatal(title, "Run many times");
+                if (!runOnceMutex.WaitOne(runOnceTimeout))
+                {
+                    Fatal(title, "Run many times");
+                }
+            }
+            catch (AbandonedMutexException)
+            {
+                // it is still OK
             }
         }
 
