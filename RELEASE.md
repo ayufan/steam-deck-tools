@@ -28,3 +28,4 @@
 - Add `Setup.exe` installer to install all except RTSS
 - Fix `Use X360 with Steam` that was broken with `0.5.33`
 - Add `Sentry` error tracking
+- Tune `PowerControl` key repeats
