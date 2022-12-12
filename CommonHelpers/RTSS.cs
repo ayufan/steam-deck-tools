@@ -1,15 +1,9 @@
 ﻿using RTSSSharedMemoryNET;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PowerControl.Helpers
+namespace CommonHelpers
 {
-    internal static class RTSS
+    public static class RTSS
     {
         public static bool IsOSDForeground()
         {
