@@ -389,4 +389,17 @@ namespace SteamController.ProfilesSettings
         //     Windows 2000/XP: Start Application 2 key
         LAUNCH_APP2 = 183
     }
+
+    public static class VirtualKeyCodeExtensions
+    {
+        public static WindowsInput.VirtualKeyCode ToWindowsInput(this VirtualKeyCode code)
+        {
+            return (WindowsInput.VirtualKeyCode)code;
+        }
+
+        public static WindowsInput.VirtualKeyCode ToWindowsInput(this System.Windows.Input.Key key)
+        {
+            return (WindowsInput.VirtualKeyCode)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key);
+        }
+    }
 }

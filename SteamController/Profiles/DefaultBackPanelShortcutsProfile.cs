@@ -1,3 +1,5 @@
+using SteamController.ProfilesSettings;
+
 namespace SteamController.Profiles
 {
     public abstract class DefaultBackPanelShortcutsProfile : DefaultGuideShortcutsProfile
@@ -20,10 +22,10 @@ namespace SteamController.Profiles
         {
             var settings = BackPanelSettings;
 
-            c.Keyboard[settings.L4_KEY] = c.Steam.BtnL4;
-            c.Keyboard[settings.L5_KEY] = c.Steam.BtnL5;
-            c.Keyboard[settings.R4_KEY] = c.Steam.BtnR4;
-            c.Keyboard[settings.R5_KEY] = c.Steam.BtnR5;
+            c.Keyboard[settings.L4_KEY.ToWindowsInput()] = c.Steam.BtnL4;
+            c.Keyboard[settings.L5_KEY.ToWindowsInput()] = c.Steam.BtnL5;
+            c.Keyboard[settings.R4_KEY.ToWindowsInput()] = c.Steam.BtnR4;
+            c.Keyboard[settings.R5_KEY.ToWindowsInput()] = c.Steam.BtnR5;
         }
     }
 }

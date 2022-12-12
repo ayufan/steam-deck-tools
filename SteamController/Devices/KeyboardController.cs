@@ -20,18 +20,6 @@ namespace SteamController.Devices
         {
         }
 
-        public bool this[ProfilesSettings.VirtualKeyCode key]
-        {
-            get { return this[(VirtualKeyCode)key]; }
-            set { this[(VirtualKeyCode)key] = value; }
-        }
-
-        public bool this[System.Windows.Input.Key key]
-        {
-            get { return this[(VirtualKeyCode)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key)]; }
-            set { this[(VirtualKeyCode)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key)] = value; }
-        }
-
         public bool this[System.Windows.Forms.Keys key]
         {
             get
