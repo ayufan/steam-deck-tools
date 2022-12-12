@@ -22,12 +22,13 @@ namespace SteamController
         public struct ContextState
         {
             public bool GameProcessRunning { get; set; }
+            public bool RTSSInForeground { get; set; }
             public bool SteamUsesX360Controller { get; set; }
             public bool SteamUsesSteamInput { get; set; }
 
             public bool IsActive
             {
-                get { return GameProcessRunning || SteamUsesSteamInput || SteamUsesSteamInput; }
+                get { return RTSSInForeground || GameProcessRunning || SteamUsesSteamInput || SteamUsesSteamInput; }
             }
 
             public override string ToString()
@@ -36,6 +37,7 @@ namespace SteamController
                 if (GameProcessRunning) reason += " game";
                 if (SteamUsesX360Controller) reason += " steamX360";
                 if (SteamUsesSteamInput) reason += " steamInput";
+                if (RTSSInForeground) reason += " rtss";
                 return reason;
             }
         }
