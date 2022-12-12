@@ -7,14 +7,16 @@ using LibreHardwareMonitor.Hardware;
 using CommonHelpers;
 
 namespace FanControl
-{ 
+{
     internal class Program
     {
         static void Main(string[] args)
         {
-            ApplicationConfiguration.Initialize();
-
-            Application.Run(new FanControlForm());
+            Instance.WithSentry(() =>
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FanControlForm());
+            });
         }
     }
 }

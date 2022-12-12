@@ -27,3 +27,4 @@
 - Add `Updater.exe` that can update to latest release and debug
 - Add `Setup.exe` installer to install all except RTSS
 - Fix `Use X360 with Steam` that was broken with `0.5.33`
+- Add `Sentry` error tracking

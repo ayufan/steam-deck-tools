@@ -18,6 +18,14 @@ namespace Updater
         [STAThread]
         static void Main()
         {
+            Instance.WithSentry(() =>
+            {
+                Run();
+            });
+        }
+
+        static void Run()
+        {
             bool firstRun = Environment.GetCommandLineArgs().Contains("-first");
             bool userCheck = Environment.GetCommandLineArgs().Contains("-user");
             bool updated = Environment.GetCommandLineArgs().Contains(UpdatedArg);

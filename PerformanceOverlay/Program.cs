@@ -1,3 +1,4 @@
+using CommonHelpers;
 using RTSSSharedMemoryNET;
 using System.Diagnostics;
 
@@ -8,12 +9,15 @@ namespace PerformanceOverlay
         [STAThread]
         static void Main()
         {
-            ApplicationConfiguration.Initialize();
-
-            using (var controller = new Controller())
+            Instance.WithSentry(() =>
             {
-                Application.Run();
-            }
+                ApplicationConfiguration.Initialize();
+
+                using (var controller = new Controller())
+                {
+                    Application.Run();
+                }
+            });
         }
     }
 }

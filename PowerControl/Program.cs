@@ -14,24 +14,27 @@ namespace PowerControl
         [STAThread]
         static void Main()
         {
-            if (Settings.Default.EnableExperimentalFeatures)
+            Instance.WithSentry(() =>
             {
-                for (int i = 0; !VangoghGPU.IsSupported; i++)
+                if (Settings.Default.EnableExperimentalFeatures)
                 {
-                    Instance.WithGlobalMutex(1000, () => VangoghGPU.Detect());
-                    if (VangoghGPU.IsSupported)
-                        Thread.Sleep(300);
+                    for (int i = 0; !VangoghGPU.IsSupported; i++)
+                    {
+                        Instance.WithGlobalMutex(1000, () => VangoghGPU.Detect());
+                        if (VangoghGPU.IsSupported)
+                            Thread.Sleep(300);
+                    }
                 }
-            }
 
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
+                // To customize application configuration such as set high DPI settings or default font,
+                // see https://aka.ms/applicationconfiguration.
+                ApplicationConfiguration.Initialize();
 
-            using (var controller = new Controller())
-            {
-                Application.Run();
-            }
+                using (var controller = new Controller())
+                {
+                    Application.Run();
+                }
+            });
         }
     }
 }

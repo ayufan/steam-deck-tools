@@ -1,6 +1,5 @@
 using System.Security.Principal;
 using System.Security.AccessControl;
-using AutoUpdaterDotNET;
 using Microsoft.Win32;
 using System.Diagnostics;
 
@@ -157,21 +156,30 @@ namespace CommonHelpers
             }
         }
 
+        public static void WithSentry(Action action)
+        {
+            using (Sentry.SentrySdk.Init(Log.SentryOptions))
+            {
+                action();
+            }
+        }
+
         public static String MachineID
         {
             get
             {
                 try
                 {
-                    using (var registryKey = Registry.CurrentUser.OpenSubKey(@"Software\SteamDeckTools"))
+                    using (var registryKey = Registry.CurrentUser.OpenSubKey(@"Software\SteamDeckTools", true))
                     {
                         var machineID = registryKey?.GetValue("MachineID") as string;
-                        if (machineID is not null)
-                            return machineID;
+                        if (machineID is null)
+                        {
+                            registryKey?.SetValue("MachineID", Guid.NewGuid().ToString());
+                            machineID = registryKey?.GetValue("MachineID") as string;
+                        }
 
-                        machineID = Guid.NewGuid().ToString();
-                        registryKey?.SetValue("MachineID", machineID);
-                        return machineID;
+                        return machineID ?? "undefined";
                     }
                 }
                 catch (Exception)
