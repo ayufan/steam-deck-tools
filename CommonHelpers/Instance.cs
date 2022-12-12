@@ -2,6 +2,7 @@ using System.Security.Principal;
 using System.Security.AccessControl;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace CommonHelpers
 {
@@ -171,13 +172,18 @@ namespace CommonHelpers
             }
         }
 
+        public static String ApplicationName
+        {
+            get { return Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown"; }
+        }
+
         public static String MachineID
         {
             get
             {
                 try
                 {
-                    using (var registryKey = Registry.CurrentUser.OpenSubKey(@"Software\SteamDeckTools", true))
+                    using (var registryKey = Registry.CurrentUser.CreateSubKey(@"Software\SteamDeckTools", true))
                     {
                         var machineID = registryKey?.GetValue("MachineID") as string;
                         if (machineID is null)
@@ -220,6 +226,11 @@ namespace CommonHelpers
                 updateTimer.Elapsed += delegate { RunUpdater(Title, false); };
                 updateTimer.Start();
             }
+
+            Sentry.SentrySdk.CaptureMessage("Updater: " + ApplicationName, scope =>
+            {
+                scope.SetTag("type", user ? "user" : "background");
+            });
 
             try
             {
