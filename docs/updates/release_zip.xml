@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
   <version>0.5.36</version>
-  <url>https://github.com/ayufan/steam-deck-tools/releases/download/0.5.36/SteamDeckTools-0.5.36.zip</url>
+  <url>https://github.com/ayufan/steam-deck-tools/releases/download/0.5.36/SteamDeckTools-0.5.36-portable.zip</url>
   <changelog2>https://github.com/ayufan/steam-deck-tools/releases/tag/0.5.36</changelog2>
   <mandatory>false</mandatory>
 </item>
