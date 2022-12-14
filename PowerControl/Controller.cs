@@ -143,6 +143,20 @@ namespace PowerControl
                 dismissNeptuneInput();
             });
 
+            GlobalHotKey.RegisterHotKey(Settings.Default.MenuToggle, () =>
+            {
+                if (!RTSS.IsOSDForeground())
+                    return;
+                
+                if (rootMenu.Visible)
+                {
+                    hideOSD();
+                } else
+                {
+                    showOSD(false);
+                }
+            }, true);
+
             if (Settings.Default.EnableNeptuneController)
             {
                 neptuneTimer = new System.Windows.Forms.Timer(components);
@@ -298,6 +312,17 @@ namespace PowerControl
             Trace.WriteLine("Hide OSD");
             rootMenu.Visible = false;
             osdDismissTimer.Stop();
+            updateOSD();
+        }
+
+        private void showOSD(bool enableTimer = true)
+        {
+            if (rootMenu.Visible)
+                return;
+
+            Trace.WriteLine("Show OSD");
+            rootMenu.Visible = true;
+            setDismissTimer(enableTimer);
             updateOSD();
         }
 
