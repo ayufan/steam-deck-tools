@@ -16,7 +16,7 @@ namespace ExternalHelpers
         private static RegistryMonitor monitor = new RegistryMonitor(RegistryHive.CurrentUser, "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
 
         public static bool IsDarkModeEnabled { get => _IsDarkModeEnabled; }
-        public static event Action<bool> DarkModeChanged;
+        public static event Action<bool>? DarkModeChanged;
 
         static WindowsDarkMode()
         {
@@ -28,7 +28,13 @@ namespace ExternalHelpers
         {
             string RegistryKey = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
             int theme = (int?)Registry.GetValue(RegistryKey, "SystemUsesLightTheme", 1) ?? 1;
-            _IsDarkModeEnabled = theme == 0;
+
+            bool newValue = theme == 0;
+            if (newValue != _IsDarkModeEnabled)
+            {
+                _IsDarkModeEnabled = newValue;
+                DarkModeChanged?.Invoke(newValue);
+            }
         }
     }
 
