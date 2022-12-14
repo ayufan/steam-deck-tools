@@ -1,6 +1,8 @@
 # README
 
-This repository contains my own personal set of tools to help running Windows on Steam Deck.
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ayufan/steam-deck-tools?label=stable&style=flat-square)](https://github.com/ayufan/steam-deck-tools/releases/latest)
+[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/ayufan/steam-deck-tools?color=red&include_prereleases&label=beta&style=flat-square)](https://github.com/ayufan/steam-deck-tools/releases)
+![GitHub all releases](https://img.shields.io/github/downloads/ayufan/steam-deck-tools/total?style=flat-square)
 
 **This software is provided on best-effort basis and can break your SteamDeck.**
 
@@ -26,12 +28,9 @@ This project provides the following applications:
 
 ## Install
 
-- Download latest `SteamDeckTools-<version>.zip` from [Latest GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases/latest).
-- Unpack to `C:\SteamDeckTools` folder.
-- Install bellow dependencies.
-- Run each application, and mark `Run On Startup`.
+Download and install latest `SteamDeckTools-<version>-setup.exe` from [Latest GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases/latest).
 
-This project requires those dependencies to be installed in order to function properly:
+This project requires those dependencies to be installed in order to function properly. Those dependencies needs to be manually installed if portable archive is to be used:
 
 - [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe)
 - [Rivatuner Statistics Server](https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html)
@@ -49,8 +48,7 @@ It is strongly advised that following software is uninstalled or disabled:
 - [Development](development.md) - how to compile this project.
 - [Risks](risks.md) - this project uses kernel manipulation and might result in unstable system.
 - [Troubleshooting](troubleshooting.md) - if you encounter any problems.
-- The latest development version can be found in [GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases).
-- The variant with `SteamDeckTools-<version>-debug.zip` enables all experimental features enabled, but might be unstable and buggy.
+- The latest beta version can be found in [GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases).
 
 ## Anti-Cheat and Antivirus software
 

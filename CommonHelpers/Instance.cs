@@ -22,7 +22,7 @@ namespace CommonHelpers
         private static bool useKernelDrivers;
 
         private const String GLOBAL_MUTEX_NAME = "Global\\SteamDeckToolsCommonHelpers";
-        private const int GLOBAL_DEFAULT_TIMEOUT = 5000;
+        private const int GLOBAL_DEFAULT_TIMEOUT = 10000;
 
         public static bool WantsRunOnStartup
         {
@@ -155,7 +155,7 @@ namespace CommonHelpers
             {
                 if (!runOnceMutex.WaitOne(runOnceTimeout))
                 {
-                    Fatal(title, "Run many times");
+                    Fatal(title, "Run many times", false);
                 }
             }
             catch (AbandonedMutexException)
@@ -164,8 +164,14 @@ namespace CommonHelpers
             }
         }
 
-        public static void WithSentry(Action action)
+        public static void WithSentry(Action action, string? dsn = null)
         {
+            // Overwrite DSN
+            if (dsn != null)
+            {
+                Log.SENTRY_DSN = dsn;
+            }
+
             using (Sentry.SentrySdk.Init(Log.SentryOptions))
             {
                 action();
@@ -227,25 +233,26 @@ namespace CommonHelpers
                 updateTimer.Start();
             }
 
-            Sentry.SentrySdk.CaptureMessage("Updater: " + ApplicationName, scope =>
-            {
-                scope.SetTag("type", user ? "user" : "background");
-            });
-
             try
             {
                 Process.Start(new ProcessStartInfo()
                 {
                     FileName = "Updater.exe",
-                    ArgumentList = { user ? "-user" : "-first" },
+                    ArgumentList = {
+                        user ? "-user" : "-first",
+                        "-app", ApplicationName,
+                        "-version", ProductVersion
+                    },
                     UseShellExecute = false
                 });
             }
             catch { }
         }
 
-        public static void Fatal(String? title, String message)
+        public static void Fatal(String? title, String message, bool capture = true)
         {
+            if (capture)
+                Log.TraceError("FATAL: {0}", message);
             if (title is not null)
                 MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             Environment.Exit(1);
