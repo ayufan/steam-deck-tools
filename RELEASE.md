@@ -29,3 +29,4 @@
 - Fix `Use X360 with Steam` that was broken with `0.5.33`
 - Add `Sentry` error tracking (updated)
 - Tune `PowerControl` key repeats
+- Improve `Sentry` integration to reduce amount of data being sent

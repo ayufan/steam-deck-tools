@@ -164,8 +164,14 @@ namespace CommonHelpers
             }
         }
 
-        public static void WithSentry(Action action)
+        public static void WithSentry(Action action, string? dsn = null)
         {
+            // Overwrite DSN
+            if (dsn != null)
+            {
+                Log.SENTRY_DSN = dsn;
+            }
+
             using (Sentry.SentrySdk.Init(Log.SentryOptions))
             {
                 action();
@@ -227,17 +233,16 @@ namespace CommonHelpers
                 updateTimer.Start();
             }
 
-            Sentry.SentrySdk.CaptureMessage("Updater: " + ApplicationName, scope =>
-            {
-                scope.SetTag("type", user ? "user" : "background");
-            });
-
             try
             {
                 Process.Start(new ProcessStartInfo()
                 {
                     FileName = "Updater.exe",
-                    ArgumentList = { user ? "-user" : "-first" },
+                    ArgumentList = {
+                        user ? "-user" : "-first",
+                        "-app", ApplicationName,
+                        "-version", ProductVersion
+                    },
                     UseShellExecute = false
                 });
             }

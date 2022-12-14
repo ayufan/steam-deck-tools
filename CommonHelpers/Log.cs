@@ -5,7 +5,7 @@ namespace CommonHelpers
 {
     public static class Log
     {
-        internal const String SENTRY_DSN = "https://a6f1925b30fe43529aa7cefd0af7b8a4@o37791.ingest.sentry.io/4504316313993216";
+        internal static String SENTRY_DSN = "https://a6f1925b30fe43529aa7cefd0af7b8a4@o37791.ingest.sentry.io/4504316313993216";
 
 #if DEBUG
         private static bool LogToTrace = true;
