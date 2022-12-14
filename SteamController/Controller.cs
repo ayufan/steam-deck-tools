@@ -41,7 +41,6 @@ namespace SteamController
 
         public Controller()
         {
-            Instance.Initialize();
             Instance.OnUninstall(() =>
             {
                 Helpers.SteamConfiguration.KillSteam();
@@ -65,7 +64,7 @@ namespace SteamController
                 startupManager.Startup = true;
 
             notifyIcon = new NotifyIcon(components);
-            notifyIcon.Icon = Instance.IsDarkMode() ? Resources.microsoft_xbox_controller_off_white : Resources.microsoft_xbox_controller_off;
+            notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.microsoft_xbox_controller_off_white : Resources.microsoft_xbox_controller_off;
             notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
 
@@ -180,12 +179,12 @@ namespace SteamController
             context.Tick();
 
             var isDesktop = context.CurrentProfile?.IsDesktop ?? false;
-            var monitorOffIco = Instance.IsDarkMode() ? Resources.monitor_off_white : Resources.monitor_off;
-            var monitorOnIco = Instance.IsDarkMode() ? Resources.monitor_white : Resources.monitor;
-            var controllerOffIco = Instance.IsDarkMode() ?
+            var monitorOffIco = WindowsDarkMode.IsDarkModeEnabled ? Resources.monitor_off_white : Resources.monitor_off;
+            var monitorOnIco = WindowsDarkMode.IsDarkModeEnabled ? Resources.monitor_white : Resources.monitor;
+            var controllerOffIco = WindowsDarkMode.IsDarkModeEnabled ?
                 Resources.microsoft_xbox_controller_off_white :
                 Resources.microsoft_xbox_controller_off;
-            var controllerOnIco = Instance.IsDarkMode() ?
+            var controllerOnIco = WindowsDarkMode.IsDarkModeEnabled ?
                 Resources.microsoft_xbox_controller_white :
                 Resources.microsoft_xbox_controller;
 
