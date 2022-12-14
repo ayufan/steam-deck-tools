@@ -30,3 +30,4 @@
 - Add `Sentry` error tracking (updated)
 - Tune `PowerControl` key repeats
 - Improve `Sentry` integration to reduce amount of data being sent
+- Increase timeout to `10s` reduce chance of `Failed to acquire global mutex`
