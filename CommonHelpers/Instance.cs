@@ -155,7 +155,7 @@ namespace CommonHelpers
             {
                 if (!runOnceMutex.WaitOne(runOnceTimeout))
                 {
-                    Fatal(title, "Run many times");
+                    Fatal(title, "Run many times", false);
                 }
             }
             catch (AbandonedMutexException)
@@ -249,8 +249,10 @@ namespace CommonHelpers
             catch { }
         }
 
-        public static void Fatal(String? title, String message)
+        public static void Fatal(String? title, String message, bool capture = true)
         {
+            if (capture)
+                Log.TraceError("FATAL: {0}", message);
             if (title is not null)
                 MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             Environment.Exit(1);

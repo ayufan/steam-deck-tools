@@ -47,6 +47,16 @@ namespace CommonHelpers
                 Console.WriteLine(line);
         }
 
+        public static void TraceError(string format, params object?[] arg)
+        {
+            String line = string.Format(format, arg);
+            Sentry.SentrySdk.CaptureMessage(line, Sentry.SentryLevel.Error);
+            if (LogToTrace)
+                Trace.WriteLine(line);
+            if (LogToConsole)
+                Console.WriteLine(line);
+        }
+
         public static void TraceException(String type, Object? name, Exception e)
         {
             TraceLine("{0}: {1}: Exception: {2}", type, name, e);
