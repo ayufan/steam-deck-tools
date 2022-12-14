@@ -112,7 +112,7 @@ namespace SteamController
             exitItem.Click += delegate { Application.Exit(); };
 
             notifyIcon = new NotifyIcon(components);
-            notifyIcon.Icon = Resources.microsoft_xbox_controller_off;
+            notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.microsoft_xbox_controller_off_white : Resources.microsoft_xbox_controller_off;
             notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
@@ -149,6 +149,14 @@ namespace SteamController
             context.Tick();
 
             var isDesktop = context.CurrentProfile?.IsDesktop ?? false;
+            var monitorOffIco = WindowsDarkMode.IsDarkModeEnabled ? Resources.monitor_off_white : Resources.monitor_off;
+            var monitorOnIco = WindowsDarkMode.IsDarkModeEnabled ? Resources.monitor_white : Resources.monitor;
+            var controllerOffIco = WindowsDarkMode.IsDarkModeEnabled ?
+                Resources.microsoft_xbox_controller_off_white :
+                Resources.microsoft_xbox_controller_off;
+            var controllerOnIco = WindowsDarkMode.IsDarkModeEnabled ?
+                Resources.microsoft_xbox_controller_white :
+                Resources.microsoft_xbox_controller;
 
             if (!context.KeyboardMouseValid)
             {
@@ -164,12 +172,12 @@ namespace SteamController
             {
                 if (context.State.SteamUsesSteamInput)
                 {
-                    notifyIcon.Icon = isDesktop ? Resources.monitor_off : Resources.microsoft_xbox_controller_off;
+                    notifyIcon.Icon = isDesktop ? monitorOffIco : controllerOffIco;
                     notifyIcon.Text = TitleWithVersion + ". Steam uses Steam Input";
                 }
                 else
                 {
-                    notifyIcon.Icon = isDesktop ? Resources.monitor : Resources.microsoft_xbox_controller;
+                    notifyIcon.Icon = isDesktop ? monitorOnIco : controllerOnIco;
                     notifyIcon.Text = TitleWithVersion;
                 }
 
@@ -179,7 +187,7 @@ namespace SteamController
             }
             else
             {
-                notifyIcon.Icon = isDesktop ? Resources.monitor_off : Resources.microsoft_xbox_controller_off;
+                notifyIcon.Icon = isDesktop ? monitorOffIco : controllerOffIco;
                 notifyIcon.Text = TitleWithVersion + ". Disabled";
             }
 

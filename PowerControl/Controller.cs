@@ -1,6 +1,7 @@
 ﻿using CommonHelpers;
 using ExternalHelpers;
 using Microsoft.VisualBasic.Logging;
+using Microsoft.Win32;
 using PowerControl.External;
 using PowerControl.Helpers;
 using RTSSSharedMemoryNET;
@@ -89,7 +90,7 @@ namespace PowerControl
             exitItem.Click += ExitItem_Click;
 
             notifyIcon = new System.Windows.Forms.NotifyIcon(components);
-            notifyIcon.Icon = Resources.traffic_light_outline;
+            notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.traffic_light_outline_light : Resources.traffic_light_outline;
             notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
@@ -183,7 +184,7 @@ namespace PowerControl
             try
             {
                 notifyIcon.Text = TitleWithVersion + ". RTSS Version: " + OSD.Version;
-                notifyIcon.Icon = Resources.traffic_light_outline;
+                notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.traffic_light_outline_light : Resources.traffic_light_outline;
             }
             catch
             {

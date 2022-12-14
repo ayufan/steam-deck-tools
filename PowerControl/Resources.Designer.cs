@@ -73,6 +73,16 @@ namespace PowerControl {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon traffic_light_outline_light {
+            get {
+                object obj = ResourceManager.GetObject("traffic-light-outline_light", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon traffic_light_outline_red {
             get {
                 object obj = ResourceManager.GetObject("traffic_light_outline_red", resourceCulture);
