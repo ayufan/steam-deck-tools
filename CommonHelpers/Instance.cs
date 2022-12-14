@@ -20,9 +20,12 @@ namespace CommonHelpers
         private static Mutex? runOnceMutex;
         private static Mutex? globalLockMutex;
         private static bool useKernelDrivers;
+        private static bool? _isDarkMode;
 
         private const String GLOBAL_MUTEX_NAME = "Global\\SteamDeckToolsCommonHelpers";
         private const int GLOBAL_DEFAULT_TIMEOUT = 5000;
+
+        private static RegistryMonitor regMonitor = new RegistryMonitor(RegistryHive.CurrentUser, "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
 
         public static bool WantsRunOnStartup
         {
@@ -107,6 +110,12 @@ namespace CommonHelpers
             {
                 mutex.ReleaseMutex();
             }
+        }
+
+        public static void Initialize()
+        {
+            regMonitor.RegChanged += new EventHandler((o, e) => { updateDarkMode(); });
+            regMonitor.Start();
         }
 
         public static void Open(String title, bool useKernelDrivers, String? runOnce = null, int runOnceTimeout = 100)
@@ -249,6 +258,23 @@ namespace CommonHelpers
             if (title is not null)
                 MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             Environment.Exit(1);
+        }
+
+        public static bool isDarkMode()
+        {
+            if (_isDarkMode == null)
+            {
+                updateDarkMode();
+            }
+
+            return _isDarkMode ?? false;
+        }
+
+        private static void updateDarkMode()
+        {
+            string RegistryKey = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+            int theme = (int?)Registry.GetValue(RegistryKey, "SystemUsesLightTheme", 1) ?? 1;
+            _isDarkMode = theme == 0;
         }
 
         private static Mutex TryCreateOrOpenExistingMutex(string name)
