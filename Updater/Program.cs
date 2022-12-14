@@ -54,11 +54,6 @@ namespace Updater
 
             Instance.RunOnce(null, "Global\\SteamDeckToolsAutoUpdater");
 
-            Sentry.SentrySdk.CaptureMessage("Updater", scope =>
-            {
-                scope.SetExtra("args", Environment.GetCommandLineArgs());
-            });
-
             var persistence = new RegistryPersistenceProvider(@"Software\SteamDeckTools\AutoUpdater");
 
             if (userCheck || cmdLine)
