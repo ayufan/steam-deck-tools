@@ -34,6 +34,7 @@ namespace FanControl
 
             notifyIcon.Text = Text;
             notifyIcon.Visible = true;
+            notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.fan_white : Resources.fan;
 
             TopMost = Settings.Default.AlwaysOnTop;
             toolStripMenuItemAlwaysOnTop.Checked = TopMost;
@@ -162,6 +163,8 @@ namespace FanControl
 
         private void propertyGridUpdateTimer_Tick(object sender, EventArgs e)
         {
+            notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.fan_white : Resources.fan;
+
             if (!Visible)
                 return;
 
