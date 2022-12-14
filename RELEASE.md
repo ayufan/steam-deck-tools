@@ -7,27 +7,11 @@
 
 ## 0.5.x
 
-- Introduce SteamController that provides 3 main modes of operation Desktop, X360 and Steam
 - Try to disable usage of Kernel Drivers (when FAN in Default, and OSD Kernel Drivers are disabled)
   to allow apps to work with Anti-Cheat detections
-- STEAM + 3 dots brings Task Manager (CTRL+SHIFT+ESCAPE)
-- Add configurable BackPanel keys (allowed mappings are subject to change)
-- Build DEBUG that has all experimental features
 - The X360 has Haptics enabled by default
-- Detect GamePad UI open temporarily for controller layout
-- Automatically manage steam controller configs when using Steam Input
 - Allow to assign BackPanel keys to X360 controller (breaks all current configs to set mappings)
-- All SteamDeckTools settings are stored in `.ini` file in root folder
-- Detect SAS (Secure Attention Sequence) in a way that does not prevent screen sleep
-- Recreate X360 device on fatal failure (might happen after resume)
-- DEBUG allows to keep X360 controller always connected
-- Swap `STEAM+Menu` and `STEAM+Options`. It makes more sense to switch windows with STEAM+3 horizontal lines
-- If application is run with `-run-on-startup` it will self-set to run on system start
-- Depend on `GetCursorPos` to detect `SAS`
 - Add `Updater.exe` that can update to latest release and debug
 - Add `Setup.exe` installer to install all except RTSS
-- Fix `Use X360 with Steam` that was broken with `0.5.33`
-- Add `Sentry` error tracking (updated)
-- Tune `PowerControl` key repeats
-- Improve `Sentry` integration to reduce amount of data being sent
-- Increase timeout to `10s` reduce chance of `Failed to acquire global mutex`
+- Add `Sentry` error tracking
+- Use `white` icons when using `Dark Theme` (thanks @maniman303 https://github.com/ayufan/steam-deck-tools/pull/23)
