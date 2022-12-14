@@ -1,5 +1,9 @@
 # (Windows) Steam Deck Tools
 
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ayufan/steam-deck-tools?label=stable&style=flat-square)](https://github.com/ayufan/steam-deck-tools/releases/latest)
+[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/ayufan/steam-deck-tools?color=red&include_prereleases&label=beta&style=flat-square)](https://github.com/ayufan/steam-deck-tools/releases)
+![GitHub all releases](https://img.shields.io/github/downloads/ayufan/steam-deck-tools/total?style=flat-square)
+
 This repository contains my own personal set of tools to help running Windows on Steam Deck.
 
 **This software is provided on best-effort basis and can break your SteamDeck.**
