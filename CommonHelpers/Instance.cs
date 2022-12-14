@@ -260,7 +260,7 @@ namespace CommonHelpers
             Environment.Exit(1);
         }
 
-        public static bool isDarkMode()
+        public static bool IsDarkMode()
         {
             if (_isDarkMode == null)
             {

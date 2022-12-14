@@ -154,6 +154,12 @@
   <data name="monitor_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\monitor-off.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="monitor_off_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\monitor-off-white.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="monitor_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\monitor-white.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="steam" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\steam.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

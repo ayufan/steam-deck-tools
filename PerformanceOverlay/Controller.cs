@@ -26,6 +26,7 @@ namespace PerformanceOverlay
 
         public Controller()
         {
+            Instance.Initialize();
             Instance.OnUninstall(() =>
             {
                 startupManager.Startup = false;
@@ -91,7 +92,7 @@ namespace PerformanceOverlay
             exitItem.Click += ExitItem_Click;
 
             notifyIcon = new System.Windows.Forms.NotifyIcon(components);
-            notifyIcon.Icon = Resources.poll;
+            notifyIcon.Icon = Instance.IsDarkMode() ? Resources.poll_light : Resources.poll;
             notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
@@ -197,7 +198,7 @@ namespace PerformanceOverlay
             try
             {
                 notifyIcon.Text = TitleWithVersion + ". RTSS Version: " + OSD.Version;
-                notifyIcon.Icon = Resources.poll;
+                notifyIcon.Icon = Instance.IsDarkMode() ? Resources.poll_light : Resources.poll;
             }
             catch
             {

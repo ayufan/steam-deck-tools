@@ -91,7 +91,7 @@ namespace PowerControl
             exitItem.Click += ExitItem_Click;
 
             notifyIcon = new System.Windows.Forms.NotifyIcon(components);
-            notifyIcon.Icon = Instance.isDarkMode() ? Resources.traffic_light_outline_light : Resources.traffic_light_outline;
+            notifyIcon.Icon = Instance.IsDarkMode() ? Resources.traffic_light_outline_light : Resources.traffic_light_outline;
             notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
@@ -185,7 +185,7 @@ namespace PowerControl
             try
             {
                 notifyIcon.Text = TitleWithVersion + ". RTSS Version: " + OSD.Version;
-                notifyIcon.Icon = Instance.isDarkMode() ? Resources.traffic_light_outline_light : Resources.traffic_light_outline;
+                notifyIcon.Icon = Instance.IsDarkMode() ? Resources.traffic_light_outline_light : Resources.traffic_light_outline;
             }
             catch
             {

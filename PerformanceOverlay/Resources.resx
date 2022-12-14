@@ -121,6 +121,9 @@
   <data name="poll" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\poll.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="poll_light" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\poll_light.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="poll_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\poll_red.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
