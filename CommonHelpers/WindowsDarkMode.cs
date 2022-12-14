@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace ExternalHelpers
+namespace CommonHelpers
 {
     public class WindowsDarkMode
     {
@@ -10,21 +10,13 @@ namespace ExternalHelpers
         };
 
         public static bool IsDarkModeEnabled { get; private set; }
-        public static event Action<bool>? DarkModeChanged;
 
         static WindowsDarkMode()
         {
 
             IsDarkModeEnabled = FetchIsDarkModeEnabled();
 
-            timer.Tick += delegate
-            {
-                var value = FetchIsDarkModeEnabled();
-                if (value == IsDarkModeEnabled)
-                    return;
-                IsDarkModeEnabled = value;
-                DarkModeChanged?.Invoke(value);
-            };
+            timer.Tick += delegate{ IsDarkModeEnabled = FetchIsDarkModeEnabled(); };
             timer.Start();
         }
 
