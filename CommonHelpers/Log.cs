@@ -20,17 +20,18 @@ namespace CommonHelpers
 
         internal static void SentryOptions(Sentry.SentryOptions o)
         {
+            var env = Instance.IsProductionBuild ? "prod" : "dev";
             var build = Instance.IsDEBUG ? "debug" : "release";
-            var type = File.Exists("Uninstaller.exe") ? "setup" : "zip";
+            var deploy = File.Exists("Uninstaller.exe") ? "setup" : "zip";
 
             o.Dsn = Log.SENTRY_DSN;
             o.TracesSampleRate = 1.0;
             o.IsGlobalModeEnabled = true;
-            o.Environment = String.Format("{0}:{1}_{2}", Instance.ApplicationName, build, type);
+            o.Environment = String.Format("{0}:{1}_{2}", Instance.ApplicationName, build, deploy);
             o.DefaultTags.Add("App", Instance.ApplicationName);
             o.DefaultTags.Add("MachineID", Instance.MachineID);
-            o.DefaultTags.Add("Build", type);
-            o.DefaultTags.Add("Configuration", build);
+            o.DefaultTags.Add("Build", build);
+            o.DefaultTags.Add("Deploy", deploy);
 
             var releaseVersion = typeof(Log).Assembly.GetCustomAttributes<AssemblyInformationalVersionAttribute>().FirstOrDefault();
             if (releaseVersion is not null)
