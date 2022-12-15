@@ -42,9 +42,9 @@ jobs:
         echo "MajorVer=$majorVer LastVer=$lastVer NextVer=$nextVer"
         echo "RELEASE_VERSION=$nextVer" >> $GITHUB_ENV
     - name: Build Release
-      run: dotnet build --configuration Release --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" "/property:Version=${{ env.RELEASE_VERSION }}"
+      run: dotnet build --configuration Release --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" "/property:Version=${{ env.RELEASE_VERSION }}" "/property:ExtraDefineConstants=PRODUCTION_BUILD"
     - name: Build Debug
-      run: dotnet build --configuration Debug --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}-debug/" "/property:Version=${{ env.RELEASE_VERSION }}"
+      run: dotnet build --configuration Debug --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}-debug/" "/property:Version=${{ env.RELEASE_VERSION }}" "/property:ExtraDefineConstants=PRODUCTION_BUILD"
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - uses: vimtor/action-zip@v1
