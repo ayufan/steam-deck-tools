@@ -5,7 +5,11 @@ namespace CommonHelpers
 {
     public static class Log
     {
-        internal static String SENTRY_DSN = "https://a6f1925b30fe43529aa7cefd0af7b8a4@o37791.ingest.sentry.io/4504316313993216";
+#if PRODUCTION_BUILD
+        internal static String SENTRY_DSN = "https://3c93e3c3b47b40ffba72d9cb333fc6d7@o4504334913830912.ingest.sentry.io/4504334914879488";
+#else
+        internal static String SENTRY_DSN = "https://d9204614b2cd47468bfa1ea2ab55da4e@o4504334914355200.ingest.sentry.io/4504334915469312";
+#endif
 
 #if DEBUG
         private static bool LogToTrace = true;
@@ -16,17 +20,18 @@ namespace CommonHelpers
 
         internal static void SentryOptions(Sentry.SentryOptions o)
         {
+            var env = Instance.IsProductionBuild ? "prod" : "dev";
             var build = Instance.IsDEBUG ? "debug" : "release";
-            var type = File.Exists("Uninstaller.exe") ? "setup" : "zip";
+            var deploy = File.Exists("Uninstaller.exe") ? "setup" : "zip";
 
             o.Dsn = Log.SENTRY_DSN;
             o.TracesSampleRate = 1.0;
             o.IsGlobalModeEnabled = true;
-            o.Environment = String.Format("{0}:{1}_{2}", Instance.ApplicationName, build, type);
+            o.Environment = String.Format("{0}:{1}_{2}", Instance.ApplicationName, build, deploy);
             o.DefaultTags.Add("App", Instance.ApplicationName);
             o.DefaultTags.Add("MachineID", Instance.MachineID);
-            o.DefaultTags.Add("Build", type);
-            o.DefaultTags.Add("Configuration", build);
+            o.DefaultTags.Add("Build", build);
+            o.DefaultTags.Add("Deploy", deploy);
 
             var releaseVersion = typeof(Log).Assembly.GetCustomAttributes<AssemblyInformationalVersionAttribute>().FirstOrDefault();
             if (releaseVersion is not null)

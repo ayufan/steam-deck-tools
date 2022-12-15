@@ -46,6 +46,18 @@ namespace CommonHelpers
             }
         }
 
+        public static bool IsProductionBuild
+        {
+            get
+            {
+#if PRODUCTION_BUILD
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
         public static void OnUninstall(Action action)
         {
             if (Uninstall)

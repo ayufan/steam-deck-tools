@@ -8,7 +8,7 @@ namespace SteamController
     internal class Controller : IDisposable
     {
         public const String Title = "Steam Controller";
-        public readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
+        public static readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
 
         public static readonly Dictionary<String, Profiles.Profile> PreconfiguredUserProfiles = new Dictionary<String, Profiles.Profile>()
         {
@@ -38,6 +38,11 @@ namespace SteamController
                 new Managers.SASManager()
             }
         };
+
+        static Controller()
+        {
+            Dependencies.ValidateHidapi(TitleWithVersion);
+        }
 
         public Controller()
         {
