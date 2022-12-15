@@ -406,6 +406,13 @@ namespace PowerControl
 
         private void setProfile(GameProfile profile)
         {
+            if (GameProfilesController.CurrentGame != GameProfile.DefaultName)
+            {
+                // Fixes refresh rate reset for Dragon Age Inquisition
+                // Probably should have a list of games with strange behaviour
+                Thread.Sleep(7200);
+            }
+
             rootMenu.SelectValueByKey(GameOptions.RefreshRate, profile.refreshRate);
             Thread.Sleep(1000);
             rootMenu.SelectValueByKey(GameOptions.Fps, profile.fps);
