@@ -265,7 +265,7 @@ namespace PowerControl
                 int selectedIndex = Math.Clamp(index, 0, Options.Count - 1);
                 SelectedOption = Options[selectedIndex];
 
-                scheduleApply(false);
+                scheduleApply();
             }
 
             public override void SelectNext()

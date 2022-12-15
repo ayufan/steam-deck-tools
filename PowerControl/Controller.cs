@@ -24,13 +24,13 @@ namespace PowerControl
         StartupManager startupManager = new StartupManager(Title);
 
         Menu.MenuRoot rootMenu = MenuStack.Root;
-        OSD osd;
+        OSD? osd;
         System.Windows.Forms.Timer osdDismissTimer;
 
         hidapi.HidDevice neptuneDevice = new hidapi.HidDevice(0x28de, 0x1205, 64);
         SDCInput neptuneDeviceState = new SDCInput();
         DateTime? neptuneDeviceNextKey;
-        System.Windows.Forms.Timer neptuneTimer;
+        System.Windows.Forms.Timer? neptuneTimer;
 
         System.Windows.Forms.Timer gameProfileTimer;
 
@@ -93,6 +93,7 @@ namespace PowerControl
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
 
+            // Fix for context menu location
             contextMenu.Show();
             contextMenu.Close();
 
@@ -404,8 +405,8 @@ namespace PowerControl
         private void setProfile(GameProfile profile)
         {
             rootMenu.SelectValueByKey(GameOptions.RefreshRate, profile.refreshRate);
+            Thread.Sleep(1000);
             rootMenu.SelectValueByKey(GameOptions.Fps, profile.fps);
-            // TODO: Add more options
         }
     }
 }
