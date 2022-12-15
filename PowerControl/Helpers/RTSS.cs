@@ -1,11 +1,5 @@
 ﻿using RTSSSharedMemoryNET;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PowerControl.Helpers
 {
@@ -91,6 +85,26 @@ namespace PowerControl.Helpers
         public static void UpdateSettings()
         {
             PostMessage(WM_RTSS_UPDATESETTINGS, IntPtr.Zero, IntPtr.Zero);
+        }
+
+        public static string? GetCurrentGameName()
+        {
+            var entries = OSD.GetAppEntries(AppFlags.MASK);
+
+            if (entries.Length != 1)
+            {
+                return null;
+            }
+
+            string longName = entries[0].Name;
+            string res = longName.Split('\\').Last();
+
+            if (res.ToLower().Contains(".exe"))
+            {
+                return res[..^4];
+            }
+
+            return res;
         }
 
         [return: MarshalAs(UnmanagedType.Bool)]

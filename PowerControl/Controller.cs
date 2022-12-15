@@ -2,17 +2,13 @@
 using ExternalHelpers;
 using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
-using PowerControl.External;
 using PowerControl.Helpers;
+using PowerControl.External;
 using RTSSSharedMemoryNET;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.AxHost;
 
 namespace PowerControl
 {
@@ -28,13 +24,15 @@ namespace PowerControl
         StartupManager startupManager = new StartupManager(Title);
 
         Menu.MenuRoot rootMenu = MenuStack.Root;
-        OSD osd;
+        OSD? osd;
         System.Windows.Forms.Timer osdDismissTimer;
 
         hidapi.HidDevice neptuneDevice = new hidapi.HidDevice(0x28de, 0x1205, 64);
         SDCInput neptuneDeviceState = new SDCInput();
         DateTime? neptuneDeviceNextKey;
-        System.Windows.Forms.Timer neptuneTimer;
+        System.Windows.Forms.Timer? neptuneTimer;
+
+        System.Windows.Forms.Timer gameProfileTimer;
 
         SharedData<PowerControlSetting> sharedData = SharedData<PowerControlSetting>.CreateNew();
 
@@ -101,12 +99,33 @@ namespace PowerControl
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
 
+            // Fix for context menu location
+            contextMenu.Show();
+            contextMenu.Close();
+
             osdDismissTimer = new System.Windows.Forms.Timer(components);
             osdDismissTimer.Interval = 3000;
             osdDismissTimer.Tick += delegate (object? sender, EventArgs e)
             {
                 hideOSD();
             };
+
+            setProfile(GameProfilesController.CurrentProfile);
+
+            gameProfileTimer = new System.Windows.Forms.Timer(components);
+            gameProfileTimer.Interval = 1500;
+            gameProfileTimer.Tick += delegate (object? sender, EventArgs e)
+            {
+                gameProfileTimer.Stop();
+
+                if (GameProfilesController.UpdateGameProfile())
+                {
+                    setProfile(GameProfilesController.CurrentProfile);
+                }
+
+                gameProfileTimer.Start();
+            };
+            gameProfileTimer.Start();
 
             var osdTimer = new System.Windows.Forms.Timer(components);
             osdTimer.Tick += OsdTimer_Tick;
@@ -148,6 +167,22 @@ namespace PowerControl
                 setDismissTimer();
                 dismissNeptuneInput();
             });
+
+            GlobalHotKey.RegisterHotKey(Settings.Default.MenuToggle, () =>
+            {
+                if (!RTSS.IsOSDForeground())
+                    return;
+                
+                if (rootMenu.Visible)
+                {
+                    hideOSD();
+                    osdDismissTimer.Interval = 3000;
+                } else
+                {
+                    showOSD(false);
+                    osdDismissTimer.Interval = 15000;
+                }
+            }, true);
 
             if (Settings.Default.EnableNeptuneController)
             {
@@ -307,6 +342,17 @@ namespace PowerControl
             updateOSD();
         }
 
+        private void showOSD(bool enableTimer = true)
+        {
+            if (rootMenu.Visible)
+                return;
+
+            Trace.WriteLine("Show OSD");
+            rootMenu.Visible = true;
+            setDismissTimer(enableTimer);
+            updateOSD();
+        }
+
         public void updateOSD()
         {
             sharedData.SetValue(new PowerControlSetting()
@@ -362,6 +408,22 @@ namespace PowerControl
             catch (SystemException)
             {
             }
+        }
+
+        private void setProfile(GameProfile profile)
+        {
+            if (GameProfilesController.CurrentGame != GameProfile.DefaultName)
+            {
+                // Fixes refresh rate reset for Dragon Age Inquisition
+                // Probably should have a list of games with strange behaviour
+                Thread.Sleep(7200);
+            }
+
+            var profileCopy = GameProfile.Copy(profile);
+
+            rootMenu.SelectValueByKey(GameOptions.RefreshRate, profileCopy.refreshRate);
+            Thread.Sleep(1000);
+            rootMenu.SelectValueByKey(GameOptions.Fps, profileCopy.fps);
         }
     }
 }

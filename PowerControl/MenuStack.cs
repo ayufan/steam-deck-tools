@@ -83,6 +83,7 @@ namespace PowerControl
                 new Menu.MenuItemWithOptions()
                 {
                     Name = "Refresh Rate",
+                    Key = GameOptions.RefreshRate,
                     ApplyDelay = 1000,
                     ResetValue = () => { return DisplayResolutionController.GetRefreshRates().Max(); },
                     OptionsValues = delegate()
@@ -108,6 +109,7 @@ namespace PowerControl
                 new Menu.MenuItemWithOptions()
                 {
                     Name = "FPS Limit",
+                    Key = GameOptions.Fps,
                     ApplyDelay = 500,
                     ResetValue = () => { return "Off"; },
                     OptionsValues = delegate()
