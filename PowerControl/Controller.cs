@@ -2,17 +2,13 @@
 using ExternalHelpers;
 using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
-using PowerControl.External;
 using PowerControl.Helpers;
+using PowerControl.External;
 using RTSSSharedMemoryNET;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.AxHost;
 
 namespace PowerControl
 {
@@ -35,6 +31,8 @@ namespace PowerControl
         SDCInput neptuneDeviceState = new SDCInput();
         DateTime? neptuneDeviceNextKey;
         System.Windows.Forms.Timer neptuneTimer;
+
+        System.Windows.Forms.Timer gameProfileTimer;
 
         SharedData<PowerControlSetting> sharedData = SharedData<PowerControlSetting>.CreateNew();
 
@@ -95,12 +93,32 @@ namespace PowerControl
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
 
+            contextMenu.Show();
+            contextMenu.Close();
+
             osdDismissTimer = new System.Windows.Forms.Timer(components);
             osdDismissTimer.Interval = 3000;
             osdDismissTimer.Tick += delegate (object? sender, EventArgs e)
             {
                 hideOSD();
             };
+
+            setProfile(GameProfilesController.CurrentProfile);
+
+            gameProfileTimer = new System.Windows.Forms.Timer(components);
+            gameProfileTimer.Interval = 2500;
+            gameProfileTimer.Tick += delegate (object? sender, EventArgs e)
+            {
+                gameProfileTimer.Stop();
+
+                if (GameProfilesController.UpdateGameProfile())
+                {
+                    setProfile(GameProfilesController.CurrentProfile);
+                }
+
+                gameProfileTimer.Start();
+            };
+            gameProfileTimer.Start();
 
             var osdTimer = new System.Windows.Forms.Timer(components);
             osdTimer.Tick += OsdTimer_Tick;
@@ -381,6 +399,13 @@ namespace PowerControl
             catch (SystemException)
             {
             }
+        }
+
+        private void setProfile(GameProfile profile)
+        {
+            rootMenu.SelectValueByKey(GameOptions.RefreshRate, profile.refreshRate);
+            rootMenu.SelectValueByKey(GameOptions.Fps, profile.fps);
+            // TODO: Add more options
         }
     }
 }

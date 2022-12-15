@@ -1,3 +1,4 @@
+using PowerControl.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,6 +99,7 @@ namespace PowerControl
             public Object ActiveOption { get; set; }
             public int ApplyDelay { get; set; }
             public bool CycleOptions { get; set; } = true;
+            public GameOptions Key { get; set; } = GameOptions.None;
 
             public CurrentValueDelegate CurrentValue { get; set; }
             public OptionsValueDelegate OptionsValues { get; set; }
@@ -184,7 +186,7 @@ namespace PowerControl
                 delayTimer.Enabled = true;
             }
 
-            private void onApply()
+            private void onApply(bool updateConfig = true)
             {
                 if (ApplyValue != null)
                     ActiveOption = ApplyValue(SelectedOption);
@@ -192,6 +194,11 @@ namespace PowerControl
                     ActiveOption = SelectedOption;
 
                 SelectedOption = null;
+
+                if (Key != GameOptions.None && updateConfig)
+                {
+                    GameProfilesController.SetValueByKey(Key, Options.IndexOf(ActiveOption));
+                }
 
                 onUpdateToolStrip();
             }
@@ -221,6 +228,7 @@ namespace PowerControl
                     optionItem.Click += delegate (object? sender, EventArgs e)
                     {
                         SelectedOption = option;
+
                         onApply();
                     };
                     toolStripItem.DropDownItems.Add(optionItem);
@@ -238,13 +246,26 @@ namespace PowerControl
                 collection.Add(toolStripItem);
             }
 
+            public void SelectByIndex(int index)
+            {
+                if (Options.Count == 0)
+                    return;
+
+                int selectedIndex = Math.Clamp(index, 0, Options.Count - 1);
+                SelectedOption = Options[selectedIndex];
+
+                onApply(false);
+            }
+
             private void SelectIndex(int index)
             {
                 if (Options.Count == 0)
                     return;
 
-                SelectedOption = Options[Math.Clamp(index, 0, Options.Count - 1)];
-                scheduleApply();
+                int selectedIndex = Math.Clamp(index, 0, Options.Count - 1);
+                SelectedOption = Options[selectedIndex];
+
+                scheduleApply(false);
             }
 
             public override void SelectNext()
@@ -376,6 +397,21 @@ namespace PowerControl
                 if (VisibleChanged != null)
                     VisibleChanged();
                 return true;
+            }
+
+            public void SelectValueByKey(GameOptions key, int value)
+            {
+                List<MenuItemWithOptions> options = Items.Where(e => e is MenuItemWithOptions)
+                    .Select(e => (MenuItemWithOptions)e).ToList();
+
+                foreach (var item in options)
+                {
+                    if (item.Key == key)
+                    {
+                        item.SelectByIndex(value);
+                        return;
+                    }
+                }
             }
 
             public void Prev()

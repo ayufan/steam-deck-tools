@@ -87,6 +87,26 @@ namespace CommonHelpers
             PostMessage(WM_RTSS_UPDATESETTINGS, IntPtr.Zero, IntPtr.Zero);
         }
 
+        public static string? GetCurrentGameName()
+        {
+            var entries = OSD.GetAppEntries(AppFlags.MASK);
+
+            if (entries.Length != 1)
+            {
+                return null;
+            }
+
+            string longName = entries[0].Name;
+            string res = longName.Split('\\').Last();
+
+            if (res.ToLower().Contains(".exe"))
+            {
+                return res[..^4];
+            }
+
+            return res;
+        }
+
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
