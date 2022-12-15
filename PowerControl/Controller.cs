@@ -19,7 +19,7 @@ namespace PowerControl
     internal class Controller : IDisposable
     {
         public const String Title = "Power Control";
-        public readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
+        public static readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
         public const int KeyPressRepeatTime = 400;
         public const int KeyPressNextRepeatTime = 90;
 
@@ -37,6 +37,12 @@ namespace PowerControl
         System.Windows.Forms.Timer neptuneTimer;
 
         SharedData<PowerControlSetting> sharedData = SharedData<PowerControlSetting>.CreateNew();
+
+        static Controller()
+        {
+            Dependencies.ValidateHidapi(TitleWithVersion);
+            Dependencies.ValidateRTSSSharedMemoryNET(TitleWithVersion);
+        }
 
         public Controller()
         {

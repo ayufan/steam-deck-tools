@@ -8,7 +8,7 @@ namespace PerformanceOverlay
     internal class Controller : IDisposable
     {
         public const String Title = "Performance Overlay";
-        public readonly String TitleWithVersion = Title + " v" + System.Windows.Forms.Application.ProductVersion.ToString();
+        public static readonly String TitleWithVersion = Title + " v" + System.Windows.Forms.Application.ProductVersion.ToString();
 
         Container components = new Container();
         RTSSSharedMemoryNET.OSD? osd;
@@ -23,6 +23,12 @@ namespace PerformanceOverlay
         );
 
         SharedData<OverlayModeSetting> sharedData = SharedData<OverlayModeSetting>.CreateNew();
+
+        static Controller()
+        {
+            Dependencies.ValidateRTSS(TitleWithVersion);
+            Dependencies.ValidateRTSSSharedMemoryNET(TitleWithVersion);
+        }
 
         public Controller()
         {
