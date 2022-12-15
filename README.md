@@ -39,6 +39,10 @@ This project provides the following applications:
 - [Risks](https://steam-deck-tools.ayufan.dev/risks.html) - this project uses kernel manipulation and might result in unstable system.
 - [Troubleshooting](https://steam-deck-tools.ayufan.dev/troubleshooting.html) - if you encounter any problems.
 
+## Join Us
+
+Join Us for help or chat. We are at [#windows of Steam Deck Discord](https://discord.com/channels/865611969661632521/867449233261985812).
+
 ## Author
 
 Kamil Trzciński, 2022
