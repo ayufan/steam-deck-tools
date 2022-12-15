@@ -107,7 +107,7 @@ namespace PowerControl
             setProfile(GameProfilesController.CurrentProfile);
 
             gameProfileTimer = new System.Windows.Forms.Timer(components);
-            gameProfileTimer.Interval = 2500;
+            gameProfileTimer.Interval = 1500;
             gameProfileTimer.Tick += delegate (object? sender, EventArgs e)
             {
                 gameProfileTimer.Stop();
@@ -170,9 +170,11 @@ namespace PowerControl
                 if (rootMenu.Visible)
                 {
                     hideOSD();
+                    osdDismissTimer.Interval = 3000;
                 } else
                 {
                     showOSD(false);
+                    osdDismissTimer.Interval = 15000;
                 }
             }, true);
 

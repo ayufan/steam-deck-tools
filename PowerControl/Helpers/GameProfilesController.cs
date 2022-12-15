@@ -1,4 +1,5 @@
 ﻿using CommonHelpers;
+using Sentry.Protocol;
 using System.IO;
 using System.Text.Json;
 
@@ -131,6 +132,7 @@ namespace PowerControl.Helpers
                     }
                     catch
                     {
+                        Log.TraceError("ERROR: Couldn't read {0} json profile", name);
                         return null;
                     }
                 }
