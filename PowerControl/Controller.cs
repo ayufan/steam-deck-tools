@@ -413,9 +413,11 @@ namespace PowerControl
                 Thread.Sleep(7200);
             }
 
-            rootMenu.SelectValueByKey(GameOptions.RefreshRate, profile.refreshRate);
+            var profileCopy = GameProfile.Copy(profile);
+
+            rootMenu.SelectValueByKey(GameOptions.RefreshRate, profileCopy.refreshRate);
             Thread.Sleep(1000);
-            rootMenu.SelectValueByKey(GameOptions.Fps, profile.fps);
+            rootMenu.SelectValueByKey(GameOptions.Fps, profileCopy.fps);
         }
     }
 }

@@ -25,6 +25,11 @@ namespace PowerControl.Helpers
             this.fps = fps;
             this.refreshRate = refreshRate;
         }
+
+        public static GameProfile Copy(GameProfile profile)
+        {
+            return new GameProfile(profile.name, profile.fps, profile.refreshRate);
+        }
     }
 
     public static class GameProfilesController
@@ -102,7 +107,11 @@ namespace PowerControl.Helpers
                 }
             }
 
-            return new GameProfile(GameProfile.DefaultName, 3, getCurrentRefreshRateIndex());
+            var defaultProfile = new GameProfile(GameProfile.DefaultName, 3, getCurrentRefreshRateIndex());
+
+            WriteProfile(defaultProfile);
+
+            return defaultProfile;
         }
 
         public static bool CheckIfProfileExists(string name)

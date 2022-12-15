@@ -186,7 +186,7 @@ namespace PowerControl
                 delayTimer.Enabled = true;
             }
 
-            private void onApply(bool updateConfig = true)
+            private void onApply()
             {
                 if (ApplyValue != null)
                     ActiveOption = ApplyValue(SelectedOption);
@@ -195,7 +195,7 @@ namespace PowerControl
 
                 SelectedOption = null;
 
-                if (Key != GameOptions.None && updateConfig)
+                if (Key != GameOptions.None)
                 {
                     GameProfilesController.SetValueByKey(Key, Options.IndexOf(ActiveOption));
                 }
@@ -254,7 +254,7 @@ namespace PowerControl
                 int selectedIndex = Math.Clamp(index, 0, Options.Count - 1);
                 SelectedOption = Options[selectedIndex];
 
-                onApply(false);
+                onApply();
             }
 
             private void SelectIndex(int index)
