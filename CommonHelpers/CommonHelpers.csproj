@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DefineConstants Condition=" '$(ExtraDefineConstants)' != '' ">$(DefineConstants);$(ExtraDefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">

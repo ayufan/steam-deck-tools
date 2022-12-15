@@ -86,11 +86,12 @@ namespace Updater
             TrackProcess("SteamController");
 
             var updateURL = String.Format(
-                "https://steam-deck-tools.ayufan.dev/docs/updates/{0}_{1}.xml?version={2}&machineID={3}",
+                "https://steam-deck-tools.ayufan.dev/docs/updates/{0}_{1}.xml?version={2}&machineID={3}&env={4}",
                 Instance.IsDEBUG ? "debug" : "release",
                 IsUsingInstaller ? "setup" : "zip",
                 HttpUtility.UrlEncode(Instance.ProductVersion),
-                HttpUtility.UrlEncode(Instance.MachineID)
+                HttpUtility.UrlEncode(Instance.MachineID),
+                Instance.IsProductionBuild ? "prod" : "dev"
             );
 
             AutoUpdater.Start(updateURL);

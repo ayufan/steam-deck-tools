@@ -15,3 +15,4 @@
 - Add `Setup.exe` installer to install all except RTSS
 - Add `Sentry` error tracking
 - Use `white` icons when using `Dark Theme` (thanks @maniman303 https://github.com/ayufan/steam-deck-tools/pull/23)
+- Validate that all dependencies are installed
