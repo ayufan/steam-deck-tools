@@ -74,8 +74,13 @@ namespace SteamController.Helpers
                 StringBuilder className = new StringBuilder(256);
                 if (GetClassName(hWnd, className, className.Capacity) == 0)
                     return false;
-
                 if (className.ToString() != "SDL_app")
+                    return false;
+
+                StringBuilder windowText = new StringBuilder(256);
+                if (GetWindowText(hWnd, windowText, windowText.Capacity) == 0)
+                    return false;
+                if (!windowText.ToString().StartsWith("SP"))
                     return false;
 
                 return ForegroundProcess.Find(hWnd)?.ProcessName == "steamwebhelper";
