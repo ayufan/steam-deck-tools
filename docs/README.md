@@ -50,6 +50,10 @@ It is strongly advised that following software is uninstalled or disabled:
 - [Troubleshooting](troubleshooting.md) - if you encounter any problems.
 - The latest beta version can be found in [GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases).
 
+## Join Us
+
+Join Us for help or chat. We are at [#windows of Steam Deck Discord](https://discord.com/channels/865611969661632521/867449233261985812).
+
 ## Anti-Cheat and Antivirus software
 
 Since this project uses direct manipulation of kernel memory via `inpoutx64.dll`
