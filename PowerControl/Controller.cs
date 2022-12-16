@@ -33,6 +33,7 @@ namespace PowerControl
         System.Windows.Forms.Timer? neptuneTimer;
 
         System.Windows.Forms.Timer gameProfileTimer;
+        bool isSingleDisplay = false;
 
         SharedData<PowerControlSetting> sharedData = SharedData<PowerControlSetting>.CreateNew();
 
@@ -110,7 +111,7 @@ namespace PowerControl
                 hideOSD();
             };
 
-            setProfile(GameProfilesController.CurrentProfile);
+            //setProfile(GameProfilesController.CurrentProfile);
 
             gameProfileTimer = new System.Windows.Forms.Timer(components);
             gameProfileTimer.Interval = 1500;
@@ -118,10 +119,7 @@ namespace PowerControl
             {
                 gameProfileTimer.Stop();
 
-                if (GameProfilesController.UpdateGameProfile())
-                {
-                    setProfile(GameProfilesController.CurrentProfile);
-                }
+                RefreshGameProfile();
 
                 gameProfileTimer.Start();
             };
@@ -407,6 +405,14 @@ namespace PowerControl
             }
             catch (SystemException)
             {
+            }
+        }
+
+        private void RefreshGameProfile()
+        {
+            if (GameProfilesController.UpdateGameProfile())
+            {
+                setProfile(GameProfilesController.CurrentProfile);
             }
         }
 

@@ -148,10 +148,11 @@ namespace PowerControl.Helpers
             if (current is null)
                 return false;
 
-            DEVMODE? best = FindAllDisplaySettings()
-                .Where((dm) => dm.dmPelsWidth == current.Value.dmPelsWidth && dm.dmPelsHeight == current.Value.dmPelsHeight)
-                .Where((dm) => dm.dmDisplayFrequency == hz)
-                .First();
+            var displaySettings = FindAllDisplaySettings();
+            var whereSize = displaySettings.Where((dm) => dm.dmPelsWidth == current.Value.dmPelsWidth && dm.dmPelsHeight == current.Value.dmPelsHeight);
+            var whereFreq = whereSize.Where((dm) => dm.dmDisplayFrequency == hz);
+
+            DEVMODE? best = whereFreq.FirstOrDefault();
 
             if (best is null)
                 return false;

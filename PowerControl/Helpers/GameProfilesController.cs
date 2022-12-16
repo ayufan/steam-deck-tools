@@ -34,21 +34,50 @@ namespace PowerControl.Helpers
 
     public static class GameProfilesController
     {
-        public static string CurrentGame { get; private set; }
+        public static string CurrentGame { get; private set; } = string.Empty;
         public static GameProfile CurrentProfile { get; private set; }
 
         private static string profilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Profiles");
         private static DirectoryInfo profilesDirectory;
-        
+        private static bool isSingleDisplay = false;
+
         static GameProfilesController()
         {
             profilesDirectory = Directory.CreateDirectory(profilesPath);
-            CurrentGame = GameProfile.DefaultName;
             CurrentProfile = GetDefaultProfile();
         }
 
         public static bool UpdateGameProfile()
         {
+            int displays = DeviceManager.GetActiveDisplays();
+
+            if (!isSingleDisplay && displays != 1)
+            {
+                return false;
+            }
+
+            if (isSingleDisplay && displays != 1)
+            {
+                CurrentGame = string.Empty;
+                CurrentProfile = new GameProfile(string.Empty, 3, 0);
+                isSingleDisplay = false;
+
+                // Let windows handle monitor plugin
+                Thread.Sleep(1000);
+
+                return true;
+            }
+
+            if (!isSingleDisplay && displays == 1)
+            {
+                isSingleDisplay = true;
+
+                // Let windows handle monitor unplug
+                Thread.Sleep(1500);
+
+                return false;
+            }
+
             string? runningGame = RTSS.GetCurrentGameName();
 
             if (runningGame == null && CurrentGame != GameProfile.DefaultName)
@@ -92,7 +121,10 @@ namespace PowerControl.Helpers
                     break;
             }
 
-            WriteProfile(CurrentProfile);
+            if (CurrentGame != string.Empty)
+            {
+                WriteProfile(CurrentProfile);
+            }
         }
 
         public static GameProfile GetDefaultProfile()

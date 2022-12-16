@@ -1,11 +1,4 @@
-using PowerControl.External;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PowerControl.Helpers
 {
@@ -75,6 +68,11 @@ namespace PowerControl.Helpers
 
             CM_Free_Res_Des_Handle(logConf);
             return ranges;
+        }
+
+        public static int GetActiveDisplays()
+        {
+            return Screen.AllScreens.Count();
         }
 
         static bool CM_Get_DevNode_Property(IntPtr devInst, DEVPROPKEY propertyKey, out string result, int flags)
