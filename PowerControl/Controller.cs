@@ -418,14 +418,13 @@ namespace PowerControl
 
         private void setProfile(GameProfile profile)
         {
-            if (GameProfilesController.CurrentGame != GameProfile.DefaultName)
+            var profileCopy = GameProfile.Copy(profile);
+
+            if (profileCopy.isTroubled)
             {
-                // Fixes refresh rate reset for Dragon Age Inquisition
-                // Probably should have a list of games with strange behaviour
+                // Fixes refresh rate reset for games tagged as troubled eg. Dragon Age Inquisition
                 Thread.Sleep(7200);
             }
-
-            var profileCopy = GameProfile.Copy(profile);
 
             rootMenu.SelectValueByKey(GameOptions.RefreshRate, profileCopy.refreshRate);
             Thread.Sleep(1000);

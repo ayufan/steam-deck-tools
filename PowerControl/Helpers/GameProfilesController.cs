@@ -18,6 +18,7 @@ namespace PowerControl.Helpers
         public string name { get; set; }
         public int fps { get; set; } = 1;
         public int refreshRate { get; set; } = 0;
+        public bool isTroubled { get; set; } = false;
 
         public GameProfile(string name, int fps, int refreshRate)
         {
@@ -40,6 +41,7 @@ namespace PowerControl.Helpers
         private static string profilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Profiles");
         private static DirectoryInfo profilesDirectory;
         private static bool isSingleDisplay = false;
+        private static string[] troubledGame = { "dragonageinquisition" };
 
         static GameProfilesController()
         {
@@ -182,6 +184,17 @@ namespace PowerControl.Helpers
             {
                 return null;
             }
+        }
+
+        public static GameProfile CreateProfile(string name)
+        {
+            var profile = GameProfile.Copy(GetDefaultProfile());
+            profile.name = name;
+            profile.isTroubled = troubledGame.Contains(name.ToLower());
+
+            WriteProfile(profile);
+
+            return profile;
         }
 
         public static void WriteProfile(GameProfile profile)
