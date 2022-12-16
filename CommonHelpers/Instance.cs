@@ -178,6 +178,12 @@ namespace CommonHelpers
 
         public static void WithSentry(Action action, string? dsn = null)
         {
+            if (File.Exists("DisableCheckForUpdates.txt"))
+            {
+                action();
+                return;
+            }
+
             // Overwrite DSN
             if (dsn != null)
             {

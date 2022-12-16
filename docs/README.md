@@ -47,6 +47,7 @@ It is strongly advised that following software is uninstalled or disabled:
 - [Controller Shortcuts](shortcuts.md) - default shortcuts when using [Steam Controller](steam-controller.md).
 - [Development](development.md) - how to compile this project.
 - [Risks](risks.md) - this project uses kernel manipulation and might result in unstable system.
+- [Privacy](privacy.md) - this project can connect to remote server to check for auto-updates or track
 - [Troubleshooting](troubleshooting.md) - if you encounter any problems.
 - The latest beta version can be found in [GitHub Releases](https://github.com/ayufan/steam-deck-tools/releases).
 

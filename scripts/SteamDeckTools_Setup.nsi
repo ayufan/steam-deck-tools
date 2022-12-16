@@ -250,6 +250,12 @@ Section "Run on Startup" StartAllComponents
   Exec '"$INSTDIR\SteamController.exe" -run-on-startup'
 SectionEnd
 
+Section /o "Disable Check for Updates" DisableCheckForUpdates
+  SetShellVarContext All
+  FileOpen $0 "$INSTDIR\DisableCheckForUpdates.txt" w
+  FileClose $0
+SectionEnd
+
 ;--------------------------------
 ;Installer Functions
 
@@ -275,6 +281,7 @@ FunctionEnd
     !insertmacro MUI_DESCRIPTION_TEXT ${DesktopShortcut} "Create a shortcut on your desktop."
     !insertmacro MUI_DESCRIPTION_TEXT ${ProgramsShortcut} "Create a shortcut in your start menu folder."
     !insertmacro MUI_DESCRIPTION_TEXT ${StartAllComponents} "Start all components on system boot."
+    !insertmacro MUI_DESCRIPTION_TEXT ${DisableCheckForUpdates} "This application might connect remote server to check for updates or track errors. This helps this project development."
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------

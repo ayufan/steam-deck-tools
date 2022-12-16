@@ -10,7 +10,6 @@ namespace PowerControl.Helpers
     /// <summary>
     /// Controls audio using the Windows CoreAudio API
     /// from: http://stackoverflow.com/questions/14306048/controling-volume-mixer
-    /// and: http://netcoreaudio.codeplex.com/
     /// </summary>
     public static class AudioManager
     {

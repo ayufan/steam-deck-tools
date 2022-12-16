@@ -54,6 +54,19 @@ namespace Updater
 
             Instance.RunOnce(null, "Global\\SteamDeckToolsAutoUpdater");
 
+            if (File.Exists("DisableCheckForUpdates.txt"))
+            {
+                if (userCheck || cmdLine)
+                {
+                    MessageBox.Show(
+                        "This application has explicitly disabled auto-updates. Remove the 'DisableCheckForUpdates.txt' file and retry again",
+                        Title,
+                        MessageBoxButtons.OK
+                    );
+                }
+                return;
+            }
+
             var persistence = new RegistryPersistenceProvider(@"Software\SteamDeckTools\AutoUpdater");
 
             if (userCheck || cmdLine)
