@@ -4,6 +4,7 @@ using hidapi;
 using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using PowerControl.External;
+using PowerControl.Helpers;
 using RTSSSharedMemoryNET;
 using System.ComponentModel;
 using System.Diagnostics;
