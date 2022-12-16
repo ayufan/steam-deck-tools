@@ -63,7 +63,11 @@ namespace SteamController.Profiles.Default
                         break;
 
                     case Settings.KeyboardStyles.WindowsTouch:
-                        OnScreenKeyboard.Toggle();
+                        if (!OnScreenKeyboard.Toggle())
+                        {
+                            // Fallback to CTRL+WIN+O
+                            c.Keyboard.KeyPress(new VirtualKeyCode[] { VirtualKeyCode.LCONTROL, VirtualKeyCode.LWIN }, VirtualKeyCode.VK_O);
+                        }
                         break;
                 }
             }

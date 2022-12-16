@@ -36,14 +36,23 @@ namespace PowerControl
                     CycleOptions = false,
                     CurrentValue = delegate()
                     {
-                        return Helpers.AudioManager.GetMasterVolume(5.0);
+                        try { return Helpers.AudioManager.GetMasterVolume(5.0); }
+                        catch(Exception) { return null; }
                     },
                     ApplyValue = delegate(object selected)
                     {
-                        Helpers.AudioManager.SetMasterVolumeMute(false);
-                        Helpers.AudioManager.SetMasterVolume((int)selected);
+                        try
+                        {
+                            Helpers.AudioManager.SetMasterVolumeMute(false);
+                            Helpers.AudioManager.SetMasterVolume((int)selected);
 
-                        return Helpers.AudioManager.GetMasterVolume(5.0);
+                            return Helpers.AudioManager.GetMasterVolume(5.0);
+                        }
+                        catch(Exception)
+                        {
+                            // In some cases MasterVolume device is missing
+                            return null;
+                        }
                     }
                 },
                 new Menu.MenuItemSeparator(),

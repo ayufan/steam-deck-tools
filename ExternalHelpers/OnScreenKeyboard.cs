@@ -15,17 +15,24 @@ namespace ExternalHelpers
 
         public static bool Toggle()
         {
-            StartTabTip();
+            try
+            {
+                StartTabTip();
 
-            var type = Type.GetTypeFromCLSID(Guid.Parse("4ce576fa-83dc-4F88-951c-9d0782b4e376"));
-            if (type is null)
+                var type = Type.GetTypeFromCLSID(Guid.Parse("4ce576fa-83dc-4F88-951c-9d0782b4e376"));
+                if (type is null)
+                    return false;
+                var instance = (ITipInvocation?)Activator.CreateInstance(type);
+                if (instance is null)
+                    return false;
+                instance?.Toggle(GetDesktopWindow());
+                Marshal.ReleaseComObject(instance);
+                return true;
+            }
+            catch (Exception)
+            {
                 return false;
-            var instance = (ITipInvocation?)Activator.CreateInstance(type);
-            if (instance is null)
-                return false;
-            instance?.Toggle(GetDesktopWindow());
-            Marshal.ReleaseComObject(instance);
-            return true;
+            }
         }
 
         static void StartTabTip()
