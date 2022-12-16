@@ -10,7 +10,9 @@ including, but not only:
 
 - Windows Version
 - .NET Framework Version
+- Exception Stack Trace
 - Application Version
+- Type of installation
 - Unique installation ID
 
 Additionally for statistic purposes the installation ID and Application Version might
