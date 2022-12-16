@@ -220,14 +220,18 @@ namespace CommonHelpers
             }
         }
 
-        public static Version? ApplicationVersion
-        {
-            get => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-        }
-
         public static String ProductVersion
         {
             get => Application.ProductVersion;
+        }
+
+        public static String ProductVersionWithSha
+        {
+            get
+            {
+                var releaseVersion = typeof(Instance).Assembly.GetCustomAttributes<AssemblyInformationalVersionAttribute>().FirstOrDefault();
+                return releaseVersion?.InformationalVersion ?? ProductVersion;
+            }
         }
 
         private static System.Timers.Timer? updateTimer;

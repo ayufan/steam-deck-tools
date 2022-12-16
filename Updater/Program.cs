@@ -66,7 +66,10 @@ namespace Updater
             AutoUpdater.RemindLaterTimeSpan = RemindLaterFormat.Days;
             AutoUpdater.LetUserSelectRemindLater = true;
             AutoUpdater.ShowRemindLaterButton = true;
-            AutoUpdater.HttpUserAgent = String.Format("AutoUpdater/{0}/{1}", Instance.MachineID, Instance.ProductVersion);
+            AutoUpdater.HttpUserAgent = String.Format("AutoUpdater/{0}/{1}/{2}",
+                Instance.MachineID,
+                Instance.ProductVersionWithSha,
+                Instance.IsProductionBuild ? "prod" : "dev");
             AutoUpdater.PersistenceProvider = persistence;
             AutoUpdater.ReportErrors = userCheck || cmdLine;
             AutoUpdater.UpdateFormSize = new Size(800, 300);
@@ -89,7 +92,7 @@ namespace Updater
                 "https://steam-deck-tools.ayufan.dev/docs/updates/{0}_{1}.xml?version={2}&machineID={3}&env={4}",
                 Instance.IsDEBUG ? "debug" : "release",
                 IsUsingInstaller ? "setup" : "zip",
-                HttpUtility.UrlEncode(Instance.ProductVersion),
+                HttpUtility.UrlEncode(Instance.ProductVersionWithSha),
                 HttpUtility.UrlEncode(Instance.MachineID),
                 Instance.IsProductionBuild ? "prod" : "dev"
             );
