@@ -45,6 +45,7 @@ namespace SteamController.Devices
             }
             catch (VigemBusNotFoundException)
             {
+                // ViGem is not installed
                 return false;
             }
         }
@@ -54,6 +55,7 @@ namespace SteamController.Devices
             var client = this.client;
 
             // unset current device
+            this.isConnected = false;
             this.client = null;
             this.device = null;
 
@@ -91,6 +93,13 @@ namespace SteamController.Devices
                     device?.Connect();
                     TraceLine("Connected X360 Controller.");
                 }
+                catch (System.ComponentModel.Win32Exception e)
+                {
+                    // This is expected exception (as sometimes device will fail to connect)
+                    TraceException("X360", "ConnectExpected", e);
+                    Fail();
+                    return;
+                }
                 catch (Exception e)
                 {
                     TraceException("X360", "Connect", e);
@@ -104,6 +113,10 @@ namespace SteamController.Devices
                 {
                     device?.Disconnect();
                     TraceLine("Disconnected X360 Controller.");
+                }
+                catch (VigemTargetNotPluggedInException)
+                {
+                    // everything fine
                 }
                 catch (Exception e)
                 {
@@ -149,11 +162,14 @@ namespace SteamController.Devices
                 {
                     device?.SubmitReport();
                 }
-                catch (VigemInvalidTargetException e)
+                catch (VigemInvalidTargetException)
+                {
+                    // Device was lost
+                    lock (this) { Fail(); }
+                }
+                catch (Exception e)
                 {
                     TraceException("X360", "SubmitReport", e);
-                    device?.Disconnect();
-                    isConnected = false;
                 }
             }
 
