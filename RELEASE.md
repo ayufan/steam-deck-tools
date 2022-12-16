@@ -20,3 +20,4 @@
 - Fallback `OSK` to `CTRL+WIN+O` if `TabTip.exe` is missing
 - Detect that Steam was installed, but not longer available
 - Update `Updater.exe` to allow to disable automatic updates - this is selectable option via `setup.exe`
+- Do not validate `RTSSHooks64.dll`

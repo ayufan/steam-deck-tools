@@ -26,7 +26,6 @@ namespace PerformanceOverlay
 
         static Controller()
         {
-            Dependencies.ValidateRTSS(TitleWithVersion);
             Dependencies.ValidateRTSSSharedMemoryNET(TitleWithVersion);
         }
 
