@@ -19,3 +19,4 @@
 - Improve exception handling for Steam and X360 controllers
 - Fallback `OSK` to `CTRL+WIN+O` if `TabTip.exe` is missing
 - Detect that Steam was installed, but not longer available
+- Update `Updater.exe` to allow to disable automatic updates - this is selectable option via `setup.exe`
