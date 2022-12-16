@@ -108,6 +108,12 @@ namespace SteamController.Devices
                 hapticTasks[position] = neptuneDevice.RequestFeatureReportAsync(bytes);
                 return true;
             }
+            catch (hidapi.HidDeviceInvalidException)
+            {
+                // Steam might disconnect device
+                Fail();
+                return false;
+            }
             catch (Exception e)
             {
                 TraceException("STEAM", "Haptic", e);

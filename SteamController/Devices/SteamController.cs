@@ -46,14 +46,14 @@ namespace SteamController.Devices
             neptuneDevice.OpenDevice();
         }
 
-        internal void Fail()
+        internal void Fail(bool immediately = false)
         {
             foreach (var action in AllActions)
                 action.Reset();
 
             // Try to re-open every MaxFailures
             failures++;
-            if (failures % MaxFailures == 0)
+            if (failures % MaxFailures == 0 || immediately)
             {
                 OpenDevice();
                 failures = 0;
@@ -89,6 +89,12 @@ namespace SteamController.Devices
                 BeforeUpdate(data);
                 Updated = true;
             }
+            catch (hidapi.HidDeviceInvalidException)
+            {
+                // Steam might disconnect device
+                Fail();
+                Updated = false;
+            }
             catch (Exception e)
             {
                 TraceException("STEAM", "BeforeUpdate", e);
@@ -106,6 +112,11 @@ namespace SteamController.Devices
             {
                 UpdateLizardButtons();
                 UpdateLizardMouse();
+            }
+            catch (hidapi.HidDeviceInvalidException)
+            {
+                // Steam might disconnect device
+                Fail();
             }
             catch (Exception e)
             {
