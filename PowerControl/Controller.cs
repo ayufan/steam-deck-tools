@@ -1,18 +1,11 @@
 ﻿using CommonHelpers;
 using ExternalHelpers;
-using Microsoft.VisualBasic.Logging;
-using Microsoft.Win32;
+using hidapi;
 using PowerControl.External;
 using PowerControl.Helpers;
 using RTSSSharedMemoryNET;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.AxHost;
 
 namespace PowerControl
 {
@@ -201,7 +194,7 @@ namespace PowerControl
             updateOSD();
         }
 
-        private void NeptuneDevice_OnInputReceived(object? sender, hidapi.HidDeviceInputReceivedEventArgs e)
+        private Task NeptuneDevice_OnInputReceived(hidapi.HidDeviceInputReceivedEventArgs e)
         {
             var input = SDCInput.FromBuffer(e.Buffer);
 
@@ -224,6 +217,8 @@ namespace PowerControl
             // Consume only some events to avoid under-running SWICD
             if (!neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS))
                 Thread.Sleep(50);
+
+            return new Task(() => { });
         }
 
         private void dismissNeptuneInput()

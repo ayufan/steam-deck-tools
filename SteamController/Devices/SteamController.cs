@@ -26,8 +26,15 @@ namespace SteamController.Devices
             stopwatch.Start();
         }
 
+        ~SteamController()
+        {
+            Dispose();
+        }
+
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
+            using (neptuneDevice) { }
         }
 
         public bool Updated { get; private set; }
