@@ -95,7 +95,7 @@ namespace PowerControl
             public delegate object ApplyValueDelegate(object selected);
 
             public IList<Object> Options { get; set; } = new List<Object>();
-            public Object SelectedOption { get; set; }
+            public Object? SelectedOption { get; set; }
             public Object ActiveOption { get; set; }
             public int ApplyDelay { get; set; }
             public bool CycleOptions { get; set; } = true;
@@ -112,6 +112,13 @@ namespace PowerControl
             public MenuItemWithOptions()
             {
                 this.Selectable = true;
+
+                GameProfilesController.Subscribe((key, value) => {
+                    if (key == Key)
+                    {
+                        SelectIndex(value, true);
+                    }
+                });
             }
 
             public override void Reset()
@@ -163,14 +170,14 @@ namespace PowerControl
                 onUpdateToolStrip();
             }
 
-            private void scheduleApply()
+            private void scheduleApply(bool isUserInvoked = false)
             {
                 if (delayTimer != null)
                     delayTimer.Stop();
 
                 if (ApplyDelay == 0)
                 {
-                    onApply();
+                    onApply(isUserInvoked);
                     return;
                 }
 
@@ -181,12 +188,12 @@ namespace PowerControl
                     if (delayTimer != null)
                         delayTimer.Stop();
 
-                    onApply();
+                    onApply(isUserInvoked);
                 };
                 delayTimer.Enabled = true;
             }
 
-            private void onApply()
+            private void onApply(bool isUserInvoked = false)
             {
                 if (ApplyValue != null)
                     ActiveOption = ApplyValue(SelectedOption);
@@ -195,7 +202,7 @@ namespace PowerControl
 
                 SelectedOption = null;
 
-                if (Key != GameOptions.None)
+                if (Key != GameOptions.None && isUserInvoked)
                 {
                     GameProfilesController.SetValueByKey(Key, Options.IndexOf(ActiveOption));
                 }
@@ -246,7 +253,7 @@ namespace PowerControl
                 collection.Add(toolStripItem);
             }
 
-            public void SelectByIndex(int index)
+            private void SelectIndex(int index, bool isImmediate = false)
             {
                 if (Options.Count == 0)
                     return;
@@ -254,18 +261,14 @@ namespace PowerControl
                 int selectedIndex = Math.Clamp(index, 0, Options.Count - 1);
                 SelectedOption = Options[selectedIndex];
 
-                onApply();
-            }
-
-            private void SelectIndex(int index)
-            {
-                if (Options.Count == 0)
-                    return;
-
-                int selectedIndex = Math.Clamp(index, 0, Options.Count - 1);
-                SelectedOption = Options[selectedIndex];
-
-                scheduleApply();
+                if (isImmediate)
+                {
+                    onApply();
+                }
+                else
+                {
+                    scheduleApply(true);
+                }
             }
 
             public override void SelectNext()
@@ -397,21 +400,6 @@ namespace PowerControl
                 if (VisibleChanged != null)
                     VisibleChanged();
                 return true;
-            }
-
-            public void SelectValueByKey(GameOptions key, int value)
-            {
-                List<MenuItemWithOptions> options = Items.Where(e => e is MenuItemWithOptions)
-                    .Select(e => (MenuItemWithOptions)e).ToList();
-
-                foreach (var item in options)
-                {
-                    if (item.Key == key)
-                    {
-                        item.SelectByIndex(value);
-                        return;
-                    }
-                }
             }
 
             public void Prev()

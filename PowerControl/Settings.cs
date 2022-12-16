@@ -55,11 +55,12 @@ namespace PowerControl
 
         public bool EnableExperimentalFeatures
         {
-#if DEBUG
-            get { return true; }
-#else
             get { return false; }
-#endif
+//#if DEBUG
+//            get { return true; }
+//#else
+//            get { return false; }
+//#endif
         }
     }
 }

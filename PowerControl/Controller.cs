@@ -110,10 +110,8 @@ namespace PowerControl
                 hideOSD();
             };
 
-            //setProfile(GameProfilesController.CurrentProfile);
-
             gameProfileTimer = new System.Windows.Forms.Timer(components);
-            gameProfileTimer.Interval = 1500;
+            gameProfileTimer.Interval = 1000;
             gameProfileTimer.Tick += delegate (object? sender, EventArgs e)
             {
                 gameProfileTimer.Stop();
@@ -411,25 +409,13 @@ namespace PowerControl
 
         private void RefreshGameProfile()
         {
-            if (GameProfilesController.UpdateGameProfile())
+            if (GameProfilesController.HaveDisplaysChanged)
             {
-                setProfile(GameProfilesController.CurrentProfile);
-            }
-        }
-
-        private void setProfile(GameProfile profile)
-        {
-            var profileCopy = GameProfile.Copy(profile);
-
-            if (profileCopy.isTroubled)
-            {
-                // Fixes refresh rate reset for games tagged as troubled eg. Dragon Age Inquisition
-                Thread.Sleep(7200);
+                rootMenu.Update();
             }
 
-            rootMenu.SelectValueByKey(GameOptions.RefreshRate, profileCopy.refreshRate);
-            Thread.Sleep(1000);
-            rootMenu.SelectValueByKey(GameOptions.Fps, profileCopy.fps);
+            GameProfilesController.UpdateGameProfile();
+            // Later here UI will be updated
         }
     }
 }

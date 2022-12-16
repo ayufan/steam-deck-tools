@@ -39,11 +39,15 @@ namespace PowerControl.Helpers
     {
         public static string CurrentGame { get; private set; } = string.Empty;
         public static GameProfile CurrentProfile { get; private set; }
+        public static bool IsSingleDisplay { get; private set; } = false;
+        public static bool HaveDisplaysChanged { get => IsSingleDisplay ^ (DeviceManager.GetActiveDisplays() == 1); }
 
         private static string profilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Profiles");
         private static DirectoryInfo profilesDirectory;
-        private static bool isSingleDisplay = false;
-        private static string[] troubledGame = { "dragonageinquisition" };
+        private static string[] troubledGames = { "dragonageinquisition" };
+        private static Object syncUpdate = new();
+        private static Object syncWrite = new();
+        private static List<Action<GameOptions, int>> subscribers = new List<Action<GameOptions, int>>();
 
         static GameProfilesController()
         {
@@ -51,66 +55,70 @@ namespace PowerControl.Helpers
             CurrentProfile = GetDefaultProfile();
         }
 
-        public static bool UpdateGameProfile()
+        public static void UpdateGameProfile()
         {
             int displays = DeviceManager.GetActiveDisplays();
 
-            if (!isSingleDisplay && displays != 1)
+            lock (syncUpdate)
             {
-                return false;
-            }
-
-            if (isSingleDisplay && displays != 1)
-            {
-                CurrentGame = string.Empty;
-                CurrentProfile = new GameProfile(string.Empty, 3, 0);
-                isSingleDisplay = false;
-
-                // Let windows handle monitor plugin
-                Thread.Sleep(1000);
-
-                return true;
-            }
-
-            if (!isSingleDisplay && displays == 1)
-            {
-                isSingleDisplay = true;
-
-                // Let windows handle monitor unplug
-                Thread.Sleep(1500);
-
-                return false;
-            }
-
-            string? runningGame = RTSS.GetCurrentGameName();
-
-            if (runningGame == null && CurrentGame != GameProfile.DefaultName)
-            {
-                CurrentGame = GameProfile.DefaultName;
-                CurrentProfile = GetDefaultProfile();
-
-                return true;
-            }
-
-            if (runningGame != null && CurrentGame != runningGame)
-            {
-                CurrentGame = runningGame;
-                GameProfile? gameProfile;
-
-                if (CheckIfProfileExists(CurrentGame) &&
-                    (gameProfile = GetProfile(runningGame)) != null)
+                if (!IsSingleDisplay && displays != 1)
                 {
-                    CurrentProfile = gameProfile;
+                    return;
                 }
-                else
+
+                if (IsSingleDisplay && displays != 1)
                 {
+                    CurrentGame = string.Empty;
+                    CurrentProfile = new GameProfile(string.Empty, 3, 0);
+                    IsSingleDisplay = false;
+
+                    // Let windows handle monitor plugin
+                    Thread.Sleep(1000);
+
+                    notifyAll();
+                    return;
+                }
+
+                if (!IsSingleDisplay && displays == 1)
+                {
+                    IsSingleDisplay = true;
+
+                    // Let windows handle monitor unplug
+                    Thread.Sleep(2500);
+
+                    return;
+                }
+
+                string? runningGame = RTSS.GetCurrentGameName();
+
+                if (runningGame == null && CurrentGame != GameProfile.DefaultName)
+                {
+                    CurrentGame = GameProfile.DefaultName;
                     CurrentProfile = GetDefaultProfile();
+
+                    notifyAll();
+                    return;
                 }
 
-                return true;
-            }
+                if (runningGame != null && CurrentGame != runningGame)
+                {
+                    CurrentGame = runningGame;
+                    GameProfile? gameProfile;
 
-            return false;
+                    if (CheckIfProfileExists(CurrentGame) &&
+                        (gameProfile = GetProfile(runningGame)) != null)
+                    {
+                        CurrentProfile = gameProfile;
+                    }
+                    else
+                    {
+                        CurrentProfile = GetDefaultProfile();
+                    }
+
+                    notifyAll();
+                    return;
+                }
+            }
         }
 
         public static void SetValueByKey(GameOptions key, int value)
@@ -192,7 +200,7 @@ namespace PowerControl.Helpers
         {
             var profile = GameProfile.Copy(GetDefaultProfile());
             profile.name = name;
-            profile.isTroubled = troubledGame.Contains(name.ToLower());
+            profile.isTroubled = troubledGames.Contains(name.ToLower());
 
             WriteProfile(profile);
 
@@ -203,7 +211,16 @@ namespace PowerControl.Helpers
         {
             string fileName = string.Format("{0}\\{1}.json", profilesPath, profile.name);
             string jsonString = JsonSerializer.Serialize<GameProfile>(profile, new JsonSerializerOptions() { WriteIndented = true });
-            File.WriteAllText(fileName, jsonString);
+            
+            lock (syncWrite)
+            {
+                File.WriteAllText(fileName, jsonString);
+            }
+        }
+
+        public static void Subscribe(Action<GameOptions, int> action)
+        {
+            subscribers.Add(action);
         }
 
         private static int getCurrentRefreshRateIndex()
@@ -216,6 +233,27 @@ namespace PowerControl.Helpers
             }
 
             return 0;
+        }
+
+        private static void notifyAll()
+        {
+            if (CurrentProfile.isTroubled)
+            {
+                // Fixes refresh rate reset for games tagged as troubled eg. Dragon Age Inquisition
+                Thread.Sleep(7200);
+            }
+
+            notify(GameOptions.RefreshRate, CurrentProfile.refreshRate);
+            Thread.Sleep(1500);
+            notify(GameOptions.Fps, CurrentProfile.fps);
+        }
+
+        private static void notify(GameOptions key, int value)
+        {
+            foreach (var action in subscribers)
+            {
+                action.Invoke(key, value);
+            }
         }
     }
 }
