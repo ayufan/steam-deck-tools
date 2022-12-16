@@ -189,6 +189,11 @@ namespace SteamController.Helpers
 
                 return new HashSet<String>();
             }
+            catch (DirectoryNotFoundException)
+            {
+                // Steam was installed, but got removed
+                return null;
+            }
             catch (IOException e)
             {
                 Log.TraceException("STEAM", "Config", e);
@@ -217,6 +222,11 @@ namespace SteamController.Helpers
                 var suffix = DateTime.Now.ToString("yyyyMMddHHmmss");
                 File.Copy(configPath, String.Format("{0}.{1}.bak", configPath, suffix));
                 return true;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                // Steam was installed, but got removed
+                return false;
             }
             catch (IOException e)
             {
@@ -279,6 +289,11 @@ namespace SteamController.Helpers
                 File.WriteAllLines(configPath, lines);
                 return true;
             }
+            catch (DirectoryNotFoundException)
+            {
+                // Steam was installed, but got removed
+                return false;
+            }
             catch (IOException e)
             {
                 Log.TraceException("STEAM", "Config", e);
@@ -297,6 +312,11 @@ namespace SteamController.Helpers
                 byte[] diskContent = File.ReadAllBytes(configPath);
                 return content.SequenceEqual(diskContent);
             }
+            catch (DirectoryNotFoundException)
+            {
+                // Steam was installed, but got removed
+                return null;
+            }
             catch (IOException e)
             {
                 Log.TraceException("STEAM", "Config", e);
@@ -314,6 +334,11 @@ namespace SteamController.Helpers
 
                 File.Copy(configPath + ".orig", configPath, true);
                 return true;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                // Steam was installed, but got removed
+                return null;
             }
             catch (UnauthorizedAccessException)
             {
@@ -357,6 +382,11 @@ namespace SteamController.Helpers
             }
             catch (System.Security.SecurityException)
             {
+                return false;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                // Steam was installed, but got removed
                 return false;
             }
             catch (IOException e)
