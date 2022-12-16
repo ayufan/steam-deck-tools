@@ -6,9 +6,9 @@ namespace CommonHelpers
     public static class Log
     {
 #if PRODUCTION_BUILD
-        internal static String SENTRY_DSN = "";
+        internal static String SENTRY_DSN = "https://3c93e3c3b47b40ffba72d9cb333fc6d7@o4504334913830912.ingest.sentry.io/4504334914879488";
 #else
-        internal static String SENTRY_DSN = "";
+        internal static String SENTRY_DSN = "https://331e3316a2ba45dcae505791810a47a6@glitchtip.ayufan.dev/2";
 #endif
 
 #if DEBUG
