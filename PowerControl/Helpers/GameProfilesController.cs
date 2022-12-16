@@ -18,6 +18,8 @@ namespace PowerControl.Helpers
         public string name { get; set; }
         public int fps { get; set; } = 1;
         public int refreshRate { get; set; } = 0;
+        // This option will be set automatically if the game is on a "naughty" list
+        // or has to be changed in the json file by the user
         public bool isTroubled { get; set; } = false;
 
         public GameProfile(string name, int fps, int refreshRate)
