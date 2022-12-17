@@ -11,6 +11,26 @@ namespace PowerControl.Helpers
 {
     internal class DeviceManager
     {
+        public static int NumberOfDisplays { get; private set; }
+
+        public static void LoadDisplays()
+        {
+            NumberOfDisplays = Screen.AllScreens.Length;
+        }
+
+        public static bool RefreshDisplays()
+        {
+            int displays = Screen.AllScreens.Length;
+
+            if (NumberOfDisplays != displays)
+            {
+                NumberOfDisplays = displays;
+                return true;
+            }
+
+            return false;
+        }
+
         public static string[]? GetDevices(Guid? classGuid)
         {
             string? filter = null;

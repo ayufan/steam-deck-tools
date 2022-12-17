@@ -1,6 +1,7 @@
 ﻿using CommonHelpers;
 using ExternalHelpers;
 using hidapi;
+using Microsoft.Win32;
 using PowerControl.External;
 using PowerControl.Helpers;
 using RTSSSharedMemoryNET;
@@ -15,6 +16,9 @@ namespace PowerControl
         public static readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
         public const int KeyPressRepeatTime = 400;
         public const int KeyPressNextRepeatTime = 90;
+
+        private SynchronizationContext? context;
+        System.Windows.Forms.Timer contextTimer;
 
         Container components = new Container();
         System.Windows.Forms.NotifyIcon notifyIcon;
@@ -50,6 +54,21 @@ namespace PowerControl
 
             if (Instance.WantsRunOnStartup)
                 startupManager.Startup = true;
+
+            DeviceManager.LoadDisplays();
+            contextTimer = new System.Windows.Forms.Timer();
+            contextTimer.Tick += (_, _) =>
+            {
+                context = SynchronizationContext.Current;
+
+                if (context != null)
+                {
+                    contextTimer.Stop();
+                }
+            };
+            contextTimer.Start();
+
+            SystemEvents.DisplaySettingsChanged += DisplayChangesHandler;
 
             var contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
@@ -392,6 +411,17 @@ namespace PowerControl
             }
             catch (SystemException)
             {
+            }
+        }
+
+        private void DisplayChangesHandler(object? sender, EventArgs e)
+        {
+            if (DeviceManager.RefreshDisplays())
+            {
+                context?.Post((object? state) =>
+                {
+                    rootMenu.Update();
+                }, null);
             }
         }
     }
