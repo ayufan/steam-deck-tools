@@ -23,6 +23,7 @@ namespace PowerControl
         Menu.MenuRoot rootMenu = MenuStack.Root;
         OSD osd;
         System.Windows.Forms.Timer osdDismissTimer;
+        bool isOSDToggled = false;
 
         hidapi.HidDevice neptuneDevice = new hidapi.HidDevice(0x28de, 0x1205, 64);
         SDCInput neptuneDeviceState = new SDCInput();
@@ -94,11 +95,18 @@ namespace PowerControl
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
 
+            // Fix first time context menu position
+            contextMenu.Show();
+            contextMenu.Close();
+
             osdDismissTimer = new System.Windows.Forms.Timer(components);
             osdDismissTimer.Interval = 3000;
             osdDismissTimer.Tick += delegate (object? sender, EventArgs e)
             {
-                hideOSD();
+                if (!isOSDToggled)
+                {
+                    hideOSD();
+                }
             };
 
             var osdTimer = new System.Windows.Forms.Timer(components);
@@ -141,6 +149,23 @@ namespace PowerControl
                 setDismissTimer();
                 dismissNeptuneInput();
             });
+
+            GlobalHotKey.RegisterHotKey(Settings.Default.MenuToggle, () =>
+            {
+                isOSDToggled = !isOSDToggled;
+
+                if (!RTSS.IsOSDForeground())
+                    return;
+
+                if (isOSDToggled)
+                {
+                    showOSD();
+                }
+                else
+                {
+                    hideOSD();
+                }
+            }, true);
 
             if (Settings.Default.EnableNeptuneController)
             {
@@ -299,6 +324,17 @@ namespace PowerControl
             Trace.WriteLine("Hide OSD");
             rootMenu.Visible = false;
             osdDismissTimer.Stop();
+            updateOSD();
+        }
+
+        private void showOSD()
+        {
+            if (rootMenu.Visible)
+                return;
+
+            Trace.WriteLine("Show OSD");
+            rootMenu.Update();
+            rootMenu.Visible = true;
             updateOSD();
         }
 
