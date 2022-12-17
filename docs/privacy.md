@@ -27,6 +27,9 @@ or every 24 hours.
 All information being sent can be seen in a publically available source code
 of this application.
 
+You can see exact exceptions being sent in `Documents/SteamDeckTools/Logs`
+- if it is empty it means nothing was sent.
+
 ## Disable it
 
 Create `DisableCheckForUpdates.txt` file. To validate that this is working,
