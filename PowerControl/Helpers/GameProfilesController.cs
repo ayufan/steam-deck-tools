@@ -240,7 +240,7 @@ namespace PowerControl.Helpers
             if (CurrentProfile.isTroubled)
             {
                 // Fixes refresh rate reset for games tagged as troubled eg. Dragon Age Inquisition
-                Thread.Sleep(7200);
+                Thread.Sleep(6500);
             }
 
             notify(GameOptions.RefreshRate, CurrentProfile.refreshRate);
