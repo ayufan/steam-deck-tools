@@ -113,10 +113,11 @@ namespace PowerControl
             {
                 this.Selectable = true;
 
-                GameProfilesController.Subscribe((key, value) => {
-                    if (key == Key)
+                GameProfilesController.Subscribe((profile) => {
+                    int? option = profile.GetByKey(Key);
+                    if (option != null)
                     {
-                        SelectIndex(value, true);
+                        SelectIndex((int)option, true);
                     }
                 });
             }

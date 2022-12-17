@@ -33,6 +33,30 @@ namespace PowerControl.Helpers
         {
             return new GameProfile(profile.name, profile.fps, profile.refreshRate);
         }
+
+        public int? GetByKey(GameOptions key)
+        {
+            switch (key)
+            {
+                case GameOptions.Fps: return fps;
+                case GameOptions.RefreshRate: return refreshRate;
+            }
+
+            return null;
+        }
+
+        public void SetByKey(GameOptions key, int value)
+        {
+            switch (key)
+            {
+                case GameOptions.Fps:
+                    fps = value;
+                    break;
+                case GameOptions.RefreshRate:
+                    refreshRate = value;
+                    break;
+            }
+        }
     }
 
     public static class GameProfilesController
@@ -47,7 +71,7 @@ namespace PowerControl.Helpers
         private static string[] troubledGames = { "dragonageinquisition" };
         private static Object syncUpdate = new();
         private static Object syncWrite = new();
-        private static List<Action<GameOptions, int>> subscribers = new List<Action<GameOptions, int>>();
+        private static List<Action<GameProfile>> subscribers = new List<Action<GameProfile>>();
 
         static GameProfilesController()
         {
@@ -75,7 +99,7 @@ namespace PowerControl.Helpers
                     // Let windows handle monitor plugin
                     Thread.Sleep(1000);
 
-                    notifyAll();
+                    notify();
                     return;
                 }
 
@@ -96,7 +120,7 @@ namespace PowerControl.Helpers
                     CurrentGame = GameProfile.DefaultName;
                     CurrentProfile = GetDefaultProfile();
 
-                    notifyAll();
+                    notify();
                     return;
                 }
 
@@ -115,7 +139,7 @@ namespace PowerControl.Helpers
                         CurrentProfile = GetDefaultProfile();
                     }
 
-                    notifyAll();
+                    notify();
                     return;
                 }
             }
@@ -123,15 +147,7 @@ namespace PowerControl.Helpers
 
         public static void SetValueByKey(GameOptions key, int value)
         {
-            switch (key)
-            {
-                case GameOptions.Fps:
-                    CurrentProfile.fps = value;
-                    break;
-                case GameOptions.RefreshRate:
-                    CurrentProfile.refreshRate = value;
-                    break;
-            }
+            CurrentProfile.SetByKey(key, value);
 
             if (CurrentGame != string.Empty)
             {
@@ -218,7 +234,7 @@ namespace PowerControl.Helpers
             }
         }
 
-        public static void Subscribe(Action<GameOptions, int> action)
+        public static void Subscribe(Action<GameProfile> action)
         {
             subscribers.Add(action);
         }
@@ -235,7 +251,7 @@ namespace PowerControl.Helpers
             return 0;
         }
 
-        private static void notifyAll()
+        private static void notify()
         {
             if (CurrentProfile.isTroubled)
             {
@@ -243,16 +259,9 @@ namespace PowerControl.Helpers
                 Thread.Sleep(6500);
             }
 
-            notify(GameOptions.RefreshRate, CurrentProfile.refreshRate);
-            Thread.Sleep(1500);
-            notify(GameOptions.Fps, CurrentProfile.fps);
-        }
-
-        private static void notify(GameOptions key, int value)
-        {
             foreach (var action in subscribers)
             {
-                action.Invoke(key, value);
+                action.Invoke(CurrentProfile);
             }
         }
     }
