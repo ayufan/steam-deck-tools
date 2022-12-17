@@ -80,7 +80,7 @@ namespace Updater
             AutoUpdater.LetUserSelectRemindLater = true;
             AutoUpdater.ShowRemindLaterButton = true;
             AutoUpdater.HttpUserAgent = String.Format("AutoUpdater/{0}/{1}/{2}",
-                Instance.MachineID,
+                Instance.ID,
                 Instance.ProductVersionWithSha,
                 Instance.IsProductionBuild ? "prod" : "dev");
             AutoUpdater.PersistenceProvider = persistence;
@@ -106,7 +106,7 @@ namespace Updater
                 Instance.IsDEBUG ? "debug" : "release",
                 IsUsingInstaller ? "setup" : "zip",
                 HttpUtility.UrlEncode(Instance.ProductVersionWithSha),
-                HttpUtility.UrlEncode(Instance.MachineID),
+                HttpUtility.UrlEncode(Instance.ID),
                 Instance.IsProductionBuild ? "prod" : "dev"
             );
 

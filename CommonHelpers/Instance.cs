@@ -201,7 +201,7 @@ namespace CommonHelpers
             get { return Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown"; }
         }
 
-        public static String MachineID
+        public static String ID
         {
             get
             {

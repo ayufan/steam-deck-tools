@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using Sentry;
 
 namespace CommonHelpers
 {
@@ -24,12 +25,13 @@ namespace CommonHelpers
             var build = Instance.IsDEBUG ? "debug" : "release";
             var deploy = File.Exists("Uninstaller.exe") ? "setup" : "zip";
 
+            o.BeforeSend += Sentry_BeforeSend;
             o.Dsn = Log.SENTRY_DSN;
             o.TracesSampleRate = 1.0;
             o.IsGlobalModeEnabled = true;
             o.Environment = String.Format("{0}:{1}_{2}", Instance.ApplicationName, build, deploy);
             o.DefaultTags.Add("App", Instance.ApplicationName);
-            o.DefaultTags.Add("MachineID", Instance.MachineID);
+            o.DefaultTags.Add("ID", Instance.ID);
             o.DefaultTags.Add("Build", build);
             o.DefaultTags.Add("Deploy", deploy);
 
@@ -38,6 +40,29 @@ namespace CommonHelpers
             {
                 o.Release = releaseVersion.InformationalVersion;
             }
+        }
+
+        private static String? LogFileFolder;
+
+        private static SentryEvent? Sentry_BeforeSend(SentryEvent arg)
+        {
+            if (LogFileFolder == null)
+            {
+                var documentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                var steamControllerDocumentsFolder = Path.Combine(documentsFolder, "SteamDeckTools", "Logs");
+                Directory.CreateDirectory(steamControllerDocumentsFolder);
+                LogFileFolder = steamControllerDocumentsFolder;
+            }
+
+            String logFile = Path.Combine(LogFileFolder, String.Format("SentryLog_{0}.json", arg.Timestamp.ToString("yyyy-MM-dd")));
+
+            using (var stream = File.Open(logFile, FileMode.OpenOrCreate | FileMode.Append))
+            {
+                using (var writer = new System.Text.Json.Utf8JsonWriter(stream))
+                    arg.WriteTo(writer, null);
+                stream.Write(new byte[] { (byte)'\r', (byte)'\n' });
+            }
+            return arg;
         }
 
         public static void TraceLine(string format, params object?[] arg)
