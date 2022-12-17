@@ -99,7 +99,7 @@ namespace PowerControl.Helpers
                     // Let windows handle monitor plugin
                     Thread.Sleep(1000);
 
-                    notify();
+                    notify(CurrentProfile);
                     return;
                 }
 
@@ -120,7 +120,7 @@ namespace PowerControl.Helpers
                     CurrentGame = GameProfile.DefaultName;
                     CurrentProfile = GetDefaultProfile();
 
-                    notify();
+                    notify(CurrentProfile);
                     return;
                 }
 
@@ -139,7 +139,16 @@ namespace PowerControl.Helpers
                         CurrentProfile = GetDefaultProfile();
                     }
 
-                    notify();
+                    var profileCopy = GameProfile.Copy(CurrentProfile);
+                    notify(profileCopy);
+                    if (profileCopy.isTroubled)
+                    {
+                        // Fixes refresh rate reset for games tagged as troubled eg. Dragon Age Inquisition
+                        Thread.Sleep(6500);
+
+                        notify(profileCopy);
+                    }
+
                     return;
                 }
             }
@@ -251,17 +260,13 @@ namespace PowerControl.Helpers
             return 0;
         }
 
-        private static void notify()
+        private static void notify(GameProfile profile)
         {
-            if (CurrentProfile.isTroubled)
-            {
-                // Fixes refresh rate reset for games tagged as troubled eg. Dragon Age Inquisition
-                Thread.Sleep(6500);
-            }
+            
 
             foreach (var action in subscribers)
             {
-                action.Invoke(CurrentProfile);
+                action.Invoke(profile);
             }
         }
     }

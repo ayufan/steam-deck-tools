@@ -237,7 +237,7 @@ namespace PowerControl
                     {
                         SelectedOption = option;
 
-                        onApply();
+                        onApply(true);
                     };
                     toolStripItem.DropDownItems.Add(optionItem);
                 }
