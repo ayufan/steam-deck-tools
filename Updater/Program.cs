@@ -96,27 +96,35 @@ namespace Updater
             }
 
             AppendArg(UpdatedArg);
-            TrackProcess("FanControl");
-            TrackProcess("PowerControl");
-            TrackProcess("PerformanceOverlay");
-            TrackProcess("SteamController");
+
+            List<string> usedTools = new List<string>();
+            TrackProcess("FanControl", usedTools);
+            TrackProcess("PowerControl", usedTools);
+            TrackProcess("PerformanceOverlay", usedTools);
+            TrackProcess("SteamController", usedTools);
 
             var updateURL = String.Format(
-                "https://steam-deck-tools.ayufan.dev/docs/updates/{0}_{1}.xml?version={2}&machineID={3}&env={4}",
+                "https://steam-deck-tools.ayufan.dev/docs/updates/{0}_{1}.xml?version={2}&id={3}&env={4}&apps={5}",
                 Instance.IsDEBUG ? "debug" : "release",
                 IsUsingInstaller ? "setup" : "zip",
                 HttpUtility.UrlEncode(Instance.ProductVersionWithSha),
                 HttpUtility.UrlEncode(Instance.ID),
-                Instance.IsProductionBuild ? "prod" : "dev"
+                Instance.IsProductionBuild ? "prod" : "dev",
+                HttpUtility.UrlEncode(String.Join(",", usedTools))
             );
 
             AutoUpdater.Start(updateURL);
         }
 
-        private static void TrackProcess(String processFilerName)
+        private static bool TrackProcess(String processFilterName, List<string>? usedTools = null)
         {
-            if (FindProcesses(processFilerName).Any())
-                AppendArg(RunPrefix + processFilerName);
+            if (FindProcesses(processFilterName).Any())
+            {
+                AppendArg(RunPrefix + processFilterName);
+                usedTools?.Add(processFilterName);
+                return true;
+            }
+            return false;
         }
 
         private static void KillApps()

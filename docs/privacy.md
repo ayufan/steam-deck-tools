@@ -13,10 +13,11 @@ including, but not only:
 - Exception Stack Trace
 - Application Version
 - Type of installation
-- Unique installation ID
+- Installation ID
 
-Additionally for statistic purposes the installation ID and Application Version might
-be tracked as part of Update process to see active user-base vs version used.
+Additionally for statistic purposes the installation ID, application version
+and which SteamDeckTools apps are used might be tracked as part of Update
+process to see active user-base vs version used.
 
 The installation ID is one time generated GUID that is persisted on the first start
 of an application.
