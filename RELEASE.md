@@ -16,8 +16,5 @@
 - Add `Sentry` error tracking
 - Use `white` icons when using `Dark Theme` (thanks @maniman303 https://github.com/ayufan/steam-deck-tools/pull/23)
 - Validate that all dependencies are installed
-- Improve exception handling for Steam and X360 controllers
-- Fallback `OSK` to `CTRL+WIN+O` if `TabTip.exe` is missing
-- Detect that Steam was installed, but not longer available
 - Update `Updater.exe` to allow to disable automatic updates - this is selectable option via `setup.exe`
-- Do not validate `RTSSHooks64.dll`
+- Bug fixing to handle all known exceptions
