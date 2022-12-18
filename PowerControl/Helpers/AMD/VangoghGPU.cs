@@ -37,10 +37,15 @@ namespace PowerControl.Helpers.AMD
 
         public static bool Detect()
         {
-            var discoveredDevices = DeviceManager.GetDevices(DeviceManager.GUID_DISPLAY).ToDictionary((pnp) =>
+            var discoveredDevices = new Dictionary<string, string>();
+
+            foreach (var pnp in DeviceManager.GetDevices(DeviceManager.GUID_DISPLAY) ?? new string[0])
             {
-                return DeviceManager.GetDeviceDesc(pnp) ?? "";
-            });
+                // Properly support many devices with the same name (pick the first one)
+                var name = DeviceManager.GetDeviceDesc(pnp);
+                if (name is not null && !discoveredDevices.ContainsKey(name))
+                    discoveredDevices[name] = pnp;
+            }
 
             foreach (var device in SupportedDevices)
             {
