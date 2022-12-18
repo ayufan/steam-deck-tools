@@ -45,7 +45,8 @@ namespace SteamController
 
                 if (!Enabled || !Steam.Updated)
                 {
-                    Thread.Sleep(100);
+                    try { Thread.Sleep(100); }
+                    catch (ThreadInterruptedException) { }
                 }
             }
         }
