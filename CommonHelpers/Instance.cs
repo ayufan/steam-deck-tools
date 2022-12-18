@@ -205,6 +205,9 @@ namespace CommonHelpers
         {
             get
             {
+#if PRODUCTION_BUILD
+                return "";
+#else
                 try
                 {
                     using (var registryKey = Registry.CurrentUser.CreateSubKey(@"Software\SteamDeckTools", true))
@@ -223,6 +226,7 @@ namespace CommonHelpers
                 {
                     return "exception";
                 }
+#endif
             }
         }
 
