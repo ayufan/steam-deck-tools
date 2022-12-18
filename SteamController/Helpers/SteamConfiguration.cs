@@ -340,6 +340,12 @@ namespace SteamController.Helpers
                 File.Copy(configPath + ".orig", configPath, true);
                 return true;
             }
+            catch (FileNotFoundException e)
+            {
+                // File was not found (which is valid as it might be before first start of the application)
+                Log.DebugException("STEAM", e);
+                return false;
+            }
             catch (DirectoryNotFoundException)
             {
                 // Steam was installed, but got removed

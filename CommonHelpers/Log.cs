@@ -105,5 +105,13 @@ namespace CommonHelpers
                 scope.SetTag("type", type);
             });
         }
+
+        public static void DebugException(String type, Exception e)
+        {
+        }
+
+        public static void DebugException(String type, Object? name, Exception e)
+        {
+        }
     }
 }

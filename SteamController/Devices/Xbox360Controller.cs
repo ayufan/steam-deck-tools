@@ -96,7 +96,11 @@ namespace SteamController.Devices
                 catch (System.ComponentModel.Win32Exception e)
                 {
                     // This is expected exception (as sometimes device will fail to connect)
-                    TraceException("X360", "ConnectExpected", e);
+                    // ERROR_SUCCESS, which likely means COM did not succeed
+                    if (e.NativeErrorCode == 0)
+                        DebugException("X360", "ConnectExpected", e);
+                    else
+                        TraceException("X360", "ConnectExpected", e);
                     Fail();
                     return;
                 }
