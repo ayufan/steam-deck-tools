@@ -12,7 +12,6 @@ namespace Updater
         public const String Title = "Steam Deck Tools";
         public const String RunPrefix = "-run=";
         public const String UpdatedArg = "-updated";
-        public const String UPDATER_SENTRY_DSN = "https://a41ee1b3a3294d38887e6f43627f5853@o4504326877216768.ingest.sentry.io/4504326879641600";
 
         /// <summary>
         ///  The main entry point for the application.
@@ -23,7 +22,7 @@ namespace Updater
             Instance.WithSentry(() =>
             {
                 Run();
-            }, UPDATER_SENTRY_DSN);
+            });
         }
 
         static void Run()
