@@ -42,7 +42,7 @@ namespace ExternalHelpers
                 return;
             }
 
-            if (IsAdministrator() && TaskService.Instance.Connected)
+            if (IsAdministrator() && IsTaskServiceConnect)
             {
                 IsAvailable = true;
 
@@ -82,6 +82,16 @@ namespace ExternalHelpers
 
         public bool IsAvailable { get; }
 
+        public bool IsTaskServiceConnect
+        {
+            get
+            {
+                // The likest inner exception is: System.UnauthorizedAccessException
+                try { return TaskService.Instance.Connected; }
+                catch (TypeInitializationException) { return false; }
+            }
+        }
+
         public bool Startup
         {
             get { return _startup; }
@@ -91,7 +101,7 @@ namespace ExternalHelpers
                 {
                     if (IsAvailable)
                     {
-                        if (TaskService.Instance.Connected)
+                        if (IsTaskServiceConnect)
                         {
                             if (value)
                                 CreateTask();
