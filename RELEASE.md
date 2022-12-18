@@ -18,3 +18,4 @@
 - Validate that all dependencies are installed
 - Update `Updater.exe` to allow to disable automatic updates - this is selectable option via `setup.exe`
 - Bug fixing to handle all known exceptions
+- Update `Sentry` integration
