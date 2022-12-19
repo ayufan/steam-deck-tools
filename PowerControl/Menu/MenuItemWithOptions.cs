@@ -198,7 +198,7 @@ namespace PowerControl.Menu
             return text;
         }
 
-        public override string Render(MenuItem selected)
+        public override string Render(MenuItem? selected)
         {
             string output = "";
 

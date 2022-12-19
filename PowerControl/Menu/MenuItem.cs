@@ -17,7 +17,7 @@ namespace PowerControl.Menu
             White
         }
 
-        public String Name { get; set; }
+        public String Name { get; set; } = "";
         public bool Visible { get; set; } = true;
         public bool Selectable { get; set; }
 
@@ -26,7 +26,7 @@ namespace PowerControl.Menu
             return String.Format("<C{1}>{0}<C>", text, (int)index);
         }
 
-        public abstract string Render(MenuItem selected);
+        public abstract string Render(MenuItem? selected);
 
         public abstract void CreateMenu(ToolStripItemCollection collection);
         public abstract void Update();
