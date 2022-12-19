@@ -4,7 +4,7 @@ namespace PowerControl.Menu
 {
     public class MenuRoot : MenuItem
     {
-        public IList<MenuItem> Items { get; set; } = new List<MenuItem>();
+        public IList<MenuItem> Items { get; } = new List<MenuItem>();
         public MenuItem? Selected;
         public event Action VisibleChanged;
 
