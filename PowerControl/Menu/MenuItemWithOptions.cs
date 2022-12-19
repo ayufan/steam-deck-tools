@@ -160,26 +160,16 @@ namespace PowerControl.Menu
             scheduleApply();
         }
 
-        public override void SelectNext()
+        public override void SelectNext(int change)
         {
             int index = Options.IndexOf(SelectedOption ?? ActiveOption);
             if (index < 0)
-                SelectIndex(0); // select first
-            else if (CycleOptions)
-                SelectIndex((index + 1) % Options.Count);
-            else
-                SelectIndex(index + 1);
-        }
+                index = -change;
 
-        public override void SelectPrev()
-        {
-            int index = Options.IndexOf(SelectedOption ?? ActiveOption);
-            if (index < 0)
-                SelectIndex(Options.Count - 1); // select last
-            else if (CycleOptions)
-                SelectIndex((index - 1 + Options.Count) % Options.Count);
+            if (CycleOptions)
+                SelectIndex((index + change) % Options.Count);
             else
-                SelectIndex(index - 1);
+                SelectIndex(index + change);
         }
 
         private String optionText(Object option)

@@ -76,18 +76,18 @@ namespace PowerControl.Menu
             return true;
         }
 
-        public void Prev()
+        public void Next(int change)
         {
             if (Show())
                 return;
 
-            int index = Items.IndexOf(Selected);
+            int index = Selected is not null ? Items.IndexOf(Selected) : -change;
             if (index < 0)
-                index = Items.Count; // select last item
+                index = -change; // Select first or last item depending on change
 
             for (int i = 0; i < Items.Count; i++)
             {
-                index = (index - 1 + Items.Count) % Items.Count;
+                index = (index + change + Items.Count) % Items.Count;
                 var item = Items[index];
                 if (item.Visible && item.Selectable)
                 {
@@ -98,74 +98,27 @@ namespace PowerControl.Menu
             }
         }
 
-        public void Next()
-        {
-            if (Show())
-                return;
-
-            int index = Items.IndexOf(Selected);
-            if (index < 0)
-                index = -1; // select first item
-
-            for (int i = 0; i < Items.Count; i++)
-            {
-                index = (index + 1) % Items.Count;
-                var item = Items[index];
-                if (item.Visible && item.Selectable)
-                {
-                    Selected = item;
-                    VisibleChanged();
-                    return;
-                }
-            }
-        }
-
-        public override void SelectNext()
+        public override void SelectNext(int change)
         {
             if (Show())
                 return;
 
             if (Selected != null)
             {
-                Selected.SelectNext();
+                Selected.SelectNext(change);
                 VisibleChanged();
             }
         }
 
-        public void SelectNext(String name)
+        public MenuItem? Select(String name)
         {
-            var item = this[name];
-            if (item is null)
-                return;
+            Selected = this[name];
+            if (Selected is null)
+                return null;
 
             Show();
-            Selected = item;
-            item.SelectNext();
             VisibleChanged();
-        }
-
-        public override void SelectPrev()
-        {
-            if (Show())
-                return;
-
-            if (Selected != null)
-            {
-                Selected.SelectPrev();
-                VisibleChanged();
-            }
-        }
-
-        public void SelectPrev(String name)
-        {
-            var item = this[name];
-            if (item is null)
-                return;
-
-            Show();
-            Selected = item;
-            item.SelectPrev();
-            VisibleChanged();
+            return Selected;
         }
     }
 }
