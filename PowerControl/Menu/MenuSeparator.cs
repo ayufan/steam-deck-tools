@@ -2,7 +2,7 @@ namespace PowerControl.Menu
 {
     public class MenuItemSeparator : MenuItem
     {
-        private ToolStripItem toolStripItem;
+        private ToolStripItem toolStripItem = new ToolStripSeparator();
 
         public MenuItemSeparator()
         {
@@ -11,10 +11,6 @@ namespace PowerControl.Menu
 
         public override void CreateMenu(ToolStripItemCollection collection)
         {
-            if (toolStripItem != null)
-                return;
-
-            toolStripItem = new ToolStripSeparator();
             collection.Add(toolStripItem);
         }
 

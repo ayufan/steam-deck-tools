@@ -7,18 +7,18 @@ namespace PowerControl.Menu
         public delegate object ApplyValueDelegate(object selected);
 
         public IList<Object> Options { get; set; } = new List<Object>();
-        public Object SelectedOption { get; set; }
-        public Object ActiveOption { get; set; }
+        public Object? SelectedOption { get; set; }
+        public Object? ActiveOption { get; set; }
         public int ApplyDelay { get; set; }
         public bool CycleOptions { get; set; } = true;
 
-        public CurrentValueDelegate CurrentValue { get; set; }
-        public OptionsValueDelegate OptionsValues { get; set; }
-        public ApplyValueDelegate ApplyValue { get; set; }
-        public CurrentValueDelegate ResetValue { get; set; }
+        public Func<object>? CurrentValue { get; set; }
+        public Func<object[]>? OptionsValues { get; set; }
+        public Func<object, object>? ApplyValue { get; set; }
+        public Func<object>? ResetValue { get; set; }
 
-        private System.Windows.Forms.Timer delayTimer;
-        private ToolStripMenuItem toolStripItem;
+        private System.Windows.Forms.Timer delayTimer = new System.Windows.Forms.Timer();
+        private ToolStripMenuItem toolStripItem = new ToolStripMenuItem();
 
         public MenuItemWithOptions()
         {
@@ -85,7 +85,6 @@ namespace PowerControl.Menu
                 return;
             }
 
-            delayTimer = new System.Windows.Forms.Timer();
             delayTimer.Interval = ApplyDelay > 0 ? ApplyDelay : 1;
             delayTimer.Tick += delegate (object? sender, EventArgs e)
             {
@@ -142,10 +141,6 @@ namespace PowerControl.Menu
 
         public override void CreateMenu(ToolStripItemCollection collection)
         {
-            if (toolStripItem != null)
-                return;
-
-            toolStripItem = new ToolStripMenuItem();
             toolStripItem.Text = Name;
             updateOptions();
             collection.Add(toolStripItem);
