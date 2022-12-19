@@ -124,7 +124,7 @@ namespace PowerControl
             {
                 if (!RTSS.IsOSDForeground())
                     return;
-                rootMenu.Prev();
+                rootMenu.Next(-1);
                 setDismissTimer();
                 dismissNeptuneInput();
             }, true);
@@ -133,7 +133,7 @@ namespace PowerControl
             {
                 if (!RTSS.IsOSDForeground())
                     return;
-                rootMenu.Next();
+                rootMenu.Next(1);
                 setDismissTimer();
                 dismissNeptuneInput();
             }, true);
@@ -142,7 +142,7 @@ namespace PowerControl
             {
                 if (!RTSS.IsOSDForeground())
                     return;
-                rootMenu.SelectPrev();
+                rootMenu.SelectNext(-1);
                 setDismissTimer();
                 dismissNeptuneInput();
             });
@@ -151,7 +151,7 @@ namespace PowerControl
             {
                 if (!RTSS.IsOSDForeground())
                     return;
-                rootMenu.SelectNext();
+                rootMenu.SelectNext(1);
                 setDismissTimer();
                 dismissNeptuneInput();
             });
@@ -190,9 +190,10 @@ namespace PowerControl
                 GlobalHotKey.RegisterHotKey("VolumeUp", () =>
                 {
                     if (neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS))
-                        rootMenu.SelectNext("Brightness");
+                        rootMenu.Select("Brightness");
                     else
-                        rootMenu.SelectNext("Volume");
+                        rootMenu.Select("Volume");
+                    rootMenu.SelectNext(1);
                     setDismissTimer();
                     dismissNeptuneInput();
                 });
@@ -200,9 +201,10 @@ namespace PowerControl
                 GlobalHotKey.RegisterHotKey("VolumeDown", () =>
                 {
                     if (neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS))
-                        rootMenu.SelectPrev("Brightness");
+                        rootMenu.Select("Brightness");
                     else
-                        rootMenu.SelectPrev("Volume");
+                        rootMenu.Select("Volume");
+                    rootMenu.SelectNext(-1);
                     setDismissTimer();
                     dismissNeptuneInput();
                 });
@@ -299,19 +301,19 @@ namespace PowerControl
             }
             else if (input.buttons0 == SDCButton0.BTN_DPAD_LEFT)
             {
-                rootMenu.SelectPrev();
+                rootMenu.SelectNext(-1);
             }
             else if (input.buttons0 == SDCButton0.BTN_DPAD_RIGHT)
             {
-                rootMenu.SelectNext();
+                rootMenu.SelectNext(1);
             }
             else if (input.buttons0 == SDCButton0.BTN_DPAD_UP)
             {
-                rootMenu.Prev();
+                rootMenu.Next(-1);
             }
             else if (input.buttons0 == SDCButton0.BTN_DPAD_DOWN)
             {
-                rootMenu.Next();
+                rootMenu.Next(1);
             }
         }
 

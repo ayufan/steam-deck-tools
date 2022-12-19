@@ -32,7 +32,6 @@ namespace PowerControl.Menu
         public abstract void Update();
         public abstract void Reset();
 
-        public abstract void SelectNext();
-        public abstract void SelectPrev();
+        public abstract void SelectNext(int change);
     }
 }
