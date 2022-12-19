@@ -55,16 +55,19 @@ namespace FanControl
                 fanModeSelectMenu.Items.Add(item);
             }
 
-            setFanMode(Settings.Default.FanMode);
-
             propertyGrid1.SelectedObject = fanControl;
             propertyGrid1.ExpandAllGridItems();
-
-            notifyIcon.ShowBalloonTip(3000, Text, "Fan Control Started", ToolTipIcon.Info);
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
 
             Opacity = 0;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            setFanMode(Settings.Default.FanMode, !Settings.Default.AckAntiCheat);
+            notifyIcon.ShowBalloonTip(3000, Text, "Fan Control Started", ToolTipIcon.Info);
         }
 
         protected override void OnShown(EventArgs e)
@@ -72,6 +75,36 @@ namespace FanControl
             base.OnShown(e);
             Visible = false;
             Opacity = 100;
+        }
+
+        private bool AckAntiCheat()
+        {
+            if (Settings.Default.AckAntiCheat && Settings.Default.EnableExperimentalFeatures)
+                return true;
+
+            var result = MessageBox.Show(
+                String.Join("\n",
+                    "WARNING!!!!",
+                    "",
+                    "Usage of SteamOS or Max Fan Curve might trigger anti-cheat protection in some games.",
+                    "This might result in kicking from the application or even be banned.",
+                    "",
+                    "Ensure that you USE DEFAULT FAN when playing games with ANTI-CHEAT PROTECTION.",
+                    "",
+                    "CLICK YES TO ACKNOWLEDGE?",
+                    "CLICK NO TO LEARN MORE."
+                ), Text, MessageBoxButtons.YesNo
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                Settings.Default.AckAntiCheat = true;
+                return true;
+            }
+
+            try { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software"); }
+            catch { }
+            return false;
         }
 
         private void SystemEvents_PowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
@@ -84,8 +117,14 @@ namespace FanControl
             }
         }
 
-        private void setFanMode(FanMode mode)
+        private void setFanMode(FanMode mode, bool requireAck = true)
         {
+            if (mode != FanMode.Default && mode != fanControl.Mode)
+            {
+                if (requireAck && !AckAntiCheat())
+                    return;
+            }
+
             fanControl.SetMode(mode);
             Settings.Default.FanMode = mode;
 
@@ -157,8 +196,20 @@ namespace FanControl
             if (fanControl is null)
                 return;
 
-            SharedData_Update();
+            try
+            {
+                fanLoopTimer.Enabled = false;
+                SharedData_Update();
+            }
+            finally
+            {
+                fanLoopTimer.Enabled = true;
+            }
+#if DEBUG
             fanControl.Update(Visible);
+#else
+            fanControl.Update();
+#endif
         }
 
         private void propertyGridUpdateTimer_Tick(object sender, EventArgs e)
