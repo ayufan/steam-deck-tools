@@ -13,12 +13,16 @@ namespace PowerControl.Menu
         public Func<string, string?>? ApplyValue { get; set; }
         public Func<string?>? ResetValue { get; set; }
 
+        public event Action<MenuItemWithOptions, String?, String> ValueChanged;
+
         private System.Windows.Forms.Timer delayTimer = new System.Windows.Forms.Timer();
         private ToolStripMenuItem toolStripItem = new ToolStripMenuItem();
 
         public MenuItemWithOptions()
         {
             this.Selectable = true;
+
+            ValueChanged += delegate { };
 
             delayTimer.Tick += delegate (object? sender, EventArgs e)
             {
@@ -89,12 +93,17 @@ namespace PowerControl.Menu
 
         private void FinalizeSet()
         {
+            var wasOption = ActiveOption;
+
             if (ApplyValue != null && SelectedOption != null)
                 ActiveOption = ApplyValue(SelectedOption);
             else
                 ActiveOption = SelectedOption;
 
             SelectedOption = null;
+
+            if (wasOption != ActiveOption && ActiveOption != null)
+                ValueChanged(this, wasOption, ActiveOption);
         }
 
         public override void CreateMenu(System.Windows.Forms.ContextMenuStrip contextMenu)

@@ -6,11 +6,14 @@ namespace PowerControl.Menu
     {
         public IList<MenuItem> Items { get; } = new List<MenuItem>();
         public MenuItem? Selected;
+
         public event Action VisibleChanged;
+        public event Action<MenuItemWithOptions, String?, String> ValueChanged;
 
         public MenuRoot()
         {
             VisibleChanged += delegate { };
+            ValueChanged += delegate { };
         }
 
         public MenuItem? this[String name]
@@ -26,10 +29,32 @@ namespace PowerControl.Menu
             }
         }
 
+        public IEnumerable<MenuItemWithOptions> AllMenuItemOptions()
+        {
+            foreach (var item in Items)
+            {
+                if (item is MenuItemWithOptions)
+                    yield return (MenuItemWithOptions)item;
+            }
+        }
+
         public override void CreateMenu(System.Windows.Forms.ContextMenuStrip contextMenu)
         {
             foreach (var item in Items)
                 item.CreateMenu(contextMenu);
+        }
+
+        public void Init()
+        {
+            foreach (var item in AllMenuItemOptions())
+            {
+                item.ValueChanged += MenuItem_ValueChanged;
+            }
+        }
+
+        private void MenuItem_ValueChanged(MenuItemWithOptions item, String? was, String isNow)
+        {
+            ValueChanged(item, was, isNow);
         }
 
         public override void Update()

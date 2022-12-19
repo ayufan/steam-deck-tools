@@ -52,6 +52,7 @@ namespace PowerControl
 
             var contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
+            rootMenu.Init();
             rootMenu.Visible = false;
             rootMenu.Update();
             rootMenu.CreateMenu(contextMenu);
