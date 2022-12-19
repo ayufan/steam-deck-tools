@@ -25,7 +25,7 @@ namespace PowerControl
 
         public string MenuLeftKey
         {
-            get { return Get("MenuLeftKey", "Ctrl+Win+Numpad6"); }
+            get { return Get("MenuLeftKey", "Ctrl+Win+Numpad4"); }
             set { Set("MenuLeftKey", value); }
         }
 
@@ -33,6 +33,12 @@ namespace PowerControl
         {
             get { return Get("MenuRightKey", "Ctrl+Win+Numpad6"); }
             set { Set("MenuRightKey", value); }
+        }
+
+        public string MenuToggle
+        {
+            get { return Get("MenuToggle", "Shift+F11"); }
+            set { Set("MenuToggle", value); }
         }
 
         public bool EnableNeptuneController
