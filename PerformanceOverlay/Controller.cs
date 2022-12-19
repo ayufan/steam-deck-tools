@@ -26,7 +26,6 @@ namespace PerformanceOverlay
 
         static Controller()
         {
-            Dependencies.ValidateRTSS(TitleWithVersion);
             Dependencies.ValidateRTSSSharedMemoryNET(TitleWithVersion);
         }
 
@@ -40,7 +39,7 @@ namespace PerformanceOverlay
             contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
             SharedData_Update();
-            Instance.Open(TitleWithVersion, true, "Global\\PerformanceOverlay");
+            Instance.Open(TitleWithVersion, Settings.Default.EnableKernelDrivers, "Global\\PerformanceOverlay");
             Instance.RunUpdater(TitleWithVersion);
 
             if (Instance.WantsRunOnStartup)
@@ -67,7 +66,7 @@ namespace PerformanceOverlay
             contextMenu.Items.Add(new ToolStripSeparator());
 
             var kernelDriversItem = new ToolStripMenuItem("Use &Kernel Drivers");
-            kernelDriversItem.Click += delegate { Instance.UseKernelDrivers = !Instance.UseKernelDrivers; };
+            kernelDriversItem.Click += delegate { setKernelDrivers(!Instance.UseKernelDrivers); };
             contextMenu.Opening += delegate { kernelDriversItem.Checked = Instance.UseKernelDrivers; };
             contextMenu.Items.Add(kernelDriversItem);
 
@@ -164,6 +163,50 @@ namespace PerformanceOverlay
             updateContextItems(contextMenu);
         }
 
+        private bool AckAntiCheat()
+        {
+            if (Settings.Default.AckAntiCheat && Settings.Default.EnableExperimentalFeatures)
+                return true;
+
+            var result = MessageBox.Show(
+                String.Join("\n",
+                    "WARNING!!!!",
+                    "",
+                    "Usage of OSD Kernel Drivers might trigger anti-cheat protection in some games.",
+                    "This might result in kicking from the application or even be banned.",
+                    "",
+                    "Ensure that you set it to DISABLED when playing games with ANTI-CHEAT PROTECTION.",
+                    "",
+                    "CLICK YES TO ACKNOWLEDGE?",
+                    "CLICK NO TO LEARN MORE."
+                ), TitleWithVersion, MessageBoxButtons.YesNo
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                Settings.Default.AckAntiCheat = true;
+                return true;
+            }
+
+            try { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software"); }
+            catch { }
+            return false;
+        }
+
+        private void setKernelDrivers(bool value)
+        {
+            if (value && AckAntiCheat())
+            {
+                Instance.UseKernelDrivers = true;
+                Settings.Default.EnableKernelDrivers = true;
+            }
+            else
+            {
+                Instance.UseKernelDrivers = false;
+                Settings.Default.EnableKernelDrivers = false;
+            }
+        }
+
         private void SharedData_Update()
         {
             if (sharedData.GetValue(out var value))
@@ -183,7 +226,7 @@ namespace PerformanceOverlay
 
                 if (Enum.IsDefined<KernelDriversLoaded>(value.DesiredKernelDriversLoaded))
                 {
-                    Instance.UseKernelDrivers = (KernelDriversLoaded)value.DesiredKernelDriversLoaded == KernelDriversLoaded.Yes;
+                    setKernelDrivers((KernelDriversLoaded)value.DesiredKernelDriversLoaded == KernelDriversLoaded.Yes);
                     updateContextItems(contextMenu);
                 }
             }
@@ -198,7 +241,15 @@ namespace PerformanceOverlay
 
         private void OsdTimer_Tick(object? sender, EventArgs e)
         {
-            SharedData_Update();
+            try
+            {
+                osdTimer.Enabled = false;
+                SharedData_Update();
+            }
+            finally
+            {
+                osdTimer.Enabled = true;
+            }
 
             try
             {

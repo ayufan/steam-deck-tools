@@ -37,6 +37,7 @@ This project provides the following applications:
 - [Controller Shortcuts](https://steam-deck-tools.ayufan.dev/shortcuts.html) - default shortcuts when using [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller.html).
 - [Development](https://steam-deck-tools.ayufan.dev/development.html) - how to compile this project.
 - [Risks](https://steam-deck-tools.ayufan.dev/risks.html) - this project uses kernel manipulation and might result in unstable system.
+- [Privacy](privacy.md) - this project can connect to remote server to check for auto-updates or track errors
 - [Troubleshooting](https://steam-deck-tools.ayufan.dev/troubleshooting.html) - if you encounter any problems.
 
 ## Join Us

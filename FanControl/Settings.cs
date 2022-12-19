@@ -22,5 +22,16 @@ namespace FanControl
             get { return Get<bool>("AlwaysOnTop", true); }
             set { Set("AlwaysOnTop", value); }
         }
+
+        public bool EnableExperimentalFeatures
+        {
+            get { return Instance.IsDEBUG; }
+        }
+
+        public bool AckAntiCheat
+        {
+            get { return Get<bool>("AckAntiCheat", false); }
+            set { Set("AckAntiCheat", value); }
+        }
     }
 }

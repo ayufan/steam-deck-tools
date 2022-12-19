@@ -2,8 +2,12 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Web;
+using System.Xml;
+using System.Xml.Serialization;
 using AutoUpdaterDotNET;
 using CommonHelpers;
+using ExternalHelpers;
+using Microsoft.Win32;
 
 namespace Updater
 {
@@ -12,7 +16,6 @@ namespace Updater
         public const String Title = "Steam Deck Tools";
         public const String RunPrefix = "-run=";
         public const String UpdatedArg = "-updated";
-        public const String UPDATER_SENTRY_DSN = "https://a41ee1b3a3294d38887e6f43627f5853@o4504326877216768.ingest.sentry.io/4504326879641600";
 
         /// <summary>
         ///  The main entry point for the application.
@@ -23,7 +26,7 @@ namespace Updater
             Instance.WithSentry(() =>
             {
                 Run();
-            }, UPDATER_SENTRY_DSN);
+            });
         }
 
         static void Run()
@@ -54,6 +57,19 @@ namespace Updater
 
             Instance.RunOnce(null, "Global\\SteamDeckToolsAutoUpdater");
 
+            if (Instance.HasFile("DisableCheckForUpdates.txt"))
+            {
+                if (userCheck || cmdLine)
+                {
+                    MessageBox.Show(
+                        "This application has explicitly disabled auto-updates. Remove the 'DisableCheckForUpdates.txt' file and retry again",
+                        Title,
+                        MessageBoxButtons.OK
+                    );
+                }
+                return;
+            }
+
             var persistence = new RegistryPersistenceProvider(@"Software\SteamDeckTools\AutoUpdater");
 
             if (userCheck || cmdLine)
@@ -67,7 +83,7 @@ namespace Updater
             AutoUpdater.LetUserSelectRemindLater = true;
             AutoUpdater.ShowRemindLaterButton = true;
             AutoUpdater.HttpUserAgent = String.Format("AutoUpdater/{0}/{1}/{2}",
-                Instance.MachineID,
+                InstallationTime,
                 Instance.ProductVersionWithSha,
                 Instance.IsProductionBuild ? "prod" : "dev");
             AutoUpdater.PersistenceProvider = persistence;
@@ -75,6 +91,7 @@ namespace Updater
             AutoUpdater.UpdateFormSize = new Size(800, 300);
             AutoUpdater.ShowSkipButton = true;
             AutoUpdater.Synchronous = true;
+            AutoUpdater.ParseUpdateInfoEvent += ParseUpdateInfoEvent;
 
             if (!IsUsingInstaller)
             {
@@ -83,31 +100,75 @@ namespace Updater
             }
 
             AppendArg(UpdatedArg);
-            TrackProcess("FanControl");
-            TrackProcess("PowerControl");
-            TrackProcess("PerformanceOverlay");
-            TrackProcess("SteamController");
+
+            List<string> usedTools = new List<string>();
+            TrackProcess("FanControl", usedTools);
+            TrackProcess("PowerControl", usedTools);
+            TrackProcess("PerformanceOverlay", usedTools);
+            TrackProcess("SteamController", usedTools);
+
+            var todayMatch = DateTimeOffset.UtcNow.DayOfYear;
+            var runToday = Settings.Default.GetRunTimes("Today", todayMatch) + 1;
+            var thisWeekMatch = DateTimeOffset.UtcNow.DayOfYear / 7;
+            var runThisWeek = Settings.Default.GetRunTimes("ThisWeek", thisWeekMatch) + 1;
+
+            AutoUpdater.ParseUpdateInfoEvent += delegate
+            {
+                Settings.Default.SetRunTimes("Today", todayMatch, runToday);
+                Settings.Default.SetRunTimes("ThisWeek", thisWeekMatch, runThisWeek);
+            };
+
+            // This method requests an auto-update from remote server. It includes the following information:
+            // Type of installation: prod/dev, release/debug, setup/zip
+            // Version of application: 0.5.40+12345cdef
+            // Installation time: when the application was installed to track the age
+            // Used Tools: which application of suite are running, like: FanControl,PerformanceOverlay
+            // Updates Today/ThisWeek: amount of times update run today and this week
 
             var updateURL = String.Format(
-                "https://steam-deck-tools.ayufan.dev/docs/updates/{0}_{1}.xml?version={2}&machineID={3}&env={4}",
+                "https://steam-deck-tools.ayufan.dev/updates/{4}_{0}_{1}.xml?version={2}&installTime={3}&env={4}&apps={5}&updatesToday={6}&updatesThisWeek={7}",
                 Instance.IsDEBUG ? "debug" : "release",
                 IsUsingInstaller ? "setup" : "zip",
                 HttpUtility.UrlEncode(Instance.ProductVersionWithSha),
-                HttpUtility.UrlEncode(Instance.MachineID),
-                Instance.IsProductionBuild ? "prod" : "dev"
+                InstallationTime,
+                Instance.IsProductionBuild ? "prod" : "dev",
+                HttpUtility.UrlEncode(String.Join(",", usedTools)),
+                runToday,
+                runThisWeek
             );
 
             AutoUpdater.Start(updateURL);
         }
 
-        private static void TrackProcess(String processFilerName)
+        private static UpdateInfoEventArgs? UpdateInfo { get; set; }
+
+        private static void ParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
         {
-            if (FindProcesses(processFilerName).Any())
-                AppendArg(RunPrefix + processFilerName);
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(UpdateInfoEventArgs));
+            XmlTextReader xmlTextReader = new XmlTextReader(new StringReader(args.RemoteData)) { XmlResolver = null };
+            UpdateInfo = xmlSerializer.Deserialize(xmlTextReader) as UpdateInfoEventArgs;
+            if (UpdateInfo is not null)
+            {
+                args.UpdateInfo = UpdateInfo;
+            }
+        }
+
+        private static bool TrackProcess(String processFilterName, List<string>? usedTools = null)
+        {
+            if (FindProcesses(processFilterName).Any())
+            {
+                AppendArg(RunPrefix + processFilterName);
+                usedTools?.Add(processFilterName);
+                return true;
+            }
+            return false;
         }
 
         private static void KillApps()
         {
+            if (UpdateInfo?.InstallerArgs?.StartsWith("/nokill") == true)
+                return;
+
             ExitProcess("FanControl");
             ExitProcess("PowerControl");
             ExitProcess("PerformanceOverlay");
@@ -163,6 +224,41 @@ namespace Updater
 
                 var uninstallExe = Path.Combine(currentDir, "Uninstall.exe");
                 return File.Exists(uninstallExe);
+            }
+        }
+
+        public static string InstallationTime
+        {
+            get
+            {
+                try
+                {
+                    using (var registryKey = Registry.CurrentUser.CreateSubKey(@"Software\SteamDeckTools", true))
+                    {
+                        var installationTime = registryKey?.GetValue("InstallationTime") as string;
+                        if (installationTime is null)
+                        {
+                            var previousTime = RegistryUtils.GetDateModified(
+                                RegistryHive.CurrentUser, @"Software\SteamDeckTools");
+                            Log.TraceLine("PreviousTime: {0}", previousTime);
+                            previousTime ??= DateTimeOffset.UtcNow;
+
+                            registryKey?.SetValue("InstallationTime", previousTime.Value.ToUnixTimeMilliseconds());
+                            installationTime = registryKey?.GetValue("InstallationTime") as string;
+                        }
+
+                        if (!Instance.AcceptedTerms)
+                        {
+                            return "";
+                        }
+
+                        return installationTime ?? "";
+                    }
+                }
+                catch (Exception e)
+                {
+                    return "";
+                }
             }
         }
 

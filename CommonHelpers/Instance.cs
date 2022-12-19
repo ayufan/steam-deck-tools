@@ -195,31 +195,6 @@ namespace CommonHelpers
             get { return Assembly.GetEntryAssembly()?.GetName().Name ?? "unknown"; }
         }
 
-        public static String MachineID
-        {
-            get
-            {
-                try
-                {
-                    using (var registryKey = Registry.CurrentUser.CreateSubKey(@"Software\SteamDeckTools", true))
-                    {
-                        var machineID = registryKey?.GetValue("MachineID") as string;
-                        if (machineID is null)
-                        {
-                            registryKey?.SetValue("MachineID", Guid.NewGuid().ToString());
-                            machineID = registryKey?.GetValue("MachineID") as string;
-                        }
-
-                        return machineID ?? "undefined";
-                    }
-                }
-                catch (Exception)
-                {
-                    return "exception";
-                }
-            }
-        }
-
         public static String ProductVersion
         {
             get => Application.ProductVersion;
@@ -232,6 +207,22 @@ namespace CommonHelpers
                 var releaseVersion = typeof(Instance).Assembly.GetCustomAttributes<AssemblyInformationalVersionAttribute>().FirstOrDefault();
                 return releaseVersion?.InformationalVersion ?? ProductVersion;
             }
+        }
+
+        public static bool HasFile(String name)
+        {
+            var currentProcess = Process.GetCurrentProcess();
+            var currentDir = Path.GetDirectoryName(currentProcess.MainModule?.FileName);
+            if (currentDir is null)
+                return false;
+
+            var uninstallExe = Path.Combine(currentDir, name);
+            return File.Exists(uninstallExe);
+        }
+
+        public static bool AcceptedTerms
+        {
+            get { return HasFile("Uninstall.exe"); }
         }
 
         private static System.Timers.Timer? updateTimer;

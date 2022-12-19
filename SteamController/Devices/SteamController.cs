@@ -120,7 +120,11 @@ namespace SteamController.Devices
             }
             catch (Exception e)
             {
-                TraceException("STEAM", "Update", e);
+                // Steam have disconnected device, which triggered exception
+                if (e.Message == "Could not send report to hid device. Error: -1")
+                    DebugException("STEAM", "Update", e);
+                else
+                    TraceException("STEAM", "Update", e);
                 Fail();
             }
         }

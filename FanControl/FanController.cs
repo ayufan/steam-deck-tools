@@ -17,7 +17,13 @@ namespace FanControl
     internal partial class FanController : IDisposable
     {
         [CategoryAttribute("Fan")]
-        public FanMode Mode { get; private set; }
+        public FanMode Mode { get; private set; } = FanMode.Default;
+
+        [CategoryAttribute("Fan")]
+        public bool KernelDriversLoaded
+        {
+            get => Instance.UseKernelDrivers;
+        }
 
         [CategoryAttribute("Fan")]
         [NotifyParentProperty(true)]
@@ -71,12 +77,13 @@ namespace FanControl
             return rpm;
         }
 
+        [Browsable(false)]
         public bool IsActive
         {
             get { return Vlv0100.IsOpen; }
         }
 
-        public void Update(bool visible)
+        public void Update(bool showForDefault = false)
         {
             var mutex = Instance.WaitGlobalMutex(200);
             if (mutex is null)
@@ -88,9 +95,13 @@ namespace FanControl
 
             try
             {
-                if (Mode == FanMode.Default && !visible)
+                if (!Settings.Default.AckAntiCheat || Mode == FanMode.Default && !showForDefault)
                 {
                     Instance.UseKernelDrivers = false;
+                    CurrentRPM = null;
+                    DesiredRPM = 0;
+                    foreach (var sensor in allSensors.Values)
+                        sensor.Reset();
                     return;
                 }
                 else if (!Vlv0100.IsOpen)
