@@ -171,7 +171,7 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuToggle, () =>
             {
-                isOSDToggled = !isOSDToggled;
+                isOSDToggled = !rootMenu.Visible;
 
                 if (!RTSS.IsOSDForeground())
                     return;
