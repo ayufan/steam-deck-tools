@@ -18,7 +18,7 @@ namespace PowerControl.Options
                 if (!ProcessorCores.HasSMTThreads())
                     return null;
 
-                return ProcessorCores.IsUsingSMT(processId.Value) ? "Yes" : "No";
+                return ProcessorCores.IsUsingSMT(processId) ? "Yes" : "No";
             },
             ApplyValue = delegate (object selected)
             {
@@ -27,9 +27,9 @@ namespace PowerControl.Options
                 if (!ProcessorCores.HasSMTThreads())
                     return null;
 
-                ProcessorCores.SetProcessSMT(processId.Value, selected.ToString() == "Yes");
+                ProcessorCores.SetProcessSMT(processId, selected.ToString() == "Yes");
 
-                return ProcessorCores.IsUsingSMT(processId.Value) ? "Yes" : "No";
+                return ProcessorCores.IsUsingSMT(processId) ? "Yes" : "No";
             }
         };
     }
