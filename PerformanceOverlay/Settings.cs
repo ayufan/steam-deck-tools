@@ -40,5 +40,22 @@ namespace PerformanceOverlay
             get { return Get<bool>("EnableFullOnPowerControl", false); }
             set { Set("EnableFullOnPowerControl", value); }
         }
+
+        public bool EnableKernelDrivers
+        {
+            get { return Get<bool>("EnableKernelDrivers", false); }
+            set { Set("EnableKernelDrivers", value); }
+        }
+
+        public bool EnableExperimentalFeatures
+        {
+            get { return Instance.IsDEBUG; }
+        }
+
+        public bool AckAntiCheat
+        {
+            get { return Get<bool>("AckAntiCheat", false); }
+            set { Set("AckAntiCheat", value); }
+        }
     }
 }
