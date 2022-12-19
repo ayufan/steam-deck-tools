@@ -27,19 +27,6 @@ namespace PowerControl.Menu
 
                 FinalizeSet();
             };
-
-            toolStripItem.DropDownOpening += delegate
-            {
-                toolStripItem.DropDownItems.Clear();
-
-                foreach (var option in Options)
-                {
-                    var item = new ToolStripMenuItem(option);
-                    item.Checked = option == (SelectedOption ?? ActiveOption);
-                    item.Click += delegate { FinalizeSet(); };
-                    toolStripItem.DropDownItems.Add(item);
-                }
-            };
         }
 
         public override void Reset()
@@ -114,7 +101,22 @@ namespace PowerControl.Menu
         {
             toolStripItem.Text = Name;
             contextMenu.Items.Add(toolStripItem);
-            contextMenu.Opening += delegate { toolStripItem.Visible = Visible && Options.Count > 0; };
+            contextMenu.Opening += delegate
+            {
+                Update();
+
+                toolStripItem.DropDownItems.Clear();
+
+                foreach (var option in Options)
+                {
+                    var item = new ToolStripMenuItem(option);
+                    item.Checked = option == (SelectedOption ?? ActiveOption);
+                    item.Click += delegate { Set(option, true); };
+                    toolStripItem.DropDownItems.Add(item);
+                }
+
+                toolStripItem.Visible = Visible && Options.Count > 0;
+            };
         }
 
         private void SelectIndex(int index)
