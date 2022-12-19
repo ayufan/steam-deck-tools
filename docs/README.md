@@ -60,9 +60,31 @@ Join Us for help or chat. We are at [#windows of Steam Deck Discord](https://dis
 Since this project uses direct manipulation of kernel memory via `inpoutx64.dll`
 it might trigger Antivirus and Anti-Cheat software.
 
-If you use at least version `0.5.x` you can disable kernel drivers usage that should
-avoid trippping Anti-Cheat detection. Set FAN to `Default` and disable `OSD Kernel Drivers`.
-Of course you will miss some metrics due to that.
+**READ IF PLAYING ONLINE GAMES AND/OR GAMES THAT HAVE ANTI-CHEAT ENABLED**
+
+Since this project uses direct manipulation of kernel memory via `inpoutx64.dll`
+it might trigger Antivirus and Anti-Cheat software. This could result in interference
+or issues in games that use anti-cheat technology (including the possibility of a suspension or ban).
+
+Application by default does not use any kernel-level features. If you request a change
+that might trigger anti-cheat detection application does require to acknowledge this.
+
+### Safe settings
+
+If you play online games application needs to be configured to.
+Those settings are considered safe:
+
+- **Fan Control**: Use **Default** FAN
+- **Performance Overlay**: OSD Kernel Drivers are **DISABLED**
+
+### Features missing without Kernel Drivers
+
+By disabling usage of Kernel Drivers you are loosing the:
+
+- **Fan Control**: Optimised `SteamOS` FAN curve
+- **Performance Overlay**: See CPU % and MHz, GPU MHz, APU W usage
+- **Power Control**: Ability to change TDP, CPU and GPU frequency - you can change this safely before you start the game
+- **Steam Controller**: There's no impact
 
 ## Author
 
