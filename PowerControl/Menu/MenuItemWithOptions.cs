@@ -2,16 +2,16 @@ namespace PowerControl.Menu
 {
     public class MenuItemWithOptions : MenuItem
     {
-        public IList<Object> Options { get; set; } = new List<Object>();
-        public Object? SelectedOption { get; set; }
-        public Object? ActiveOption { get; set; }
+        public IList<string> Options { get; set; } = new List<string>();
+        public string? SelectedOption { get; private set; }
+        public string? ActiveOption { get; set; }
         public int ApplyDelay { get; set; }
         public bool CycleOptions { get; set; } = true;
 
-        public Func<object?>? CurrentValue { get; set; }
-        public Func<object[]?>? OptionsValues { get; set; }
-        public Func<object, object?>? ApplyValue { get; set; }
-        public Func<object?>? ResetValue { get; set; }
+        public Func<string?>? CurrentValue { get; set; }
+        public Func<string[]?>? OptionsValues { get; set; }
+        public Func<string, string?>? ApplyValue { get; set; }
+        public Func<string?>? ResetValue { get; set; }
 
         private System.Windows.Forms.Timer delayTimer = new System.Windows.Forms.Timer();
         private ToolStripMenuItem toolStripItem = new ToolStripMenuItem();
@@ -25,7 +25,7 @@ namespace PowerControl.Menu
                 if (delayTimer != null)
                     delayTimer.Stop();
 
-                onApply();
+                FinalizeSet();
             };
 
             toolStripItem.DropDownOpening += delegate
@@ -34,13 +34,9 @@ namespace PowerControl.Menu
 
                 foreach (var option in Options)
                 {
-                    var item = new ToolStripMenuItem(option.ToString());
-                    item.Checked = Object.Equals(option, SelectedOption ?? ActiveOption);
-                    item.Click += delegate
-                    {
-                        SelectedOption = option;
-                        onApply();
-                    };
+                    var item = new ToolStripMenuItem(option);
+                    item.Checked = option == (SelectedOption ?? ActiveOption);
+                    item.Click += delegate { FinalizeSet(); };
                     toolStripItem.DropDownItems.Add(item);
                 }
             };
@@ -52,11 +48,10 @@ namespace PowerControl.Menu
                 return;
 
             var resetOption = ResetValue();
-            if (resetOption == null || resetOption.Equals(ActiveOption))
+            if (resetOption == null || resetOption == ActiveOption)
                 return;
 
-            SelectedOption = resetOption;
-            onApply();
+            Set(resetOption, true);
         }
 
         public override void Update()
@@ -88,31 +83,26 @@ namespace PowerControl.Menu
                 ActiveOption = Options.First();
         }
 
-        private void scheduleApply()
+        public void Set(String value, bool immediately = false)
         {
             if (delayTimer != null)
                 delayTimer.Stop();
 
-            if (ApplyDelay == 0)
+            SelectedOption = value;
+
+            if (ApplyDelay == 0 || immediately)
             {
-                onApply();
+                FinalizeSet();
                 return;
             }
 
             delayTimer.Interval = ApplyDelay > 0 ? ApplyDelay : 1;
-            delayTimer.Tick += delegate (object? sender, EventArgs e)
-            {
-                if (delayTimer != null)
-                    delayTimer.Stop();
-
-                onApply();
-            };
             delayTimer.Enabled = true;
         }
 
-        private void onApply()
+        private void FinalizeSet()
         {
-            if (ApplyValue != null)
+            if (ApplyValue != null && SelectedOption != null)
                 ActiveOption = ApplyValue(SelectedOption);
             else
                 ActiveOption = SelectedOption;
@@ -132,13 +122,12 @@ namespace PowerControl.Menu
             if (Options.Count == 0)
                 return;
 
-            SelectedOption = Options[Math.Clamp(index, 0, Options.Count - 1)];
-            scheduleApply();
+            Set(Options[Math.Clamp(index, 0, Options.Count - 1)], false);
         }
 
         public override void SelectNext(int change)
         {
-            int index = Options.IndexOf(SelectedOption ?? ActiveOption);
+            int index = Options.IndexOf(SelectedOption ?? ActiveOption ?? "");
             if (index < 0)
             {
                 if (change > 0)
@@ -154,22 +143,6 @@ namespace PowerControl.Menu
                 SelectIndex(index + change);
         }
 
-        private String optionText(Object option)
-        {
-            String text;
-
-            if (option == null)
-                text = Color("?", Colors.White);
-            else if (Object.Equals(option, SelectedOption ?? ActiveOption))
-                text = Color(option.ToString(), Colors.Red);
-            else if (Object.Equals(option, ActiveOption))
-                text = Color(option.ToString(), Colors.White);
-            else
-                text = Color(option.ToString(), Colors.Green);
-
-            return text;
-        }
-
         public override string Render(MenuItem? selected)
         {
             string output = "";
@@ -181,10 +154,26 @@ namespace PowerControl.Menu
 
             output += optionText(SelectedOption ?? ActiveOption);
 
-            if (SelectedOption != null && !Object.Equals(ActiveOption, SelectedOption))
+            if (SelectedOption != null && ActiveOption != SelectedOption)
                 output += " (active: " + optionText(ActiveOption) + ")";
 
             return output;
+        }
+
+        private String optionText(String? option)
+        {
+            String text;
+
+            if (option is null)
+                text = Color("?", Colors.White);
+            else if (option == (SelectedOption ?? ActiveOption))
+                text = Color(option, Colors.Red);
+            else if (option == ActiveOption)
+                text = Color(option, Colors.White);
+            else
+                text = Color(option, Colors.Green);
+
+            return text;
         }
     }
 }

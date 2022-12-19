@@ -12,7 +12,7 @@ namespace PowerControl.Options
             Visible = VangoghGPU.IsSupported,
             ActiveOption = "?",
             ResetValue = () => { return "Default"; },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!Settings.Default.AckAntiCheat(
                     Controller.TitleWithVersion,
@@ -21,20 +21,20 @@ namespace PowerControl.Options
                 )
                     return null;
 
-                return CommonHelpers.Instance.WithGlobalMutex<object>(200, () =>
+                return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>
                 {
                     using (var sd = VangoghGPU.Open())
                     {
                         if (sd is null)
                             return null;
 
-                        if (selected.ToString() == "Default")
+                        if (selected == "Default")
                         {
                             sd.HardMinGfxClock = 200;
                             return selected;
                         }
 
-                        sd.HardMinGfxClock = uint.Parse(selected.ToString()?.Replace("MHz", "") ?? "200");
+                        sd.HardMinGfxClock = uint.Parse(selected.Replace("MHz", ""));
                         return selected;
                     }
                 });

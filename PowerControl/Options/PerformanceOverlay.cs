@@ -10,19 +10,19 @@ namespace PowerControl.Options
             ApplyDelay = 500,
             OptionsValues = delegate ()
             {
-                return Enum.GetValues<OverlayEnabled>().Select(item => (object)item).ToArray();
+                return Enum.GetNames<OverlayEnabled>();
             },
             CurrentValue = delegate ()
             {
                 if (SharedData<OverlayModeSetting>.GetExistingValue(out var value))
-                    return value.CurrentEnabled;
+                    return value.CurrentEnabled.ToString();
                 return null;
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!SharedData<OverlayModeSetting>.GetExistingValue(out var value))
                     return null;
-                value.DesiredEnabled = (OverlayEnabled)selected;
+                value.DesiredEnabled = Enum.Parse<OverlayEnabled>(selected);
                 if (!SharedData<OverlayModeSetting>.SetExistingValue(value))
                     return null;
                 return selected;
@@ -35,19 +35,19 @@ namespace PowerControl.Options
             ApplyDelay = 500,
             OptionsValues = delegate ()
             {
-                return Enum.GetValues<OverlayMode>().Select(item => (object)item).ToArray();
+                return Enum.GetNames<OverlayMode>();
             },
             CurrentValue = delegate ()
             {
                 if (SharedData<OverlayModeSetting>.GetExistingValue(out var value))
-                    return value.Current;
+                    return value.Current.ToString();
                 return null;
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!SharedData<OverlayModeSetting>.GetExistingValue(out var value))
                     return null;
-                value.Desired = (OverlayMode)selected;
+                value.Desired = Enum.Parse<OverlayMode>(selected);
                 if (!SharedData<OverlayModeSetting>.SetExistingValue(value))
                     return null;
                 return selected;
@@ -60,19 +60,19 @@ namespace PowerControl.Options
             ApplyDelay = 500,
             OptionsValues = delegate ()
             {
-                return Enum.GetValues<KernelDriversLoaded>().Select(item => (object)item).ToArray();
+                return Enum.GetNames<KernelDriversLoaded>();
             },
             CurrentValue = delegate ()
             {
                 if (SharedData<OverlayModeSetting>.GetExistingValue(out var value))
-                    return value.KernelDriversLoaded;
+                    return value.KernelDriversLoaded.ToString();
                 return null;
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!SharedData<OverlayModeSetting>.GetExistingValue(out var value))
                     return null;
-                value.DesiredKernelDriversLoaded = (KernelDriversLoaded)selected;
+                value.DesiredKernelDriversLoaded = Enum.Parse<KernelDriversLoaded>(selected);
                 if (!SharedData<OverlayModeSetting>.SetExistingValue(value))
                     return null;
                 return selected;

@@ -13,30 +13,31 @@ namespace PowerControl.Options
             {
                 if (!GPUScaling.SafeResolutionChange && !Settings.Default.EnableExperimentalFeatures)
                     return null;
-                return DisplayResolutionController.GetAllResolutions().Last();
+                return DisplayResolutionController.GetAllResolutions().Last().ToString();
             },
             OptionsValues = delegate ()
             {
                 var resolutions = DisplayResolutionController.GetAllResolutions();
                 if (resolutions.Count() > 1)
-                    return resolutions.Select(item => (object)item).ToArray();
+                    return resolutions.Select(item => item.ToString()).ToArray();
                 return null;
             },
             CurrentValue = delegate ()
             {
                 if (!GPUScaling.SafeResolutionChange && !Settings.Default.EnableExperimentalFeatures)
                     return null;
-                return DisplayResolutionController.GetResolution();
+                return DisplayResolutionController.GetResolution().ToString();
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
-                DisplayResolutionController.SetResolution((DisplayResolutionController.DisplayResolution)selected);
+                var selectedResolution = new DisplayResolutionController.DisplayResolution(selected);
+                DisplayResolutionController.SetResolution(selectedResolution);
                 // force refresh Refresh Rate
                 RefreshRate.Instance.Update();
                 // force reset and refresh of FPS limit
                 FPSLimit.Instance.Reset();
                 FPSLimit.Instance.Update();
-                return DisplayResolutionController.GetResolution();
+                return DisplayResolutionController.GetResolution().ToString();
             }
         };
     }

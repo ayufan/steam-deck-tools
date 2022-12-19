@@ -20,11 +20,11 @@ namespace PowerControl.Options
                     return value.CurrentProfile.Length > 0 ? value.CurrentProfile : null;
                 return null;
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!SharedData<SteamControllerSetting>.GetExistingValue(out var value))
                     return null;
-                value.DesiredProfile = (String)selected;
+                value.DesiredProfile = selected;
                 if (!SharedData<SteamControllerSetting>.SetExistingValue(value))
                     return null;
                 return selected;

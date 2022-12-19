@@ -17,7 +17,7 @@ namespace PowerControl.Options
                     return null;
                 return value.Value ? "On" : "Off";
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 ImageSharpening.Enabled = (string)selected == "On";
 
