@@ -7,7 +7,7 @@ namespace CommonHelpers
     public static class Log
     {
 #if PRODUCTION_BUILD
-        internal static String SENTRY_DSN = null; // "https://3c93e3c3b47b40ffba72d9cb333fc6d7@o4504334913830912.ingest.sentry.io/4504334914879488";
+        internal static String SENTRY_DSN = "https://3c93e3c3b47b40ffba72d9cb333fc6d7@o4504334913830912.ingest.sentry.io/4504334914879488";
 #else
         internal static String SENTRY_DSN = "https://d9204614b2cd47468bfa1ea2ab55da4e@o4504334914355200.ingest.sentry.io/4504334915469312";
 #endif
@@ -23,7 +23,7 @@ namespace CommonHelpers
         {
             var env = Instance.IsProductionBuild ? "prod" : "dev";
             var build = Instance.IsDEBUG ? "debug" : "release";
-            var deploy = File.Exists("Uninstaller.exe") ? "setup" : "zip";
+            var deploy = File.Exists("Uninstall.exe") ? "setup" : "zip";
 
             o.BeforeSend += Sentry_BeforeSend;
             o.Dsn = Log.SENTRY_DSN;
@@ -31,7 +31,6 @@ namespace CommonHelpers
             o.IsGlobalModeEnabled = true;
             o.Environment = String.Format("{0}:{1}_{2}", Instance.ApplicationName, build, deploy);
             o.DefaultTags.Add("App", Instance.ApplicationName);
-            o.DefaultTags.Add("ID", Instance.ID);
             o.DefaultTags.Add("Build", build);
             o.DefaultTags.Add("Deploy", deploy);
 
@@ -46,6 +45,11 @@ namespace CommonHelpers
 
         private static SentryEvent? Sentry_BeforeSend(SentryEvent arg)
         {
+            if (Instance.HasFile("DisableCheckForUpdates.txt") || Instance.HasFile("DisableSentryTracking.txt"))
+                return null;
+            if (!Instance.AcceptedTerms)
+                return null;
+
             if (LogFileFolder == null)
             {
                 var documentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);

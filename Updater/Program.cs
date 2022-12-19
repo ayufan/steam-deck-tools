@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Web;
 using AutoUpdaterDotNET;
 using CommonHelpers;
+using ExternalHelpers;
+using Microsoft.Win32;
 
 namespace Updater
 {
@@ -53,7 +55,7 @@ namespace Updater
 
             Instance.RunOnce(null, "Global\\SteamDeckToolsAutoUpdater");
 
-            if (File.Exists("DisableCheckForUpdates.txt"))
+            if (Instance.HasFile("DisableCheckForUpdates.txt"))
             {
                 if (userCheck || cmdLine)
                 {
@@ -79,7 +81,7 @@ namespace Updater
             AutoUpdater.LetUserSelectRemindLater = true;
             AutoUpdater.ShowRemindLaterButton = true;
             AutoUpdater.HttpUserAgent = String.Format("AutoUpdater/{0}/{1}/{2}",
-                Instance.ID,
+                InstallationTime,
                 Instance.ProductVersionWithSha,
                 Instance.IsProductionBuild ? "prod" : "dev");
             AutoUpdater.PersistenceProvider = persistence;
@@ -102,14 +104,34 @@ namespace Updater
             TrackProcess("PerformanceOverlay", usedTools);
             TrackProcess("SteamController", usedTools);
 
+            var todayMatch = DateTimeOffset.UtcNow.DayOfYear;
+            var runToday = Settings.Default.GetRunTimes("Today", todayMatch) + 1;
+            var thisWeekMatch = DateTimeOffset.UtcNow.DayOfYear / 7;
+            var runThisWeek = Settings.Default.GetRunTimes("ThisWeek", thisWeekMatch) + 1;
+
+            AutoUpdater.ParseUpdateInfoEvent += delegate
+            {
+                Settings.Default.SetRunTimes("Today", todayMatch, runToday);
+                Settings.Default.SetRunTimes("ThisWeek", thisWeekMatch, runThisWeek);
+            };
+
+            // This method requests an auto-update from remote server. It includes the following information:
+            // Type of installation: prod/dev, release/debug, setup/zip
+            // Version of application: 0.5.40+12345cdef
+            // Installation time: when the application was installed to track the age
+            // Used Tools: which application of suite are running, like: FanControl,PerformanceOverlay
+            // Updates Today/ThisWeek: amount of times update run today and this week
+
             var updateURL = String.Format(
-                "https://steam-deck-tools.ayufan.dev/docs/updates/{0}_{1}.xml?version={2}&id={3}&env={4}&apps={5}",
+                "https://steam-deck-tools.ayufan.dev/updates/{4}_{0}_{1}.xml?version={2}&installTime={3}&env={4}&apps={5}&updatesToday={6}&updatesThisWeek={7}",
                 Instance.IsDEBUG ? "debug" : "release",
                 IsUsingInstaller ? "setup" : "zip",
                 HttpUtility.UrlEncode(Instance.ProductVersionWithSha),
-                HttpUtility.UrlEncode(Instance.ID),
+                InstallationTime,
                 Instance.IsProductionBuild ? "prod" : "dev",
-                HttpUtility.UrlEncode(String.Join(",", usedTools))
+                HttpUtility.UrlEncode(String.Join(",", usedTools)),
+                runToday,
+                runThisWeek
             );
 
             AutoUpdater.Start(updateURL);
@@ -183,6 +205,41 @@ namespace Updater
 
                 var uninstallExe = Path.Combine(currentDir, "Uninstall.exe");
                 return File.Exists(uninstallExe);
+            }
+        }
+
+        public static string InstallationTime
+        {
+            get
+            {
+                try
+                {
+                    using (var registryKey = Registry.CurrentUser.CreateSubKey(@"Software\SteamDeckTools", true))
+                    {
+                        var installationTime = registryKey?.GetValue("InstallationTime") as string;
+                        if (installationTime is null)
+                        {
+                            var previousTime = RegistryUtils.GetDateModified(
+                                RegistryHive.CurrentUser, @"Software\SteamDeckTools");
+                            Log.TraceLine("PreviousTime: {0}", previousTime);
+                            previousTime ??= DateTimeOffset.UtcNow;
+
+                            registryKey?.SetValue("InstallationTime", previousTime.Value.ToUnixTimeMilliseconds());
+                            installationTime = registryKey?.GetValue("InstallationTime") as string;
+                        }
+
+                        if (!Instance.AcceptedTerms)
+                        {
+                            return "";
+                        }
+
+                        return installationTime ?? "";
+                    }
+                }
+                catch (Exception e)
+                {
+                    return "";
+                }
             }
         }
 
