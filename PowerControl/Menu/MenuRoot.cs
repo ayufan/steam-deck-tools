@@ -5,13 +5,15 @@ namespace PowerControl.Menu
     public class MenuRoot : MenuItem
     {
         public IList<MenuItem> Items { get; set; } = new List<MenuItem>();
+        public MenuItem? Selected;
+        public event Action VisibleChanged;
 
-        public MenuItem Selected;
+        public MenuRoot()
+        {
+            VisibleChanged += delegate { };
+        }
 
-        public delegate void VisibleChangedDelegate();
-        public VisibleChangedDelegate? VisibleChanged;
-
-        public MenuItem this[String name]
+        public MenuItem? this[String name]
         {
             get
             {
@@ -29,6 +31,7 @@ namespace PowerControl.Menu
             foreach (var item in Items)
                 item.CreateMenu(collection);
         }
+
         public override void Update()
         {
             foreach (var item in Items)
@@ -39,12 +42,10 @@ namespace PowerControl.Menu
         {
             foreach (var item in Items)
                 item.Reset();
-
-            if (VisibleChanged != null)
-                VisibleChanged();
+            VisibleChanged();
         }
 
-        public override string Render(MenuItem parentSelected)
+        public override string Render(MenuItem? parentSelected)
         {
             var sb = new StringBuilder();
 
@@ -71,9 +72,7 @@ namespace PowerControl.Menu
 
             Visible = true;
             Update();
-
-            if (VisibleChanged != null)
-                VisibleChanged();
+            VisibleChanged();
             return true;
         }
 
@@ -93,8 +92,7 @@ namespace PowerControl.Menu
                 if (item.Visible && item.Selectable)
                 {
                     Selected = item;
-                    if (VisibleChanged != null)
-                        VisibleChanged();
+                    VisibleChanged();
                     return;
                 }
             }
@@ -116,8 +114,7 @@ namespace PowerControl.Menu
                 if (item.Visible && item.Selectable)
                 {
                     Selected = item;
-                    if (VisibleChanged != null)
-                        VisibleChanged();
+                    VisibleChanged();
                     return;
                 }
             }
@@ -131,8 +128,7 @@ namespace PowerControl.Menu
             if (Selected != null)
             {
                 Selected.SelectNext();
-                if (VisibleChanged != null)
-                    VisibleChanged();
+                VisibleChanged();
             }
         }
 
@@ -145,8 +141,7 @@ namespace PowerControl.Menu
             Show();
             Selected = item;
             item.SelectNext();
-            if (VisibleChanged != null)
-                VisibleChanged();
+            VisibleChanged();
         }
 
         public override void SelectPrev()
@@ -157,8 +152,7 @@ namespace PowerControl.Menu
             if (Selected != null)
             {
                 Selected.SelectPrev();
-                if (VisibleChanged != null)
-                    VisibleChanged();
+                VisibleChanged();
             }
         }
 
@@ -171,8 +165,7 @@ namespace PowerControl.Menu
             Show();
             Selected = item;
             item.SelectPrev();
-            if (VisibleChanged != null)
-                VisibleChanged();
+            VisibleChanged();
         }
     }
 }
