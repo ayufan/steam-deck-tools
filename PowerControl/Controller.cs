@@ -1,6 +1,7 @@
 ﻿using CommonHelpers;
 using ExternalHelpers;
 using hidapi;
+using Microsoft.Win32;
 using PowerControl.External;
 using PowerControl.Helpers;
 using RTSSSharedMemoryNET;
@@ -16,6 +17,9 @@ namespace PowerControl
         public const int KeyPressRepeatTime = 400;
         public const int KeyPressNextRepeatTime = 90;
 
+        private SynchronizationContext? context;
+        System.Windows.Forms.Timer contextTimer;
+
         Container components = new Container();
         System.Windows.Forms.NotifyIcon notifyIcon;
         StartupManager startupManager = new StartupManager(Title);
@@ -23,6 +27,7 @@ namespace PowerControl
         Menu.MenuRoot rootMenu = MenuStack.Root;
         OSD osd;
         System.Windows.Forms.Timer osdDismissTimer;
+        bool isOSDToggled = false;
 
         hidapi.HidDevice neptuneDevice = new hidapi.HidDevice(0x28de, 0x1205, 64);
         SDCInput neptuneDeviceState = new SDCInput();
@@ -49,6 +54,11 @@ namespace PowerControl
 
             if (Instance.WantsRunOnStartup)
                 startupManager.Startup = true;
+
+            InitializeDisplayContext();
+            contextTimer?.Start();
+
+            SystemEvents.DisplaySettingsChanged += DisplayChangesHandler;
 
             var contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
@@ -87,11 +97,18 @@ namespace PowerControl
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
 
+            // Fix first time context menu position
+            contextMenu.Show();
+            contextMenu.Close();
+
             osdDismissTimer = new System.Windows.Forms.Timer(components);
             osdDismissTimer.Interval = 3000;
             osdDismissTimer.Tick += delegate (object? sender, EventArgs e)
             {
-                hideOSD();
+                if (!isOSDToggled)
+                {
+                    hideOSD();
+                }
             };
 
             var osdTimer = new System.Windows.Forms.Timer(components);
@@ -134,6 +151,23 @@ namespace PowerControl
                 setDismissTimer();
                 dismissNeptuneInput();
             });
+
+            GlobalHotKey.RegisterHotKey(Settings.Default.MenuToggle, () =>
+            {
+                isOSDToggled = !rootMenu.Visible;
+
+                if (!RTSS.IsOSDForeground())
+                    return;
+
+                if (isOSDToggled)
+                {
+                    showOSD();
+                }
+                else
+                {
+                    hideOSD();
+                }
+            }, true);
 
             if (Settings.Default.EnableNeptuneController)
             {
@@ -297,6 +331,17 @@ namespace PowerControl
             updateOSD();
         }
 
+        private void showOSD()
+        {
+            if (rootMenu.Visible)
+                return;
+
+            Trace.WriteLine("Show OSD");
+            rootMenu.Update();
+            rootMenu.Visible = true;
+            updateOSD();
+        }
+
         public void updateOSD()
         {
             sharedData.SetValue(new PowerControlSetting()
@@ -351,6 +396,29 @@ namespace PowerControl
             }
             catch (SystemException)
             {
+            }
+        }
+
+        private void InitializeDisplayContext()
+        {
+            DeviceManager.LoadDisplays();
+            contextTimer = new System.Windows.Forms.Timer();
+            contextTimer.Interval = 200;
+            contextTimer.Tick += (_, _) =>
+            {
+                context = SynchronizationContext.Current;
+                contextTimer.Stop();
+            };
+        }
+
+        private void DisplayChangesHandler(object? sender, EventArgs e)
+        {
+            if (DeviceManager.RefreshDisplays())
+            {
+                context?.Post((object? state) =>
+                {
+                    rootMenu.Update();
+                }, null);
             }
         }
     }
