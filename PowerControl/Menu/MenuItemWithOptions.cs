@@ -2,10 +2,6 @@ namespace PowerControl.Menu
 {
     public class MenuItemWithOptions : MenuItem
     {
-        public delegate object CurrentValueDelegate();
-        public delegate object[] OptionsValueDelegate();
-        public delegate object ApplyValueDelegate(object selected);
-
         public IList<Object> Options { get; set; } = new List<Object>();
         public Object? SelectedOption { get; set; }
         public Object? ActiveOption { get; set; }
