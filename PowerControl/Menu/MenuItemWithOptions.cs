@@ -8,10 +8,10 @@ namespace PowerControl.Menu
         public int ApplyDelay { get; set; }
         public bool CycleOptions { get; set; } = true;
 
-        public Func<object>? CurrentValue { get; set; }
-        public Func<object[]>? OptionsValues { get; set; }
-        public Func<object, object>? ApplyValue { get; set; }
-        public Func<object>? ResetValue { get; set; }
+        public Func<object?>? CurrentValue { get; set; }
+        public Func<object[]?>? OptionsValues { get; set; }
+        public Func<object, object?>? ApplyValue { get; set; }
+        public Func<object?>? ResetValue { get; set; }
 
         private System.Windows.Forms.Timer delayTimer = new System.Windows.Forms.Timer();
         private ToolStripMenuItem toolStripItem = new ToolStripMenuItem();
