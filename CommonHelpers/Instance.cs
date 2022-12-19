@@ -105,7 +105,7 @@ namespace CommonHelpers
             }
         }
 
-        public static T WithGlobalMutex<T>(int timeoutMs, Func<T> func)
+        public static T? WithGlobalMutex<T>(int timeoutMs, Func<T?> func)
         {
             var mutex = WaitGlobalMutex(timeoutMs);
             if (mutex is null)

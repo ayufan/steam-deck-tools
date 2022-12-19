@@ -21,7 +21,11 @@ namespace PowerControl.Options
                 )
                     return null;
 
-                uint mW = uint.Parse(selected.ToString().Replace("W", "")) * 1000;
+                var selectedText = selected.ToString();
+                if (selectedText is null)
+                    return null;
+
+                uint mW = uint.Parse(selectedText.Replace("W", "")) * 1000;
 
                 if (VangoghGPU.IsSupported)
                 {

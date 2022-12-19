@@ -34,7 +34,7 @@ namespace PowerControl.Options
                             return selected;
                         }
 
-                        sd.HardMinGfxClock = uint.Parse(selected.ToString().Replace("MHz", ""));
+                        sd.HardMinGfxClock = uint.Parse(selected.ToString()?.Replace("MHz", "") ?? "200");
                         return selected;
                     }
                 });

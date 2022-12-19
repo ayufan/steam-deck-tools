@@ -10,12 +10,13 @@ namespace CommonHelpers
             return IsOSDForeground(out _);
         }
 
-        public static bool IsOSDForeground(out int? processId)
+        public static bool IsOSDForeground(out int processId)
         {
             try
             {
-                processId = (int?)GetTopLevelProcessId();
-                if (processId is null)
+                var id = GetTopLevelProcessId();
+                processId = (int)id.GetValueOrDefault(0);
+                if (id is null)
                     return false;
 
                 foreach (var app in OSD.GetAppEntries(AppFlags.MASK))
@@ -28,7 +29,7 @@ namespace CommonHelpers
             }
             catch
             {
-                processId = null;
+                processId = 0;
                 return false;
             }
         }
