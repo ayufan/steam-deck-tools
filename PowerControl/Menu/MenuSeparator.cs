@@ -18,7 +18,7 @@ namespace PowerControl.Menu
             collection.Add(toolStripItem);
         }
 
-        public override string Render(MenuItem selected)
+        public override string Render(MenuItem? selected)
         {
             return Color("---", Colors.Blue);
         }
