@@ -9,25 +9,25 @@ namespace PowerControl.Options
         {
             Name = "Refresh Rate",
             ApplyDelay = 1000,
-            ResetValue = () => { return DisplayResolutionController.GetRefreshRates().Max(); },
+            ResetValue = () => { return DisplayResolutionController.GetRefreshRates().Max().ToString(); },
             OptionsValues = delegate ()
             {
                 var refreshRates = DisplayResolutionController.GetRefreshRates();
                 if (refreshRates.Count() > 1)
-                    return refreshRates.Select(item => (object)item).ToArray();
+                    return refreshRates.Select(item => item.ToString()).ToArray();
                 return null;
             },
             CurrentValue = delegate ()
             {
-                return DisplayResolutionController.GetRefreshRate();
+                return DisplayResolutionController.GetRefreshRate().ToString();
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
-                DisplayResolutionController.SetRefreshRate((int)selected);
+                DisplayResolutionController.SetRefreshRate(int.Parse(selected));
                 // force reset and refresh of FPS limit
                 FPSLimit.Instance.Reset();
                 FPSLimit.Instance.Update();
-                return DisplayResolutionController.GetRefreshRate();
+                return DisplayResolutionController.GetRefreshRate().ToString();
             }
         };
     }

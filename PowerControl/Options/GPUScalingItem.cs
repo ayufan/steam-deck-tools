@@ -8,24 +8,24 @@ namespace PowerControl.Options
         {
             Name = "GPU Scaling",
             ApplyDelay = 1000,
-            Options = Enum.GetValues<GPUScaling.ScalingMode>().Cast<object>().Prepend("Off").ToArray(),
+            Options = Enum.GetNames<GPUScaling.ScalingMode>().Prepend("Off").ToArray(),
             CurrentValue = delegate ()
             {
                 if (!GPUScaling.IsSupported)
                     return null;
                 if (!GPUScaling.Enabled)
                     return "Off";
-                return GPUScaling.Mode;
+                return GPUScaling.Mode.ToString();
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!GPUScaling.IsSupported)
                     return null;
 
-                if (selected is GPUScaling.ScalingMode)
-                    GPUScaling.Mode = (GPUScaling.ScalingMode)selected;
-                else
+                if (selected == "Off")
                     GPUScaling.Enabled = false;
+                else
+                    GPUScaling.Mode = Enum.Parse<GPUScaling.ScalingMode>(selected);
 
                 // Since the RadeonSoftware will try to revert values
                 RadeonSoftware.Kill();
@@ -37,7 +37,7 @@ namespace PowerControl.Options
 
                 if (!GPUScaling.Enabled)
                     return "Off";
-                return GPUScaling.Mode;
+                return GPUScaling.Mode.ToString();
             }
         };
     }
