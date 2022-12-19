@@ -55,16 +55,12 @@ namespace PowerControl
             if (Instance.WantsRunOnStartup)
                 startupManager.Startup = true;
 
-            DeviceManager.LoadDisplays();
-            contextTimer = new System.Windows.Forms.Timer();
+            InitializeDisplayContext();
+            contextTimer.Interval = 200;
             contextTimer.Tick += (_, _) =>
             {
                 context = SynchronizationContext.Current;
-
-                if (context != null)
-                {
-                    contextTimer.Stop();
-                }
+                contextTimer.Stop();
             };
             contextTimer.Start();
 
@@ -412,6 +408,12 @@ namespace PowerControl
             catch (SystemException)
             {
             }
+        }
+
+        private void InitializeDisplayContext()
+        {
+            DeviceManager.LoadDisplays();
+            contextTimer = new System.Windows.Forms.Timer();
         }
 
         private void DisplayChangesHandler(object? sender, EventArgs e)
