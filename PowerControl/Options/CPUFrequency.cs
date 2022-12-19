@@ -12,7 +12,7 @@ namespace PowerControl.Options
             ActiveOption = "?",
             Visible = VangoghGPU.IsSupported,
             ResetValue = () => { return "Default"; },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!Settings.Default.AckAntiCheat(
                     Controller.TitleWithVersion,
@@ -21,7 +21,7 @@ namespace PowerControl.Options
                 )
                     return null;
 
-                return CommonHelpers.Instance.WithGlobalMutex<object>(200, () =>
+                return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>
                 {
                     using (var sd = VangoghGPU.Open())
                     {

@@ -20,7 +20,7 @@ namespace PowerControl.Options
 
                 return ProcessorCores.IsUsingSMT(processId) ? "Yes" : "No";
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!RTSS.IsOSDForeground(out var processId))
                     return null;

@@ -10,19 +10,19 @@ namespace PowerControl.Options
             ApplyDelay = 500,
             OptionsValues = delegate ()
             {
-                return Enum.GetValues<FanMode>().Select(item => (object)item).ToArray();
+                return Enum.GetNames<FanMode>();
             },
             CurrentValue = delegate ()
             {
                 if (SharedData<FanModeSetting>.GetExistingValue(out var value))
-                    return value.Current;
+                    return value.Current.ToString();
                 return null;
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!SharedData<FanModeSetting>.GetExistingValue(out var value))
                     return null;
-                value.Desired = (FanMode)selected;
+                value.Desired = Enum.Parse<FanMode>(selected);
                 if (!SharedData<FanModeSetting>.SetExistingValue(value))
                     return null;
                 return selected;

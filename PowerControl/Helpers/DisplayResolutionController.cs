@@ -22,6 +22,13 @@ namespace PowerControl.Helpers
 
             public DisplayResolution(int width, int height) { Width = width; Height = height; }
 
+            public DisplayResolution(String text)
+            {
+                var options = text.Split("x", 2);
+                Width = int.Parse(options[0]);
+                Height = int.Parse(options[1]);
+            }
+
             public static bool operator ==(DisplayResolution sz1, DisplayResolution sz2) => sz1.Width == sz2.Width && sz1.Height == sz2.Height;
 
             public static bool operator !=(DisplayResolution sz1, DisplayResolution sz2) => !(sz1 == sz2);

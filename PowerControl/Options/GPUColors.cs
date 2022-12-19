@@ -8,19 +8,19 @@ namespace PowerControl.Options
         {
             Name = "Colors",
             ApplyDelay = 1000,
-            Options = Enum.GetValues<DCE.Mode>().Cast<object>().ToList(),
+            Options = Enum.GetNames<DCE.Mode>(),
             CurrentValue = delegate ()
             {
-                return DCE.Current;
+                return DCE.Current.ToString();
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (DCE.Current is null)
                     return null;
 
-                DCE.Current = (DCE.Mode)selected;
+                DCE.Current = Enum.Parse<DCE.Mode>(selected);
                 RadeonSoftware.Kill();
-                return DCE.Current;
+                return DCE.Current.ToString();
             }
         };
     }

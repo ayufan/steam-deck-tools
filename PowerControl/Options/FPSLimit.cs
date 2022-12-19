@@ -13,9 +13,12 @@ namespace PowerControl.Options
             OptionsValues = delegate ()
             {
                 var refreshRate = DisplayResolutionController.GetRefreshRate();
-                return new object[]
+                return new string[]
                 {
-                    refreshRate / 4, refreshRate / 2, refreshRate, "Off"
+                    (refreshRate / 4).ToString(),
+                    (refreshRate / 2).ToString(),
+                    refreshRate.ToString(),
+                    "Off"
                 };
             },
             CurrentValue = delegate ()
@@ -24,18 +27,18 @@ namespace PowerControl.Options
                 {
                     RTSS.LoadProfile();
                     if (RTSS.GetProfileProperty("FramerateLimit", out int framerate))
-                        return (framerate == 0) ? "Off" : framerate;
+                        return (framerate == 0) ? "Off" : framerate.ToString();
                 }
                 catch { }
                 return null;
             },
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 try
                 {
                     int framerate = 0;
-                    if (selected != null && selected.ToString() != "Off")
-                        framerate = (int)selected;
+                    if (selected != "Off")
+                        framerate = int.Parse(selected);
 
                     RTSS.LoadProfile();
                     if (!RTSS.SetProfileProperty("FramerateLimit", framerate))
@@ -44,7 +47,7 @@ namespace PowerControl.Options
                         return null;
                     RTSS.SaveProfile();
                     RTSS.UpdateProfiles();
-                    return (framerate == 0) ? "Off" : framerate;
+                    return (framerate == 0) ? "Off" : framerate.ToString();
                 }
                 catch { }
                 return null;

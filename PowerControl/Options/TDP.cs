@@ -12,7 +12,7 @@ namespace PowerControl.Options
             ApplyDelay = 1000,
             ResetValue = () => { return "15W"; },
             ActiveOption = "?",
-            ApplyValue = delegate (object selected)
+            ApplyValue = (selected) =>
             {
                 if (!Settings.Default.AckAntiCheat(
                     Controller.TitleWithVersion,
@@ -21,15 +21,11 @@ namespace PowerControl.Options
                 )
                     return null;
 
-                var selectedText = selected.ToString();
-                if (selectedText is null)
-                    return null;
-
-                uint mW = uint.Parse(selectedText.Replace("W", "")) * 1000;
+                uint mW = uint.Parse(selected.Replace("W", "")) * 1000;
 
                 if (VangoghGPU.IsSupported)
                 {
-                    return CommonHelpers.Instance.WithGlobalMutex<object>(200, () =>
+                    return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>
                     {
                         using (var sd = VangoghGPU.Open())
                         {
