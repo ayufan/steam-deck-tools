@@ -49,7 +49,7 @@ namespace PowerControl.Menu
         {
             var sb = new StringBuilder();
 
-            sb.AppendJoin("", Helpers);
+            sb.AppendJoin("", OSDHelpers);
             if (Name != "")
                 sb.AppendLine(Color(Name, Colors.Blue));
 
