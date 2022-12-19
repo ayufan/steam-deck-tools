@@ -2,7 +2,7 @@ namespace PowerControl.Menu
 {
     public abstract class MenuItem
     {
-        public static readonly String[] Helpers =
+        public static readonly String[] OSDHelpers =
         {
             "<C0=008040><C1=0080C0><C2=C08080><C3=FF0000><C4=FFFFFF><C250=FF8000>",
             "<A0=-4><A1=5><A2=-2><A5=-5><S0=-50><S1=50>",
