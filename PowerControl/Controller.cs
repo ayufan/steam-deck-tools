@@ -56,13 +56,7 @@ namespace PowerControl
                 startupManager.Startup = true;
 
             InitializeDisplayContext();
-            contextTimer.Interval = 200;
-            contextTimer.Tick += (_, _) =>
-            {
-                context = SynchronizationContext.Current;
-                contextTimer.Stop();
-            };
-            contextTimer.Start();
+            contextTimer?.Start();
 
             SystemEvents.DisplaySettingsChanged += DisplayChangesHandler;
 
@@ -414,6 +408,12 @@ namespace PowerControl
         {
             DeviceManager.LoadDisplays();
             contextTimer = new System.Windows.Forms.Timer();
+            contextTimer.Interval = 200;
+            contextTimer.Tick += (_, _) =>
+            {
+                context = SynchronizationContext.Current;
+                contextTimer.Stop();
+            };
         }
 
         private void DisplayChangesHandler(object? sender, EventArgs e)
