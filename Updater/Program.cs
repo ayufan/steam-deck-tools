@@ -2,6 +2,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Web;
+using System.Xml;
+using System.Xml.Serialization;
 using AutoUpdaterDotNET;
 using CommonHelpers;
 using ExternalHelpers;
@@ -89,6 +91,7 @@ namespace Updater
             AutoUpdater.UpdateFormSize = new Size(800, 300);
             AutoUpdater.ShowSkipButton = true;
             AutoUpdater.Synchronous = true;
+            AutoUpdater.ParseUpdateInfoEvent += ParseUpdateInfoEvent;
 
             if (!IsUsingInstaller)
             {
@@ -137,6 +140,19 @@ namespace Updater
             AutoUpdater.Start(updateURL);
         }
 
+        private static UpdateInfoEventArgs? UpdateInfo { get; set; }
+
+        private static void ParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(UpdateInfoEventArgs));
+            XmlTextReader xmlTextReader = new XmlTextReader(new StringReader(args.RemoteData)) { XmlResolver = null };
+            UpdateInfo = xmlSerializer.Deserialize(xmlTextReader) as UpdateInfoEventArgs;
+            if (UpdateInfo is not null)
+            {
+                args.UpdateInfo = UpdateInfo;
+            }
+        }
+
         private static bool TrackProcess(String processFilterName, List<string>? usedTools = null)
         {
             if (FindProcesses(processFilterName).Any())
@@ -150,6 +166,9 @@ namespace Updater
 
         private static void KillApps()
         {
+            if (UpdateInfo?.InstallerArgs?.StartsWith("/nokill") == true)
+                return;
+
             ExitProcess("FanControl");
             ExitProcess("PowerControl");
             ExitProcess("PerformanceOverlay");
