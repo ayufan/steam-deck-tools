@@ -23,11 +23,7 @@ namespace PowerControl.Menu
             return Color("---", Colors.Blue);
         }
 
-        public override void SelectNext()
-        {
-        }
-
-        public override void SelectPrev()
+        public override void SelectNext(int change)
         {
         }
 
