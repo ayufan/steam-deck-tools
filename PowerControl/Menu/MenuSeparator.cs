@@ -9,9 +9,9 @@ namespace PowerControl.Menu
             Selectable = false;
         }
 
-        public override void CreateMenu(ToolStripItemCollection collection)
+        public override void CreateMenu(System.Windows.Forms.ContextMenuStrip contextMenu)
         {
-            collection.Add(toolStripItem);
+            contextMenu.Items.Add(toolStripItem);
         }
 
         public override string Render(MenuItem? selected)

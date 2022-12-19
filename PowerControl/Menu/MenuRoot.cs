@@ -26,10 +26,10 @@ namespace PowerControl.Menu
             }
         }
 
-        public override void CreateMenu(ToolStripItemCollection collection)
+        public override void CreateMenu(System.Windows.Forms.ContextMenuStrip contextMenu)
         {
             foreach (var item in Items)
-                item.CreateMenu(collection);
+                item.CreateMenu(contextMenu);
         }
 
         public override void Update()

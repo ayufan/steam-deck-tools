@@ -69,7 +69,7 @@ namespace PowerControl
 
             rootMenu.Visible = false;
             rootMenu.Update();
-            rootMenu.CreateMenu(contextMenu.Items);
+            rootMenu.CreateMenu(contextMenu);
             rootMenu.VisibleChanged += delegate { updateOSD(); };
             contextMenu.Items.Add(new ToolStripSeparator());
 
