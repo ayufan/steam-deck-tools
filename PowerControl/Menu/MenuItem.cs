@@ -28,7 +28,7 @@ namespace PowerControl.Menu
 
         public abstract string Render(MenuItem? selected);
 
-        public abstract void CreateMenu(ToolStripItemCollection collection);
+        public abstract void CreateMenu(System.Windows.Forms.ContextMenuStrip contextMenu);
         public abstract void Update();
         public abstract void Reset();
 

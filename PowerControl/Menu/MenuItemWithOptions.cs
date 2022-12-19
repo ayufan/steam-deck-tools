@@ -27,6 +27,23 @@ namespace PowerControl.Menu
 
                 onApply();
             };
+
+            toolStripItem.DropDownOpening += delegate
+            {
+                toolStripItem.DropDownItems.Clear();
+
+                foreach (var option in Options)
+                {
+                    var item = new ToolStripMenuItem(option.ToString());
+                    item.Checked = Object.Equals(option, SelectedOption ?? ActiveOption);
+                    item.Click += delegate
+                    {
+                        SelectedOption = option;
+                        onApply();
+                    };
+                    toolStripItem.DropDownItems.Add(item);
+                }
+            };
         }
 
         public override void Reset()
@@ -62,20 +79,13 @@ namespace PowerControl.Menu
             {
                 var result = OptionsValues();
                 if (result != null)
-                {
                     Options = result.ToList();
-                    updateOptions();
-                }
                 else
-                {
                     Visible = false;
-                }
             }
 
             if (ActiveOption == null && Options.Count > 0)
                 ActiveOption = Options.First();
-
-            onUpdateToolStrip();
         }
 
         private void scheduleApply()
@@ -108,46 +118,13 @@ namespace PowerControl.Menu
                 ActiveOption = SelectedOption;
 
             SelectedOption = null;
-
-            onUpdateToolStrip();
         }
 
-        private void onUpdateToolStrip()
-        {
-            if (toolStripItem == null)
-                return;
-
-            foreach (ToolStripMenuItem item in toolStripItem.DropDownItems)
-                item.Checked = Object.Equals(item.Tag, SelectedOption ?? ActiveOption);
-
-            toolStripItem.Visible = Visible && Options.Count > 0;
-        }
-
-        private void updateOptions()
-        {
-            if (toolStripItem == null)
-                return;
-
-            toolStripItem.DropDownItems.Clear();
-
-            foreach (var option in Options)
-            {
-                var optionItem = new ToolStripMenuItem(option.ToString());
-                optionItem.Tag = option;
-                optionItem.Click += delegate (object? sender, EventArgs e)
-                {
-                    SelectedOption = option;
-                    onApply();
-                };
-                toolStripItem.DropDownItems.Add(optionItem);
-            }
-        }
-
-        public override void CreateMenu(ToolStripItemCollection collection)
+        public override void CreateMenu(System.Windows.Forms.ContextMenuStrip contextMenu)
         {
             toolStripItem.Text = Name;
-            updateOptions();
-            collection.Add(toolStripItem);
+            contextMenu.Items.Add(toolStripItem);
+            contextMenu.Opening += delegate { toolStripItem.Visible = Visible && Options.Count > 0; };
         }
 
         private void SelectIndex(int index)
