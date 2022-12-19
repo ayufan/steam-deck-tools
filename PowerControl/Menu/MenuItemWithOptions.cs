@@ -19,6 +19,14 @@ namespace PowerControl.Menu
         public MenuItemWithOptions()
         {
             this.Selectable = true;
+
+            delayTimer.Tick += delegate (object? sender, EventArgs e)
+            {
+                if (delayTimer != null)
+                    delayTimer.Stop();
+
+                onApply();
+            };
         }
 
         public override void Reset()
