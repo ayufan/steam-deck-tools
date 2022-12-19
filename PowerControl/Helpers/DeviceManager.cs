@@ -11,20 +11,24 @@ namespace PowerControl.Helpers
 {
     internal class DeviceManager
     {
-        public static int NumberOfDisplays { get; private set; }
+        private static Screen[] screens = new Screen[0];
+        public static int NumberOfDisplays
+        {
+            get { return screens.Length; }
+        }
 
         public static void LoadDisplays()
         {
-            NumberOfDisplays = Screen.AllScreens.Length;
+            screens = Screen.AllScreens;
         }
 
         public static bool RefreshDisplays()
         {
-            int displays = Screen.AllScreens.Length;
+            var newScreens = Screen.AllScreens;
 
-            if (NumberOfDisplays != displays)
+            if (HaveScreensChanged(newScreens))
             {
-                NumberOfDisplays = displays;
+                screens = newScreens;
                 return true;
             }
 
@@ -144,6 +148,25 @@ namespace PowerControl.Helpers
             {
                 Marshal.FreeHGlobal(addr);
             }
+        }
+
+        private static bool HaveScreensChanged(Screen[] newScreens)
+        {
+            if (screens.Length != newScreens.Length)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < screens.Length; i++)
+            {
+                if (screens[i].DeviceName != newScreens[i].DeviceName ||
+                    screens[i].Primary != newScreens[i].Primary)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
