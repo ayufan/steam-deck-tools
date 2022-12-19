@@ -49,11 +49,35 @@ namespace PowerControl
 
         public bool EnableExperimentalFeatures
         {
-#if DEBUG
-            get { return true; }
-#else
-            get { return false; }
-#endif
+            get { return Instance.IsDEBUG; }
+        }
+
+        public bool AckAntiCheat(String title, String name, String message)
+        {
+            if (Get<bool>("AckAntiCheat" + name, false) && Settings.Default.EnableExperimentalFeatures)
+                return true;
+
+            var result = MessageBox.Show(
+                String.Join("\n",
+                    "WARNING!!!!",
+                    "",
+                    message,
+                    "This might result in kicking from the application or even be banned.",
+                    "",
+                    "CLICK YES TO ACKNOWLEDGE?",
+                    "CLICK NO TO LEARN MORE."
+                ), title, MessageBoxButtons.YesNo
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                Set<bool>("AckAntiCheat" + name, true);
+                return true;
+            }
+
+            try { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software"); }
+            catch { }
+            return false;
         }
     }
 }

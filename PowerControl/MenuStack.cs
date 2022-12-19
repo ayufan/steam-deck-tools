@@ -252,6 +252,13 @@ namespace PowerControl
                     ActiveOption = "?",
                     ApplyValue = delegate(object selected)
                     {
+                        if (!Settings.Default.AckAntiCheat(
+                            Controller.TitleWithVersion,
+                            "TDP",
+                            "Changing TDP requires kernel access for a short period. Leave the game if it uses anti-cheat protection.")
+                        )
+                            return null;
+
                         uint mW = uint.Parse(selected.ToString().Replace("W", "")) * 1000;
 
                         if (VangoghGPU.IsSupported)
@@ -301,6 +308,13 @@ namespace PowerControl
                     ResetValue = () => { return "Default"; },
                     ApplyValue = delegate(object selected)
                     {
+                        if (!Settings.Default.AckAntiCheat(
+                            Controller.TitleWithVersion,
+                            "GPU",
+                            "Changing GPU frequency requires kernel access for a short period. Leave the game if it uses anti-cheat protection.")
+                        )
+                            return null;
+
                         return Instance.WithGlobalMutex<object>(200, () =>
                         {
                             using (var sd = VangoghGPU.Open())
@@ -330,6 +344,13 @@ namespace PowerControl
                     ResetValue = () => { return "Default"; },
                     ApplyValue = delegate(object selected)
                     {
+                        if (!Settings.Default.AckAntiCheat(
+                            Controller.TitleWithVersion,
+                            "CPU",
+                            "Changing GPU frequency requires kernel access for a short period. Leave the game if it uses anti-cheat protection.")
+                        )
+                            return null;
+
                         return Instance.WithGlobalMutex<object>(200, () =>
                         {
                             using (var sd = VangoghGPU.Open())

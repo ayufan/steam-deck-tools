@@ -18,6 +18,12 @@ namespace PowerControl
             {
                 if (Settings.Default.EnableExperimentalFeatures)
                 {
+                    if (!Settings.Default.AckAntiCheat(
+                        Controller.TitleWithVersion,
+                        "ExperimentalFeatures",
+                        "You are running EXPERIMENTAL build."))
+                        return;
+
                     for (int i = 0; !VangoghGPU.IsSupported; i++)
                     {
                         Instance.WithGlobalMutex(1000, () => VangoghGPU.Detect());
