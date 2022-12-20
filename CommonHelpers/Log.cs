@@ -47,8 +47,6 @@ namespace CommonHelpers
         {
             if (Instance.HasFile("DisableCheckForUpdates.txt") || Instance.HasFile("DisableSentryTracking.txt"))
                 return null;
-            if (!Instance.AcceptedTerms)
-                return null;
 
             if (LogFileFolder == null)
             {
