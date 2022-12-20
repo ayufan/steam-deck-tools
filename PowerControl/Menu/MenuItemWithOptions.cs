@@ -13,7 +13,7 @@ namespace PowerControl.Menu
         public Func<string, string?>? ApplyValue { get; set; }
         public Func<string?>? ResetValue { get; set; }
 
-        private event Action<MenuItemWithOptions, String?, String>? ValueChanged;
+        public event Action<MenuItemWithOptions, String?, String>? ValueChanged;
 
         private System.Windows.Forms.Timer delayTimer = new System.Windows.Forms.Timer();
         private ToolStripMenuItem toolStripItem = new ToolStripMenuItem();
