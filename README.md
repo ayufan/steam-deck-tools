@@ -44,6 +44,10 @@ This project provides the following applications:
 
 Join Us for help or chat. We are at [#windows of Steam Deck Discord](https://discord.com/channels/865611969661632521/867449233261985812).
 
+## Anti-Cheat and Antivirus software
+
+[READ IF PLAYING ONLINE GAMES AND/OR GAMES THAT HAVE ANTI-CHEAT ENABLED](https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software).
+
 ## Author
 
 Kamil Trzciński, 2022

@@ -25,11 +25,3 @@ See [Risks](#4-risks).
 As of Today (Nov, 2022) the GPU temperature is missing on Windows. Which makes it a little incomplete.
 However, it should be expected that GPU temperature is "kind of similar" to CPU due to GPU being in the same
 silicon. But! The device might overheat and break due to this missing temperature. **So, use at your own risk.**
-
-## 4. Supported devices
-
-The application tries it best to not harm device (just in case). So, it validates bios version.
-Those are currently supported:
-
-- F7A0107 (PD ver: 0xB030)
-- F7A0110 (PD ver: 0xB030)

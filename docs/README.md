@@ -71,8 +71,8 @@ that might trigger anti-cheat detection application does require to acknowledge 
 
 ### Safe settings
 
-If you play online games application needs to be configured to.
-Those settings are considered safe:
+If you play online games application needs to disable kernel-features.
+**Those settings should be considered safe**:
 
 - **Fan Control**: Use **Default** FAN
 - **Performance Overlay**: OSD Kernel Drivers are **DISABLED**
@@ -85,6 +85,15 @@ By disabling usage of Kernel Drivers you are loosing the:
 - **Performance Overlay**: See CPU % and MHz, GPU MHz, APU W usage
 - **Power Control**: Ability to change TDP, CPU and GPU frequency - you can change this safely before you start the game
 - **Steam Controller**: There's no impact
+
+## Supported devices
+
+The application tries it best to not harm device (just in case).
+So, it validates bios version. Those are currently supported:
+
+- F7A0107 (PD ver: 0xB030)
+- F7A0110 (PD ver: 0xB030)
+- F7A0113 (PD ver: 0xB030)
 
 ## Author
 
