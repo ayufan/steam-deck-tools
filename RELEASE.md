@@ -19,4 +19,4 @@
 - Use `Sentry.io` for error tracking
 - Make `Updater.exe` to be able to update from `.zip` to `setup.exe`
 - Bug fixing to handle all known exceptions
-- Require to acknowledge when using function that might trigger `Anti-Cheat` protection
+- Require to acknowledge when using function that might trigger `Anti-Cheat` protection via top-most window

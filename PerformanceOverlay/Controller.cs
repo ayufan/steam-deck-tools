@@ -168,7 +168,10 @@ namespace PerformanceOverlay
             if (Settings.Default.AckAntiCheat && Settings.Default.EnableExperimentalFeatures)
                 return true;
 
+            Application.DoEvents();
+
             var result = MessageBox.Show(
+                new Form { TopMost = true },
                 String.Join("\n",
                     "WARNING!!!!",
                     "",
@@ -179,7 +182,10 @@ namespace PerformanceOverlay
                     "",
                     "CLICK YES TO ACKNOWLEDGE?",
                     "CLICK NO TO LEARN MORE."
-                ), TitleWithVersion, MessageBoxButtons.YesNo
+                ), TitleWithVersion,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2
             );
 
             if (result == DialogResult.Yes)

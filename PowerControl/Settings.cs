@@ -57,7 +57,10 @@ namespace PowerControl
             if (Get<bool>("AckAntiCheat" + name, false) && Settings.Default.EnableExperimentalFeatures)
                 return true;
 
+            Application.DoEvents();
+
             var result = MessageBox.Show(
+                new Form { TopMost = true },
                 String.Join("\n",
                     "WARNING!!!!",
                     "",
@@ -66,7 +69,10 @@ namespace PowerControl
                     "",
                     "CLICK YES TO ACKNOWLEDGE?",
                     "CLICK NO TO LEARN MORE."
-                ), title, MessageBoxButtons.YesNo
+                ), title,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2
             );
 
             if (result == DialogResult.Yes)
