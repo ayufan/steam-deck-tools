@@ -7,10 +7,12 @@ namespace PowerControl.Menu
         public string? ActiveOption { get; set; }
         public int ApplyDelay { get; set; }
         public bool CycleOptions { get; set; } = true;
+        public string? PersistentKey;
 
         public Func<string?>? CurrentValue { get; set; }
         public Func<string[]?>? OptionsValues { get; set; }
         public Func<string, string?>? ApplyValue { get; set; }
+        public Action? AfterApply { get; set; }
         public Func<string?>? ResetValue { get; set; }
 
         public event Action<MenuItemWithOptions, String?, String> ValueChanged;
@@ -29,7 +31,7 @@ namespace PowerControl.Menu
                 if (delayTimer != null)
                     delayTimer.Stop();
 
-                FinalizeSet();
+                FinalizeSet(delayTimer.Interval > ApplyDelay);
             };
         }
 
@@ -42,7 +44,7 @@ namespace PowerControl.Menu
             if (resetOption == null || resetOption == ActiveOption)
                 return;
 
-            Set(resetOption, true);
+            Set(resetOption, 0);
         }
 
         public override void Update()
@@ -74,35 +76,40 @@ namespace PowerControl.Menu
                 ActiveOption = Options.First();
         }
 
-        public void Set(String value, bool immediately = false)
+        public void Set(String value, int overrideDelay = -1, bool silent = false)
         {
             if (delayTimer != null)
                 delayTimer.Stop();
 
             SelectedOption = value;
 
-            if (ApplyDelay == 0 || immediately)
+            if (ApplyDelay == 0 || overrideDelay == 0)
             {
-                FinalizeSet();
+                FinalizeSet(silent);
                 return;
             }
 
-            delayTimer.Interval = ApplyDelay > 0 ? ApplyDelay : 1;
+            delayTimer.Interval = overrideDelay > 0 ? overrideDelay : ApplyDelay > 0 ? ApplyDelay : 1;
             delayTimer.Enabled = true;
         }
 
-        private void FinalizeSet()
+        private void FinalizeSet(bool silent = false)
         {
             var wasOption = ActiveOption;
 
             if (ApplyValue != null && SelectedOption != null)
+            {
                 ActiveOption = ApplyValue(SelectedOption);
+
+                if (AfterApply != null && !silent)
+                    AfterApply();
+            }
             else
                 ActiveOption = SelectedOption;
 
             SelectedOption = null;
 
-            if (wasOption != ActiveOption && ActiveOption != null)
+            if (wasOption != ActiveOption && ActiveOption != null && !silent)
                 ValueChanged(this, wasOption, ActiveOption);
         }
 
@@ -120,7 +127,7 @@ namespace PowerControl.Menu
                 {
                     var item = new ToolStripMenuItem(option);
                     item.Checked = option == (SelectedOption ?? ActiveOption);
-                    item.Click += delegate { Set(option, true); };
+                    item.Click += delegate { Set(option, 0); };
                     toolStripItem.DropDownItems.Add(item);
                 }
 
@@ -133,7 +140,7 @@ namespace PowerControl.Menu
             if (Options.Count == 0)
                 return;
 
-            Set(Options[Math.Clamp(index, 0, Options.Count - 1)], false);
+            Set(Options[Math.Clamp(index, 0, Options.Count - 1)]);
         }
 
         public override void SelectNext(int change)

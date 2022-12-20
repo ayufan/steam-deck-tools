@@ -8,6 +8,7 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "Refresh Rate",
+            PersistentKey = "RefreshRate",
             ApplyDelay = 1000,
             ResetValue = () => { return DisplayResolutionController.GetRefreshRates().Max().ToString(); },
             OptionsValues = delegate ()
@@ -24,10 +25,14 @@ namespace PowerControl.Options
             ApplyValue = (selected) =>
             {
                 DisplayResolutionController.SetRefreshRate(int.Parse(selected));
+                
+                return DisplayResolutionController.GetRefreshRate().ToString();
+            },
+            AfterApply = () =>
+            {
                 // force reset and refresh of FPS limit
                 FPSLimit.Instance.Reset();
                 FPSLimit.Instance.Update();
-                return DisplayResolutionController.GetRefreshRate().ToString();
             }
         };
     }

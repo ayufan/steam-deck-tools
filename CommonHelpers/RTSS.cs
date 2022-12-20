@@ -7,11 +7,18 @@ namespace CommonHelpers
     {
         public static bool IsOSDForeground()
         {
-            return IsOSDForeground(out _);
+            return IsOSDForeground(out _, out _);
         }
 
         public static bool IsOSDForeground(out int processId)
         {
+            return IsOSDForeground(out processId, out _);
+        }
+
+        public static bool IsOSDForeground(out int processId, out string? applicationName)
+        {
+            applicationName = null;
+
             try
             {
                 var id = GetTopLevelProcessId();
@@ -22,7 +29,10 @@ namespace CommonHelpers
                 foreach (var app in OSD.GetAppEntries(AppFlags.MASK))
                 {
                     if (app.ProcessId == processId)
+                    {
+                        applicationName = ExtractAppName(app.Name);
                         return true;
+                    }
                 }
 
                 return false;
@@ -76,6 +86,13 @@ namespace CommonHelpers
             }
         }
 
+        public static List<string> GetCurrentApps()
+        {
+            var apps = OSD.GetAppEntries(AppFlags.MASK).Select(e => ExtractAppName(e.Name)).ToList();
+
+            return apps;
+        }
+
         public static uint EnableFlag(uint flag, bool status)
         {
             var current = SetFlags(~flag, status ? flag : 0);
@@ -124,6 +141,18 @@ namespace CommonHelpers
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
+
+        private static string ExtractAppName(string fullName)
+        {
+            string res = fullName.Split('\\').Last();
+
+            if (res.ToLower().Contains(".exe"))
+            {
+                return res[..^4];
+            }
+
+            return res;
+        }
 
         private static uint? GetTopLevelProcessId()
         {

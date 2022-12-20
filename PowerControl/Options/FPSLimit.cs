@@ -8,6 +8,7 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "FPS Limit",
+            PersistentKey = "FPSLimit",
             ApplyDelay = 500,
             ResetValue = () => { return "Off"; },
             OptionsValues = delegate ()
