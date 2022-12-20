@@ -21,3 +21,4 @@
 - Bug fixing to handle all known exceptions
 - Require to acknowledge when using function that might trigger `Anti-Cheat` protection via top-most window
 - GPU detection will log errors to `Sentry.io`
+- Support SMU of Vangogh GPU shipped with BIOS 113

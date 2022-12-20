@@ -1,7 +1,7 @@
 ﻿using CommonHelpers;
 using System.Diagnostics;
 using static CommonHelpers.Log;
-using Device = System.Tuple<string, ulong, ulong, uint>;
+using Device = System.Tuple<string, ulong, ulong, uint[]>;
 
 namespace PowerControl.Helpers.AMD
 {
@@ -10,7 +10,7 @@ namespace PowerControl.Helpers.AMD
         public static readonly Device[] SupportedDevices =
         {
             // SteamDeck
-            new Device("AMD Custom GPU 0405", 0x80300000, 0x8037ffff, 0x43F3900)
+            new Device("AMD Custom GPU 0405", 0x80300000, 0x8037ffff, new uint[] { 0x43F3900, 0x43F3C05 })
         };
 
         private static Device? DetectedDevice;
@@ -92,7 +92,7 @@ namespace PowerControl.Helpers.AMD
                     }
 
                     var smuVersion = gpu.SMUVersion;
-                    if (smuVersion != device.Item4)
+                    if (!device.Item4.Contains(smuVersion))
                     {
                         TraceError("GPU: {0}: {1}: SMU not supported: {2:X8} (IO: {3})", deviceName, devicePNP, smuVersion, expectedRange);
                         return DetectionStatus.Retryable;
