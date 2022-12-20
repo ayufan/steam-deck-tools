@@ -13,7 +13,7 @@ namespace PowerControl.Menu
         public Func<string, string?>? ApplyValue { get; set; }
         public Func<string?>? ResetValue { get; set; }
 
-        public event Action<MenuItemWithOptions, String?, String>? ValueChanged;
+        private event Action<MenuItemWithOptions, String?, String>? ValueChanged;
 
         private System.Windows.Forms.Timer delayTimer = new System.Windows.Forms.Timer();
         private ToolStripMenuItem toolStripItem = new ToolStripMenuItem();
@@ -91,7 +91,7 @@ namespace PowerControl.Menu
             delayTimer.Enabled = true;
         }
 
-        public void AddValueChanged(Action<MenuItemWithOptions, String?, String> action)
+        public void SetValueChanged(Action<MenuItemWithOptions, String?, String> action)
         {
             ValueChanged = action;
         }

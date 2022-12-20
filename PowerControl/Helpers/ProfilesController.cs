@@ -27,12 +27,12 @@ namespace PowerControl.Helpers
 
         public static void Initialize()
         {
-            Options.RefreshRate.Instance?.AddValueChanged((_, _, newValue) =>
+            Options.RefreshRate.Instance?.SetValueChanged((_, _, newValue) =>
             {
                 SetValue(RefreshRateKey, newValue);
             });
 
-            Options.FPSLimit.Instance?.AddValueChanged((_, _, newValue) =>
+            Options.FPSLimit.Instance?.SetValueChanged((_, _, newValue) =>
             {
                 SetValue(FpsKey, newValue);
             });
