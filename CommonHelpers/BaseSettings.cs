@@ -8,8 +8,6 @@ namespace CommonHelpers
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public abstract class BaseSettings
     {
-        private String settingsKey;
-        private String configFile;
         private IDictionary<String, object?> cachedValues = new ConcurrentDictionary<string, object?>();
 
         public event Action<string> SettingChanging;
@@ -18,10 +16,16 @@ namespace CommonHelpers
         [Browsable(false)]
         public bool TouchSettings { get; set; }
 
+        [Browsable(false)]
+        public String SettingsKey { get; protected set; }
+
+        [Browsable(false)]
+        public String ConfigFile { get; protected set; }
+
         protected BaseSettings(string settingsKey)
         {
-            this.settingsKey = settingsKey;
-            this.configFile = System.Reflection.Assembly.GetEntryAssembly()?.Location + ".ini";
+            this.SettingsKey = settingsKey;
+            this.ConfigFile = System.Reflection.Assembly.GetEntryAssembly()?.Location + ".ini";
 
             this.SettingChanging += delegate { };
             this.SettingChanged += delegate { };
@@ -30,6 +34,17 @@ namespace CommonHelpers
         public override string ToString()
         {
             return "";
+        }
+
+        protected bool SetRelativeConfigFile(string relativePath)
+        {
+            var currentDir = Path.GetDirectoryName(
+                System.Reflection.Assembly.GetEntryAssembly()?.Location);
+            if (currentDir is null)
+                return false;
+
+            this.ConfigFile = Path.Combine(currentDir, relativePath);
+            return true;
         }
 
         protected bool Set<T>(string key, T value)
@@ -82,7 +97,7 @@ namespace CommonHelpers
             }
             catch (Exception e)
             {
-                Log.TraceLine("Settings: {0}/{1}: {2}", settingsKey, key, e);
+                Log.TraceLine("Settings: {0}/{1}: {2}", SettingsKey, key, e);
                 cachedValues[key] = defaultValue;
                 return defaultValue;
             }
@@ -91,7 +106,7 @@ namespace CommonHelpers
         protected string GetString(string key, string defaultValue)
         {
             StringBuilder sb = new StringBuilder(500);
-            uint res = GetPrivateProfileString(settingsKey, key, defaultValue, sb, (uint)sb.Capacity, configFile);
+            uint res = GetPrivateProfileString(SettingsKey, key, defaultValue, sb, (uint)sb.Capacity, ConfigFile);
             if (res != 0)
                 return sb.ToString();
             return defaultValue;
@@ -101,12 +116,30 @@ namespace CommonHelpers
         {
             lock (this)
             {
-                return WritePrivateProfileString(settingsKey, key, value, configFile);
+                return WritePrivateProfileString(SettingsKey, key, value, ConfigFile);
+            }
+        }
+
+        public bool DeleteKey(string key)
+        {
+            lock (this)
+            {
+                cachedValues.Remove(key);
+                return WritePrivateProfileString(SettingsKey, key, null, ConfigFile);
+            }
+        }
+
+        public bool DeleteAll()
+        {
+            lock (this)
+            {
+                cachedValues.Clear();
+                return WritePrivateProfileString(SettingsKey, null, null, ConfigFile);
             }
         }
 
         [DllImport("kernel32.dll")]
-        static extern bool WritePrivateProfileString(string lpAppName, string lpKeyName, string lpString, string lpFileName);
+        static extern bool WritePrivateProfileString(string lpAppName, string? lpKeyName, string? lpString, string lpFileName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize, string lpFileName);
