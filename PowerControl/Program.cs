@@ -8,6 +8,8 @@ namespace PowerControl
 {
     internal static class Program
     {
+        const int MAX_GPU_RETRIES = 3;
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -24,11 +26,13 @@ namespace PowerControl
                         "You are running EXPERIMENTAL build."))
                         return;
 
-                    for (int i = 0; !VangoghGPU.IsSupported; i++)
+                    for (int i = 0; !VangoghGPU.IsSupported && i < MAX_GPU_RETRIES; i++)
                     {
-                        Instance.WithGlobalMutex(1000, () => VangoghGPU.Detect());
-                        if (VangoghGPU.IsSupported)
-                            Thread.Sleep(300);
+                        var status = Instance.WithGlobalMutex(1000, () => VangoghGPU.Detect());
+                        if (status != VangoghGPU.DetectionStatus.Retryable)
+                            break;
+
+                        Thread.Sleep(300);
                     }
                 }
 

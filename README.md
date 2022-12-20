@@ -27,22 +27,26 @@ See all instructions here: [https://steam-deck-tools.ayufan.dev/](https://steam-
 
 This project provides the following applications:
 
-- [Fan Control](https://steam-deck-tools.ayufan.dev/fan-control.html) - control Fan on Windows
-- [Performance Overlay](https://steam-deck-tools.ayufan.dev/performance-overlay.html) - see FPS and other stats
-- [Power Control](https://steam-deck-tools.ayufan.dev/power-control.html) - change TDP or refresh rate
-- [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller.html) - use Steam Deck with Game Pass
+- [Fan Control](https://steam-deck-tools.ayufan.dev/fan-control) - control Fan on Windows
+- [Performance Overlay](https://steam-deck-tools.ayufan.dev/performance-overlay) - see FPS and other stats
+- [Power Control](https://steam-deck-tools.ayufan.dev/power-control) - change TDP or refresh rate
+- [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller) - use Steam Deck with Game Pass
 
 ## Additional informations
 
-- [Controller Shortcuts](https://steam-deck-tools.ayufan.dev/shortcuts.html) - default shortcuts when using [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller.html).
-- [Development](https://steam-deck-tools.ayufan.dev/development.html) - how to compile this project.
-- [Risks](https://steam-deck-tools.ayufan.dev/risks.html) - this project uses kernel manipulation and might result in unstable system.
-- [Privacy](privacy.md) - this project can connect to remote server to check for auto-updates or track errors
-- [Troubleshooting](https://steam-deck-tools.ayufan.dev/troubleshooting.html) - if you encounter any problems.
+- [Controller Shortcuts](https://steam-deck-tools.ayufan.dev/shortcuts) - default shortcuts when using [Steam Controller](https://steam-deck-tools.ayufan.dev/steam-controller).
+- [Development](https://steam-deck-tools.ayufan.dev/development) - how to compile this project.
+- [Risks](https://steam-deck-tools.ayufan.dev/risks) - this project uses kernel manipulation and might result in unstable system.
+- [Privacy](https://steam-deck-tools.ayufan.dev/privacy) - this project can connect to remote server to check for auto-updates or track errors
+- [Troubleshooting](https://steam-deck-tools.ayufan.dev/troubleshooting) - if you encounter any problems.
 
 ## Join Us
 
 Join Us for help or chat. We are at [#windows of Steam Deck Discord](https://discord.com/channels/865611969661632521/867449233261985812).
+
+## Anti-Cheat and Antivirus software
+
+[READ IF PLAYING ONLINE GAMES AND/OR GAMES THAT HAVE ANTI-CHEAT ENABLED](https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software).
 
 ## Author
 

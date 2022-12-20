@@ -1,6 +1,7 @@
 ﻿using CommonHelpers;
 using System.Diagnostics;
-using Device = System.Tuple<string, ulong, ulong, uint>;
+using static CommonHelpers.Log;
+using Device = System.Tuple<string, ulong, ulong, uint[]>;
 
 namespace PowerControl.Helpers.AMD
 {
@@ -9,7 +10,7 @@ namespace PowerControl.Helpers.AMD
         public static readonly Device[] SupportedDevices =
         {
             // SteamDeck
-            new Device("AMD Custom GPU 0405", 0x80300000, 0x8037ffff, 0x43F3900)
+            new Device("AMD Custom GPU 0405", 0x80300000, 0x8037ffff, new uint[] { 0x43F3900, 0x43F3C05 })
         };
 
         private static Device? DetectedDevice;
@@ -35,7 +36,14 @@ namespace PowerControl.Helpers.AMD
             return OpenMMIO(new IntPtr((long)device.Item2), (uint)(device.Item3 - device.Item2 + 1));
         }
 
-        public static bool Detect()
+        public enum DetectionStatus
+        {
+            Detected,
+            Retryable,
+            NotDetected
+        }
+
+        public static DetectionStatus Detect()
         {
             var discoveredDevices = new Dictionary<string, string>();
 
@@ -61,12 +69,17 @@ namespace PowerControl.Helpers.AMD
                 var ranges = DeviceManager.GetDeviceMemResources(devicePNP);
                 if (ranges is null)
                 {
-                    TraceLine("GPU: {0}: {1}: No memory ranges", deviceName, devicePNP);
+                    TraceError("GPU: {0}: {1}: No memory ranges", deviceName, devicePNP);
                     continue;
                 }
-                if (!ranges.Contains(new Tuple<UIntPtr, UIntPtr>(new UIntPtr(device.Item2), new UIntPtr(device.Item3))))
+                var expectedRange = new Tuple<UIntPtr, UIntPtr>(new UIntPtr(device.Item2), new UIntPtr(device.Item3));
+                if (!ranges.Contains(expectedRange))
                 {
-                    TraceLine("GPU: {0}: {1}: Memory range not found", deviceName, devicePNP);
+                    TraceError("GPU: {0}: {1}: Memory range not found: {2}",
+                        deviceName,
+                        devicePNP,
+                        String.Join(",", ranges.Select((item) => item.ToString()))
+                    );
                     continue;
                 }
 
@@ -74,24 +87,24 @@ namespace PowerControl.Helpers.AMD
                 {
                     if (gpu is null)
                     {
-                        TraceLine("GPU: {0}: {1}: Failed to open.", deviceName, devicePNP);
+                        TraceError("GPU: {0}: {1}: Failed to open.", deviceName, devicePNP);
                         continue;
                     }
 
                     var smuVersion = gpu.SMUVersion;
-                    if (smuVersion != device.Item4)
+                    if (!device.Item4.Contains(smuVersion))
                     {
-                        TraceLine("GPU: {0}: {1}: SMU not supported: {2:X8}", deviceName, devicePNP, smuVersion);
-                        continue;
+                        TraceError("GPU: {0}: {1}: SMU not supported: {2:X8} (IO: {3})", deviceName, devicePNP, smuVersion, expectedRange);
+                        return DetectionStatus.Retryable;
                     }
 
                     TraceLine("GPU: {0}: Matched!", deviceName);
                     DetectedDevice = device;
-                    return true;
+                    return DetectionStatus.Detected;
                 }
             }
             DetectedDevice = null;
-            return false;
+            return DetectionStatus.Detected;
         }
 
         // Addresses:
@@ -440,11 +453,6 @@ namespace PowerControl.Helpers.AMD
             ECO_DEEPCSTATE_BIT = 57,
             CC6_BIT = 58,
             GFX_EDC_BIT = 59
-        }
-
-        private static void TraceLine(string format, params object?[]? arg)
-        {
-            Trace.WriteLine(string.Format(format, arg));
         }
     }
 }

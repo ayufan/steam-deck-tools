@@ -16,7 +16,9 @@
 - Use `white` icons when using `Dark Theme` (thanks @maniman303 https://github.com/ayufan/steam-deck-tools/pull/23)
 - Validate that all dependencies are installed
 - Allow `Updater.exe` to disable automatic updates - this is selectable option via `setup.exe`
-- Use `Sentry.io` for error tracking
+- Use `Sentry.io` for error tracking for all builds
 - Make `Updater.exe` to be able to update from `.zip` to `setup.exe`
 - Bug fixing to handle all known exceptions
 - Require to acknowledge when using function that might trigger `Anti-Cheat` protection via top-most window
+- GPU detection will log errors to `Sentry.io`
+- Support SMU of Vangogh GPU shipped with BIOS 113
