@@ -42,7 +42,6 @@ namespace PowerControl.Helpers
                 return false;
             }
 
-            return true;
             return screens[0].Bounds.Size.Width == 1280 && screens[0].Bounds.Size.Height == 800;
         }
 
