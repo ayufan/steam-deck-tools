@@ -116,6 +116,8 @@ namespace PowerControl
             osdTimer.Interval = 250;
             osdTimer.Enabled = true;
 
+            ProfilesController.Initialize();
+
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuUpKey, () =>
             {
                 if (!RTSS.IsOSDForeground())
@@ -418,6 +420,8 @@ namespace PowerControl
                 context?.Post((object? state) =>
                 {
                     rootMenu.Update();
+                    Options.RefreshRate.Instance?.Reset();
+                    Options.FPSLimit.Instance?.Reset();
                 }, null);
             }
         }

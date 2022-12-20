@@ -35,6 +35,17 @@ namespace PowerControl.Helpers
             return false;
         }
 
+        public static bool IsDeckOnlyDisplay()
+        {
+            if (screens.Length != 1)
+            {
+                return false;
+            }
+
+            return true;
+            return screens[0].Bounds.Size.Width == 1280 && screens[0].Bounds.Size.Height == 800;
+        }
+
         public static string[]? GetDevices(Guid? classGuid)
         {
             string? filter = null;

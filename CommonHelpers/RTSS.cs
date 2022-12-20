@@ -76,6 +76,26 @@ namespace CommonHelpers
             }
         }
 
+        public static string? GetCurrentGameName()
+        {
+            var entries = OSD.GetAppEntries(AppFlags.MASK);
+
+            if (entries.Length != 1)
+            {
+                return null;
+            }
+
+            string longName = entries[0].Name;
+            string res = longName.Split('\\').Last();
+
+            if (res.ToLower().Contains(".exe"))
+            {
+                return res[..^4];
+            }
+
+            return res;
+        }
+
         public static uint EnableFlag(uint flag, bool status)
         {
             var current = SetFlags(~flag, status ? flag : 0);
