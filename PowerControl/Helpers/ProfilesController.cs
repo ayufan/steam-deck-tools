@@ -10,22 +10,27 @@ using PowerControl.Menu;
 
 namespace PowerControl.Helpers
 {
-    public static class ProfilesController
+    public class ProfilesController
     {
         private const string FpsKey = "FPSLimit";
         private const string RefreshRateKey = "RefreshRate";
         private const string IsTroubledKey = "IsTroubled";
         private const string DefaultName = "Default";
 
-        private static string CurrentGame = string.Empty;
-        private static ProfileSettings DefaultSettings = new ProfileSettings(DefaultName);
-        private static ProfileSettings? CurrentSettings;
+        private string CurrentGame = string.Empty;
+        private ProfileSettings DefaultSettings = new ProfileSettings(DefaultName);
+        private ProfileSettings? CurrentSettings;
         private static string[] troubledGames = { "dragonageinquisition" };
-        private static bool IsWriteLocked = false;
+        private bool IsWriteLocked = false;
 
-        private static System.Windows.Forms.Timer? timer; 
+        private System.Windows.Forms.Timer? timer; 
 
-        public static void Initialize()
+        public ProfilesController()
+        {
+            timer = new System.Windows.Forms.Timer();
+        }
+
+        public void Initialize()
         {
             Options.RefreshRate.Instance?.SetValueChanged((_, _, newValue) =>
             {
@@ -37,7 +42,6 @@ namespace PowerControl.Helpers
                 SetValue(FpsKey, newValue);
             });
 
-            timer = new System.Windows.Forms.Timer();
             timer.Interval = 1000;
             timer.Tick += (_, _) =>
             {
@@ -50,7 +54,7 @@ namespace PowerControl.Helpers
             timer.Start();
         }
 
-        private static void RefreshProfiles()
+        private void RefreshProfiles()
         {
             if (!DeviceManager.IsDeckOnlyDisplay)
             {
@@ -82,7 +86,7 @@ namespace PowerControl.Helpers
             }
         }
 
-        private static void ApplyProfile()
+        private void ApplyProfile()
         {
             IsWriteLocked = true;
 
@@ -97,21 +101,21 @@ namespace PowerControl.Helpers
             IsWriteLocked = false;
         }
 
-        private static void SetBoolValue(string key, bool value)
+        private void SetBoolValue(string key, bool value)
         {
             var settings = CurrentSettings ?? DefaultSettings;
 
             settings.Set(key, value);
         }
 
-        private static bool GetBoolValue(string key)
+        private bool GetBoolValue(string key)
         {
             var settings = CurrentSettings ?? DefaultSettings;
 
             return settings.Get(key, false);
         }
 
-        private static void SetValue(string key, string value)
+        private void SetValue(string key, string value)
         {
             if (IsWriteLocked)
             {
@@ -122,7 +126,7 @@ namespace PowerControl.Helpers
             settings.Set(key, value);
         }
 
-        private static string GetValue(string key)
+        private string GetValue(string key)
         {
             if (CurrentSettings == null)
             {
@@ -132,7 +136,7 @@ namespace PowerControl.Helpers
             return CurrentSettings.Get(key, GetDefaultValue(key));
         }
 
-        private static string GetDefaultValue(string key)
+        private string GetDefaultValue(string key)
         {
             return DefaultSettings.Get(key, GetOptionByKey(key)?.ResetValue?.Invoke() ?? string.Empty);
         }

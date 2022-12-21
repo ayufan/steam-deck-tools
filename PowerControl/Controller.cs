@@ -34,6 +34,8 @@ namespace PowerControl
         DateTime? neptuneDeviceNextKey;
         System.Windows.Forms.Timer neptuneTimer;
 
+        ProfilesController profilesController;
+
         SharedData<PowerControlSetting> sharedData = SharedData<PowerControlSetting>.CreateNew();
 
         static Controller()
@@ -116,7 +118,8 @@ namespace PowerControl
             osdTimer.Interval = 250;
             osdTimer.Enabled = true;
 
-            ProfilesController.Initialize();
+            profilesController = new ProfilesController();
+            profilesController.Initialize();
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuUpKey, () =>
             {
