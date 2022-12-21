@@ -6,11 +6,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Management;
 
 namespace PowerControl.Helpers
 {
     internal class DeviceManager
     {
+        public static bool IsDeckOnlyDisplay { get; private set; } =  false;
         private static Screen[] screens = new Screen[0];
         public static int NumberOfDisplays
         {
@@ -20,11 +22,21 @@ namespace PowerControl.Helpers
         public static void LoadDisplays()
         {
             screens = Screen.AllScreens;
+            UpdateIsDeckOnlyDisplay();
         }
 
         public static bool RefreshDisplays()
         {
             var newScreens = Screen.AllScreens;
+
+            if (newScreens.Length != 1)
+            {
+                IsDeckOnlyDisplay = false;
+            }
+            else
+            {
+                UpdateIsDeckOnlyDisplay();
+            }
 
             if (HaveScreensChanged(newScreens))
             {
@@ -33,16 +45,6 @@ namespace PowerControl.Helpers
             }
 
             return false;
-        }
-
-        public static bool IsDeckOnlyDisplay()
-        {
-            if (screens.Length != 1)
-            {
-                return false;
-            }
-
-            return screens[0].Bounds.Size.Width == 1280 && screens[0].Bounds.Size.Height == 800;
         }
 
         public static string[]? GetDevices(Guid? classGuid)
@@ -109,6 +111,20 @@ namespace PowerControl.Helpers
 
             CM_Free_Res_Des_Handle(logConf);
             return ranges;
+        }
+
+        private static void UpdateIsDeckOnlyDisplay()
+        {
+            string query = "select * from WmiMonitorID";
+            var wmiSearcher = new ManagementObjectSearcher("\\root\\wmi", query);
+            var results = wmiSearcher.Get();
+
+            // We want the last result and ManagementObjectCollection doesn't offer Last
+            // or even iterating like in an array
+            foreach (var display in results)
+            {
+                IsDeckOnlyDisplay = (bool)display["Active"];
+            }
         }
 
         static bool CM_Get_DevNode_Property(IntPtr devInst, DEVPROPKEY propertyKey, out string result, int flags)

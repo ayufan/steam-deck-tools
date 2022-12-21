@@ -11,7 +11,7 @@ namespace PowerControl.Helper
 {
     public class ProfileSettings : BaseSettings
     {
-        private static string profilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Profiles");
+        private static string profilesPath = "Profiles";
 
         static ProfileSettings()
         {
@@ -21,10 +21,7 @@ namespace PowerControl.Helper
         public ProfileSettings(string profileName) : base("Profile")
         {
             this.TouchSettings = true;
-            this.ConfigFile = Path.Combine(profilesPath, profileName + ".ini");
-
-            this.SettingChanging += delegate { };
-            this.SettingChanged += delegate { };
+            SetRelativeConfigFile(Path.Combine(profilesPath, profileName + ".ini"));
         }
 
         public T Get<T>(string key, T defaultValue)
@@ -37,17 +34,9 @@ namespace PowerControl.Helper
             return base.Set(key, value);
         }
 
-        public static bool CheckIfExists(string profileName)
+        public bool Exist
         {
-            foreach (FileInfo fi in Directory.CreateDirectory(profilesPath).GetFiles())
-            {
-                if (fi.Name[^4..].Equals(".ini") && fi.Name[..^4].Equals(profileName))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            get { return File.Exists(this.ConfigFile); }
         }
     }
 }

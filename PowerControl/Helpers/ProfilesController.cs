@@ -52,7 +52,7 @@ namespace PowerControl.Helpers
 
         private static void RefreshProfiles()
         {
-            if (!DeviceManager.IsDeckOnlyDisplay())
+            if (!DeviceManager.IsDeckOnlyDisplay)
             {
                 CurrentGame = string.Empty;
                 return;
@@ -71,8 +71,12 @@ namespace PowerControl.Helpers
             if (gameName != null && CurrentGame != gameName)
             {
                 CurrentGame = gameName;
-                CurrentSettings = ProfileSettings.CheckIfExists(CurrentGame) ?
-                    new ProfileSettings(CurrentGame) : null;
+                CurrentSettings = new ProfileSettings(CurrentGame);
+
+                if (!CurrentSettings.Exist)
+                {
+                    CurrentSettings = null;
+                }
 
                 ApplyProfile();
             }
