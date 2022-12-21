@@ -7,13 +7,15 @@ namespace PowerControl.Menu
         public string? ActiveOption { get; set; }
         public int ApplyDelay { get; set; }
         public bool CycleOptions { get; set; } = true;
+        public string? PersistentKey;
 
         public Func<string?>? CurrentValue { get; set; }
         public Func<string[]?>? OptionsValues { get; set; }
         public Func<string, string?>? ApplyValue { get; set; }
+        public Action? AfterApply { get; set; }
         public Func<string?>? ResetValue { get; set; }
 
-        public event Action<MenuItemWithOptions, String?, String>? ValueChanged;
+        public event Action<MenuItemWithOptions, String?, String> ValueChanged;
 
         private System.Windows.Forms.Timer delayTimer = new System.Windows.Forms.Timer();
         private ToolStripMenuItem toolStripItem = new ToolStripMenuItem();
@@ -74,7 +76,7 @@ namespace PowerControl.Menu
                 ActiveOption = Options.First();
         }
 
-        public void Set(String value, bool immediately = false)
+        public void Set(String value, bool immediately = false, bool silent = false)
         {
             if (delayTimer != null)
                 delayTimer.Stop();
@@ -83,7 +85,7 @@ namespace PowerControl.Menu
 
             if (ApplyDelay == 0 || immediately)
             {
-                FinalizeSet();
+                FinalizeSet(silent);
                 return;
             }
 
@@ -91,23 +93,23 @@ namespace PowerControl.Menu
             delayTimer.Enabled = true;
         }
 
-        public void SetValueChanged(Action<MenuItemWithOptions, String?, String> action)
-        {
-            ValueChanged = action;
-        }
-
-        private void FinalizeSet()
+        private void FinalizeSet(bool silent = false)
         {
             var wasOption = ActiveOption;
 
             if (ApplyValue != null && SelectedOption != null)
+            {
                 ActiveOption = ApplyValue(SelectedOption);
+
+                if (AfterApply != null && !silent)
+                    AfterApply();
+            }
             else
                 ActiveOption = SelectedOption;
 
             SelectedOption = null;
 
-            if (wasOption != ActiveOption && ActiveOption != null)
+            if (wasOption != ActiveOption && ActiveOption != null && !silent)
                 ValueChanged(this, wasOption, ActiveOption);
         }
 

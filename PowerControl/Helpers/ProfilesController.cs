@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommonHelpers;
+﻿using CommonHelpers;
 using PowerControl.Helper;
-using PowerControl.Helpers;
 using PowerControl.Menu;
 
 namespace PowerControl.Helpers
 {
     public class ProfilesController
     {
-        private const string FpsKey = "FPSLimit";
-        private const string RefreshRateKey = "RefreshRate";
         private const string IsTroubledKey = "IsTroubled";
         private const string DefaultName = "Default";
 
@@ -21,7 +13,6 @@ namespace PowerControl.Helpers
         private ProfileSettings DefaultSettings = new ProfileSettings(DefaultName);
         private ProfileSettings? CurrentSettings;
         private static string[] troubledGames = { "dragonageinquisition" };
-        private bool IsWriteLocked = false;
 
         private System.Windows.Forms.Timer? timer; 
 
@@ -32,15 +23,7 @@ namespace PowerControl.Helpers
 
         public void Initialize()
         {
-            Options.RefreshRate.Instance?.SetValueChanged((_, _, newValue) =>
-            {
-                SetValue(RefreshRateKey, newValue);
-            });
-
-            Options.FPSLimit.Instance?.SetValueChanged((_, _, newValue) =>
-            {
-                SetValue(FpsKey, newValue);
-            });
+            MenuStack.Root.ValueChanged += SetOptionValue;
 
             timer.Interval = 1000;
             timer.Tick += (_, _) =>
@@ -88,17 +71,32 @@ namespace PowerControl.Helpers
 
         private void ApplyProfile()
         {
-            IsWriteLocked = true;
-
             if (GetBoolValue(IsTroubledKey))
             {
                 Thread.Sleep(6500);
             }
 
-            Options.RefreshRate.Instance?.Set(GetValue(RefreshRateKey), true);
-            Options.FPSLimit.Instance?.Set(GetValue(FpsKey), true);
+            var options = MenuStack.Root.Items.Where(o => o is MenuItemWithOptions).Select(o => (MenuItemWithOptions)o).ToList();
 
-            IsWriteLocked = false;
+            foreach (var option in options)
+            {
+                string? key = option.PersistentKey;
+
+                if (key != null)
+                {
+                    option.Set(GetValue(option), true, true);
+                }
+            }
+        }
+
+        private void SetOptionValue(MenuItemWithOptions options, string? oldValue, string newValue)
+        {
+            string? key = options.PersistentKey;
+
+            if (key != null)
+            {
+                SetValue(key, newValue);
+            }
         }
 
         private void SetBoolValue(string key, bool value)
@@ -117,41 +115,23 @@ namespace PowerControl.Helpers
 
         private void SetValue(string key, string value)
         {
-            if (IsWriteLocked)
-            {
-                return;
-            }
-
             var settings = CurrentSettings ?? DefaultSettings;
             settings.Set(key, value);
         }
 
-        private string GetValue(string key)
+        private string GetValue(MenuItemWithOptions option)
         {
             if (CurrentSettings == null)
             {
-                return GetDefaultValue(key);
+                return GetDefaultValue(option);
             }
 
-            return CurrentSettings.Get(key, GetDefaultValue(key));
+            return CurrentSettings.Get(option.PersistentKey, GetDefaultValue(option));
         }
 
-        private string GetDefaultValue(string key)
+        private string GetDefaultValue(MenuItemWithOptions option)
         {
-            return DefaultSettings.Get(key, GetOptionByKey(key)?.ResetValue?.Invoke() ?? string.Empty);
-        }
-
-        private static MenuItemWithOptions? GetOptionByKey(string key)
-        {
-            switch (key)
-            {
-                case FpsKey:
-                    return Options.FPSLimit.Instance;
-                case RefreshRateKey:
-                    return Options.RefreshRate.Instance;
-            }
-
-            return null;
+            return DefaultSettings.Get(option.PersistentKey, option.ResetValue?.Invoke() ?? string.Empty);
         }
     }
 }
