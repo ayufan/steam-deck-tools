@@ -7,6 +7,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Management;
+using HidSharp.Reports.Units;
+using Windows.Win32;
+using Windows.Win32.Devices.Display;
 
 namespace PowerControl.Helpers
 {
@@ -22,7 +25,7 @@ namespace PowerControl.Helpers
         public static void LoadDisplays()
         {
             screens = Screen.AllScreens;
-            UpdateIsDeckOnlyDisplay();
+            UpdateIsDeckOnlyDisplay(screens);
         }
 
         public static bool RefreshDisplays()
@@ -35,7 +38,7 @@ namespace PowerControl.Helpers
             }
             else
             {
-                UpdateIsDeckOnlyDisplay();
+                UpdateIsDeckOnlyDisplay(newScreens);
             }
 
             if (HaveScreensChanged(newScreens))
@@ -113,17 +116,42 @@ namespace PowerControl.Helpers
             return ranges;
         }
 
-        private static void UpdateIsDeckOnlyDisplay()
+        unsafe private static void UpdateIsDeckOnlyDisplay(Screen[] screens)
         {
-            string query = "select * from WmiMonitorID";
-            var wmiSearcher = new ManagementObjectSearcher("\\root\\wmi", query);
-            var results = wmiSearcher.Get();
+            IsDeckOnlyDisplay = false;
 
-            // We want the last result and ManagementObjectCollection doesn't offer Last
-            // or even iterating like in an array
-            foreach (var display in results)
+            if (screens.Length != 1)
             {
-                IsDeckOnlyDisplay = (bool)display["Active"];
+                return;
+            }
+
+            uint numPathArrayElements = 0;
+            uint numModeInfoArrayElements = 0;
+
+            int status = PInvoke.GetDisplayConfigBufferSizes(4, out numPathArrayElements, out numModeInfoArrayElements);
+
+            if (status != 0)
+            {
+                return;
+            }
+
+            DISPLAYCONFIG_PATH_INFO[] pathArray = new DISPLAYCONFIG_PATH_INFO[numPathArrayElements];
+            DISPLAYCONFIG_MODE_INFO[] modeInfoArray = new DISPLAYCONFIG_MODE_INFO[numModeInfoArrayElements];
+            DISPLAYCONFIG_TOPOLOGY_ID currentTopologyID = 0;
+
+            fixed (DISPLAYCONFIG_PATH_INFO* pathArrayPtr = pathArray)
+            {
+                fixed (DISPLAYCONFIG_MODE_INFO* modeInfoArrayPtr = modeInfoArray)
+                {
+                    int res = PInvoke.QueryDisplayConfig(4, ref numPathArrayElements, pathArrayPtr, ref numModeInfoArrayElements, modeInfoArrayPtr, out currentTopologyID);
+
+                    if (res != 0)
+                    {
+                        return;
+                    }
+
+                    IsDeckOnlyDisplay = currentTopologyID == DISPLAYCONFIG_TOPOLOGY_ID.DISPLAYCONFIG_TOPOLOGY_INTERNAL;
+                }
             }
         }
 
@@ -221,6 +249,7 @@ namespace PowerControl.Helpers
 
         [DllImport("setupapi.dll")]
         static extern int CM_Get_Res_Des_Data(IntPtr rdResDes, IntPtr buffer, int size, int ulFlags);
+
 
         [StructLayout(LayoutKind.Sequential)]
         struct MEM_DES
