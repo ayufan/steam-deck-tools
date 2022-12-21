@@ -23,7 +23,7 @@ namespace PowerControl.Helpers
 
         public void Initialize()
         {
-            MenuStack.Root.ValueChanged += SetOptionValue;
+            MenuStack.Root.ValueChanged += OnOptionValueChange;
 
             timer.Interval = 1000;
             timer.Tick += (_, _) =>
@@ -89,7 +89,7 @@ namespace PowerControl.Helpers
             }
         }
 
-        private void SetOptionValue(MenuItemWithOptions options, string? oldValue, string newValue)
+        private void OnOptionValueChange(MenuItemWithOptions options, string? oldValue, string newValue)
         {
             string? key = options.PersistentKey;
 

@@ -7,11 +7,18 @@ namespace CommonHelpers
     {
         public static bool IsOSDForeground()
         {
-            return IsOSDForeground(out _);
+            return IsOSDForeground(out _, out _);
         }
 
         public static bool IsOSDForeground(out int processId)
         {
+            return IsOSDForeground(out processId, out _);
+        }
+
+        public static bool IsOSDForeground(out int processId, out string? applicationName)
+        {
+            applicationName = null;
+
             try
             {
                 var id = GetTopLevelProcessId();
@@ -22,7 +29,10 @@ namespace CommonHelpers
                 foreach (var app in OSD.GetAppEntries(AppFlags.MASK))
                 {
                     if (app.ProcessId == processId)
+                    {
+                        applicationName = app.Name;
                         return true;
+                    }
                 }
 
                 return false;
@@ -78,14 +88,13 @@ namespace CommonHelpers
 
         public static string? GetCurrentGameName()
         {
-            var entries = OSD.GetAppEntries(AppFlags.MASK);
+            string? longName;
 
-            if (entries.Length != 1)
+            if (!IsOSDForeground(out _, out longName) || longName == null)
             {
                 return null;
             }
 
-            string longName = entries[0].Name;
             string res = longName.Split('\\').Last();
 
             if (res.ToLower().Contains(".exe"))
