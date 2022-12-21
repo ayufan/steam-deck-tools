@@ -45,7 +45,15 @@ namespace PowerControl.Helpers
                 return;
             }
 
-            string? gameName = RTSS.GetCurrentGameName();
+            string? gameName;
+
+            RTSS.IsOSDForeground(out _, out gameName);
+
+            // If there's no foreground games keep current profile if possible
+            if (gameName == null && RTSS.GetCurrentApps().Contains(CurrentGame))
+            {
+                gameName = CurrentGame;
+            }
 
             if (gameName == null && CurrentGame != DefaultName)
             {
@@ -73,7 +81,7 @@ namespace PowerControl.Helpers
         {
             if (GetBoolValue(IsTroubledKey))
             {
-                Thread.Sleep(6500);
+                Thread.Sleep(5000);
             }
 
             var options = MenuStack.Root.Items.Where(o => o is MenuItemWithOptions).Select(o => (MenuItemWithOptions)o).ToList();
