@@ -31,7 +31,7 @@ namespace PowerControl.Menu
                 if (delayTimer != null)
                     delayTimer.Stop();
 
-                FinalizeSet();
+                FinalizeSet(delayTimer.Interval > ApplyDelay);
             };
         }
 
@@ -44,7 +44,7 @@ namespace PowerControl.Menu
             if (resetOption == null || resetOption == ActiveOption)
                 return;
 
-            Set(resetOption, true);
+            Set(resetOption, 0);
         }
 
         public override void Update()
@@ -76,20 +76,20 @@ namespace PowerControl.Menu
                 ActiveOption = Options.First();
         }
 
-        public void Set(String value, bool immediately = false, bool silent = false)
+        public void Set(String value, int overrideDelay = -1, bool silent = false)
         {
             if (delayTimer != null)
                 delayTimer.Stop();
 
             SelectedOption = value;
 
-            if (ApplyDelay == 0 || immediately)
+            if (ApplyDelay == 0 || overrideDelay == 0)
             {
                 FinalizeSet(silent);
                 return;
             }
 
-            delayTimer.Interval = ApplyDelay > 0 ? ApplyDelay : 1;
+            delayTimer.Interval = overrideDelay > 0 ? overrideDelay : ApplyDelay > 0 ? ApplyDelay : 1;
             delayTimer.Enabled = true;
         }
 
@@ -127,7 +127,7 @@ namespace PowerControl.Menu
                 {
                     var item = new ToolStripMenuItem(option);
                     item.Checked = option == (SelectedOption ?? ActiveOption);
-                    item.Click += delegate { Set(option, true); };
+                    item.Click += delegate { Set(option, 0); };
                     toolStripItem.DropDownItems.Add(item);
                 }
 
@@ -140,7 +140,7 @@ namespace PowerControl.Menu
             if (Options.Count == 0)
                 return;
 
-            Set(Options[Math.Clamp(index, 0, Options.Count - 1)], false);
+            Set(Options[Math.Clamp(index, 0, Options.Count - 1)]);
         }
 
         public override void SelectNext(int change)

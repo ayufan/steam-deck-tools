@@ -79,11 +79,7 @@ namespace PowerControl.Helpers
 
         private void ApplyProfile()
         {
-            if (GetBoolValue(IsTroubledKey))
-            {
-                Thread.Sleep(5000);
-            }
-
+            int delay = GetBoolValue(IsTroubledKey) ? 5200 : 0;
             var options = MenuStack.Root.Items.Where(o => o is MenuItemWithOptions).Select(o => (MenuItemWithOptions)o).ToList();
 
             foreach (var option in options)
@@ -92,7 +88,7 @@ namespace PowerControl.Helpers
 
                 if (key != null)
                 {
-                    option.Set(GetValue(option), true, true);
+                    option.Set(GetValue(option), delay, true);
                 }
             }
         }
