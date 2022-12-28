@@ -5,6 +5,10 @@ namespace SteamController.Profiles.Predefined
 {
     public class X360Profile : Default.BackPanelShortcutsProfile
     {
+        public static readonly TimeSpan HoldToggleTouchPads = TimeSpan.FromMilliseconds(2000);
+        public const String TouchPadsConsumed = "TouchPads";
+        public static bool TouchPadsEnabled { get; set; } = true;
+
         public override bool Selected(Context context)
         {
             return context.Enabled && context.X360.Valid && context.KeyboardMouseValid && !context.State.SteamUsesSteamInput;
@@ -31,9 +35,22 @@ namespace SteamController.Profiles.Predefined
                 return Status.Done;
             }
 
-            // Default emulation
-            EmulateScrollOnLPad(context);
-            EmulateMouseOnRPad(context, false);
+            if (context.Steam.BtnLPadPress.Hold(HoldToggleTouchPads, TouchPadsConsumed) && context.Steam.BtnRPadPress.HoldOnce(HoldToggleTouchPads, TouchPadsConsumed))
+            {
+                TouchPadsEnabled = !TouchPadsEnabled;
+            }
+
+            if (TouchPadsEnabled)
+            {
+                // Default emulation
+                EmulateScrollOnLPad(context);
+                EmulateMouseOnRPad(context, false);
+            }
+            else
+            {
+                // We need to disable Lizard Mouse
+                context.Steam.LizardMouse = false;
+            }
 
             // DPad
             context.X360[Xbox360Button.Up] = context.Steam.BtnDpadUp;
