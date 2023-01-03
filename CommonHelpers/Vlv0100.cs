@@ -63,14 +63,20 @@
                 var data = inpOut?.ReadMemory(PDFV, 2);
                 if (data is not null)
                     FirmwareVersion = BitConverter.ToUInt16(data);
+                else
+                    FirmwareVersion = 0xFFFF;
 
                 data = inpOut?.ReadMemory(XBID, 1);
                 if (data is not null)
                     BoardID = data[0];
+                else
+                    BoardID = 0xFF;
 
                 data = inpOut?.ReadMemory(PDCT, 1);
                 if (data is not null)
                     PDCS = data[0];
+                else
+                    PDCS = 0xFF;
 
                 return true;
             }
