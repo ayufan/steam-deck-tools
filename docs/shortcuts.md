@@ -35,4 +35,4 @@
 | DPad Arrows                | Keyboard Arrows        |                        |                        |                        |
 | A                          | RETURN                 |                        |                        |                        |
 | B                          | BACKSPACE              |                        |                        |                        |
-| Hold Press Left+Right Pad  |                        | Toggle Mouse Trackpad  |                        |                        |
+| Hold L+R Pad Press (0.6.x) |                        | Toggle Mouse Trackpad  |                        |                        |
