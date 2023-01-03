@@ -27,7 +27,7 @@ namespace SteamController
 
             public bool IsActive
             {
-                get { return GameProcessRunning || SteamUsesSteamInput || SteamUsesSteamInput; }
+                get { return GameProcessRunning || SteamUsesX360Controller || SteamUsesSteamInput; }
             }
 
             public override string ToString()
