@@ -29,7 +29,7 @@ namespace SteamController
 
             public bool IsActive
             {
-                get { return RTSSInForeground || GameProcessRunning || SteamUsesSteamInput || SteamUsesSteamInput; }
+                get { return RTSSInForeground || GameProcessRunning || SteamUsesX360Controller || SteamUsesSteamInput; }
             }
 
             public override string ToString()
