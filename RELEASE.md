@@ -30,3 +30,4 @@
 - GPU detection will log errors to `Sentry.io`
 - Support SMU of Vangogh GPU shipped with BIOS 113
 - Fix Steam Game detection when in X360 controller mode
+- Force to reconnect X360 controller on Resume
