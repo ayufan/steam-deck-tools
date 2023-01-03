@@ -7,6 +7,13 @@
 
 [**READ IF PLAYING ONLINE GAMES AND/OR GAMES THAT HAVE ANTI-CHEAT ENABLED**](https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software)
 
+## 0.6.x
+
+- Add experimental `UserProfiles` to allow creating user controllers
+- Add experimental RTSS-based detection (disables the need to use Steam, or Playnite workflow)
+- Hold Press Left and Right Pad to toggle touchpads in X360 mode
+- Make all PowerControl options to accept Strings
+
 ## 0.5.x
 
 - Try to disable usage of Kernel Drivers (when FAN in Default, and OSD Kernel Drivers are disabled)
