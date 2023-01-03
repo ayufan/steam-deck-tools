@@ -1,3 +1,4 @@
+using Microsoft.Win32;
 using Nefarius.ViGEm.Client;
 using Nefarius.ViGEm.Client.Exceptions;
 using Nefarius.ViGEm.Client.Targets;
@@ -21,11 +22,28 @@ namespace SteamController.Devices
 
         public Xbox360Controller()
         {
+            Microsoft.Win32.SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+        }
+
+        ~Xbox360Controller()
+        {
+            Dispose();
         }
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
+            Microsoft.Win32.SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
             using (client) { }
+        }
+
+        private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            if (e.Mode == Microsoft.Win32.PowerModes.Resume)
+            {
+                // Force to reconnect device on resume
+                lock (this) { Fail(); }
+            }
         }
 
         internal bool Tick()
