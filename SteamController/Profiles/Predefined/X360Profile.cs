@@ -22,7 +22,7 @@ namespace SteamController.Profiles.Predefined
             context.X360.Connected = true;
 
             // Controls
-            context.X360.Overwrite(Xbox360Button.Guide, context.Steam.BtnSteam.Pressed(), 30);
+            context.X360.Overwrite(Xbox360Button.Guide, context.Steam.BtnSteam.Pressed(), 100);
             context.X360[Xbox360Button.Back] = context.Steam.BtnMenu;
             context.X360[Xbox360Button.Start] = context.Steam.BtnOptions;
 

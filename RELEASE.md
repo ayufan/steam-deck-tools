@@ -24,3 +24,4 @@
 - Support SMU of Vangogh GPU shipped with BIOS 113
 - Fix Steam Game detection when in X360 controller mode
 - Force to reconnect X360 controller on Resume
+- Hold-press Guide button for 100ms in X360 mode
