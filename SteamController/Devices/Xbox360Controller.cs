@@ -39,10 +39,12 @@ namespace SteamController.Devices
 
         private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
+            TraceLine("SystemEvents_PowerModeChanged: {0}", e.Mode);
+
             if (e.Mode == Microsoft.Win32.PowerModes.Resume)
             {
                 // Force to reconnect device on resume
-                lock (this) { Fail(); }
+                lock (this) { Fail("Resume"); }
             }
         }
 
@@ -68,8 +70,10 @@ namespace SteamController.Devices
             }
         }
 
-        private void Fail()
+        private void Fail(String reason)
         {
+            TraceLine("X360: Fail: {0}", reason);
+
             var client = this.client;
 
             // unset current device
@@ -119,13 +123,13 @@ namespace SteamController.Devices
                         DebugException("X360", "ConnectExpected", e);
                     else
                         TraceException("X360", "ConnectExpected", e);
-                    Fail();
+                    Fail("Connect:Win32Exception");
                     return;
                 }
                 catch (Exception e)
                 {
                     TraceException("X360", "Connect", e);
-                    Fail();
+                    Fail("Connect:GenericException");
                     return;
                 }
             }
@@ -143,7 +147,7 @@ namespace SteamController.Devices
                 catch (Exception e)
                 {
                     TraceException("X360", "Disconnect", e);
-                    Fail();
+                    Fail("Disconnect:GenericException");
                     return;
                 }
             }
@@ -170,10 +174,7 @@ namespace SteamController.Devices
         {
             if (device is not null && Connected != isConnected)
             {
-                lock (this)
-                {
-                    SetConnected(Connected);
-                }
+                lock (this) { SetConnected(Connected); }
             }
 
             UpdateMinimumPressedTime();
@@ -187,7 +188,7 @@ namespace SteamController.Devices
                 catch (VigemInvalidTargetException)
                 {
                     // Device was lost
-                    lock (this) { Fail(); }
+                    lock (this) { Fail("Update:VigemInvalidTargetException"); }
                 }
                 catch (Exception e)
                 {
