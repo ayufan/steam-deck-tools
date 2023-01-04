@@ -153,7 +153,7 @@ namespace SteamController
                         selectedProfile = i;
                         if (!profile.IsDesktop && !userDefault)
                             controllerProfile = i;
-                        ProfileChanged(profile);
+                        OnProfileChanged(profile);
                     }
                     return true;
                 }
@@ -205,7 +205,7 @@ namespace SteamController
 
                     selectedProfile = idx;
                     controllerProfile = idx;
-                    ProfileChanged(profile);
+                    OnProfileChanged(profile);
                     return true;
                 }
             }
@@ -218,6 +218,12 @@ namespace SteamController
             TraceLine("Context: Back To Default.");
             if (SelectDefault is not null)
                 SelectDefault();
+        }
+
+        private void OnProfileChanged(Profiles.Profile profile)
+        {
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
+                new Action(() => ProfileChanged(profile)));
         }
     }
 }
