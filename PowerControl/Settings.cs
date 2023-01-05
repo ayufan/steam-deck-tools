@@ -37,7 +37,7 @@ namespace PowerControl
 
         public string MenuToggle
         {
-            get { return Get("MenuToggle", "Shift+F11"); }
+            get { return Get("MenuToggle", "Alt+F11"); }
             set { Set("MenuToggle", value); }
         }
 
