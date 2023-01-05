@@ -28,6 +28,15 @@ namespace SteamController.Devices
             using (client) { }
         }
 
+        public void Start()
+        {
+        }
+
+        public void Stop()
+        {
+            lock (this) { Fail(); }
+        }
+
         internal bool Tick()
         {
             if (this.device is not null)
