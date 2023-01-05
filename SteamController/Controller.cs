@@ -1,5 +1,6 @@
 using CommonHelpers;
 using ExternalHelpers;
+using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
 
@@ -9,6 +10,8 @@ namespace SteamController
     {
         public const String Title = "Steam Controller";
         public static readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
+
+        public const int ControllerDelayAfterResumeMs = 1000;
 
         public static readonly Dictionary<String, Profiles.Profile> PreconfiguredUserProfiles = new Dictionary<String, Profiles.Profile>()
         {
@@ -177,6 +180,24 @@ namespace SteamController
             };
 
             context.Start();
+
+            Microsoft.Win32.SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+        }
+
+        private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            Log.TraceLine("SystemEvents_PowerModeChanged: {0}", e.Mode);
+
+            switch (e.Mode)
+            {
+                case PowerModes.Suspend:
+                    context.Stop();
+                    break;
+
+                case PowerModes.Resume:
+                    context.Start(ControllerDelayAfterResumeMs);
+                    break;
+            }
         }
 
         private void ContextStateUpdate_Tick(object? sender, EventArgs e)
@@ -231,6 +252,7 @@ namespace SteamController
 
         public void Dispose()
         {
+            Microsoft.Win32.SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
             notifyIcon.Visible = false;
             context.Stop();
             using (context) { }

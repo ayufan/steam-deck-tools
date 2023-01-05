@@ -12,23 +12,31 @@ namespace SteamController
 
         public int UpdatesPerSec { get; private set; }
 
-        public bool Start()
+        public bool Start(int? startDelayMs = null)
         {
             if (thread is not null)
                 return false;
 
+            UpdatesPerSec = 0;
             threadRunning = true;
             thread = new Thread(ThreadLoop);
-            thread.Start();
+            thread.Start(startDelayMs);
             return true;
         }
 
-        private void ThreadLoop(object? obj)
+        private void ThreadLoop(object? startDelayMs)
         {
+            if (startDelayMs is int)
+            {
+                ThreadSleep((int)startDelayMs);
+            }
+
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             int updates = 0;
             var nextReset = stopwatch.Elapsed.Add(UpdateResetInterval);
+
+            X360.Start();
 
             while (threadRunning)
             {
@@ -45,10 +53,11 @@ namespace SteamController
 
                 if (!Enabled || !Steam.Updated)
                 {
-                    try { Thread.Sleep(100); }
-                    catch (ThreadInterruptedException) { }
+                    ThreadSleep(100);
                 }
             }
+
+            X360.Stop();
         }
 
         public void Stop()
@@ -60,6 +69,19 @@ namespace SteamController
                 thread.Interrupt();
                 thread.Join();
                 thread = null;
+            }
+        }
+
+        private bool ThreadSleep(int delayMs)
+        {
+            try
+            {
+                Thread.Sleep(delayMs);
+                return true;
+            }
+            catch (ThreadInterruptedException)
+            {
+                return false;
             }
         }
     }
