@@ -1,4 +1,5 @@
 ﻿using RTSSSharedMemoryNET;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace CommonHelpers
@@ -15,32 +16,46 @@ namespace CommonHelpers
             return IsOSDForeground(out processId, out _);
         }
 
-        public static bool IsOSDForeground(out int processId, out string? applicationName)
+        public static bool IsOSDForeground(out int processId, out string processName)
         {
-            applicationName = null;
+            return new Applications().FindForeground(out processId, out processName);
+        }
 
-            try
+        public struct Applications
+        {
+            public IDictionary<int, String> IDs { get; } = new Dictionary<int, String>();
+
+            public Applications()
             {
+                RTSSSharedMemoryNET.AppEntry[] appEntries;
+
+                try { appEntries = OSD.GetAppEntries(AppFlags.MASK); }
+                catch { return; }
+
+                foreach (var app in appEntries)
+                    IDs.TryAdd(app.ProcessId, Path.GetFileNameWithoutExtension(app.Name));
+            }
+
+            public bool FindForeground(out int processId, out string processName)
+            {
+                processId = 0;
+                processName = "";
+
                 var id = GetTopLevelProcessId();
-                processId = (int)id.GetValueOrDefault(0);
                 if (id is null)
                     return false;
 
-                foreach (var app in OSD.GetAppEntries(AppFlags.MASK))
-                {
-                    if (app.ProcessId == processId)
-                    {
-                        applicationName = ExtractAppName(app.Name);
-                        return true;
-                    }
-                }
+                if (!IDs.TryGetValue(id.Value, out var name))
+                    return false;
 
-                return false;
+                processId = id.Value;
+                processName = name;
+                return true;
             }
-            catch
+
+            public bool IsRunning(int processId)
             {
-                processId = 0;
-                return false;
+                return IDs.ContainsKey(processId);
             }
         }
 
@@ -84,13 +99,6 @@ namespace CommonHelpers
             {
                 handle.Free();
             }
-        }
-
-        public static List<string> GetCurrentApps()
-        {
-            var apps = OSD.GetAppEntries(AppFlags.MASK).Select(e => ExtractAppName(e.Name)).ToList();
-
-            return apps;
         }
 
         public static uint EnableFlag(uint flag, bool status)
@@ -142,24 +150,12 @@ namespace CommonHelpers
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
-        private static string ExtractAppName(string fullName)
-        {
-            string res = fullName.Split('\\').Last();
-
-            if (res.ToLower().Contains(".exe"))
-            {
-                return res[..^4];
-            }
-
-            return res;
-        }
-
-        private static uint? GetTopLevelProcessId()
+        private static int? GetTopLevelProcessId()
         {
             var hWnd = GetForegroundWindow();
             var result = GetWindowThreadProcessId(hWnd, out uint processId);
             if (result != 0)
-                return processId;
+                return (int)processId;
             return null;
         }
 

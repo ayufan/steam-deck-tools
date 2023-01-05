@@ -33,7 +33,7 @@ namespace PowerControl
         DateTime? neptuneDeviceNextKey;
         System.Windows.Forms.Timer neptuneTimer;
 
-        ProfilesController profilesController;
+        ProfilesController? profilesController;
 
         SharedData<PowerControlSetting> sharedData = SharedData<PowerControlSetting>.CreateNew();
 
@@ -113,7 +113,6 @@ namespace PowerControl
             osdTimer.Enabled = true;
 
             profilesController = new ProfilesController();
-            profilesController.Initialize();
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuUpKey, () =>
             {
@@ -221,6 +220,10 @@ namespace PowerControl
                 notifyIcon.Text = TitleWithVersion + ". RTSS Not Available.";
                 notifyIcon.Icon = Resources.traffic_light_outline_red;
             }
+
+            var watchedProfiles = profilesController?.WatchedProfiles ?? new string[0];
+            if (watchedProfiles.Any())
+                notifyIcon.Text += ". Profile: " + string.Join(", ", watchedProfiles);
 
             updateOSD();
         }
@@ -381,6 +384,7 @@ namespace PowerControl
 
         public void Dispose()
         {
+            using (profilesController) { }
             components.Dispose();
             osdClose();
         }

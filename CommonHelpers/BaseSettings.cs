@@ -31,6 +31,11 @@ namespace CommonHelpers
             this.SettingChanged += delegate { };
         }
 
+        public bool Exists
+        {
+            get { return File.Exists(this.ConfigFile); }
+        }
+
         public override string ToString()
         {
             return "";
@@ -135,6 +140,27 @@ namespace CommonHelpers
             {
                 cachedValues.Clear();
                 return WritePrivateProfileString(SettingsKey, null, null, ConfigFile);
+            }
+        }
+
+        public void TouchFile()
+        {
+            lock (this)
+            {
+                if (Exists)
+                    return;
+
+                using (File.Create(ConfigFile)) { }
+            }
+        }
+
+        public void DeleteFile()
+        {
+            lock (this)
+            {
+                cachedValues.Clear();
+                try { File.Delete(ConfigFile); }
+                catch (DirectoryNotFoundException) { }
             }
         }
 

@@ -11,43 +11,46 @@ namespace PowerControl.Helper
 {
     public class ProfileSettings : BaseSettings
     {
-        private static string profilesPath = Path.Combine(Directory.GetCurrentDirectory(), "Profiles");
-
-        static ProfileSettings()
+        public static String UserProfilesPath
         {
-            Directory.CreateDirectory(profilesPath);
+            get
+            {
+                var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                var exeFolder = Path.GetDirectoryName(exePath) ?? Directory.GetCurrentDirectory();
+                var exeUserProfiles = Path.Combine(exeFolder, "UserProfiles");
+                if (!Directory.Exists(exeUserProfiles))
+                    Directory.CreateDirectory(exeUserProfiles);
+                return exeUserProfiles;
+            }
         }
 
-        public ProfileSettings(string profileName) : base("Profile")
+        public String ProfileName { get; }
+
+        public ProfileSettings(string profileName) : base("PersistentSettings")
         {
-            this.TouchSettings = true;
-            this.ConfigFile = Path.Combine(profilesPath, profileName + ".ini");
+            this.ProfileName = profileName;
+            this.ConfigFile = Path.Combine(UserProfilesPath, String.Format("PowerControl.Process.{0}.ini", profileName));
 
             this.SettingChanging += delegate { };
             this.SettingChanged += delegate { };
         }
 
-        public T Get<T>(string key, T defaultValue)
+        public String? GetValue(string key)
+        {
+            var result = base.Get(key, String.Empty);
+            if (result == String.Empty)
+                return null;
+            return result;
+        }
+
+        public int GetInt(string key, int defaultValue)
         {
             return base.Get(key, defaultValue);
         }
 
-        public new bool Set<T>(string key, T value)
+        public void SetValue(string key, string value)
         {
-            return base.Set(key, value);
-        }
-
-        public static bool CheckIfExists(string profileName)
-        {
-            foreach (FileInfo fi in Directory.CreateDirectory(profilesPath).GetFiles())
-            {
-                if (fi.Name[^4..].Equals(".ini") && fi.Name[..^4].Equals(profileName))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            base.Set(key, value);
         }
     }
 }

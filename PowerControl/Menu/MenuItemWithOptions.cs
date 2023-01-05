@@ -5,6 +5,7 @@ namespace PowerControl.Menu
         public IList<string> Options { get; set; } = new List<string>();
         public string? SelectedOption { get; private set; }
         public string? ActiveOption { get; set; }
+        public string? ProfileOption { get; set; }
         public int ApplyDelay { get; set; }
         public bool CycleOptions { get; set; } = true;
         public string? PersistentKey;
@@ -174,6 +175,14 @@ namespace PowerControl.Menu
 
             if (SelectedOption != null && ActiveOption != SelectedOption)
                 output += " (active: " + optionText(ActiveOption) + ")";
+
+            if (ProfileOption != null)
+            {
+                if (ProfileOption != ActiveOption && ProfileOption != SelectedOption)
+                    output += " (profile: " + optionText(ProfileOption) + ")";
+                else
+                    output += " [P]";
+            }
 
             return output;
         }

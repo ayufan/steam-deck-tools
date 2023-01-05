@@ -25,7 +25,7 @@ namespace PowerControl.Options
             ApplyValue = (selected) =>
             {
                 DisplayResolutionController.SetRefreshRate(int.Parse(selected));
-                
+
                 return DisplayResolutionController.GetRefreshRate().ToString();
             },
             AfterApply = () =>
