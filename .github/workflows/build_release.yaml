@@ -1,11 +1,5 @@
 on:
-  push:
-    branches:
-      - main
-      - '*-stable'
-    paths:
-      - '.github/workflows/build_release.yaml'
-      - 'RELEASE.md'
+  workflow_dispatch:
 
 env:
   RELEASE_NAME: SteamDeckTools
