@@ -7,6 +7,7 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions EnabledInstance = new Menu.MenuItemWithOptions()
         {
             Name = "OSD",
+            PersistentKey = "PerformanceOverlay",
             ApplyDelay = 500,
             OptionsValues = delegate ()
             {

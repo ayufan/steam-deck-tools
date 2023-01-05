@@ -8,6 +8,7 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "Resolution",
+            PersistentKey = "Resolution",
             ApplyDelay = 1000,
             ResetValue = () =>
             {

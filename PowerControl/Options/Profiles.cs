@@ -7,6 +7,7 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "Profiles",
+            ApplyDelay = 500,
             OptionsValues = delegate ()
             {
                 var currentProfileSettings = Controller?.CurrentProfileSettings;

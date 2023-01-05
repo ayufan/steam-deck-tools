@@ -8,6 +8,7 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "SMT",
+            PersistentKey = "SMT",
             ApplyDelay = 500,
             Options = { "No", "Yes" },
             ResetValue = () => { return "Yes"; },

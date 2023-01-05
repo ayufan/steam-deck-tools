@@ -7,6 +7,7 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "Colors",
+            PersistentKey = "GPUColors",
             ApplyDelay = 1000,
             Options = Enum.GetNames<DCE.Mode>(),
             CurrentValue = delegate ()
