@@ -40,11 +40,16 @@ jobs:
           /DUSE_WINGET
           /DBUILD_DIR=../${{ env.RELEASE_NAME }}-debug
           /DOUTPUT_FILE=../${{ env.RELEASE_NAME }}-setup-debug.exe
-    - name: 'Upload Artifact'
+    - name: 'Upload Artifact debug.zip'
       uses: actions/upload-artifact@v3
       with:
-        name: debug-build
-        path:
-          ${{ env.RELEASE_NAME }}-debug.zip
-          ${{ env.RELEASE_NAME }}-setup-debug.exe
+        name: debug.zip
+        path: ${{ env.RELEASE_NAME }}-debug.zip
         retention-days: 14
+    - name: 'Upload Artifact setup-debug.exe'
+      uses: actions/upload-artifact@v3
+      with:
+        name: setup-debug.exe
+        path: ${{ env.RELEASE_NAME }}-setup-debug.exe
+        retention-days: 14
+
