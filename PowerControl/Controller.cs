@@ -17,9 +17,6 @@ namespace PowerControl
         public const int KeyPressRepeatTime = 400;
         public const int KeyPressNextRepeatTime = 90;
 
-        private SynchronizationContext? context;
-        System.Windows.Forms.Timer contextTimer;
-
         Container components = new Container();
         System.Windows.Forms.NotifyIcon notifyIcon;
         StartupManager startupManager = new StartupManager(Title);
@@ -28,6 +25,8 @@ namespace PowerControl
         OSD osd;
         System.Windows.Forms.Timer osdDismissTimer;
         bool isOSDToggled = false;
+
+        bool wasInternalDisplayConnected;
 
         hidapi.HidDevice neptuneDevice = new hidapi.HidDevice(0x28de, 0x1205, 64);
         SDCInput neptuneDeviceState = new SDCInput();
@@ -38,8 +37,8 @@ namespace PowerControl
 
         static Controller()
         {
-            Dependencies.ValidateHidapi(TitleWithVersion);
-            Dependencies.ValidateRTSSSharedMemoryNET(TitleWithVersion);
+            //Dependencies.ValidateHidapi(TitleWithVersion);
+            //Dependencies.ValidateRTSSSharedMemoryNET(TitleWithVersion);
         }
 
         public Controller()
@@ -54,11 +53,6 @@ namespace PowerControl
 
             if (Instance.WantsRunOnStartup)
                 startupManager.Startup = true;
-
-            InitializeDisplayContext();
-            contextTimer?.Start();
-
-            SystemEvents.DisplaySettingsChanged += DisplayChangesHandler;
 
             var contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
@@ -205,6 +199,9 @@ namespace PowerControl
                     dismissNeptuneInput();
                 });
             }
+
+            wasInternalDisplayConnected = ExternalHelpers.DisplayConfig.IsInternalConnected.GetValueOrDefault(false);
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
         }
 
         private void OsdTimer_Tick(object? sender, EventArgs e)
@@ -399,27 +396,22 @@ namespace PowerControl
             }
         }
 
-        private void InitializeDisplayContext()
+        private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
         {
-            DeviceManager.LoadDisplays();
-            contextTimer = new System.Windows.Forms.Timer();
-            contextTimer.Interval = 200;
-            contextTimer.Tick += (_, _) =>
-            {
-                context = SynchronizationContext.Current;
-                contextTimer.Stop();
-            };
-        }
+            var isInternalDisplayConnected = ExternalHelpers.DisplayConfig.IsInternalConnected.GetValueOrDefault(false);
+            if (wasInternalDisplayConnected == isInternalDisplayConnected)
+                return;
 
-        private void DisplayChangesHandler(object? sender, EventArgs e)
-        {
-            if (DeviceManager.RefreshDisplays())
-            {
-                context?.Post((object? state) =>
+            Log.TraceLine("SystemEvents_DisplaySettingsChanged: wasConnected={0}, isConnected={1}",
+                wasInternalDisplayConnected, isInternalDisplayConnected);
+
+            wasInternalDisplayConnected = isInternalDisplayConnected;
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
+                new Action(() =>
                 {
                     rootMenu.Update();
-                }, null);
-            }
+                })
+            );
         }
     }
 }
