@@ -9,10 +9,11 @@
 
 ## 0.6.x
 
-- Add experimental `UserProfiles` to allow creating user controllers
-- Add experimental RTSS-based detection (disables the need to use Steam, or Playnite workflow)
-- Hold Press Left and Right Pad to toggle touchpads in X360 mode
-- Make all PowerControl options to accept Strings
+- PowerControl: Add `UserProfiles` allowing to persist per-game setttings for most of settings (Colors, Refresh Rate, FPS limit, etc.)
+- SteamController: Add experimental `UserProfiles` to allow creating user controllers
+- SteamController: Add experimental RTSS-based detection (disables the need to use Steam, or Playnite workflow)
+- SteamController: Hold Press Left and Right Pad to toggle touchpads in X360 mode
+- PowerControl: Make all PowerControl options to accept Strings
 
 ## 0.5.x
 
