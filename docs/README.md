@@ -103,6 +103,6 @@ Steam Deck Tools is not affiliated with Valve, Steam, or any of their partners.
 
 ## License
 
-[Creative Commons Attribution-NonCommercial (CC-BY-NC)](://creativecommons.org/licenses/by-nc/4.0/).
+[Creative Commons Attribution-NonCommercial-ShareAlike (CC-BY-NC-SA)](http://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 Free for personal use. Contact me in other cases (`ayufan@ayufan.eu`).

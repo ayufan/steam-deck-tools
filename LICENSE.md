@@ -1,5 +1,5 @@
-Creative Commons Attribution-NonCommercial (CC-BY-NC)
-https://creativecommons.org/licenses/by-nc/4.0/
+Creative Commons Attribution-NonCommercial-ShareAlike (CC-BY-NC-SA)
+http://creativecommons.org/licenses/by-nc-sa/4.0/
 
 By running this project you agree to the following licenses and policies:
 
