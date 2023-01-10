@@ -68,9 +68,9 @@ namespace PowerControl
                 return;
             }
 
-            var applications = new RTSS.Applications();
+            RTSS.Applications.Instance.Refresh();
 
-            if (applications.FindForeground(out var processId, out var processName))
+            if (RTSS.Applications.Instance.FindForeground(out var processId, out var processName))
             {
                 if (!BringUpProcess(processId))
                     AddProcess(processId, processName);
@@ -78,7 +78,7 @@ namespace PowerControl
 
             foreach (var process in watchedProcesses)
             {
-                if (applications.IsRunning(process.Key))
+                if (RTSS.Applications.Instance.IsRunning(process.Key))
                     continue;
                 RemoveProcess(process.Key);
             }

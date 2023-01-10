@@ -18,22 +18,65 @@ namespace CommonHelpers
 
         public static bool IsOSDForeground(out int processId, out string processName)
         {
-            return new Applications().FindForeground(out processId, out processName);
+            Applications.Instance.Refresh();
+
+            return Applications.Instance.FindForeground(out processId, out processName);
         }
 
-        public struct Applications
+        public class Applications
         {
-            public IDictionary<int, String> IDs { get; } = new Dictionary<int, String>();
+            public readonly static Applications Instance = new Applications();
+
+            public struct Entry
+            {
+                public String ProcessName { get; set; }
+                public uint LastFrame { get; set; }
+                public DateTimeOffset LastFrameTime { get; set; }
+
+                public bool IsRecent
+                {
+                    get { return LastFrameTime.AddMilliseconds(FrameTimeoutMs) >= DateTimeOffset.UtcNow; }
+                }
+            }
+
+            public IDictionary<int, Entry> IDs { get; private set; } = new Dictionary<int, Entry>();
+
+            private const int FrameTimeoutMs = 5000;
 
             public Applications()
             {
+                Refresh();
+            }
+
+            public void Refresh()
+            {
                 RTSSSharedMemoryNET.AppEntry[] appEntries;
+
+                var oldIDs = IDs;
+                var newIDs = new Dictionary<int, Entry>();
 
                 try { appEntries = OSD.GetAppEntries(AppFlags.MASK); }
                 catch { return; }
 
+                var now = DateTimeOffset.UtcNow;
+
                 foreach (var app in appEntries)
-                    IDs.TryAdd(app.ProcessId, Path.GetFileNameWithoutExtension(app.Name));
+                {
+                    if (!oldIDs.TryGetValue(app.ProcessId, out var entry))
+                    {
+                        entry.ProcessName = Path.GetFileNameWithoutExtension(app.Name);
+                    }
+
+                    if (entry.LastFrame != app.OSDFrameId)
+                    {
+                        entry.LastFrame = app.OSDFrameId;
+                        entry.LastFrameTime = now;
+                    }
+
+                    newIDs.TryAdd(app.ProcessId, entry);
+                }
+
+                IDs = newIDs;
             }
 
             public bool FindForeground(out int processId, out string processName)
@@ -45,17 +88,21 @@ namespace CommonHelpers
                 if (id is null)
                     return false;
 
-                if (!IDs.TryGetValue(id.Value, out var name))
+                if (!IDs.TryGetValue(id.Value, out var entry))
+                    return false;
+                if (!entry.IsRecent)
                     return false;
 
                 processId = id.Value;
-                processName = name;
+                processName = entry.ProcessName;
                 return true;
             }
 
             public bool IsRunning(int processId)
             {
-                return IDs.ContainsKey(processId);
+                if (!IDs.TryGetValue(processId, out var entry))
+                    return false;
+                return entry.IsRecent;
             }
         }
 
