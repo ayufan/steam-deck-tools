@@ -172,15 +172,15 @@ namespace SteamController.Profiles.Dynamic
             var exeFolder = Path.GetDirectoryName(exePath);
             if (exeFolder is not null)
             {
-                var exeUserProfiles = Path.Combine(exeFolder, "UserProfiles");
-                if (Directory.Exists(exeUserProfiles))
-                    yield return exeUserProfiles;
+                var exeControllerProfiles = Path.Combine(exeFolder, "ControllerProfiles");
+                if (Directory.Exists(exeControllerProfiles))
+                    yield return exeControllerProfiles;
             }
 
             var documentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var steamControllerDocumentsFolder = Path.Combine(documentsFolder, "SteamController", "UserProfiles");
-            if (Directory.Exists(steamControllerDocumentsFolder))
-                yield return steamControllerDocumentsFolder;
+            var controllerProfilesDocumentsFolder = Path.Combine(documentsFolder, "SteamController", "ControllerProfiles");
+            if (Directory.Exists(controllerProfilesDocumentsFolder))
+                yield return controllerProfilesDocumentsFolder;
         }
     }
 }

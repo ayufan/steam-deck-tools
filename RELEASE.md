@@ -10,7 +10,7 @@
 ## 0.6.x
 
 - PowerControl: Add `GameProfiles` allowing to persist per-game setttings for most of settings (Colors, Refresh Rate, FPS limit, etc.) [Thank you @maniman303 for https://github.com/ayufan/steam-deck-tools/pull/38]
-- SteamController: Add experimental `UserProfiles` to allow creating user controllers
+- SteamController: Add experimental `ControllerProfiles` to allow creating user controllers
 - SteamController: Add experimental RTSS-based detection (disables the need to use Steam, or Playnite workflow)
 - SteamController: Hold Press Left and Right Pad to toggle touchpads in X360 mode
 - PowerControl: Make all PowerControl options to accept Strings

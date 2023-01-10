@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="UserProfiles\examples\Turbo.x360.cs" />
+    <Compile Remove="ControllerProfiles\examples\Turbo.x360.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="UserProfiles\examples\Turbo.x360.cs">
+    <Content Include="ControllerProfiles\examples\Turbo.x360.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
