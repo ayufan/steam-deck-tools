@@ -31,14 +31,22 @@ namespace PowerControl.Options
                 // Since the RadeonSoftware will try to revert values
                 RadeonSoftware.Kill();
 
+                if (!GPUScaling.Enabled)
+                    return "Off";
+                return GPUScaling.Mode.ToString();
+            },
+            Impacts =
+            {
+                Resolution.Instance,
+                RefreshRate.Instance,
+                FPSLimit.Instance
+            },
+            AfterApply = () =>
+            {
                 Resolution.Instance.Update();
                 RefreshRate.Instance.Update();
                 FPSLimit.Instance.Reset();
                 FPSLimit.Instance.Update();
-
-                if (!GPUScaling.Enabled)
-                    return "Off";
-                return GPUScaling.Mode.ToString();
             }
         };
     }

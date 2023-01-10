@@ -28,6 +28,10 @@ namespace PowerControl.Options
 
                 return DisplayResolutionController.GetRefreshRate().ToString();
             },
+            Impacts =
+            {
+                FPSLimit.Instance
+            },
             AfterApply = () =>
             {
                 // force reset and refresh of FPS limit

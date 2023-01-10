@@ -7,6 +7,8 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "CPU",
+            PersistentKey = "CPUFrequency",
+            PersistOnCreate = false,
             Options = { "Default", "Power-Save", "Balanced", "Max" },
             ApplyDelay = 1000,
             ActiveOption = "?",

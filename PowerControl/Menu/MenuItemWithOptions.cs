@@ -8,7 +8,10 @@ namespace PowerControl.Menu
         public string? ProfileOption { get; set; }
         public int ApplyDelay { get; set; }
         public bool CycleOptions { get; set; } = true;
-        public string? PersistentKey;
+        public string? PersistentKey { get; set; }
+        public bool PersistOnCreate { get; set; } = true;
+
+        public IList<MenuItemWithOptions> Impacts { get; set; } = new List<MenuItemWithOptions>();
 
         public Func<string?>? CurrentValue { get; set; }
         public Func<string[]?>? OptionsValues { get; set; }
@@ -20,6 +23,7 @@ namespace PowerControl.Menu
 
         private System.Windows.Forms.Timer delayTimer = new System.Windows.Forms.Timer();
         private ToolStripMenuItem toolStripItem = new ToolStripMenuItem();
+        private bool runAfterApply = false;
 
         public MenuItemWithOptions()
         {
@@ -32,7 +36,7 @@ namespace PowerControl.Menu
                 if (delayTimer != null)
                     delayTimer.Stop();
 
-                FinalizeSet(delayTimer.Interval > ApplyDelay);
+                FinalizeSet();
             };
         }
 
@@ -77,16 +81,17 @@ namespace PowerControl.Menu
                 ActiveOption = Options.First();
         }
 
-        public void Set(String value, int overrideDelay = -1, bool silent = false)
+        public void Set(String value, int overrideDelay = -1, bool refresh = true)
         {
             if (delayTimer != null)
                 delayTimer.Stop();
 
             SelectedOption = value;
+            runAfterApply = refresh;
 
             if (ApplyDelay == 0 || overrideDelay == 0)
             {
-                FinalizeSet(silent);
+                FinalizeSet();
                 return;
             }
 
@@ -94,7 +99,7 @@ namespace PowerControl.Menu
             delayTimer.Enabled = true;
         }
 
-        private void FinalizeSet(bool silent = false)
+        private void FinalizeSet()
         {
             var wasOption = ActiveOption;
 
@@ -102,7 +107,7 @@ namespace PowerControl.Menu
             {
                 ActiveOption = ApplyValue(SelectedOption);
 
-                if (AfterApply != null && !silent)
+                if (AfterApply != null && runAfterApply)
                     AfterApply();
             }
             else
@@ -110,7 +115,7 @@ namespace PowerControl.Menu
 
             SelectedOption = null;
 
-            if (wasOption != ActiveOption && ActiveOption != null && !silent)
+            if (wasOption != ActiveOption && ActiveOption != null)
                 ValueChanged(this, wasOption, ActiveOption);
         }
 
@@ -201,6 +206,45 @@ namespace PowerControl.Menu
                 text = Color(option, Colors.Green);
 
             return text;
+        }
+
+        public static IEnumerable<MenuItemWithOptions> Order(IEnumerable<MenuItemWithOptions> items)
+        {
+            HashSet<MenuItemWithOptions> processed = new HashSet<MenuItemWithOptions>();
+
+            // Try to run iteratively up to 10 times
+            for (int i = 0; i < 10; i++)
+            {
+                List<MenuItemWithOptions> leftItems = new List<MenuItemWithOptions>();
+
+                foreach (var item in items)
+                {
+                    bool valid = item.Impacts.All((impactsItem) => processed.Contains(impactsItem));
+
+                    if (valid)
+                    {
+                        processed.Add(item);
+                        yield return item;
+                    }
+                    else
+                    {
+                        leftItems.Add(item);
+                    }
+                }
+
+                if (leftItems.Count() == 0)
+                    yield break;
+
+                items = leftItems;
+            }
+
+            CommonHelpers.Log.TraceLine("PowerControl: Failed to order items: {0}",
+                string.Join(", ", items.Select((item) => item.Name)));
+
+            foreach (var item in items)
+            {
+                yield return item;
+            }
         }
     }
 }

@@ -33,6 +33,7 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions ModeInstance = new Menu.MenuItemWithOptions()
         {
             Name = "OSD Mode",
+            PersistentKey = "PerformanceOverlayMode",
             ApplyDelay = 500,
             OptionsValues = delegate ()
             {

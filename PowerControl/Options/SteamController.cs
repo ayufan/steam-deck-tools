@@ -7,6 +7,8 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "Controller",
+            PersistentKey = "SteamController",
+            PersistOnCreate = false,
             ApplyDelay = 500,
             OptionsValues = delegate ()
             {

@@ -7,6 +7,8 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "GPU",
+            PersistentKey = "GPUFrequency",
+            PersistOnCreate = false,
             Options = { "Default", "400MHz", "800MHz", "1200MHz", "1600MHz" },
             ApplyDelay = 1000,
             Visible = VangoghGPU.IsSupported,

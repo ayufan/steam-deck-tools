@@ -8,6 +8,8 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "TDP",
+            PersistentKey = "TDP",
+            PersistOnCreate = false,
             Options = { "3W", "4W", "5W", "6W", "7W", "8W", "10W", "12W", "15W" },
             ApplyDelay = 1000,
             ResetValue = () => { return "15W"; },

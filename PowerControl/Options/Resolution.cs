@@ -33,12 +33,20 @@ namespace PowerControl.Options
             {
                 var selectedResolution = new DisplayResolutionController.DisplayResolution(selected);
                 DisplayResolutionController.SetResolution(selectedResolution);
+                return DisplayResolutionController.GetResolution().ToString();
+            },
+            Impacts =
+            {
+                RefreshRate.Instance,
+                FPSLimit.Instance
+            },
+            AfterApply = () =>
+            {
                 // force refresh Refresh Rate
                 RefreshRate.Instance.Update();
                 // force reset and refresh of FPS limit
                 FPSLimit.Instance.Reset();
                 FPSLimit.Instance.Update();
-                return DisplayResolutionController.GetResolution().ToString();
             }
         };
     }

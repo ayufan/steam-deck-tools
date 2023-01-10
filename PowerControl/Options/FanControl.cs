@@ -7,6 +7,8 @@ namespace PowerControl.Options
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "FAN",
+            PersistentKey = "FANMode",
+            PersistOnCreate = false,
             ApplyDelay = 500,
             OptionsValues = delegate ()
             {
