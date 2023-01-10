@@ -42,7 +42,7 @@ namespace SteamController.Profiles.Default
 
             if (c.Steam.BtnSteam.Hold(HoldForShorcuts, ShortcutConsumed))
             {
-                if (AdditionalShortcuts(c))
+                if (SteamShortcuts(c))
                 {
                     return Status.Done;
                 }
@@ -51,7 +51,7 @@ namespace SteamController.Profiles.Default
             return Status.Continue;
         }
 
-        protected virtual bool AdditionalShortcuts(Context c)
+        protected virtual bool SteamShortcuts(Context c)
         {
             if (c.Steam.BtnOptions.Pressed())
             {

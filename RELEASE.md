@@ -25,3 +25,4 @@
 - Fix Steam Game detection when in X360 controller mode
 - Hold-press Guide button for 100ms in X360 mode
 - Avoid deadlock when changing profile
+- SteamController: Fix `STEAM+DPadUp` not working
