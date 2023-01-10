@@ -17,10 +17,10 @@ namespace PowerControl.Helper
             {
                 var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
                 var exeFolder = Path.GetDirectoryName(exePath) ?? Directory.GetCurrentDirectory();
-                var exeUserProfiles = Path.Combine(exeFolder, "UserProfiles");
-                if (!Directory.Exists(exeUserProfiles))
-                    Directory.CreateDirectory(exeUserProfiles);
-                return exeUserProfiles;
+                var exeGameProfiles = Path.Combine(exeFolder, "GameProfiles");
+                if (!Directory.Exists(exeGameProfiles))
+                    Directory.CreateDirectory(exeGameProfiles);
+                return exeGameProfiles;
             }
         }
 

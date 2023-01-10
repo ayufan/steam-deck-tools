@@ -7,4 +7,5 @@ build-Debug/
 .vscode/
 scripts/Redist/
 SteamDeckTools_Setup*.exe
-UserProfiles/
+GameProfiles/
+ControllerProfiles/
