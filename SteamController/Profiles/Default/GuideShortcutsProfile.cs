@@ -10,24 +10,11 @@ namespace SteamController.Profiles.Default
         public readonly TimeSpan HoldForKill = TimeSpan.FromSeconds(3);
         public readonly TimeSpan HoldForClose = TimeSpan.FromSeconds(1);
 
-        public override Status Run(Context c)
+        protected override bool SteamShortcuts(Context c)
         {
-            if (base.Run(c).IsDone)
-            {
-                return Status.Done;
-            }
+            if (base.SteamShortcuts(c))
+                return true;
 
-            if (c.Steam.BtnSteam.Hold(HoldForShorcuts, ShortcutConsumed))
-            {
-                SteamShortcuts(c);
-                return Status.Done;
-            }
-
-            return Status.Continue;
-        }
-
-        private void SteamShortcuts(Context c)
-        {
             c.Steam.LizardButtons = SettingsDebug.Default.LizardButtons;
             c.Steam.LizardMouse = SettingsDebug.Default.LizardMouse;
 
@@ -116,21 +103,14 @@ namespace SteamController.Profiles.Default
             {
                 c.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
             }
-        }
-
-        protected override bool AdditionalShortcuts(Context c)
-        {
-            if (base.AdditionalShortcuts(c))
-                return true;
 
             // Additional binding for tool hotkeys (Lossless Fullscreen is nice)
             if (c.Steam.BtnDpadUp.Pressed())
             {
                 c.Keyboard.KeyPress(new VirtualKeyCode[] { VirtualKeyCode.LCONTROL, VirtualKeyCode.LMENU }, VirtualKeyCode.VK_U);
-                return true;
             }
 
-            return false;
+            return true;
         }
 
         protected void EmulateScrollOnLPad(Context c)

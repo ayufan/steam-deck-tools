@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- SteamController: Fix `STEAM+DPadUp` not working
 - PowerControl/SteamController: Improve RTSS detection to ignore processes not generating frames for over 5s
 - PowerControl: Expose all in `GameProfiles`, and fix `GPU Scaling`, `Refresh Rate` and `FPS Limit` interwork
 - PowerControl: Add `GameProfiles` allowing to persist per-game setttings for most of settings (Colors, Refresh Rate, FPS limit, etc.) [Thank you @maniman303 for https://github.com/ayufan/steam-deck-tools/pull/38]
