@@ -31,6 +31,7 @@ namespace CommonHelpers
             this.SettingChanged += delegate { };
         }
 
+        [Browsable(false)]
         public bool Exists
         {
             get { return File.Exists(this.ConfigFile); }
@@ -60,7 +61,7 @@ namespace CommonHelpers
                 return false;
 
             SettingChanging(key);
-            if (!SetString(key, valueString))
+            if (!SetProfileString(key, valueString))
                 return false;
 
             cachedValues[key] = value;
@@ -83,7 +84,7 @@ namespace CommonHelpers
 
             try
             {
-                var valueString = GetString(key, defaultString);
+                var valueString = GetProfileString(key, defaultString);
                 var value = (T?)typeConverter.ConvertFromString(valueString);
                 if (value is null)
                 {
@@ -94,7 +95,7 @@ namespace CommonHelpers
                 if ((TouchSettings || touchSettings) && valueString == defaultString)
                 {
                     // Persist current value on a first access
-                    SetString(key, valueString);
+                    SetProfileString(key, valueString);
                 }
 
                 cachedValues[key] = value;
@@ -108,7 +109,7 @@ namespace CommonHelpers
             }
         }
 
-        protected string GetString(string key, string defaultValue)
+        private string GetProfileString(string key, string defaultValue)
         {
             StringBuilder sb = new StringBuilder(500);
             uint res = GetPrivateProfileString(SettingsKey, key, defaultValue, sb, (uint)sb.Capacity, ConfigFile);
@@ -117,7 +118,7 @@ namespace CommonHelpers
             return defaultValue;
         }
 
-        protected bool SetString(string key, string value)
+        private bool SetProfileString(string key, string value)
         {
             lock (this)
             {

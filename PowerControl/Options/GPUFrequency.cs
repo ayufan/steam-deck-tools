@@ -1,3 +1,4 @@
+using CommonHelpers;
 using PowerControl.Helpers.AMD;
 
 namespace PowerControl.Options
@@ -16,11 +17,10 @@ namespace PowerControl.Options
             ResetValue = () => { return "Default"; },
             ApplyValue = (selected) =>
             {
-                if (!Settings.Default.AckAntiCheat(
+                if (!AntiCheatSettings.Default.AckAntiCheat(
                     Controller.TitleWithVersion,
-                    "GPU",
-                    "Changing GPU frequency requires kernel access for a short period. Leave the game if it uses anti-cheat protection.")
-                )
+                    "Changing GPU frequency requires kernel access for a short period.",
+                    "Leave the game if it uses anti-cheat protection."))
                     return null;
 
                 return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>

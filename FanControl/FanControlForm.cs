@@ -66,7 +66,7 @@ namespace FanControl
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            setFanMode(Settings.Default.FanMode, !Settings.Default.AckAntiCheat);
+            setFanMode(Settings.Default.FanMode, AntiCheatSettings.Default.NotYet);
             notifyIcon.ShowBalloonTip(3000, Text, "Fan Control Started", ToolTipIcon.Info);
         }
 
@@ -79,38 +79,10 @@ namespace FanControl
 
         private bool AckAntiCheat()
         {
-            if (Settings.Default.AckAntiCheat && Settings.Default.EnableExperimentalFeatures)
-                return true;
-
-            Application.DoEvents();
-
-            var result = MessageBox.Show(
-                new Form { TopMost = true },
-                String.Join("\n",
-                    "WARNING!!!!",
-                    "",
-                    "Usage of SteamOS or Max Fan Curve might trigger anti-cheat protection in some games.",
-                    "This might result in kicking from the application or even be banned.",
-                    "",
-                    "Ensure that you USE DEFAULT FAN when playing games with ANTI-CHEAT PROTECTION.",
-                    "",
-                    "CLICK YES TO ACKNOWLEDGE?",
-                    "CLICK NO TO LEARN MORE."
-                ), Text,
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning,
-                MessageBoxDefaultButton.Button2
-            );
-
-            if (result == DialogResult.Yes)
-            {
-                Settings.Default.AckAntiCheat = true;
-                return true;
-            }
-
-            try { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software"); }
-            catch { }
-            return false;
+            return AntiCheatSettings.Default.AckAntiCheat(
+                Text,
+                "Usage of SteamOS or Max Fan Curve might trigger anti-cheat protection in some games.",
+                "Ensure that you USE DEFAULT FAN when playing games with ANTI-CHEAT PROTECTION.");
         }
 
         private void SystemEvents_PowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e)

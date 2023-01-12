@@ -95,7 +95,7 @@ namespace FanControl
 
             try
             {
-                if (!Settings.Default.AckAntiCheat || Mode == FanMode.Default && !showForDefault)
+                if (AntiCheatSettings.Default.NotYet || Mode == FanMode.Default && !showForDefault)
                 {
                     Instance.UseKernelDrivers = false;
                     CurrentRPM = null;

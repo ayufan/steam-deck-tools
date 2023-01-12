@@ -165,38 +165,11 @@ namespace PerformanceOverlay
 
         private bool AckAntiCheat()
         {
-            if (Settings.Default.AckAntiCheat && Settings.Default.EnableExperimentalFeatures)
-                return true;
-
-            Application.DoEvents();
-
-            var result = MessageBox.Show(
-                new Form { TopMost = true },
-                String.Join("\n",
-                    "WARNING!!!!",
-                    "",
-                    "Usage of OSD Kernel Drivers might trigger anti-cheat protection in some games.",
-                    "This might result in kicking from the application or even be banned.",
-                    "",
-                    "Ensure that you set it to DISABLED when playing games with ANTI-CHEAT PROTECTION.",
-                    "",
-                    "CLICK YES TO ACKNOWLEDGE?",
-                    "CLICK NO TO LEARN MORE."
-                ), TitleWithVersion,
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning,
-                MessageBoxDefaultButton.Button2
+            return AntiCheatSettings.Default.AckAntiCheat(
+                TitleWithVersion,
+                "Usage of OSD Kernel Drivers might trigger anti-cheat protection in some games.",
+                "Ensure that you set it to DISABLED when playing games with ANTI-CHEAT PROTECTION."
             );
-
-            if (result == DialogResult.Yes)
-            {
-                Settings.Default.AckAntiCheat = true;
-                return true;
-            }
-
-            try { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software"); }
-            catch { }
-            return false;
         }
 
         private void setKernelDrivers(bool value)

@@ -69,6 +69,8 @@ or issues in games that use anti-cheat technology (including the possibility of 
 Application by default does not use any kernel-level features. If you request a change
 that might trigger anti-cheat detection application does require to acknowledge this.
 
+<img src="images/anti_cheat_protection.png" height="150"/>
+
 ### Safe settings
 
 If you play online games application needs to disable kernel-features.

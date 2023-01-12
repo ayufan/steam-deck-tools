@@ -27,11 +27,5 @@ namespace FanControl
         {
             get { return Instance.IsDEBUG; }
         }
-
-        public bool AckAntiCheat
-        {
-            get { return Get<bool>("AckAntiCheat", false); }
-            set { Set("AckAntiCheat", value); }
-        }
     }
 }

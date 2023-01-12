@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- All: Improve Anti-Cheat protection to allow to dismiss it
 - SteamController: Fix `STEAM+DPadUp` not working
 - PowerControl/SteamController: Improve RTSS detection to ignore processes not generating frames for over 5s
 - PowerControl: Expose all in `GameProfiles`, and fix `GPU Scaling`, `Refresh Rate` and `FPS Limit` interwork
