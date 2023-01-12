@@ -6,7 +6,7 @@
 
 **This software is provided on best-effort basis and can break your SteamDeck.**
 
-<img src="images/power_control.png" height="250"/>
+<img src="images/overlay.png" height="400"/>
 
 ## Help this project
 

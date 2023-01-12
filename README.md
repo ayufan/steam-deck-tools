@@ -8,7 +8,7 @@ This repository contains my own personal set of tools to help running Windows on
 
 **This software is provided on best-effort basis and can break your SteamDeck.**
 
-<img src="docs/images/power_control.png" height="250"/>
+<img src="docs/images/overlay.png" height="400"/>
 
 ## Help this project
 
