@@ -32,6 +32,7 @@ namespace PowerControl.Options
 
                         switch (selected.ToString())
                         {
+                            case "?":
                             case "Default":
                                 sd.MinCPUClock = 1400;
                                 sd.MaxCPUClock = 3500;

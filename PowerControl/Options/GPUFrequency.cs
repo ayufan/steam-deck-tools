@@ -23,6 +23,9 @@ namespace PowerControl.Options
                     "Leave the game if it uses anti-cheat protection."))
                     return null;
 
+                if (selected == "?")
+                    selected = "Default";
+
                 return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>
                 {
                     using (var sd = VangoghGPU.Open())
@@ -30,7 +33,7 @@ namespace PowerControl.Options
                         if (sd is null)
                             return null;
 
-                        if (selected == "Default")
+                        if (selected == "Default" || selected == "?")
                         {
                             sd.HardMinGfxClock = 200;
                             return selected;

@@ -105,7 +105,15 @@ namespace PowerControl.Menu
 
             if (ApplyValue != null && SelectedOption != null)
             {
-                ActiveOption = ApplyValue(SelectedOption);
+                try
+                {
+                    ActiveOption = ApplyValue(SelectedOption);
+                }
+                catch (Exception e)
+                {
+                    CommonHelpers.Log.TraceException("FinalizeSet", Name, e);
+                    Update();
+                }
 
                 if (AfterApply != null && runAfterApply)
                     AfterApply();

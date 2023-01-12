@@ -23,6 +23,10 @@ namespace PowerControl.Options
                     "Leave the game if it uses anti-cheat protection."))
                     return null;
 
+                // If undefined, select max
+                if (selected == "?")
+                    selected = "15W";
+
                 uint mW = uint.Parse(selected.Replace("W", "")) * 1000;
 
                 if (VangoghGPU.IsSupported)
