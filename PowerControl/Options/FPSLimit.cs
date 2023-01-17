@@ -30,7 +30,12 @@ namespace PowerControl.Options
                     if (RTSS.GetProfileProperty("FramerateLimit", out int framerate))
                         return (framerate == 0) ? "Off" : framerate.ToString();
                 }
-                catch { }
+                catch(Exception e)
+                {
+#if DEBUG
+                    CommonHelpers.Log.TraceException("RTSS", e);
+#endif
+                }
                 return null;
             },
             ApplyValue = (selected) =>
@@ -50,7 +55,10 @@ namespace PowerControl.Options
                     RTSS.UpdateProfiles();
                     return (framerate == 0) ? "Off" : framerate.ToString();
                 }
-                catch { }
+                catch(Exception e)
+                {
+                    CommonHelpers.Log.TraceException("RTSS", e);
+                }
                 return null;
             }
         };
