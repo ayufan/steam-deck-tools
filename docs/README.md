@@ -53,7 +53,7 @@ It is strongly advised that following software is uninstalled or disabled:
 
 ## Join Us
 
-Join Us for help or chat. We are at [#windows of Steam Deck Discord](https://discord.com/channels/865611969661632521/867449233261985812).
+Join Us for help or chat. We are at [#windows of Steam Deck Discord](https://discord.gg/steamdeck).
 
 ## Anti-Cheat and Antivirus software
 
