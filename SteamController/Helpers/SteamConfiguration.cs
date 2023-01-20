@@ -56,6 +56,9 @@ namespace SteamController.Helpers
             get
             {
                 var steamWindow = FindWindow("SDL_app", "SP");
+                // Support Steam client released around 2023-01-20, version: 1674182294
+                if (steamWindow == IntPtr.Zero)
+                    steamWindow = FindWindow("SDL_app", "Steam Big Picture Mode");
                 if (steamWindow == IntPtr.Zero)
                     return false;
 
@@ -80,10 +83,17 @@ namespace SteamController.Helpers
                 StringBuilder windowText = new StringBuilder(256);
                 if (GetWindowText(hWnd, windowText, windowText.Capacity) == 0)
                     return false;
-                if (!windowText.ToString().StartsWith("SP"))
-                    return false;
 
-                return ForegroundProcess.Find(hWnd)?.ProcessName == "steamwebhelper";
+                bool valid = false;
+
+                // Support old Steam Clients
+                valid = valid || windowText.ToString().StartsWith("SP");
+
+                // Support Steam client released around 2023-01-20, version: 1674182294
+                // TODO: It appears that controller is not consumed when outside of big picture mode
+                // valid = valid || windowText.ToString().StartsWith("Controller Layout");
+
+                return valid && ForegroundProcess.Find(hWnd)?.ProcessName == "steamwebhelper";
             }
         }
 
