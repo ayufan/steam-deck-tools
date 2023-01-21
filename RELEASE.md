@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- SteamController: Improve detection of Steam processes (especially latest controller UI changes)
 - SteamController: Add configuration wizard for the first time or when configuration was lost
 - PowerControl: Show current time
 - PowerControl: Consider the foreground process to be holding profile configuration as long as it is running

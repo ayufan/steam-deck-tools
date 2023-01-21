@@ -51,52 +51,6 @@ namespace SteamController.Helpers
             }
         }
 
-        public static bool IsGamePadUI
-        {
-            get
-            {
-                var steamWindow = FindWindow("SDL_app", "SP");
-                // Support Steam client released around 2023-01-20, version: 1674182294
-                if (steamWindow == IntPtr.Zero)
-                    steamWindow = FindWindow("SDL_app", "Steam Big Picture Mode");
-                if (steamWindow == IntPtr.Zero)
-                    return false;
-
-                return GetForegroundWindow() == steamWindow;
-            }
-        }
-
-        public static bool IsPossibleGamePadUI
-        {
-            get
-            {
-                IntPtr hWnd = GetForegroundWindow();
-                if (hWnd == IntPtr.Zero)
-                    return false;
-
-                StringBuilder className = new StringBuilder(256);
-                if (GetClassName(hWnd, className, className.Capacity) == 0)
-                    return false;
-                if (className.ToString() != "SDL_app")
-                    return false;
-
-                StringBuilder windowText = new StringBuilder(256);
-                if (GetWindowText(hWnd, windowText, windowText.Capacity) == 0)
-                    return false;
-
-                bool valid = false;
-
-                // Support old Steam Clients
-                valid = valid || windowText.ToString().StartsWith("SP");
-
-                // Support Steam client released around 2023-01-20, version: 1674182294
-                // TODO: It appears that controller is not consumed when outside of big picture mode
-                // valid = valid || windowText.ToString().StartsWith("Controller Layout");
-
-                return valid && ForegroundProcess.Find(hWnd)?.ProcessName == "steamwebhelper";
-            }
-        }
-
         public static String? SteamExe
         {
             get { return GetValue2<string>(SteamKey, SteamExeValue); }
@@ -446,17 +400,5 @@ namespace SteamController.Helpers
                 return null;
             }
         }
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
     }
 }
