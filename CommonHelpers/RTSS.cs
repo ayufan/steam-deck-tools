@@ -32,6 +32,7 @@ namespace CommonHelpers
                 public String ProcessName { get; set; }
                 public uint LastFrame { get; set; }
                 public DateTimeOffset LastFrameTime { get; set; }
+                public bool IsOSDForeground { get; set; }
 
                 public bool IsRecent
                 {
@@ -60,6 +61,8 @@ namespace CommonHelpers
 
                 var now = DateTimeOffset.UtcNow;
 
+                var topLevelProcessId = GetTopLevelProcessId();
+
                 foreach (var app in appEntries)
                 {
                     if (!oldIDs.TryGetValue(app.ProcessId, out var entry))
@@ -67,7 +70,9 @@ namespace CommonHelpers
                         entry.ProcessName = Path.GetFileNameWithoutExtension(app.Name);
                     }
 
-                    if (entry.LastFrame != app.OSDFrameId)
+                    entry.IsOSDForeground = (topLevelProcessId == app.ProcessId);
+
+                    if (entry.LastFrame != app.OSDFrameId || entry.IsOSDForeground)
                     {
                         entry.LastFrame = app.OSDFrameId;
                         entry.LastFrameTime = now;

@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- PowerControl: Consider the foreground process to be holding profile configuration as long as it is running
 - SteamController: Require administrator privileges
 - PowerControl: Apply profile changes with a delay in bulk
 - SteamController: Fix detection of the Steam client released around 2023-01-20, version: 1674182294
