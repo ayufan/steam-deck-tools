@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- SteamController: Promote RTSS detection to Release - enable by default
 - SteamController: Improve detection of Steam processes (especially latest controller UI changes)
 - SteamController: Add configuration wizard for the first time or when configuration was lost
 - PowerControl: Show current time

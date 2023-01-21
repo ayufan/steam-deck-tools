@@ -20,6 +20,13 @@ namespace SteamController
             set { Set("EnableSteamDetection", value); }
         }
 
+        [Description("If current foreground process uses overlay, treat it as a game.")]
+        public bool DetectRTSSForeground
+        {
+            get { return Get<bool>("DetectRTSSForeground", true); }
+            set { Set("DetectRTSSForeground", value); }
+        }
+
         [Description("Default profile used when going back to Desktop mode")]
         [Browsable(true)]
         [TypeConverter(typeof(ProfilesSettings.Helpers.ProfileStringConverter))]

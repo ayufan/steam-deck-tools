@@ -6,7 +6,7 @@ namespace SteamController.Managers
     {
         public override void Tick(Context context)
         {
-            context.State.RTSSInForeground = SettingsDebug.Default.DetectRTSSForeground && RTSS.IsOSDForeground();
+            context.State.RTSSInForeground = Settings.Default.DetectRTSSForeground && RTSS.IsOSDForeground();
         }
     }
 }
