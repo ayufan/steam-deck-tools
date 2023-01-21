@@ -1,10 +1,16 @@
+using System.Globalization;
+
 namespace PowerControl
 {
     internal class MenuStack
     {
         public static Menu.MenuRoot Root = new Menu.MenuRoot()
         {
-            Name = String.Format("\r\n\r\nPower Control v{0}\r\n", Application.ProductVersion.ToString()),
+            Name = String.Format(
+                "\r\n\r\nPower Control v{0} <C4>-<C> <TIME={1}>\r\n",
+                Application.ProductVersion.ToString(),
+                Is24hClock ? "%H:%M:%S" : "%I:%M:%S %p"
+            ),
             Items =
             {
                 Options.Profiles.Instance,
@@ -33,5 +39,10 @@ namespace PowerControl
                 Options.SteamController.Instance
             }
         };
+
+        private static bool Is24hClock
+        {
+            get => DateTimeFormatInfo.CurrentInfo.ShortTimePattern.Contains("HH");
+        }
     }
 }

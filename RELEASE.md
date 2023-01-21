@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- PowerControl: Show current time
 - PowerControl: Consider the foreground process to be holding profile configuration as long as it is running
 - SteamController: Require administrator privileges
 - PowerControl: Apply profile changes with a delay in bulk
