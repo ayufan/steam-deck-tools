@@ -12,7 +12,7 @@ namespace SteamController.Managers
 
         public override void Tick(Context context)
         {
-            if (!Settings.Default.EnableSteamDetection)
+            if (Settings.Default.EnableSteamDetection != true)
             {
                 context.State.SteamUsesSteamInput = false;
                 context.State.SteamUsesX360Controller = false;

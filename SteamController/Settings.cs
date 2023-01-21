@@ -14,9 +14,9 @@ namespace SteamController
         }
 
         [Browsable(false)]
-        public bool EnableSteamDetection
+        public bool? EnableSteamDetection
         {
-            get { return Get<bool>("EnableSteamDetection", false); }
+            get { return Get<bool?>("EnableSteamDetection", null); }
             set { Set("EnableSteamDetection", value); }
         }
 

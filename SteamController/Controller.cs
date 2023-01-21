@@ -124,7 +124,10 @@ namespace SteamController
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
-            AddSteamOptions(contextMenu);
+            var setupSteamItem = new ToolStripMenuItem("Setup &Steam");
+            setupSteamItem.Click += delegate { SetupSteam(true); };
+            contextMenu.Items.Add(setupSteamItem);
+            contextMenu.Items.Add(new ToolStripSeparator());
 
             var settingsItem = contextMenu.Items.Add("&Settings");
             settingsItem.Click += Settings_Click;
@@ -178,6 +181,8 @@ namespace SteamController
                 );
 #endif
             };
+
+            SetupSteam(false);
 
             context.Start();
 
@@ -258,80 +263,89 @@ namespace SteamController
             using (context) { }
         }
 
-        private void AddSteamOptions(ContextMenuStrip contextMenu)
+        public void SetupSteam(bool always)
         {
-            var ignoreSteamItem = new ToolStripMenuItem("&Ignore Steam");
-            ignoreSteamItem.ToolTipText = "Disable Steam detection. Ensures that neither Steam Controller or X360 Controller are not blacklisted.";
-            ignoreSteamItem.Click += delegate
-            {
-                ConfigureSteam(
-                    "This will enable Steam Controller and X360 Controller in Steam.",
-                    false, false, false
-                );
-            };
-            contextMenu.Items.Add(ignoreSteamItem);
-
-            var useX360WithSteamItem = new ToolStripMenuItem("Use &X360 Controller with Steam");
-            useX360WithSteamItem.ToolTipText = "Hide Steam Deck Controller from Steam, and uses X360 controller instead.";
-            useX360WithSteamItem.Click += delegate
-            {
-                ConfigureSteam(
-                    "This will hide Steam Controller from Steam and use X360 Controller for all games.",
-                    true, true, false
-                );
-            };
-            contextMenu.Items.Add(useX360WithSteamItem);
-
-            var useSteamInputItem = new ToolStripMenuItem("Use &Steam Input with Steam");
-            useSteamInputItem.ToolTipText = "Uses Steam Input and hides X360 Controller from Steam. Requires disabling ALL Steam Desktop Mode shortcuts.";
-            useSteamInputItem.Click += delegate
-            {
-                ConfigureSteam(
-                    "This will hide X360 Controller from Steam, and will try to detect Steam presence " +
-                    "to disable usage of this application when running Steam Games.\n\n" +
-                    "This does REQUIRE disabling DESKTOP MODE shortcuts in Steam.\n" +
-                    "Follow guide found at https://steam-deck-tools.ayufan.dev/steam-controller.html.",
-                    true, false, true
-                );
-            };
-            contextMenu.Items.Add(useSteamInputItem);
-
-            var steamSeparatorItem = new ToolStripSeparator();
-            contextMenu.Items.Add(steamSeparatorItem);
-
-            contextMenu.Opening += delegate
-            {
-                var blacklistedSteamController = Helpers.SteamConfiguration.IsControllerBlacklisted(
-                    Devices.SteamController.VendorID,
-                    Devices.SteamController.ProductID
-                );
-
-                ignoreSteamItem.Visible = blacklistedSteamController is not null;
-                useX360WithSteamItem.Visible = blacklistedSteamController is not null;
-                useSteamInputItem.Visible = blacklistedSteamController is not null;
-                steamSeparatorItem.Visible = blacklistedSteamController is not null;
-
-                ignoreSteamItem.Checked = !Settings.Default.EnableSteamDetection || blacklistedSteamController == null;
-                useX360WithSteamItem.Checked = Settings.Default.EnableSteamDetection && blacklistedSteamController == true;
-                useSteamInputItem.Checked = Settings.Default.EnableSteamDetection && blacklistedSteamController == false;
-            };
-        }
-
-        private void ConfigureSteam(String message, bool steamDetection, bool blacklistSteamController, bool blacklistX360Controller)
-        {
-            String text;
-
-            text = "This will change Steam configuration.\n\n";
-            text += "Close Steam before confirming as otherwise Steam will be forcefully closed.\n\n";
-            text += message;
-
-            var result = MessageBox.Show(
-                text,
-                TitleWithVersion,
-                MessageBoxButtons.OKCancel,
-                MessageBoxIcon.Exclamation
+            var blacklistedSteamController = Helpers.SteamConfiguration.IsControllerBlacklisted(
+                Devices.SteamController.VendorID,
+                Devices.SteamController.ProductID
             );
-            if (result != DialogResult.OK)
+            var blacklistedX360Controller = Helpers.SteamConfiguration.IsControllerBlacklisted(
+                Devices.Xbox360Controller.VendorID,
+                Devices.Xbox360Controller.ProductID
+            );
+
+            if (blacklistedSteamController is null || blacklistedX360Controller is null)
+            {
+                // Appears that Steam is not installed
+                if (always)
+                {
+                    MessageBox.Show("Steam appears not to be installed.", TitleWithVersion, MessageBoxButtons.OK);
+                }
+                return;
+            }
+
+            Application.DoEvents();
+
+            var page = new TaskDialogPage();
+            page.Caption = TitleWithVersion;
+            page.AllowCancel = true;
+
+            var useX360Controller = page.RadioButtons.Add("Use &X360 Controller with Steam (preferred)");
+            useX360Controller.Text += "\n- Will always use X360 controller.";
+            useX360Controller.Checked = Settings.Default.EnableSteamDetection == true &&
+                blacklistedSteamController == true &&
+                blacklistedX360Controller == false;
+
+            var useSteamInput = page.RadioButtons.Add("Use &Steam Input with Steam (requires configuration)");
+            useSteamInput.Text += "\n- Will try to use Steam controls.";
+            useSteamInput.Text += "\n- Does REQUIRE disabling DESKTOP MODE shortcuts in Steam.";
+            useSteamInput.Text += "\n- Click Help for more information.";
+            useSteamInput.Checked = Settings.Default.EnableSteamDetection == true &&
+                blacklistedSteamController == false &&
+                blacklistedX360Controller == true;
+
+            var ignoreSteam = page.RadioButtons.Add("&Ignore Steam (only if you know why you need it)");
+            ignoreSteam.Text += "\n- Will revert all previously made changes.";
+            ignoreSteam.Checked = Settings.Default.EnableSteamDetection == false;
+
+            bool valid = ignoreSteam.Checked || useX360Controller.Checked || useSteamInput.Checked;
+
+            // If everything is OK, on subsequent runs nothing to configure
+            if (valid && !always)
+                return;
+
+            if (valid || Settings.Default.EnableSteamDetection == null)
+            {
+                page.Heading = "Steam Controller Setup";
+                page.Text = "To use Steam Controller with Steam you need to configure it first.";
+                page.Icon = TaskDialogIcon.ShieldBlueBar;
+            }
+            else
+            {
+                page.Heading = "Steam Controller Setup - Configuration Lost";
+                page.Text = "Configure your Steam Controller again.";
+                page.Icon = TaskDialogIcon.ShieldWarningYellowBar;
+            }
+
+            var continueButton = new TaskDialogButton("Continue") { ShowShieldIcon = true };
+
+            page.Buttons.Add(continueButton);
+            page.Buttons.Add(TaskDialogButton.Cancel);
+            page.Buttons.Add(TaskDialogButton.Help);
+
+            page.Footnote = new TaskDialogFootnote();
+            page.Footnote.Text = "This will change Steam configuration. ";
+            page.Footnote.Text += "Close Steam before confirming as otherwise Steam will be forcefully closed.";
+            page.Footnote.Icon = TaskDialogIcon.Warning;
+
+            page.HelpRequest += delegate
+            {
+                try { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/steam-controller"); }
+                catch { }
+            };
+
+            var result = TaskDialog.ShowDialog(new Form { TopMost = true }, page, TaskDialogStartupLocation.CenterScreen);
+            if (result != continueButton)
                 return;
 
             Helpers.SteamConfiguration.KillSteam();
@@ -341,14 +355,14 @@ namespace SteamController
             var steamControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
                 Devices.SteamController.VendorID,
                 Devices.SteamController.ProductID,
-                blacklistSteamController
+                useX360Controller.Checked
             );
             var x360ControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
                 Devices.Xbox360Controller.VendorID,
                 Devices.Xbox360Controller.ProductID,
-                blacklistX360Controller
+                useSteamInput.Checked
             );
-            Settings.Default.EnableSteamDetection = steamDetection;
+            Settings.Default.EnableSteamDetection = useSteamInput.Checked || useX360Controller.Checked;
 
             if (steamControllerUpdate && x360ControllerUpdate)
             {
