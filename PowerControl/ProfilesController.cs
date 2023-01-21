@@ -14,6 +14,7 @@ namespace PowerControl
 
         private Dictionary<int, PowerControl.Helper.ProfileSettings> watchedProcesses = new Dictionary<int, PowerControl.Helper.ProfileSettings>();
         private Dictionary<MenuItemWithOptions, String>? changedSettings;
+        private CancellationTokenSource? changeTask;
 
         private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer()
         {
@@ -202,28 +203,32 @@ namespace PowerControl
 
             int delay = CurrentProfileSettings.GetInt("ApplyDelay", ApplyProfileDelayMs);
 
-            foreach (var menuItem in PersistableOptions())
+            changeTask?.Cancel();
+            changeTask = Dispatcher.RunWithDelay(delay, () =>
             {
-                var persistedValue = CurrentProfileSettings.GetValue(menuItem.PersistentKey ?? "");
-                if (persistedValue is null)
-                    continue;
-
-                try
+                foreach (var menuItem in PersistableOptions())
                 {
-                    menuItem.Set(persistedValue, delay, false);
+                    var persistedValue = CurrentProfileSettings.GetValue(menuItem.PersistentKey ?? "");
+                    if (persistedValue is null)
+                        continue;
 
-                    Log.TraceLine("ProfilesController: Applied from Profile: {0}: {1} = {2}",
-                        CurrentProfileSettings.ProfileName, menuItem.PersistentKey, persistedValue);
-                }
-                catch (Exception e)
-                {
-                    Log.TraceLine("ProfilesController: Exception Profile: {0}: {1} = {2} => {3}",
-                        CurrentProfileSettings.ProfileName, menuItem.PersistentKey, persistedValue, e);
+                    try
+                    {
+                        menuItem.Set(persistedValue, true, false);
 
-                    CurrentProfileSettings.DeleteKey(menuItem.PersistentKey ?? "");
-                    menuItem.ProfileOption = null;
+                        Log.TraceLine("ProfilesController: Applied from Profile: {0}: {1} = {2}",
+                            CurrentProfileSettings.ProfileName, menuItem.PersistentKey, persistedValue);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.TraceLine("ProfilesController: Exception Profile: {0}: {1} = {2} => {3}",
+                            CurrentProfileSettings.ProfileName, menuItem.PersistentKey, persistedValue, e);
+
+                        CurrentProfileSettings.DeleteKey(menuItem.PersistentKey ?? "");
+                        menuItem.ProfileOption = null;
+                    }
                 }
-            }
+            });
         }
 
         private void ResetProfile()
@@ -238,24 +243,28 @@ namespace PowerControl
             var appliedSettings = changedSettings;
             changedSettings = null;
 
-            foreach (var menuItem in PersistableOptions())
+            changeTask?.Cancel();
+            changeTask = Dispatcher.RunWithDelay(ResetProfileDelayMs, () =>
             {
-                if (!appliedSettings.TryGetValue(menuItem, out var setting))
-                    continue;
-
-                try
+                foreach (var menuItem in PersistableOptions())
                 {
-                    menuItem.Set(setting, ResetProfileDelayMs, true);
+                    if (!appliedSettings.TryGetValue(menuItem, out var setting))
+                        continue;
 
-                    Log.TraceLine("ProfilesController: Reset: {0} = {1}",
-                        menuItem.PersistentKey, setting);
+                    try
+                    {
+                        menuItem.Set(setting, true, true);
+
+                        Log.TraceLine("ProfilesController: Reset: {0} = {1}",
+                            menuItem.PersistentKey, setting);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.TraceLine("ProfilesController: Reset Exception: {0} = {1} => {2}",
+                            menuItem.PersistentKey, setting, e);
+                    }
                 }
-                catch (Exception e)
-                {
-                    Log.TraceLine("ProfilesController: Reset Exception: {0} = {1} => {2}",
-                        menuItem.PersistentKey, setting, e);
-                }
-            }
+            });
         }
 
         private IEnumerable<MenuItemWithOptions> PersistableOptions()

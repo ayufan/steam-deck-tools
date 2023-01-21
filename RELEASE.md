@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- PowerControl: Apply profile changes with a delay in bulk
 - SteamController: Fix detection of the Steam client released around 2023-01-20, version: 1674182294
 - All: Improve Anti-Cheat protection to allow to dismiss it
 - SteamController: Fix `STEAM+DPadUp` not working
