@@ -28,10 +28,10 @@
 | STEAM + R2                 | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
 | STEAM + Left Pad Press     | Mouse Right Click      | Mouse Right Click      |                        | Mouse Right Click      |
 | STEAM + Right Pad Press    | Mouse Left Click       | Mouse Left Click       |                        | Mouse Left Click       |
-| Left Pad                   | Mouse Scroll           |                        |                        |                        |
+| Left Pad                   | Mouse Scroll           | Mouse Scroll           |                        |                        |
 | Left Joystick              | Mouse Scroll           |                        |                        |                        |
 | Right Joystick             | Mouse Trackpad         |                        |                        |                        |
-| Right Pad                  | Mouse Move             |                        |                        |                        |
+| Right Pad                  | Mouse Move             | Mouse Move             |                        |                        |
 | DPad Arrows                | Keyboard Arrows        |                        |                        |                        |
 | A                          | RETURN                 |                        |                        |                        |
 | B                          | BACKSPACE              |                        |                        |                        |
