@@ -26,22 +26,29 @@ namespace PowerControl.Options
             {
                 try
                 {
+                    if (!Dependencies.EnsureRTSS(null))
+                        return "?";
+
                     RTSS.LoadProfile();
                     if (RTSS.GetProfileProperty("FramerateLimit", out int framerate))
                         return (framerate == 0) ? "Off" : framerate.ToString();
+                    return null;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
 #if DEBUG
                     CommonHelpers.Log.TraceException("RTSS", e);
 #endif
+                    return "?";
                 }
-                return null;
             },
             ApplyValue = (selected) =>
             {
                 try
                 {
+                    if (!Dependencies.EnsureRTSS(Controller.TitleWithVersion))
+                        return null;
+
                     int framerate = 0;
                     if (selected != "Off")
                         framerate = int.Parse(selected);
@@ -55,7 +62,7 @@ namespace PowerControl.Options
                     RTSS.UpdateProfiles();
                     return (framerate == 0) ? "Off" : framerate.ToString();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     CommonHelpers.Log.TraceException("RTSS", e);
                 }

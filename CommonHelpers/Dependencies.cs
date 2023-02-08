@@ -22,7 +22,7 @@ namespace CommonHelpers
 
         private static string[] RTSS = new string[]
         {
-            "C:\\Program Files (x86)\\RivaTuner Statistics Server\\RTSSHooks64.dll"
+            "RTSSHooks64.dll"
         };
 
         private static string VCRuntimeURL = "https://aka.ms/vs/17/release/vc_redist.x64.exe";
@@ -40,85 +40,161 @@ namespace CommonHelpers
             ValidateDependency(title, "RTSSSharedMemoryNET", RTSSShared, false);
         }
 
-        public static void ValidateRTSS(string title)
+        public static bool EnsureRTSS(string? title = null)
         {
-            InstallDependency(title, "Rivatuner Statistics Server", RTSS, RTSSURL, false, false);
+            string? libraryPath = null;
+
+            try
+            {
+                libraryPath = Microsoft.Win32.Registry.GetValue(
+                    @"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Unwinder\RTSS",
+                    "InstallDir",
+                    null
+                ) as string;
+            }
+            catch
+            {
+            }
+
+            return EnsureDependency(title, "Rivatuner Statistics Server", RTSS, libraryPath, RTSSURL, false);
         }
 
         private static void ValidateVCRuntime(string title)
         {
-            InstallDependency(title, "Microsoft Visual C++ Runtime", VCRuntime, VCRuntimeURL, true, false);
+            InstallDependency(title, "Microsoft Visual C++ Runtime", VCRuntime, null, VCRuntimeURL, true, false);
         }
 
         private static void ValidateDependency(string title, string name, string[] dllNames, bool unload = true)
         {
-            if (TryToLoad(dllNames, unload))
+            if (TryToLoad(dllNames, null, unload))
                 return;
 
             Log.TraceError("Cannot load: {0}", dllNames);
 
-            MessageBox.Show(
-                "Cannot load: " + string.Join(", ", dllNames) + ".\n\n" +
-                "Application will exit.\n",
+            var result = ShowDialog(
                 title,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error
+                name,
+                "Failure in loading the " + string.Join(", ", dllNames) + ".\n\n" +
+                "This is required dependency. Application will exit.\n",
+                null,
+                TaskDialogButton.Close
             );
 
             Environment.Exit(1);
         }
 
-        private static void InstallDependency(string title, string name, string[] dllNames, string url, bool required = true, bool unload = true)
+        private static bool EnsureDependency(string? title, string name, string[] dllNames, string? libraryPath, string url, bool required = true)
         {
-            if (TryToLoad(dllNames, unload))
+            if (TryToLoad(dllNames, libraryPath, false))
+                return true;
+
+            Log.TraceError("Cannot load: {0}", dllNames);
+
+            if (title == null)
+                return false;
+
+            var downloadButton = new TaskDialogButton("Download");
+
+            var result = ShowDialog(
+                title,
+                name,
+                "Failure in loading the " + string.Join(", ", dllNames) + ".\n\n" +
+                "The '" + name + "' is likely not installed.\n" +
+                "Click Download to download it.\n",
+                url,
+                downloadButton,
+                TaskDialogButton.Ignore
+            );
+
+            if (result == downloadButton)
+                ExecuteLink(url);
+
+            return false;
+        }
+
+        private static void InstallDependency(string title, string name, string[] dllNames, string? libraryPath, string url, bool required = true, bool unload = true)
+        {
+            if (TryToLoad(dllNames, libraryPath, unload))
                 return;
 
             Log.TraceError("Cannot load: {0}", dllNames);
 
-            var result = MessageBox.Show(
-                "Missing '" + name + "' (" + string.Join(", ", dllNames) + ").\n\n" +
-                "Click Yes to download and install?\n",
+            var downloadButton = new TaskDialogButton("Download");
+            var exitButton = new TaskDialogButton("Exit");
+
+            var result = ShowDialog(
                 title,
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Error
+                name,
+                "Failure in loading the " + string.Join(", ", dllNames) + ".\n\n" +
+                "The '" + name + "' is likely not installed.\n" +
+                "Click Download to download it.\n" +
+                (required ? "Once installed start application again.\n" : ""),
+                url,
+                downloadButton,
+                required ? exitButton : TaskDialogButton.Ignore
             );
 
-            if (result == DialogResult.Yes)
+            if (result == downloadButton)
             {
                 ExecuteLink(url);
                 Environment.Exit(1);
             }
-
-            if (required)
+            else if (result == exitButton)
             {
-                MessageBox.Show(
-                    "The '" + name + "' is required. " +
-                    "Application will exit now. " +
-                    "Once installed start application again.",
-                    title,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
                 Environment.Exit(1);
             }
         }
 
-        private static bool TryToLoad(string[] dllNames, bool unload = true)
+        private static bool TryToLoad(string[] dllNames, string? libraryPath, bool unload = true)
         {
             foreach (var dllName in dllNames)
             {
-                if (!TryToLoad(dllName, unload))
+                if (!TryToLoad(dllName, libraryPath, unload))
                     return false;
             }
             return true;
         }
 
-        private static bool TryToLoad(string dllName, bool unload = true)
+        private static bool IsLoaded(string dllName)
         {
+            return GetModuleHandle(dllName) != IntPtr.Zero;
+        }
+
+        private static bool TryToLoad(string dllName, String? libraryPath = null, bool unload = true)
+        {
+            if (IsLoaded(dllName))
+                return true;
+
             var handle = LoadLibrary(dllName);
+            if (handle == IntPtr.Zero && libraryPath is not null)
+                handle = LoadLibrary(Path.Join(libraryPath, dllName));
             if (unload)
                 FreeLibrary(handle);
             return handle != IntPtr.Zero;
+        }
+
+        private static TaskDialogButton ShowDialog(string caption, string heading, string text, string? url, params TaskDialogButton[] buttons)
+        {
+            var page = new TaskDialogPage();
+            page.Caption = caption;
+            foreach (var button in buttons)
+                page.Buttons.Add(button);
+            page.Icon = TaskDialogIcon.ShieldWarningYellowBar;
+            page.Heading = heading;
+            page.Text = text;
+            if (page.Buttons.Contains(TaskDialogButton.Help) && url is not null)
+            {
+                page.Footnote = new TaskDialogFootnote("Click help to download it.");
+                page.Footnote.Icon = TaskDialogIcon.Information;
+
+                page.HelpRequest += delegate
+                {
+                    try { ExecuteLink(url); }
+                    catch { }
+                };
+            }
+
+            return TaskDialog.ShowDialog(new Form { TopMost = true }, page, TaskDialogStartupLocation.CenterScreen);
         }
 
         private static void ExecuteLink(string link)
@@ -133,5 +209,8 @@ namespace CommonHelpers
         [DllImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool FreeLibrary(IntPtr module);
+
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetModuleHandle(string moduleName);
     }
 }

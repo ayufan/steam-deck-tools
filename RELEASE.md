@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- PowerControl: Support RTSS in custom folder
 - SteamController: Fix Steam Big Picture detection for non-english
 - PowerControl: Allow user to configure selectable TDP, CPU and GPU from `PowerControl.dll.ini`
 - SteamController: Promote RTSS detection to Release - enable by default
