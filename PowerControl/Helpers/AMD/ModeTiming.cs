@@ -6,7 +6,34 @@ namespace PowerControl.Helpers.AMD
     {
         internal static bool AddAndSetTiming(ADLDisplayModeX2 displayMode)
         {
-            return AddTiming(displayMode) && SetTiming(displayMode);
+            RemoveTiming(displayMode);
+            return AddTiming(displayMode);
+        }
+
+        internal static IEnumerable<ADLDisplayModeInfo>? GetAllModes()
+        {
+            return Helpers.AMD.ADLContext.WithSafe((context) =>
+            {
+                int res = ADL.ADL2_Display_ModeTimingOverrideList_Get(context.Context,
+                    Helpers.AMD.ADL.ADL_DEFAULT_ADAPTER, 0,
+                    ADL.ADL_MAX_OVERRIDES, out var modes, out var modesCount);
+                if (res != 0)
+                    return null;
+
+                return modes.ADLDisplayModeInfo.Take(modesCount);
+            });
+        }
+
+        internal static bool ReplaceTiming(ADLDisplayModeX2 displayMode)
+        {
+            RemoveTiming(displayMode);
+            return AddTiming(displayMode);
+        }
+
+        internal static bool RemoveTiming(ADLDisplayModeX2 displayMode)
+        {
+            displayMode.TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_DRIVER_DEFAULT;
+            return AddTiming(displayMode);
         }
 
         internal static bool AddTiming(ADLDisplayModeX2 displayMode)

@@ -35,7 +35,7 @@ namespace PowerControl.Options
 
                 if (ExternalHelpers.DisplayConfig.IsInternalConnected == true)
                 {
-                    ModeTiming.AddTiming(new Helpers.AMD.ADLDisplayModeX2()
+                    ModeTiming.ReplaceTiming(new Helpers.AMD.ADLDisplayModeX2()
                     {
                         PelsWidth = selectedResolution.Width,
                         PelsHeight = selectedResolution.Height,
@@ -43,10 +43,8 @@ namespace PowerControl.Options
                         TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
                     });
                 }
-                else
-                {
-                    DisplayResolutionController.SetResolution(selectedResolution);
-                }
+
+                DisplayResolutionController.SetResolution(selectedResolution);
 
                 return DisplayResolutionController.GetResolution().ToString();
             },

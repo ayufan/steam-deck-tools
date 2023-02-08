@@ -34,7 +34,9 @@ namespace PowerControl.Options
                     if (currentResolution == null)
                         return null;
 
-                    ModeTiming.AddAndSetTiming(new Helpers.AMD.ADLDisplayModeX2()
+                    var modes = ModeTiming.GetAllModes();
+
+                    ModeTiming.ReplaceTiming(new Helpers.AMD.ADLDisplayModeX2()
                     {
                         PelsWidth = currentResolution.Value.Width,
                         PelsHeight = currentResolution.Value.Height,
@@ -42,10 +44,8 @@ namespace PowerControl.Options
                         TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
                     });
                 }
-                else
-                {
-                    DisplayResolutionController.SetRefreshRate(selectedRefreshRate);
-                }
+
+                DisplayResolutionController.SetRefreshRate(selectedRefreshRate);
 
                 return DisplayResolutionController.GetRefreshRate().ToString();
             },

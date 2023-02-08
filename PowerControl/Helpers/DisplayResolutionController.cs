@@ -158,7 +158,7 @@ namespace PowerControl.Helpers
             DEVMODE? best = FindAllDisplaySettings()
                 .Where((dm) => dm.dmPelsWidth == current.Value.dmPelsWidth && dm.dmPelsHeight == current.Value.dmPelsHeight)
                 .Where((dm) => dm.dmDisplayFrequency == hz)
-                .First();
+                .FirstOrDefault();
 
             if (best is null)
                 return false;

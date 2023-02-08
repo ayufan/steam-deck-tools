@@ -90,6 +90,15 @@ namespace PowerControl.Helpers.AMD
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)ADL.ADL_MAX_ADAPTERS)]
         internal ADLAdapterInfo[] ADLAdapterInfo;
     }
+
+    /// <summary> ADLAdapterInfo Array</summary>
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ADLDisplayModeInfoArray
+    {
+        /// <summary> ADLAdapterInfo Array </summary>
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)ADL.ADL_MAX_OVERRIDES)]
+        internal ADLDisplayModeInfo[] ADLDisplayModeInfo;
+    }
     #endregion ADLAdapterInfo
 
     #region ADLDisplayInfo
@@ -164,8 +173,8 @@ namespace PowerControl.Helpers.AMD
     [StructLayout(LayoutKind.Sequential)]
     internal struct ADLDisplayModeX2
     {
-        internal int PelsHeight;
         internal int PelsWidth;
+        internal int PelsHeight;
         internal int ScanType;
         internal int RefreshRate;
         internal int TimingStandard;
@@ -240,6 +249,7 @@ namespace PowerControl.Helpers.AMD
         internal const int ADL_MAX_DISPLAYS = 40 /* 150 */;
         /// <summary> Define the maximum device name length</summary>
         internal const int ADL_MAX_DEVICENAME = 32;
+        internal const int ADL_MAX_OVERRIDES = 120;
         /// <summary> Define the successful</summary>
         internal const int ADL_SUCCESS = 0;
         /// <summary> Define the failure</summary>
@@ -347,6 +357,9 @@ namespace PowerControl.Helpers.AMD
 
         [DllImport(Atiadlxx_FileName)]
         internal static extern int ADL2_Display_ModeTimingOverride_Set(IntPtr context, int adapterIndex, int displayIndex, ref ADLDisplayModeInfo lpMode, int iForceUpdate);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_Display_ModeTimingOverrideList_Get(IntPtr context, int adapterIndex, int displayIndex, int maxOverrides, out ADLDisplayModeInfoArray modes, out int modesCount);
         #endregion DLLImport
 
         #region ADL_Main_Memory_Alloc
