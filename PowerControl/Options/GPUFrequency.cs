@@ -5,16 +5,41 @@ namespace PowerControl.Options
 {
     public static class GPUFrequency
     {
+        public const string HardMin = "HardMin";
+        public const string SoftMax = "SoftMax";
+
+        public const int DefaultMin = 200;
+        public const int DefaultMax = 1600;
+
+        public static PersistedOptions UserOptions()
+        {
+            var options = new PersistedOptions("GPUFrequency");
+
+            if (options.GetOptions().Count() == 0)
+            {
+                options.SetOptions(new PersistedOptions.Option[]
+                {
+                    options.ForOption("Default").Set(HardMin, DefaultMin).Set(SoftMax, DefaultMax),
+                    options.ForOption("400MHz").Set(HardMin, 400).Set(SoftMax, DefaultMax),
+                    options.ForOption("800MHz").Set(HardMin, 800).Set(SoftMax, DefaultMax),
+                    options.ForOption("1200MHz").Set(HardMin, 1200).Set(SoftMax, DefaultMax),
+                    options.ForOption("1600MHz").Set(HardMin, 1600).Set(SoftMax, DefaultMax),
+                });
+            }
+
+            return options;
+        }
+
         public static Menu.MenuItemWithOptions Instance = new Menu.MenuItemWithOptions()
         {
             Name = "GPU",
             PersistentKey = "GPUFrequency",
             PersistOnCreate = false,
-            Options = { "Default", "400MHz", "800MHz", "1200MHz", "1600MHz" },
+            OptionsValues = () => { return UserOptions().GetOptions(); },
             ApplyDelay = 1000,
             Visible = VangoghGPU.IsSupported,
             ActiveOption = "?",
-            ResetValue = () => { return "Default"; },
+            ResetValue = () => { return UserOptions().GetOptions().FirstOrDefault("Default"); },
             ApplyValue = (selected) =>
             {
                 if (!AntiCheatSettings.Default.AckAntiCheat(
@@ -23,8 +48,12 @@ namespace PowerControl.Options
                     "Leave the game if it uses anti-cheat protection."))
                     return null;
 
-                if (selected == "?")
-                    selected = "Default";
+                var selectedOption = UserOptions().ForOption(selected);
+                if (!selectedOption.Exist)
+                    return null;
+
+                var hardMin = selectedOption.Get(HardMin, DefaultMin);
+                var softMax = selectedOption.Get(SoftMax, DefaultMax);
 
                 return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>
                 {
@@ -33,13 +62,8 @@ namespace PowerControl.Options
                         if (sd is null)
                             return null;
 
-                        if (selected == "Default" || selected == "?")
-                        {
-                            sd.HardMinGfxClock = 200;
-                            return selected;
-                        }
-
-                        sd.HardMinGfxClock = uint.Parse(selected.Replace("MHz", ""));
+                        sd.HardMinGfxClock = (uint)hardMin;
+                        sd.SoftMaxGfxClock = (uint)softMax;
                         return selected;
                     }
                 });
