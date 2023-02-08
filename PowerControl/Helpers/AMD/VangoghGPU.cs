@@ -94,7 +94,11 @@ namespace PowerControl.Helpers.AMD
                     var smuVersion = gpu.SMUVersion;
                     if (!device.Item4.Contains(smuVersion))
                     {
-                        TraceError("GPU: {0}: {1}: SMU not supported: {2:X8} (IO: {3})", deviceName, devicePNP, smuVersion, expectedRange);
+                        // Silence SMU_Version = 0 since it happens fairly often
+                        if (smuVersion != 0)
+                        {
+                            TraceError("GPU: {0}: {1}: SMU not supported: {2:X8} (IO: {3})", deviceName, devicePNP, smuVersion, expectedRange);
+                        }
                         return DetectionStatus.Retryable;
                     }
 
@@ -172,7 +176,7 @@ namespace PowerControl.Helpers.AMD
         }
 
         const uint MIN_TDP = 3000;
-        const uint MAX_TDP = 15000;
+        const uint MAX_TDP = 21000;
 
         public uint SlowTDP
         {
@@ -197,7 +201,7 @@ namespace PowerControl.Helpers.AMD
         }
 
         const uint MIN_CPU_CLOCK = 1400;
-        const uint MAX_CPU_CLOCK = 3500;
+        const uint MAX_CPU_CLOCK = 4000;
 
         public uint MinCPUClock
         {
@@ -210,7 +214,7 @@ namespace PowerControl.Helpers.AMD
         }
 
         const uint MIN_GFX_CLOCK = 200;
-        const uint MAX_GFX_CLOCK = 1600;
+        const uint MAX_GFX_CLOCK = 1900;
 
         public uint HardMinGfxClock
         {
