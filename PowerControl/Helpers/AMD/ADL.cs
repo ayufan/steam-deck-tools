@@ -160,6 +160,66 @@ namespace PowerControl.Helpers.AMD
         internal int GlobalEnableChanged; //Set when Global enable value is changed
         internal int GlobalSharpeningDegreeChanged; //Set when Global sharpening Degree value is changed
     };
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ADLDisplayModeX2
+    {
+        internal int PelsHeight;
+        internal int PelsWidth;
+        internal int ScanType;
+        internal int RefreshRate;
+        internal int TimingStandard;
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ADLDetailedTiming
+    {
+        internal int iSize;
+        internal short sTimingFlags;
+        internal short sHTotal;
+        internal short sHDisplay;
+        internal short sHSyncStart;
+        internal short sHSyncWidth;
+        internal short sVTotal;
+        internal short sVDisplay;
+        internal short sVSyncStart;
+        internal short sVSyncWidth;
+        internal short sPixelClock;
+        internal short sHOverscanRight;
+        internal short sHOverscanLeft;
+        internal short sVOverscanBottom;
+        internal short sVOverscanTop;
+        internal short sOverscan8B;
+        internal short sOverscanGR;
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ADLDisplayModeInfo
+    {
+        internal int iTimingStandard;
+        internal int iPossibleStandard;
+        internal int iRefreshRate;
+        internal int iPelsWidth;
+        internal int iPelsHeight;
+        internal ADLDetailedTiming sDetailedTiming;
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ADLMode
+    {
+        internal int iAdapterIndex;
+        internal ADLDisplayID displayID;
+        internal int iXPos;
+        internal int iYPos;
+        internal int iXRes;
+        internal int iYRes;
+        internal int iColourDepth;
+        internal float fRefreshRate;
+        internal int iOrientation;
+        internal int iModeFlag;
+        internal int iModeMask;
+        internal int iModeValue;
+    };
     #endregion ADLDisplayInfo
 
     #endregion Export Struct
@@ -194,6 +254,13 @@ namespace PowerControl.Helpers.AMD
         internal const int ADL_MAX_NUM_DISPLAYMODES = 1024;
 
         internal const int ADL_DISPLAY_DISPLAYINFO_DISPLAYCONNECTED = 0x00000001;
+
+        internal const int ADL_DL_MODETIMING_STANDARD_CUSTOM = 0x00000008;
+        internal const int ADL_DL_MODETIMING_STANDARD_CVT = 0x00000001;
+        internal const int ADL_DL_MODETIMING_STANDARD_CVT_RB = 0x00000020;
+        internal const int ADL_DL_MODETIMING_STANDARD_DMT = 0x00000004;
+        internal const int ADL_DL_MODETIMING_STANDARD_DRIVER_DEFAULT = 0x00000010;
+        internal const int ADL_DL_MODETIMING_STANDARD_GTF = 0x00000002;
 
         #endregion Internal Constant
 
@@ -265,6 +332,21 @@ namespace PowerControl.Helpers.AMD
 
         [DllImport(Atiadlxx_FileName)]
         internal static extern int ADL2_RIS_Settings_Set(IntPtr context, int adapterIndex, ADL_RIS_SETTINGS settings, ADL_RIS_NOTFICATION_REASON reason);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_Display_Modes_Get(IntPtr context, int adapterIndex, int displayIndex, out int lpNumModes, out IntPtr modesArray);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_Display_Modes_Set(IntPtr context, int adapterIndex, int displayIndex, int lpNumModes, IntPtr modesArray);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_Display_Modes_Set(IntPtr context, int adapterIndex, int displayIndex, int lpNumModes, ref ADLMode modesArray);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_Display_ModeTimingOverrideX2_Get(IntPtr context, int adapterIndex, ADLDisplayID displayID, ref ADLDisplayModeX2 lpModeIn, out ADLDisplayModeInfo lpModeInfoOut);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_Display_ModeTimingOverride_Set(IntPtr context, int adapterIndex, int displayIndex, ref ADLDisplayModeInfo lpMode, int iForceUpdate);
         #endregion DLLImport
 
         #region ADL_Main_Memory_Alloc

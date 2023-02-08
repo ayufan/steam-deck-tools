@@ -13,6 +13,8 @@ namespace PowerControl.Options
             ResetValue = () => { return DisplayResolutionController.GetRefreshRates().Max().ToString(); },
             OptionsValues = delegate ()
             {
+                return new string[] { "30", "35", "40", "45", "48", "50", "55", "60" };
+
                 var refreshRates = DisplayResolutionController.GetRefreshRates();
                 if (refreshRates.Count() > 1)
                     return refreshRates.Select(item => item.ToString()).ToArray();
@@ -24,7 +26,26 @@ namespace PowerControl.Options
             },
             ApplyValue = (selected) =>
             {
-                DisplayResolutionController.SetRefreshRate(int.Parse(selected));
+                var selectedRefreshRate = int.Parse(selected);
+
+                if (ExternalHelpers.DisplayConfig.IsInternalConnected == true)
+                {
+                    var currentResolution = DisplayResolutionController.GetResolution();
+                    if (currentResolution == null)
+                        return null;
+
+                    ModeTiming.AddAndSetTiming(new Helpers.AMD.ADLDisplayModeX2()
+                    {
+                        PelsWidth = currentResolution.Value.Width,
+                        PelsHeight = currentResolution.Value.Height,
+                        RefreshRate = selectedRefreshRate,
+                        TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
+                    });
+                }
+                else
+                {
+                    DisplayResolutionController.SetRefreshRate(selectedRefreshRate);
+                }
 
                 return DisplayResolutionController.GetRefreshRate().ToString();
             },

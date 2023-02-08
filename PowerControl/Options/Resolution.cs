@@ -32,7 +32,22 @@ namespace PowerControl.Options
             ApplyValue = (selected) =>
             {
                 var selectedResolution = new DisplayResolutionController.DisplayResolution(selected);
-                DisplayResolutionController.SetResolution(selectedResolution);
+
+                if (ExternalHelpers.DisplayConfig.IsInternalConnected == true)
+                {
+                    ModeTiming.AddTiming(new Helpers.AMD.ADLDisplayModeX2()
+                    {
+                        PelsWidth = selectedResolution.Width,
+                        PelsHeight = selectedResolution.Height,
+                        RefreshRate = DisplayResolutionController.GetRefreshRate(),
+                        TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
+                    });
+                }
+                else
+                {
+                    DisplayResolutionController.SetResolution(selectedResolution);
+                }
+
                 return DisplayResolutionController.GetResolution().ToString();
             },
             Impacts =
