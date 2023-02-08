@@ -40,13 +40,6 @@ namespace PowerControl.Options
                 Resolution.Instance,
                 RefreshRate.Instance,
                 FPSLimit.Instance
-            },
-            AfterApply = () =>
-            {
-                Resolution.Instance.Update();
-                RefreshRate.Instance.Update();
-                FPSLimit.Instance.Reset();
-                FPSLimit.Instance.Update();
             }
         };
     }

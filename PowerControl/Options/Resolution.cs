@@ -39,14 +39,6 @@ namespace PowerControl.Options
             {
                 RefreshRate.Instance,
                 FPSLimit.Instance
-            },
-            AfterApply = () =>
-            {
-                // force refresh Refresh Rate
-                RefreshRate.Instance.Update();
-                // force reset and refresh of FPS limit
-                FPSLimit.Instance.Reset();
-                FPSLimit.Instance.Update();
             }
         };
     }

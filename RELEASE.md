@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- PowerControl: Retain FPS Limit (proportion) on refresh rate change
 - PowerControl: Support RTSS in custom folder
 - SteamController: Fix Steam Big Picture detection for non-english
 - PowerControl: Allow user to configure selectable TDP, CPU and GPU from `PowerControl.dll.ini`

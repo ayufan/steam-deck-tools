@@ -31,12 +31,6 @@ namespace PowerControl.Options
             Impacts =
             {
                 FPSLimit.Instance
-            },
-            AfterApply = () =>
-            {
-                // force reset and refresh of FPS limit
-                FPSLimit.Instance.Reset();
-                FPSLimit.Instance.Update();
             }
         };
     }

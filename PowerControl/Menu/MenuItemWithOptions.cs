@@ -16,6 +16,7 @@ namespace PowerControl.Menu
         public Func<string?>? CurrentValue { get; set; }
         public Func<string[]?>? OptionsValues { get; set; }
         public Func<string, string?>? ApplyValue { get; set; }
+        public Action<MenuItemWithOptions, string?, string>? ImpactedBy { get; set; }
         public Action? AfterApply { get; set; }
         public Func<string?>? ResetValue { get; set; }
 
@@ -114,9 +115,6 @@ namespace PowerControl.Menu
                     CommonHelpers.Log.TraceException("FinalizeSet", Name, e);
                     Update();
                 }
-
-                if (AfterApply != null && runAfterApply)
-                    AfterApply();
             }
             else
                 ActiveOption = SelectedOption;
@@ -124,7 +122,19 @@ namespace PowerControl.Menu
             SelectedOption = null;
 
             if (wasOption != ActiveOption && ActiveOption != null)
+            {
+                if (AfterApply != null)
+                    AfterApply();
+
+                foreach (var impact in Impacts)
+                {
+                    if (impact.ImpactedBy is not null)
+                        impact.ImpactedBy(this, wasOption, ActiveOption);
+                    impact.Update();
+                }
+
                 ValueChanged(this, wasOption, ActiveOption);
+            }
         }
 
         public override void CreateMenu(System.Windows.Forms.ContextMenuStrip contextMenu)
