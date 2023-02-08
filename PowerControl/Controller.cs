@@ -116,7 +116,7 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuUpKey, () =>
             {
-                if (!RTSS.IsOSDForeground())
+                if (!OSDHelpers.IsOSDForeground())
                     return;
                 rootMenu.Next(-1);
                 setDismissTimer();
@@ -125,7 +125,7 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuDownKey, () =>
             {
-                if (!RTSS.IsOSDForeground())
+                if (!OSDHelpers.IsOSDForeground())
                     return;
                 rootMenu.Next(1);
                 setDismissTimer();
@@ -134,7 +134,7 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuLeftKey, () =>
             {
-                if (!RTSS.IsOSDForeground())
+                if (!OSDHelpers.IsOSDForeground())
                     return;
                 rootMenu.SelectNext(-1);
                 setDismissTimer();
@@ -143,7 +143,7 @@ namespace PowerControl
 
             GlobalHotKey.RegisterHotKey(Settings.Default.MenuRightKey, () =>
             {
-                if (!RTSS.IsOSDForeground())
+                if (!OSDHelpers.IsOSDForeground())
                     return;
                 rootMenu.SelectNext(1);
                 setDismissTimer();
@@ -154,7 +154,7 @@ namespace PowerControl
             {
                 isOSDToggled = !rootMenu.Visible;
 
-                if (!RTSS.IsOSDForeground())
+                if (!OSDHelpers.IsOSDForeground())
                     return;
 
                 if (isOSDToggled)
@@ -285,7 +285,7 @@ namespace PowerControl
                 return;
             }
 
-            if (!neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS) || !RTSS.IsOSDForeground())
+            if (!neptuneDeviceState.buttons5.HasFlag(SDCButton5.BTN_QUICK_ACCESS) || !OSDHelpers.IsOSDForeground())
             {
                 // schedule next repeat far in the future
                 dismissNeptuneInput();

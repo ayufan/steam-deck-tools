@@ -14,7 +14,7 @@ namespace PowerControl.Options
             ResetValue = () => { return "Yes"; },
             CurrentValue = delegate ()
             {
-                if (!RTSS.IsOSDForeground(out var processId))
+                if (!OSDHelpers.IsOSDForeground(out var processId))
                     return null;
                 if (!ProcessorCores.HasSMTThreads())
                     return null;
@@ -23,7 +23,7 @@ namespace PowerControl.Options
             },
             ApplyValue = (selected) =>
             {
-                if (!RTSS.IsOSDForeground(out var processId))
+                if (!OSDHelpers.IsOSDForeground(out var processId))
                     return null;
                 if (!ProcessorCores.HasSMTThreads())
                     return null;

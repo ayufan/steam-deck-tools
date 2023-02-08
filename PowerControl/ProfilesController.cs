@@ -71,9 +71,9 @@ namespace PowerControl
                 return;
             }
 
-            RTSS.Applications.Instance.Refresh();
+            OSDHelpers.Applications.Instance.Refresh();
 
-            if (RTSS.Applications.Instance.FindForeground(out var processId, out var processName))
+            if (OSDHelpers.Applications.Instance.FindForeground(out var processId, out var processName))
             {
                 if (!BringUpProcess(processId))
                     AddProcess(processId, processName);
@@ -81,7 +81,7 @@ namespace PowerControl
 
             foreach (var process in watchedProcesses)
             {
-                if (RTSS.Applications.Instance.IsRunning(process.Key))
+                if (OSDHelpers.Applications.Instance.IsRunning(process.Key))
                     continue;
                 RemoveProcess(process.Key);
             }
