@@ -164,15 +164,15 @@ namespace PowerControl.Helpers.AMD
     [StructLayout(LayoutKind.Sequential)]
     internal struct ADLDisplayModeX2
     {
-        internal int PelsHeight;
         internal int PelsWidth;
+        internal int PelsHeight;
         internal int ScanType;
         internal int RefreshRate;
         internal int TimingStandard;
     };
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ADLDetailedTiming
+    internal struct ADLDetailedTimingX2
     {
         internal int iSize;
         internal short sTimingFlags;
@@ -194,14 +194,14 @@ namespace PowerControl.Helpers.AMD
     };
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ADLDisplayModeInfo
+    internal struct ADLDisplayModeInfoX2
     {
         internal int iTimingStandard;
         internal int iPossibleStandard;
         internal int iRefreshRate;
         internal int iPelsWidth;
         internal int iPelsHeight;
-        internal ADLDetailedTiming sDetailedTiming;
+        internal ADLDetailedTimingX2 sDetailedTiming;
     };
 
     [StructLayout(LayoutKind.Sequential)]
@@ -343,10 +343,10 @@ namespace PowerControl.Helpers.AMD
         internal static extern int ADL2_Display_Modes_Set(IntPtr context, int adapterIndex, int displayIndex, int lpNumModes, ref ADLMode modesArray);
 
         [DllImport(Atiadlxx_FileName)]
-        internal static extern int ADL2_Display_ModeTimingOverrideX2_Get(IntPtr context, int adapterIndex, ADLDisplayID displayID, ref ADLDisplayModeX2 lpModeIn, out ADLDisplayModeInfo lpModeInfoOut);
+        internal static extern int ADL2_Display_ModeTimingOverrideX3_Get(IntPtr context, int adapterIndex, ADLDisplayID displayID, ref ADLDisplayModeX2 lpModeIn, out ADLDisplayModeInfoX2 lpModeInfoOut);
 
         [DllImport(Atiadlxx_FileName)]
-        internal static extern int ADL2_Display_ModeTimingOverride_Set(IntPtr context, int adapterIndex, int displayIndex, ref ADLDisplayModeInfo lpMode, int iForceUpdate);
+        internal static extern int ADL2_Display_ModeTimingOverrideX2_Set(IntPtr context, int adapterIndex, int displayIndex, ref ADLDisplayModeInfoX2 lpMode, int iForceUpdate);
         #endregion DLLImport
 
         #region ADL_Main_Memory_Alloc

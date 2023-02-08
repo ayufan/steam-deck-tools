@@ -17,7 +17,7 @@ namespace PowerControl.Helpers.AMD
                 if (displays.Count() < 0)
                     return false;
 
-                int res = ADL.ADL2_Display_ModeTimingOverrideX2_Get(
+                int res = ADL.ADL2_Display_ModeTimingOverrideX3_Get(
                         context.Context,
                         Helpers.AMD.ADL.ADL_DEFAULT_ADAPTER,
                         displays[0].DisplayID,
@@ -25,7 +25,7 @@ namespace PowerControl.Helpers.AMD
 
                 if (res == 0)
                 {
-                    res = ADL.ADL2_Display_ModeTimingOverride_Set(
+                    res = ADL.ADL2_Display_ModeTimingOverrideX2_Set(
                         context.Context,
                         Helpers.AMD.ADL.ADL_DEFAULT_ADAPTER,
                         displays[0].DisplayID.DisplayLogicalIndex,
