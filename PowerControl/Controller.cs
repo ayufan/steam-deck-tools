@@ -58,6 +58,10 @@ namespace PowerControl
 
             var contextMenu = new System.Windows.Forms.ContextMenuStrip(components);
 
+            var notRunningRTSSItem = contextMenu.Items.Add("&RTSS is not running");
+            notRunningRTSSItem.Enabled = false;
+            contextMenu.Opening += delegate { notRunningRTSSItem.Visible = Dependencies.EnsureRTSS(null) && !OSDHelpers.IsLoaded; };
+
             rootMenu.Init();
             rootMenu.Visible = false;
             rootMenu.Update();
@@ -77,11 +81,15 @@ namespace PowerControl
                 contextMenu.Items.Add(startupItem);
             }
 
+            var missingRTSSItem = contextMenu.Items.Add("&Install missing RTSS");
+            missingRTSSItem.Click += delegate { Dependencies.OpenLink(Dependencies.RTSSURL); };
+            contextMenu.Opening += delegate { missingRTSSItem.Visible = !Dependencies.EnsureRTSS(null); };
+
             var checkForUpdatesItem = contextMenu.Items.Add("&Check for Updates");
             checkForUpdatesItem.Click += delegate { Instance.RunUpdater(TitleWithVersion, true); };
 
             var helpItem = contextMenu.Items.Add("&Help");
-            helpItem.Click += delegate { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev"); };
+            helpItem.Click += delegate { Dependencies.OpenLink(Dependencies.SDTURL); };
             contextMenu.Items.Add(new ToolStripSeparator());
 
             var exitItem = contextMenu.Items.Add("&Exit");

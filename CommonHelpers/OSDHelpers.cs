@@ -27,6 +27,15 @@ namespace CommonHelpers
             return Applications.Instance.FindForeground(out processId, out processName);
         }
 
+        public static bool IsLoaded
+        {
+            get
+            {
+                Applications.Instance.Refresh();
+                return Applications.Instance.IsLoaded;
+            }
+        }
+
         public class Applications
         {
             public readonly static Applications Instance = new Applications();
@@ -45,6 +54,7 @@ namespace CommonHelpers
             }
 
             public IDictionary<int, Entry> IDs { get; private set; } = new Dictionary<int, Entry>();
+            public bool IsLoaded { get; private set; }
 
             private const int FrameTimeoutMs = 5000;
 
@@ -60,8 +70,16 @@ namespace CommonHelpers
                 var oldIDs = IDs;
                 var newIDs = new Dictionary<int, Entry>();
 
-                try { appEntries = OSD.GetAppEntries(AppFlags.MASK); }
-                catch { return; }
+                try
+                {
+                    appEntries = OSD.GetAppEntries(AppFlags.MASK);
+                    IsLoaded = true;
+                }
+                catch
+                {
+                    IsLoaded = false;
+                    return;
+                }
 
                 var now = DateTimeOffset.UtcNow;
 

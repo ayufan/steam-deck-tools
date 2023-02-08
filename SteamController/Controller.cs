@@ -133,7 +133,7 @@ namespace SteamController
             settingsItem.Click += Settings_Click;
 
             var shortcutsItem = contextMenu.Items.Add("&Shortcuts");
-            shortcutsItem.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/shortcuts.html"); };
+            shortcutsItem.Click += delegate { Dependencies.OpenLink(Dependencies.SDTURL + "/shortcuts.html"); };
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
@@ -149,7 +149,7 @@ namespace SteamController
             checkForUpdatesItem.Click += delegate { Instance.RunUpdater(TitleWithVersion, true); };
 
             var helpItem = contextMenu.Items.Add("&Help");
-            helpItem.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev"); };
+            helpItem.Click += delegate { Dependencies.OpenLink(Dependencies.SDTURL); };
 
             contextMenu.Items.Add(new ToolStripSeparator());
 
@@ -338,11 +338,7 @@ namespace SteamController
             page.Footnote.Text += "Close Steam before confirming as otherwise Steam will be forcefully closed.";
             page.Footnote.Icon = TaskDialogIcon.Warning;
 
-            page.HelpRequest += delegate
-            {
-                try { System.Diagnostics.Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/steam-controller"); }
-                catch { }
-            };
+            page.HelpRequest += delegate { Dependencies.OpenLink(Dependencies.SDTURL + "/steam-controller"); };
 
             var result = TaskDialog.ShowDialog(new Form { TopMost = true }, page, TaskDialogStartupLocation.CenterScreen);
             if (result != continueButton)
@@ -414,7 +410,7 @@ namespace SteamController
                 Dock = DockStyle.Top,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Underline),
                 ForeColor = SystemColors.HotTrack,
-                Text = "https://steam-deck-tools.ayufan.dev",
+                Text = Dependencies.SDTURL,
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
@@ -432,8 +428,8 @@ namespace SteamController
                 Height = 100
             };
 
-            helpLabel.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev"); };
-            donateLabel.Click += delegate { Process.Start("explorer.exe", "https://steam-deck-tools.ayufan.dev/#help-this-project"); };
+            helpLabel.Click += delegate { Dependencies.OpenLink(Dependencies.SDTURL); };
+            donateLabel.Click += delegate { Dependencies.OpenLink(Dependencies.SDTURL + "/#help-this-project"); };
             propertyGrid.ExpandAllGridItems();
 
             form.Controls.Add(propertyGrid);

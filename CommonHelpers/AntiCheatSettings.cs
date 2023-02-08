@@ -86,11 +86,7 @@ namespace CommonHelpers
             if (footnote is not null)
                 page.Footnote.Text += "\n" + footnote;
 
-            page.HelpRequest += delegate
-            {
-                try { System.Diagnostics.Process.Start("explorer.exe", HelpURL); }
-                catch { }
-            };
+            page.HelpRequest += delegate { Dependencies.OpenLink(HelpURL); };
 
             var result = TaskDialog.ShowDialog(new Form { TopMost = true }, page, TaskDialogStartupLocation.CenterScreen);
             if (result != continueButton)

@@ -25,8 +25,9 @@ namespace CommonHelpers
             "RTSSHooks64.dll"
         };
 
-        private static string VCRuntimeURL = "https://aka.ms/vs/17/release/vc_redist.x64.exe";
-        private static string RTSSURL = "https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html";
+        public static string SDTURL = "https://steam-deck-tools.ayufan.dev";
+        public static string VCRuntimeURL = "https://aka.ms/vs/17/release/vc_redist.x64.exe";
+        public static string RTSSURL = "https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html";
 
         public static void ValidateHidapi(string title)
         {
@@ -107,7 +108,7 @@ namespace CommonHelpers
             );
 
             if (result == downloadButton)
-                ExecuteLink(url);
+                OpenLink(url);
 
             return false;
         }
@@ -136,7 +137,7 @@ namespace CommonHelpers
 
             if (result == downloadButton)
             {
-                ExecuteLink(url);
+                OpenLink(url);
                 Environment.Exit(1);
             }
             else if (result == exitButton)
@@ -189,7 +190,7 @@ namespace CommonHelpers
 
                 page.HelpRequest += delegate
                 {
-                    try { ExecuteLink(url); }
+                    try { OpenLink(url); }
                     catch { }
                 };
             }
@@ -197,7 +198,7 @@ namespace CommonHelpers
             return TaskDialog.ShowDialog(new Form { TopMost = true }, page, TaskDialogStartupLocation.CenterScreen);
         }
 
-        private static void ExecuteLink(string link)
+        public static void OpenLink(string link)
         {
             try { Process.Start("explorer.exe", link); }
             catch { }

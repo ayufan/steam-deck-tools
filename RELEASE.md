@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- All: Show `Missing RTSS` button to install RTSS
 - PowerControl: Retain FPS Limit (proportion) on refresh rate change
 - PowerControl: Support RTSS in custom folder
 - SteamController: Fix Steam Big Picture detection for non-english
