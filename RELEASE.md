@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- SteamController: Fix Steam Big Picture detection for non-english
 - PowerControl: Allow user to configure selectable TDP, CPU and GPU from `PowerControl.dll.ini`
 - SteamController: Promote RTSS detection to Release - enable by default
 - SteamController: Improve detection of Steam processes (especially latest controller UI changes)

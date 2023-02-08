@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using SteamController.Helpers;
 
 namespace SteamController.Managers
@@ -13,7 +14,7 @@ namespace SteamController.Managers
             new Classifier() { Type = "possiblegamepadui", ClassName = "SDL_app", WindowTextPrefix = "SP", ProcessName = "steamwebhelper" },
 
             // Support Steam client released around 2023-01-20, version: 1674182294
-            new Classifier() { Type = "gamepadui_2023_01_20", ClassName = "SDL_app", WindowText = "Steam Big Picture Mode", ProcessName = "steamwebhelper" },
+            new Classifier() { Type = "gamepadui_2023_01_20", ClassName = "SDL_app", ProcessName = "steamwebhelper" },
             new Classifier() { Type = "controllerui_2023_01_20", ClassName = "CUIEngineWin32", ProcessName = "steam" },
             // new Classifier() { Type = "possiblegamepadui_2023_01_20", ClassName = "SDL_app", WindowTextSuffix = "Controller Layout", ProcessName = "steamwebhelper" },
         };
@@ -125,6 +126,7 @@ namespace SteamController.Managers
             public String? WindowText { get; set; }
             public String? WindowTextPrefix { get; set; }
             public String? WindowTextSuffix { get; set; }
+            public Regex? WindowTextRegex { get; set; }
             public String? ProcessName { get; set; }
 
             public bool Match(string className, string windowText, string processName)
@@ -132,6 +134,8 @@ namespace SteamController.Managers
                 if (ClassName is not null && className != ClassName)
                     return false;
                 if (WindowText is not null && windowText != WindowText)
+                    return false;
+                if (WindowTextRegex is not null && WindowTextRegex.IsMatch(windowText))
                     return false;
                 if (WindowTextPrefix is not null && !windowText.StartsWith(WindowTextPrefix))
                     return false;
