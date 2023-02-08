@@ -7,7 +7,9 @@ namespace SteamController.Profiles.Predefined
     {
         public static readonly TimeSpan HoldToggleTouchPads = TimeSpan.FromMilliseconds(2000);
         public const String TouchPadsConsumed = "TouchPads";
-        public static bool TouchPadsEnabled { get; set; } = true;
+        public bool EmulateTouchPads { get; set; } = true;
+
+        private bool TouchPadsEnabled { get; set; } = true;
 
         public override bool Selected(Context context)
         {
@@ -35,12 +37,12 @@ namespace SteamController.Profiles.Predefined
                 return Status.Done;
             }
 
-            if (context.Steam.BtnLPadPress.Hold(HoldToggleTouchPads, TouchPadsConsumed) && context.Steam.BtnRPadPress.HoldOnce(HoldToggleTouchPads, TouchPadsConsumed))
+            if (EmulateTouchPads && context.Steam.BtnLPadPress.Hold(HoldToggleTouchPads, TouchPadsConsumed) && context.Steam.BtnRPadPress.HoldOnce(HoldToggleTouchPads, TouchPadsConsumed))
             {
                 TouchPadsEnabled = !TouchPadsEnabled;
             }
 
-            if (TouchPadsEnabled)
+            if (TouchPadsEnabled && EmulateTouchPads)
             {
                 // Default emulation
                 EmulateScrollOnLPad(context);
