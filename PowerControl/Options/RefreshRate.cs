@@ -36,7 +36,17 @@ namespace PowerControl.Options
 
                     var modes = ModeTiming.GetAllModes();
 
-                    ModeTiming.ReplaceTiming(new Helpers.AMD.ADLDisplayModeX2()
+                    // ModeTiming.ReplaceTiming(new Helpers.AMD.ADLDisplayModeX2()
+                    // {
+                    //     PelsWidth = currentResolution.Value.Width,
+                    //     PelsHeight = currentResolution.Value.Height,
+                    //     RefreshRate = selectedRefreshRate,
+                    //     TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
+                    // });
+
+                    ModeTiming.AddTiming(ModeTiming.Mode1280x800p40);
+
+                    ModeTiming.SetTiming(new Helpers.AMD.ADLDisplayModeX2()
                     {
                         PelsWidth = currentResolution.Value.Width,
                         PelsHeight = currentResolution.Value.Height,
@@ -44,8 +54,10 @@ namespace PowerControl.Options
                         TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
                     });
                 }
-
-                DisplayResolutionController.SetRefreshRate(selectedRefreshRate);
+                else
+                {
+                    DisplayResolutionController.SetRefreshRate(selectedRefreshRate);
+                }
 
                 return DisplayResolutionController.GetRefreshRate().ToString();
             },

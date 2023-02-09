@@ -4,6 +4,29 @@ namespace PowerControl.Helpers.AMD
 {
     internal class ModeTiming
     {
+        internal readonly static ADLDisplayModeInfo Mode1280x800p40 = new ADLDisplayModeInfo()
+        {
+            iPelsHeight = 1280,
+            iPelsWidth = 800,
+            iPossibleStandard = 43,
+            iRefreshRate = 40,
+            iTimingStandard = 1,
+            sDetailedTiming = new ADLDetailedTiming()
+            {
+                iSize = 96,
+                sHDisplay = 800,
+                sHSyncStart = 848,
+                sHSyncWidth = 80,
+                sHTotal = 1056,
+                sPixelClock = 5525,
+                sTimingFlags = 4100,
+                sVDisplay = 1280,
+                sVSyncStart = 1283,
+                sVSyncWidth = 10,
+                sVTotal = 1312
+            }
+        };
+
         internal static bool AddAndSetTiming(ADLDisplayModeX2 displayMode)
         {
             RemoveTiming(displayMode);
@@ -34,6 +57,22 @@ namespace PowerControl.Helpers.AMD
         {
             displayMode.TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_DRIVER_DEFAULT;
             return AddTiming(displayMode);
+        }
+
+        internal static bool AddTiming(ADLDisplayModeInfo displayMode)
+        {
+            return Helpers.AMD.ADLContext.WithSafe((context) =>
+            {
+                int res = ADL.ADL2_Display_ModeTimingOverride_Set(
+                     context.Context,
+                     Helpers.AMD.ADL.ADL_DEFAULT_ADAPTER,
+                     0,
+                     ref displayMode,
+                     1
+                 );
+
+                return res == 0;
+            });
         }
 
         internal static bool AddTiming(ADLDisplayModeX2 displayMode)
