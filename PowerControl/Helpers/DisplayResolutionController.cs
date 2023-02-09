@@ -17,16 +17,25 @@ namespace PowerControl.Helpers
         {
             public int Width { get; set; }
             public int Height { get; set; }
+            public bool? Rotated { get; set; }
 
-            public DisplayResolution() { Width = 0; Height = 0; }
+            public DisplayResolution() { Width = 0; Height = 0; Rotated = null; }
 
-            public DisplayResolution(int width, int height) { Width = width; Height = height; }
+            public DisplayResolution(int width, int height, bool? rotated = null) { Width = width; Height = height; Rotated = rotated; }
 
             public DisplayResolution(String text)
             {
                 var options = text.Split("x", 2);
                 Width = int.Parse(options[0]);
                 Height = int.Parse(options[1]);
+                Rotated = null;
+            }
+
+            public DisplayResolution Normalize()
+            {
+                if (Rotated == true)
+                    return new DisplayResolution(Height, Width);
+                return this;
             }
 
             public static bool operator ==(DisplayResolution sz1, DisplayResolution sz2) => sz1.Width == sz2.Width && sz1.Height == sz2.Height;
@@ -94,7 +103,9 @@ namespace PowerControl.Helpers
         {
             var dm = CurrentDisplaySettings();
             if (dm is not null)
-                return new DisplayResolution(dm.Value.dmPelsWidth, dm.Value.dmPelsHeight);
+            {
+                return new DisplayResolution(dm.Value.dmPelsWidth, dm.Value.dmPelsHeight, (dm.Value.dmDisplayOrientation & 1) != 0);
+            }
 
             return null;
         }

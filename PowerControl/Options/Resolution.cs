@@ -21,11 +21,28 @@ namespace PowerControl.Options
                 var resolutions = DisplayResolutionController.GetAllResolutions().ToList();
 
                 var currentResolution = DisplayResolutionController.GetResolution();
-                if (currentResolution is not null && !resolutions.Contains(currentResolution.Value))
-                {
+                if (currentResolution is not null)
                     resolutions.Add(currentResolution.Value);
-                    resolutions.Sort();
+
+                if (ExternalHelpers.DisplayConfig.IsInternalConnected == true)
+                {
+                    foreach (var displayModeInfo in ModeTiming.AllDetailedTimings())
+                    {
+                        if (currentResolution?.Rotated == true)
+                        {
+                            resolutions.Add(new DisplayResolutionController.DisplayResolution(
+                                displayModeInfo.iPelsHeight, displayModeInfo.iPelsWidth));
+                        }
+                        else
+                        {
+                            resolutions.Add(new DisplayResolutionController.DisplayResolution(
+                                displayModeInfo.iPelsWidth, displayModeInfo.iPelsHeight));
+                        }
+                    }
                 }
+
+                resolutions = resolutions.Distinct().ToList();
+                resolutions.Sort();
 
                 if (resolutions.Count() > 1)
                     return resolutions.Select(item => item.ToString()).ToArray();
@@ -41,22 +58,25 @@ namespace PowerControl.Options
             ApplyValue = (selected) =>
             {
                 var selectedResolution = new DisplayResolutionController.DisplayResolution(selected);
+                selectedResolution.Rotated = DisplayResolutionController.GetResolution()?.Rotated;
 
-#if USE_ADL2
                 if (ExternalHelpers.DisplayConfig.IsInternalConnected == true)
                 {
-                    ModeTiming.ReplaceTiming(new Helpers.AMD.ADLDisplayModeX2()
+                    var normalizedResolution = selectedResolution.Normalize();
+
+                    bool result = ModeTiming.AddTiming(new Helpers.AMD.ADLDisplayModeX2()
                     {
-                        PelsWidth = selectedResolution.Width,
-                        PelsHeight = selectedResolution.Height,
+                        PelsWidth = normalizedResolution.Width,
+                        PelsHeight = normalizedResolution.Height,
                         RefreshRate = DisplayResolutionController.GetRefreshRate(),
-                        TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
+                        TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CUSTOM,
                     });
+
+                    if (result)
+                        Thread.Sleep(500);
                 }
-#endif
 
                 DisplayResolutionController.SetResolution(selectedResolution);
-
                 return DisplayResolutionController.GetResolution().ToString();
             },
             Impacts =

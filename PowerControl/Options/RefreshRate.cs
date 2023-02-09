@@ -16,11 +16,24 @@ namespace PowerControl.Options
                 var refreshRates = DisplayResolutionController.GetRefreshRates().ToList();
 
                 var currentRefreshRate = DisplayResolutionController.GetRefreshRate();
-                if (currentRefreshRate > 0 && !refreshRates.Contains(currentRefreshRate))
-                {
+                if (currentRefreshRate > 0)
                     refreshRates.Add(currentRefreshRate);
-                    refreshRates.Sort();
+
+                var normalizedResolution = DisplayResolutionController.GetResolution()?.Normalize();
+                if (normalizedResolution is not null && ExternalHelpers.DisplayConfig.IsInternalConnected == true)
+                {
+                    foreach (var displayModeInfo in ModeTiming.AllDetailedTimings())
+                    {
+                        if (displayModeInfo.iPelsWidth == normalizedResolution.Value.Width &&
+                            displayModeInfo.iPelsHeight == normalizedResolution.Value.Height)
+                        {
+                            refreshRates.Add(displayModeInfo.iRefreshRate);
+                        }
+                    }
                 }
+
+                refreshRates = refreshRates.Distinct().ToList();
+                refreshRates.Sort();
 
                 if (refreshRates.Count() > 1)
                     return refreshRates.Select(item => item.ToString()).ToArray();
@@ -34,39 +47,25 @@ namespace PowerControl.Options
             {
                 var selectedRefreshRate = int.Parse(selected);
 
-#if USE_ADL2
                 if (ExternalHelpers.DisplayConfig.IsInternalConnected == true)
                 {
-                    var currentResolution = DisplayResolutionController.GetResolution();
+                    var currentResolution = DisplayResolutionController.GetResolution()?.Normalize();
                     if (currentResolution == null)
                         return null;
 
-                    var modes = ModeTiming.GetAllModes();
-
-                    // ModeTiming.ReplaceTiming(new Helpers.AMD.ADLDisplayModeX2()
-                    // {
-                    //     PelsWidth = currentResolution.Value.Width,
-                    //     PelsHeight = currentResolution.Value.Height,
-                    //     RefreshRate = selectedRefreshRate,
-                    //     TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
-                    // });
-
-                    ModeTiming.AddTiming(ModeTiming.Mode1280x800p40);
-
-                    ModeTiming.SetTiming(new Helpers.AMD.ADLDisplayModeX2()
+                    bool result = ModeTiming.AddTiming(new Helpers.AMD.ADLDisplayModeX2()
                     {
                         PelsWidth = currentResolution.Value.Width,
                         PelsHeight = currentResolution.Value.Height,
                         RefreshRate = selectedRefreshRate,
-                        TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
+                        TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CUSTOM,
                     });
-                }
-                else
-#endif
-                {
-                    DisplayResolutionController.SetRefreshRate(selectedRefreshRate);
+
+                    if (result)
+                        Thread.Sleep(500);
                 }
 
+                DisplayResolutionController.SetRefreshRate(selectedRefreshRate);
                 return DisplayResolutionController.GetRefreshRate().ToString();
             },
             Impacts =

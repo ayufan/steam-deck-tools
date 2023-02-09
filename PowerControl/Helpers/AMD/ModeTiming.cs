@@ -35,10 +35,8 @@ namespace PowerControl.Helpers.AMD
             public IEnumerable<ADLDisplayModeInfo> EachModeInfo()
             {
                 foreach (var refreshRate in RefreshRates)
-                // foreach (var pixelClock in PixelClocks)
                 {
                     var pixelClock = (short)Math.Ceiling((double)Timing.sHTotal * Timing.sVTotal * refreshRate / 10000);
-                    // var refreshRate = Math.Round((double)pixelClock / (Timing.sHTotal * Timing.sVTotal));
 
                     ADLDisplayModeInfo modeInfo = new ADLDisplayModeInfo()
                     {
@@ -99,7 +97,7 @@ namespace PowerControl.Helpers.AMD
             }
         };
 
-        internal static IEnumerable<ADLDisplayModeInfo> AllModeInfos()
+        internal static IEnumerable<ADLDisplayModeInfo> AllDetailedTimings()
         {
             foreach (var timing in AllTimings)
             {
@@ -108,43 +106,7 @@ namespace PowerControl.Helpers.AMD
             }
         }
 
-        internal static void InstallAll()
-        {
-            var modeInfos = AllModeInfos()?.ToArray();
-            if (modeInfos is null)
-                return;
-
-            ADLDisplayModeInfo lastModeInfo = modeInfos.LastOrDefault();
-
-            foreach (var modeInfo in modeInfos)
-            {
-                AddTiming(modeInfo, modeInfo.Equals(lastModeInfo));
-            }
-        }
-
-        internal static void UninstallAll()
-        {
-            var modes = GetAllModes()?.ToArray();
-            if (modes is null)
-                return;
-
-            ADLDisplayModeInfo lastMode = modes.LastOrDefault();
-
-            foreach (var mode in modes)
-            {
-                var newMode = mode;
-                newMode.iTimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_DRIVER_DEFAULT;
-                AddTiming(newMode, mode.Equals(lastMode));
-            }
-        }
-
-        internal static bool AddAndSetTiming(ADLDisplayModeX2 displayMode)
-        {
-            RemoveTiming(displayMode);
-            return AddTiming(displayMode);
-        }
-
-        internal static IEnumerable<ADLDisplayModeInfo>? GetAllModes()
+        internal static IEnumerable<ADLDisplayModeInfo>? AllTimingOverrideList()
         {
             return Helpers.AMD.ADLContext.WithSafe((context) =>
             {
@@ -158,19 +120,71 @@ namespace PowerControl.Helpers.AMD
             });
         }
 
-        internal static bool ReplaceTiming(ADLDisplayModeX2 displayMode)
+        internal static void InstallAll()
         {
-            RemoveTiming(displayMode);
-            return AddTiming(displayMode);
+            var modeInfos = AllDetailedTimings()?.ToArray();
+            if (modeInfos is null)
+                return;
+
+            ADLDisplayModeInfo lastModeInfo = modeInfos.LastOrDefault();
+
+            foreach (var modeInfo in modeInfos)
+            {
+                SetTimingOverride(modeInfo, modeInfo.Equals(lastModeInfo));
+            }
         }
 
-        internal static bool RemoveTiming(ADLDisplayModeX2 displayMode)
+        internal static void UninstallAll()
         {
-            displayMode.TimingStandard = ADL.ADL_DL_MODETIMING_STANDARD_DRIVER_DEFAULT;
-            return AddTiming(displayMode);
+            var modes = AllTimingOverrideList()?.ToArray();
+            if (modes is null)
+                return;
+
+            ADLDisplayModeInfo lastMode = modes.LastOrDefault();
+
+            foreach (var mode in modes)
+            {
+                var newMode = mode;
+                newMode.iTimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_DRIVER_DEFAULT;
+                RemoveTimingOverride(newMode, mode.Equals(lastMode));
+            }
         }
 
-        internal static bool AddTiming(ADLDisplayModeInfo displayMode, bool forceUpdate = true)
+        internal static ADLDisplayModeInfo? FindTiming(ADLDisplayModeX2 displayMode)
+        {
+            foreach (var modeInfo in AllDetailedTimings())
+            {
+                if (modeInfo.iPelsWidth == displayMode.PelsWidth &&
+                    modeInfo.iPelsHeight == displayMode.PelsHeight &&
+                    modeInfo.iRefreshRate == displayMode.RefreshRate)
+                    return modeInfo;
+            }
+
+            return null;
+        }
+
+        internal static bool AddTiming(ADLDisplayModeX2 displayMode, bool removeOld = false)
+        {
+            if (removeOld)
+            {
+                var modes = AllTimingOverrideList()?.ToArray() ?? new ADLDisplayModeInfo[0];
+                foreach (var oldMode in modes)
+                    RemoveTimingOverride(oldMode, false);
+            }
+
+            var timing = FindTiming(displayMode);
+            if (timing is not null)
+                return SetTimingOverride(timing.Value, true);
+            return false;
+        }
+
+        internal static bool RemoveTimingOverride(ADLDisplayModeInfo displayMode, bool forceUpdate = true)
+        {
+            displayMode.iTimingStandard = ADL.ADL_DL_MODETIMING_STANDARD_DRIVER_DEFAULT;
+            return SetTimingOverride(displayMode, forceUpdate);
+        }
+
+        internal static bool SetTimingOverride(ADLDisplayModeInfo displayMode, bool forceUpdate = true)
         {
             return Helpers.AMD.ADLContext.WithSafe((context) =>
             {
@@ -189,65 +203,6 @@ namespace PowerControl.Helpers.AMD
                     forceUpdate, displayMode.iTimingStandard == ADL.ADL_DL_MODETIMING_STANDARD_DRIVER_DEFAULT);
 
                 return res == 0;
-            });
-        }
-
-        internal static bool AddTiming(ADLDisplayModeX2 displayMode)
-        {
-            return Helpers.AMD.ADLContext.WithSafe((context) =>
-            {
-                var displays = context.DisplayInfos.ToArray();
-                if (displays.Count() < 0)
-                    return false;
-
-                int res = ADL.ADL2_Display_ModeTimingOverrideX2_Get(
-                    context.Context,
-                    Helpers.AMD.ADL.ADL_DEFAULT_ADAPTER,
-                    displays[0].DisplayID,
-                    ref displayMode, out var modeInfOut);
-
-                if (res == 0)
-                {
-                    res = ADL.ADL2_Display_ModeTimingOverride_Set(
-                        context.Context,
-                        Helpers.AMD.ADL.ADL_DEFAULT_ADAPTER,
-                        displays[0].DisplayID.DisplayLogicalIndex,
-                        ref modeInfOut,
-                        1
-                    );
-                }
-
-                return res == 0;
-            });
-        }
-
-        internal static bool SetTiming(ADLDisplayModeX2 displayMode)
-        {
-            return Helpers.AMD.ADLContext.WithSafe((context) =>
-            {
-                int res = ADL.ADL2_Display_Modes_Get(context.Context,
-                        Helpers.AMD.ADL.ADL_DEFAULT_ADAPTER,
-                        0, out var modeCount, out var modesArray);
-
-                try
-                {
-                    if (res != 0 || modeCount < 1)
-                        return false;
-
-                    var mode = Marshal.PtrToStructure<ADLMode>(modesArray);
-                    mode.iXRes = displayMode.PelsWidth;
-                    mode.iYRes = displayMode.PelsHeight;
-                    mode.fRefreshRate = (float)displayMode.RefreshRate;
-
-                    res = ADL.ADL2_Display_Modes_Set(context.Context,
-                        Helpers.AMD.ADL.ADL_DEFAULT_ADAPTER,
-                        0, 1, ref mode);
-                    return res == 0;
-                }
-                finally
-                {
-                    ADL.ADL_Main_Memory_Free(modesArray);
-                }
             });
         }
     }
