@@ -61,6 +61,16 @@ namespace PowerControl {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] CRU_SteamDeck {
+            get {
+                object obj = ResourceManager.GetObject("CRU_SteamDeck", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon traffic_light_outline {

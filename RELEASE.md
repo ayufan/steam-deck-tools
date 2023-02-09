@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- PowerControl: Install custom resolutions (EDID) (experimental feature)
 - SteamController: Add `X360: No Touchpads` profile
 - All: Show `Missing RTSS` button to install RTSS
 - PowerControl: Retain FPS Limit (proportion) on refresh rate change

@@ -69,6 +69,34 @@ namespace PowerControl
             rootMenu.VisibleChanged += delegate { updateOSD(); };
             contextMenu.Items.Add(new ToolStripSeparator());
 
+            if (Settings.Default.EnableExperimentalFeatures)
+            {
+                var installEDIDItem = contextMenu.Items.Add("Install &Resolutions");
+                installEDIDItem.Click += delegate { Helpers.AMD.EDID.SetEDID(Resources.CRU_SteamDeck); };
+                var replaceEDIDItem = contextMenu.Items.Add("Replace &Resolutions");
+                replaceEDIDItem.Click += delegate { Helpers.AMD.EDID.SetEDID(new byte[0]); Helpers.AMD.EDID.SetEDID(Resources.CRU_SteamDeck); };
+                var uninstallEDIDItem = contextMenu.Items.Add("Revert &Resolutions");
+                uninstallEDIDItem.Click += delegate { Helpers.AMD.EDID.SetEDID(new byte[0]); };
+                contextMenu.Opening += delegate
+                {
+                    if (ExternalHelpers.DisplayConfig.IsInternalConnected == true)
+                    {
+                        var edid = Helpers.AMD.EDID.GetEDID() ?? new byte[0];
+                        var edidInstalled = Resources.CRU_SteamDeck.SequenceEqual(edid);
+                        installEDIDItem.Visible = edid.Length <= 128;
+                        replaceEDIDItem.Visible = !edidInstalled && edid.Length > 128;
+                        uninstallEDIDItem.Visible = edid.Length > 128;
+                    }
+                    else
+                    {
+                        installEDIDItem.Visible = false;
+                        replaceEDIDItem.Visible = false;
+                        uninstallEDIDItem.Visible = false;
+                    }
+                };
+                contextMenu.Items.Add(new ToolStripSeparator());
+            }
+
             if (startupManager.IsAvailable)
             {
                 var startupItem = new ToolStripMenuItem("Run On Startup");

@@ -143,6 +143,30 @@ namespace PowerControl.Helpers.AMD
     }
     #endregion ADLDisplayInfo
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ADLDisplayEDIDData
+    {
+        internal int iSize;
+        internal int iFlag;
+        internal int iEDIDSize;
+        internal int iBlockIndex;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)ADL.ADL_MAX_EDIDDATA_SIZE)]
+        internal byte[] cEDIDData;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        internal int[] iReserved;
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ADLDisplayEDIDDataX2
+    {
+        internal int iSize;
+        internal int iFlag;
+        internal int iEDIDSize;
+        internal int iIgnored;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)2 * ADL.ADL_MAX_EDIDDATA_SIZE)]
+        internal byte[] cEDIDData;
+    };
+
     #region Radeon Image Sharpening
     [StructLayout(LayoutKind.Sequential)]
     internal struct ADL_RIS_SETTINGS
@@ -192,6 +216,8 @@ namespace PowerControl.Helpers.AMD
         internal const int ADL_MAX_GLSYNC_PORT_LEDS = 8;
         /// <summary> Maximum number of ADLMOdes for the adapter </summary>
         internal const int ADL_MAX_NUM_DISPLAYMODES = 1024;
+        internal const int ADL_MAX_EDIDDATA_SIZE = 256;
+        internal const int ADL_MAX_EDID_EXTENSION_BLOCKS = 3;
 
         internal const int ADL_DISPLAY_DISPLAYINFO_DISPLAYCONNECTED = 0x00000001;
 
@@ -265,6 +291,12 @@ namespace PowerControl.Helpers.AMD
 
         [DllImport(Atiadlxx_FileName)]
         internal static extern int ADL2_RIS_Settings_Set(IntPtr context, int adapterIndex, ADL_RIS_SETTINGS settings, ADL_RIS_NOTFICATION_REASON reason);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_Display_EdidData_Get(IntPtr context, int adapterIndex, int displayIndex, ref ADLDisplayEDIDData edidData);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL2_Display_EdidData_Set(IntPtr context, int adapterIndex, int displayIndex, ref ADLDisplayEDIDDataX2 edidData);
         #endregion DLLImport
 
         #region ADL_Main_Memory_Alloc
