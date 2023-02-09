@@ -370,7 +370,7 @@ namespace PowerControl.Helpers.AMD
         internal static extern int ADL2_Display_ModeTimingOverrideList_Get(IntPtr context, int adapterIndex, int displayIndex, int maxOverrides, out ADLDisplayModeInfoArray modes, out int modesCount);
 
         [DllImport(Atiadlxx_FileName)]
-        internal static extern int ADL_Flush_Driver_Data(int adapterIndex);
+        internal static extern int ADL2_Flush_Driver_Data(IntPtr context, int adapterIndex);
         #endregion DLLImport
 
         #region ADL_Main_Memory_Alloc

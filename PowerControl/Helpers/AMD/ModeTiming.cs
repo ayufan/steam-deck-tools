@@ -127,10 +127,11 @@ namespace PowerControl.Helpers.AMD
                 return;
 
             ADLDisplayModeInfo lastModeInfo = modeInfos.LastOrDefault();
+            int count = 0;
 
             foreach (var modeInfo in modeInfos)
             {
-                SetTimingOverride(modeInfo, modeInfo.Equals(lastModeInfo));
+                SetTimingOverride(modeInfo, modeInfo.Equals(lastModeInfo) || (count++ % 10 == 9));
             }
         }
 
