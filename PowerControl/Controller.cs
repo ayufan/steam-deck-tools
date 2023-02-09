@@ -69,6 +69,14 @@ namespace PowerControl
             rootMenu.VisibleChanged += delegate { updateOSD(); };
             contextMenu.Items.Add(new ToolStripSeparator());
 
+            var installResItem = contextMenu.Items.Add("&Install Resolutions");
+            installResItem.Click += delegate { Helpers.AMD.ModeTiming.InstallAll(); };
+
+            var uninstallResItem = contextMenu.Items.Add("&Uninstall Resolutions");
+            uninstallResItem.Click += delegate { Helpers.AMD.ModeTiming.UninstallAll(); };
+
+            contextMenu.Items.Add(new ToolStripSeparator());
+
             if (startupManager.IsAvailable)
             {
                 var startupItem = new ToolStripMenuItem("Run On Startup");

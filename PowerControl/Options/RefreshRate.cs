@@ -13,9 +13,15 @@ namespace PowerControl.Options
             ResetValue = () => { return DisplayResolutionController.GetRefreshRates().Max().ToString(); },
             OptionsValues = delegate ()
             {
-                return new string[] { "30", "35", "40", "45", "48", "50", "55", "60" };
+                var refreshRates = DisplayResolutionController.GetRefreshRates().ToList();
 
-                var refreshRates = DisplayResolutionController.GetRefreshRates();
+                var currentRefreshRate = DisplayResolutionController.GetRefreshRate();
+                if (currentRefreshRate > 0 && !refreshRates.Contains(currentRefreshRate))
+                {
+                    refreshRates.Add(currentRefreshRate);
+                    refreshRates.Sort();
+                }
+
                 if (refreshRates.Count() > 1)
                     return refreshRates.Select(item => item.ToString()).ToArray();
                 return null;
@@ -28,6 +34,7 @@ namespace PowerControl.Options
             {
                 var selectedRefreshRate = int.Parse(selected);
 
+#if USE_ADL2
                 if (ExternalHelpers.DisplayConfig.IsInternalConnected == true)
                 {
                     var currentResolution = DisplayResolutionController.GetResolution();
@@ -55,6 +62,7 @@ namespace PowerControl.Options
                     });
                 }
                 else
+#endif
                 {
                     DisplayResolutionController.SetRefreshRate(selectedRefreshRate);
                 }

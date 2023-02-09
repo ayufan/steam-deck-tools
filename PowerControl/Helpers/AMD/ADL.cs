@@ -272,6 +272,14 @@ namespace PowerControl.Helpers.AMD
         internal const int ADL_DL_MODETIMING_STANDARD_DRIVER_DEFAULT = 0x00000010;
         internal const int ADL_DL_MODETIMING_STANDARD_GTF = 0x00000002;
 
+        internal const int ADL_DL_TIMINGFLAG_DOUBLE_SCAN = 0x0001;
+        //sTimingFlags is set when the mode is INTERLACED, if not PROGRESSIVE
+        internal const int ADL_DL_TIMINGFLAG_INTERLACED = 0x0002;
+        //sTimingFlags is set when the Horizontal Sync is POSITIVE, if not NEGATIVE
+        internal const int ADL_DL_TIMINGFLAG_H_SYNC_POLARITY = 0x0004;
+        //sTimingFlags is set when the Vertical Sync is POSITIVE, if not NEGATIVE
+        internal const int ADL_DL_TIMINGFLAG_V_SYNC_POLARITY = 0x0008;
+
         #endregion Internal Constant
 
         #region Internal Constant
@@ -360,6 +368,9 @@ namespace PowerControl.Helpers.AMD
 
         [DllImport(Atiadlxx_FileName)]
         internal static extern int ADL2_Display_ModeTimingOverrideList_Get(IntPtr context, int adapterIndex, int displayIndex, int maxOverrides, out ADLDisplayModeInfoArray modes, out int modesCount);
+
+        [DllImport(Atiadlxx_FileName)]
+        internal static extern int ADL_Flush_Driver_Data(int adapterIndex);
         #endregion DLLImport
 
         #region ADL_Main_Memory_Alloc

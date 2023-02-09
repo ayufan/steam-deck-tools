@@ -18,9 +18,18 @@ namespace PowerControl.Options
             },
             OptionsValues = delegate ()
             {
-                var resolutions = DisplayResolutionController.GetAllResolutions();
+                var resolutions = DisplayResolutionController.GetAllResolutions().ToList();
+
+                var currentResolution = DisplayResolutionController.GetResolution();
+                if (currentResolution is not null && !resolutions.Contains(currentResolution.Value))
+                {
+                    resolutions.Add(currentResolution.Value);
+                    resolutions.Sort();
+                }
+
                 if (resolutions.Count() > 1)
                     return resolutions.Select(item => item.ToString()).ToArray();
+
                 return null;
             },
             CurrentValue = delegate ()
@@ -33,6 +42,7 @@ namespace PowerControl.Options
             {
                 var selectedResolution = new DisplayResolutionController.DisplayResolution(selected);
 
+#if USE_ADL2
                 if (ExternalHelpers.DisplayConfig.IsInternalConnected == true)
                 {
                     ModeTiming.ReplaceTiming(new Helpers.AMD.ADLDisplayModeX2()
@@ -43,6 +53,7 @@ namespace PowerControl.Options
                         TimingStandard = Helpers.AMD.ADL.ADL_DL_MODETIMING_STANDARD_CVT,
                     });
                 }
+#endif
 
                 DisplayResolutionController.SetResolution(selectedResolution);
 
