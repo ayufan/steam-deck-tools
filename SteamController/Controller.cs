@@ -30,7 +30,10 @@ namespace SteamController
                 new Profiles.Predefined.SteamProfile() { Name = "Steam", Visible = false },
                 new Profiles.Predefined.SteamWithShorcutsProfile() { Name = "Steam with Shortcuts", Visible = false },
                 new Profiles.Predefined.X360HapticProfile() { Name = "X360", EmulateTouchPads = true },
-                new Profiles.Predefined.X360HapticProfile() { Name = "X360: No Touchpads", EmulateTouchPads = false }
+                new Profiles.Predefined.X360HapticProfile() { Name = "X360: No Touchpads", EmulateTouchPads = false },
+#if DEBUG
+                new Profiles.Predefined.DS4HapticProfile() { Name = "DS4" },
+#endif
             },
             Managers = {
                 new Managers.ProcessManager(),
@@ -274,8 +277,12 @@ namespace SteamController
                 Devices.Xbox360Controller.VendorID,
                 Devices.Xbox360Controller.ProductID
             );
+            var blacklistedDS4Controller = Helpers.SteamConfiguration.IsControllerBlacklisted(
+                Devices.DS4Controller.VendorID,
+                Devices.DS4Controller.ProductID
+            );
 
-            if (blacklistedSteamController is null || blacklistedX360Controller is null)
+            if (blacklistedSteamController is null || blacklistedX360Controller is null || blacklistedDS4Controller is null)
             {
                 // Appears that Steam is not installed
                 if (always)
@@ -291,11 +298,12 @@ namespace SteamController
             page.Caption = TitleWithVersion;
             page.AllowCancel = true;
 
-            var useX360Controller = page.RadioButtons.Add("Use &X360 Controller with Steam (preferred)");
-            useX360Controller.Text += "\n- Will always use X360 controller.";
-            useX360Controller.Checked = Settings.Default.EnableSteamDetection == true &&
+            var useXInputController = page.RadioButtons.Add("Use &X360/DS4 Controller with Steam (preferred)");
+            useXInputController.Text += "\n- Will always use X360 or DS4 controller.";
+            useXInputController.Checked = Settings.Default.EnableSteamDetection == true &&
                 blacklistedSteamController == true &&
-                blacklistedX360Controller == false;
+                blacklistedX360Controller == false &&
+                blacklistedDS4Controller == false;
 
             var useSteamInput = page.RadioButtons.Add("Use &Steam Input with Steam (requires configuration)");
             useSteamInput.Text += "\n- Will try to use Steam controls.";
@@ -303,13 +311,14 @@ namespace SteamController
             useSteamInput.Text += "\n- Click Help for more information.";
             useSteamInput.Checked = Settings.Default.EnableSteamDetection == true &&
                 blacklistedSteamController == false &&
-                blacklistedX360Controller == true;
+                blacklistedX360Controller == true &&
+                blacklistedDS4Controller == true;
 
             var ignoreSteam = page.RadioButtons.Add("&Ignore Steam (only if you know why you need it)");
             ignoreSteam.Text += "\n- Will revert all previously made changes.";
             ignoreSteam.Checked = Settings.Default.EnableSteamDetection == false;
 
-            bool valid = ignoreSteam.Checked || useX360Controller.Checked || useSteamInput.Checked;
+            bool valid = ignoreSteam.Checked || useXInputController.Checked || useSteamInput.Checked;
 
             // If everything is OK, on subsequent runs nothing to configure
             if (valid && !always)
@@ -352,16 +361,21 @@ namespace SteamController
             var steamControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
                 Devices.SteamController.VendorID,
                 Devices.SteamController.ProductID,
-                useX360Controller.Checked
+                useXInputController.Checked
             );
             var x360ControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
                 Devices.Xbox360Controller.VendorID,
                 Devices.Xbox360Controller.ProductID,
                 useSteamInput.Checked
             );
-            Settings.Default.EnableSteamDetection = useSteamInput.Checked || useX360Controller.Checked;
+            var ds4ControllerUpdate = Helpers.SteamConfiguration.UpdateControllerBlacklist(
+                Devices.DS4Controller.VendorID,
+                Devices.DS4Controller.ProductID,
+                useSteamInput.Checked
+            );
+            Settings.Default.EnableSteamDetection = useSteamInput.Checked || useXInputController.Checked;
 
-            if (steamControllerUpdate && x360ControllerUpdate)
+            if (steamControllerUpdate && x360ControllerUpdate && ds4ControllerUpdate)
             {
                 notifyIcon.ShowBalloonTip(
                     3000, TitleWithVersion,
@@ -399,7 +413,11 @@ namespace SteamController
                 {
                     Desktop = ProfilesSettings.DesktopPanelSettings.Default,
                     X360 = ProfilesSettings.X360BackPanelSettings.Default,
-                    X360Haptic = ProfilesSettings.X360HapticSettings.Default,
+                    X360Haptic = ProfilesSettings.HapticSettings.X360,
+#if DEBUG
+                    DS4 = ProfilesSettings.DS4BackPanelSettings.Default,
+                    DS4Haptic = ProfilesSettings.HapticSettings.DS4,
+#endif
                     Application = Settings.Default,
                     DEBUG = SettingsDebug.Default
                 }

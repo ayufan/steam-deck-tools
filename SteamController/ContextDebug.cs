@@ -22,6 +22,7 @@ namespace SteamController
                 items.Add("[LM]");
 
             items.Add(X360.Connected ? "[X360]" : X360.Valid ? "[no-X360]" : "[inv-X360]");
+            items.Add(DS4.Connected ? "[DS4]" : DS4.Valid ? "[no-DS4]" : "[inv-DS4]");
             items.Add(KeyboardMouseValid ? "[KM]" : "[inv-KM]");
 
             foreach (var button in Steam.AllButtons)

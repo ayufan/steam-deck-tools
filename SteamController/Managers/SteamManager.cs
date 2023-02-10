@@ -30,6 +30,7 @@ namespace SteamController.Managers
             {
                 context.State.SteamUsesSteamInput = false;
                 context.State.SteamUsesX360Controller = false;
+                context.State.SteamUsesDS4Controller = false;
                 lastState = null;
                 stateChanged = 0;
                 return;
@@ -58,11 +59,17 @@ namespace SteamController.Managers
                     Devices.Xbox360Controller.VendorID,
                     Devices.Xbox360Controller.ProductID
                 ) != true;
+
+                context.State.SteamUsesDS4Controller = Helpers.SteamConfiguration.IsControllerBlacklisted(
+                    Devices.DS4Controller.VendorID,
+                    Devices.DS4Controller.ProductID
+                ) != true;
             }
             else
             {
                 context.State.SteamUsesSteamInput = false;
                 context.State.SteamUsesX360Controller = false;
+                context.State.SteamUsesDS4Controller = false;
             }
 
             lastState = usesController;
@@ -70,11 +77,12 @@ namespace SteamController.Managers
 
 #if DEBUG
             CommonHelpers.Log.TraceLine(
-                "SteamManager: uses={0}, isRunning={1}, usesSteamInput={2}, usesX360={3}",
+                "SteamManager: uses={0}, isRunning={1}, usesSteamInput={2}, usesX360={3}, usesDS4={4}",
                 usesController,
                 SteamConfiguration.IsRunning,
                 context.State.SteamUsesSteamInput,
-                context.State.SteamUsesX360Controller
+                context.State.SteamUsesX360Controller,
+                context.State.SteamUsesDS4Controller
             );
 #endif
         }

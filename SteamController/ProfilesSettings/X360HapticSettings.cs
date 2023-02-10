@@ -4,15 +4,27 @@ using System.Configuration;
 namespace SteamController.ProfilesSettings
 {
     [Category("Settings")]
-    internal sealed class X360HapticSettings : CommonHelpers.BaseSettings
+    internal sealed class HapticSettings : CommonHelpers.BaseSettings
     {
         public const sbyte MinIntensity = -2;
         public const sbyte MaxIntensity = 10;
 
-        public static X360HapticSettings Default = new X360HapticSettings();
+        public static HapticSettings X360 = new HapticSettings("X360HapticSettings");
+        public static HapticSettings DS4 = new HapticSettings("DS4HapticSettings");
 
-        public X360HapticSettings() : base("X360HapticSettings")
+        public HapticSettings(string name) : base(name)
         {
+        }
+
+        public static bool GetHapticIntensity(byte? input, sbyte maxIntensity, out sbyte output)
+        {
+            output = default;
+            if (input is null || input.Value == 0)
+                return false;
+
+            int value = MinIntensity + (maxIntensity - MinIntensity) * input.Value / 255;
+            output = (sbyte)value;
+            return true;
         }
 
         public Devices.SteamController.HapticStyle HapticStyle

@@ -3,11 +3,11 @@ using HapticPad = SteamController.Devices.SteamController.HapticPad;
 
 namespace SteamController.Profiles.Predefined
 {
-    public class X360HapticProfile : X360Profile
+    public class DS4HapticProfile : DS4Profile
     {
         private ProfilesSettings.HapticSettings HapticSettings
         {
-            get { return ProfilesSettings.HapticSettings.X360; }
+            get { return ProfilesSettings.HapticSettings.DS4; }
         }
 
         public override Status Run(Context context)
@@ -15,13 +15,13 @@ namespace SteamController.Profiles.Predefined
             if (base.Run(context).IsDone)
                 return Status.Done;
 
-            if (HapticSettings.GetHapticIntensity(context.X360.FeedbackLargeMotor, HapticSettings.LeftIntensity, out var leftIntensity))
+            if (HapticSettings.GetHapticIntensity(context.DS4.FeedbackLargeMotor, HapticSettings.LeftIntensity, out var leftIntensity))
                 context.Steam.SendHaptic(HapticPad.Right, HapticSettings.HapticStyle, leftIntensity);
 
-            if (HapticSettings.GetHapticIntensity(context.X360.FeedbackSmallMotor, HapticSettings.RightIntensity, out var rightIntensity))
+            if (HapticSettings.GetHapticIntensity(context.DS4.FeedbackSmallMotor, HapticSettings.RightIntensity, out var rightIntensity))
                 context.Steam.SendHaptic(HapticPad.Left, HapticSettings.HapticStyle, rightIntensity);
 
-            context.X360.ResetFeedback();
+            context.DS4.ResetFeedback();
 
             return Status.Continue;
         }

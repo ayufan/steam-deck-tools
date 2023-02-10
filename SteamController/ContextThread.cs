@@ -37,6 +37,7 @@ namespace SteamController
             var nextReset = stopwatch.Elapsed.Add(UpdateResetInterval);
 
             X360.Start();
+            DS4.Start();
 
             while (threadRunning)
             {
@@ -58,6 +59,7 @@ namespace SteamController
             }
 
             X360.Stop();
+            DS4.Stop();
         }
 
         public void Stop()
