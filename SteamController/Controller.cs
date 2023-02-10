@@ -419,7 +419,9 @@ namespace SteamController
                     DS4Haptic = ProfilesSettings.HapticSettings.DS4,
 #endif
                     Application = Settings.Default,
+#if DEBUG
                     DEBUG = SettingsDebug.Default
+#endif
                 }
             };
 

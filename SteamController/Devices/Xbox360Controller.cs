@@ -87,7 +87,7 @@ namespace SteamController.Devices
             lastPressed = pressed;
             pressed = new Dictionary<Xbox360Button, DateTime>();
             submitReport = false;
-            Connected = SettingsDebug.Default.KeepX360AlwaysConnected;
+            Connected = Settings.Default.KeepX360AlwaysConnected;
         }
 
         private void SetConnected(bool wantsConnected)
@@ -144,7 +144,7 @@ namespace SteamController.Devices
 
         internal void Beep()
         {
-            if (SettingsDebug.Default.KeepX360AlwaysConnected)
+            if (Settings.Default.KeepX360AlwaysConnected)
                 return;
             if (device is null)
                 return;

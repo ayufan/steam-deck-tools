@@ -10,6 +10,7 @@
 ## 0.6.x
 
 - SteamController: Add initial `DS4` support (with Gyro, Accel, Trackpads and Haptics)
+- SteamController: Move `KeepX360AlwaysConnected` to `Settings`
 - PowerControl: Install custom resolutions (EDID) (experimental feature)
 - SteamController: Add `X360: No Touchpads` profile
 - All: Show `Missing RTSS` button to install RTSS
