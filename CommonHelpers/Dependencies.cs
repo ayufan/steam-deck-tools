@@ -89,10 +89,10 @@ namespace CommonHelpers
             if (TryToLoad(dllNames, libraryPath, false))
                 return true;
 
-            Log.TraceError("Cannot load: {0}", dllNames);
-
             if (title == null)
                 return false;
+
+            Log.TraceError("Cannot load: {0}", dllNames);
 
             var downloadButton = new TaskDialogButton("Download");
 
