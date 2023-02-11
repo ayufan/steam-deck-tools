@@ -18,3 +18,11 @@ find the problem:
 1. Open issue in [GitHub](https://github.com/ayufan-research/steam-deck-tools/)
   with details what happened, when and included `exception`.
     ![](images/event_viewer.png)
+
+## PS Remote Play
+
+With the DS4 support the Steam Deck Tools support PS Remote Play natively.
+However, due to some flickering of OSD (via RTSS) it is required to configure
+RTSS to the exact below settings:
+
+<img src="images/rtss_ps_remote_play.png" height="300"/>
