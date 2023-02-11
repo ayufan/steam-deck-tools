@@ -10,9 +10,9 @@ namespace SteamController.Profiles.Predefined
             get
             {
                 if (CommonHelpers.WindowsDarkMode.IsDarkModeEnabled)
-                    return Resources.microsoft_xbox_controller_white;
+                    return Resources.controller_classic_custom_white;
                 else
-                    return Resources.microsoft_xbox_controller;
+                    return Resources.controller_classic_custom;
             }
         }
 
