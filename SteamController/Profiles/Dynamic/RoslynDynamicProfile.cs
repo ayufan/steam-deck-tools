@@ -115,6 +115,19 @@ namespace SteamController.Profiles.Dynamic
             watchTimer.Start();
         }
 
+        public override System.Drawing.Icon Icon
+        {
+            get
+            {
+                if (inherited is not null)
+                    return inherited.Icon;
+                else if (CommonHelpers.WindowsDarkMode.IsDarkModeEnabled)
+                    return Resources.microsoft_xbox_controller_white;
+                else
+                    return Resources.microsoft_xbox_controller;
+            }
+        }
+
         public override bool Selected(Context context)
         {
             return (this.compiledScript is not null) && (inherited?.Selected(context) ?? true);

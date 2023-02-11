@@ -11,6 +11,17 @@ namespace SteamController.Profiles.Predefined
             IsDesktop = true;
         }
 
+        public override System.Drawing.Icon Icon
+        {
+            get
+            {
+                if (CommonHelpers.WindowsDarkMode.IsDarkModeEnabled)
+                    return Resources.monitor_white;
+                else
+                    return Resources.monitor;
+            }
+        }
+
         internal override ProfilesSettings.BackPanelSettings BackPanelSettings
         {
             get { return ProfilesSettings.DesktopPanelSettings.Default; }

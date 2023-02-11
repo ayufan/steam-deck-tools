@@ -6,6 +6,22 @@ namespace SteamController.Profiles.Predefined
         {
         }
 
+        public override System.Drawing.Icon Icon
+        {
+            get
+            {
+                if (CommonHelpers.WindowsDarkMode.IsDarkModeEnabled)
+                    return Resources.microsoft_xbox_controller_off_white;
+                else
+                    return Resources.microsoft_xbox_controller_off;
+            }
+        }
+
+        public override String FullName
+        {
+            get { return Name + " uses Steam Input"; }
+        }
+
         public override bool Selected(Context context)
         {
             return context.Enabled && context.State.SteamUsesSteamInput && Settings.Default.SteamControllerConfigs != Settings.SteamControllerConfigsMode.Overwrite;

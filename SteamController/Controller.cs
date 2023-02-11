@@ -212,47 +212,33 @@ namespace SteamController
         {
             context.Tick();
 
-            var isDesktop = context.CurrentProfile?.IsDesktop ?? false;
-            var monitorOffIco = WindowsDarkMode.IsDarkModeEnabled ? Resources.monitor_off_white : Resources.monitor_off;
-            var monitorOnIco = WindowsDarkMode.IsDarkModeEnabled ? Resources.monitor_white : Resources.monitor;
-            var controllerOffIco = WindowsDarkMode.IsDarkModeEnabled ?
-                Resources.microsoft_xbox_controller_off_white :
-                Resources.microsoft_xbox_controller_off;
-            var controllerOnIco = WindowsDarkMode.IsDarkModeEnabled ?
-                Resources.microsoft_xbox_controller_white :
-                Resources.microsoft_xbox_controller;
+            var profile = context.CurrentProfile;
 
             if (!context.KeyboardMouseValid)
             {
                 notifyIcon.Text = TitleWithVersion + ". Cannot send input.";
-                notifyIcon.Icon = Resources.microsoft_xbox_controller_off_red;
+                if (WindowsDarkMode.IsDarkModeEnabled)
+                    notifyIcon.Icon = Resources.monitor_off_white;
+                else
+                    notifyIcon.Icon = Resources.monitor_off;
             }
-            else if (!context.X360.Valid)
+            else if (!context.X360.Valid || !context.DS4.Valid)
             {
                 notifyIcon.Text = TitleWithVersion + ". Missing ViGEm?";
                 notifyIcon.Icon = Resources.microsoft_xbox_controller_red;
             }
-            else if (context.Enabled)
+            else if (profile is not null)
             {
-                if (context.State.SteamUsesSteamInput)
-                {
-                    notifyIcon.Icon = isDesktop ? monitorOffIco : controllerOffIco;
-                    notifyIcon.Text = TitleWithVersion + ". Steam uses Steam Input";
-                }
-                else
-                {
-                    notifyIcon.Icon = isDesktop ? monitorOnIco : controllerOnIco;
-                    notifyIcon.Text = TitleWithVersion;
-                }
-
-                var profile = context.CurrentProfile;
-                if (profile is not null)
-                    notifyIcon.Text = TitleWithVersion + ". Profile: " + profile.Name;
+                notifyIcon.Text = TitleWithVersion + ". Profile: " + profile.FullName;
+                notifyIcon.Icon = profile.Icon;
             }
             else
             {
-                notifyIcon.Icon = isDesktop ? monitorOffIco : controllerOffIco;
                 notifyIcon.Text = TitleWithVersion + ". Disabled";
+                if (WindowsDarkMode.IsDarkModeEnabled)
+                    notifyIcon.Icon = Resources.microsoft_xbox_controller_off_white;
+                else
+                    notifyIcon.Icon = Resources.microsoft_xbox_controller_off;
             }
 
             notifyIcon.Text += String.Format(". Updates: {0}/s", context.UpdatesPerSec);

@@ -11,9 +11,30 @@ namespace SteamController.Profiles.Predefined
 
         private bool TouchPadsEnabled { get; set; } = true;
 
+        public override System.Drawing.Icon Icon
+        {
+            get
+            {
+                if (CommonHelpers.WindowsDarkMode.IsDarkModeEnabled)
+                    return Resources.microsoft_xbox_controller_white;
+                else
+                    return Resources.microsoft_xbox_controller;
+            }
+        }
+
         public override bool Selected(Context context)
         {
             return context.Enabled && context.X360.Valid && context.KeyboardMouseValid && !context.State.SteamUsesSteamInput;
+        }
+
+        public override String FullName
+        {
+            get
+            {
+                if (EmulateTouchPads && TouchPadsEnabled)
+                    return Name;
+                return Name + " without Touchpads";
+            }
         }
 
         internal override ProfilesSettings.BackPanelSettings BackPanelSettings

@@ -6,6 +6,17 @@ namespace SteamController.Profiles.Predefined
 {
     public class DS4Profile : Default.BackPanelShortcutsProfile
     {
+        public override System.Drawing.Icon Icon
+        {
+            get
+            {
+                if (CommonHelpers.WindowsDarkMode.IsDarkModeEnabled)
+                    return Resources.microsoft_xbox_controller_white;
+                else
+                    return Resources.microsoft_xbox_controller;
+            }
+        }
+
         public override bool Selected(Context context)
         {
             return context.Enabled && context.DS4.Valid && context.KeyboardMouseValid && !context.State.SteamUsesSteamInput;
