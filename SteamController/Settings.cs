@@ -30,7 +30,7 @@ namespace SteamController
         [Description("If current foreground process uses overlay, treat it as a game.")]
         public bool DetectRTSSForeground
         {
-            get { return Get<bool>("DetectRTSSForeground", true); }
+            get { return Get<bool>("DetectRTSSForeground", false); }
             set { Set("DetectRTSSForeground", value); }
         }
 
