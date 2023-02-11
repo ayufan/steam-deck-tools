@@ -1,6 +1,6 @@
 namespace CommonHelpers
 {
-    public class TimedValue<T> where T : struct
+    public struct TimedValue<T> where T : struct
     {
         public T Value { get; }
         public DateTime ExpiryDate { get; }
@@ -32,9 +32,19 @@ namespace CommonHelpers
             return Valid;
         }
 
+        public T? GetValue()
+        {
+            return Valid ? Value : null;
+        }
+
+        public T GetValueOrDefault(T defaultValue)
+        {
+            return Valid ? Value : defaultValue;
+        }
+
         public static implicit operator T?(TimedValue<T> tv)
         {
-            return tv.Valid ? tv.Value : null;
+            return tv.GetValue();
         }
     }
 }

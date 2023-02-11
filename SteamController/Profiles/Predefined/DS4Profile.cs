@@ -1,6 +1,5 @@
-using Nefarius.ViGEm.Client.Targets.Xbox360;
+using CommonHelpers;
 using SteamController.Devices;
-using SteamController.ProfilesSettings;
 
 namespace SteamController.Profiles.Predefined
 {
@@ -27,14 +26,20 @@ namespace SteamController.Profiles.Predefined
             get { return ProfilesSettings.DS4BackPanelSettings.Default; }
         }
 
+        private TimedValue<bool> btnSteamPressed;
+
         public override Status Run(Context context)
         {
             context.Steam.LizardButtons = false;
             context.Steam.LizardMouse = false;
             context.DS4.Connected = true;
 
+            // Lock BtnSteam
+            if (context.Steam.BtnSteam.Pressed())
+                btnSteamPressed = new TimedValue<bool>(true, 100);
+
             // Controls
-            context.DS4.Overwrite(DS4Controller.PS, context.Steam.BtnSteam.Pressed(), 100);
+            context.DS4[DS4Controller.PS] = btnSteamPressed.GetValueOrDefault(false);
             context.DS4[DS4Controller.Share] = context.Steam.BtnMenu;
             context.DS4[DS4Controller.Options] = context.Steam.BtnOptions;
 
@@ -85,8 +90,8 @@ namespace SteamController.Profiles.Predefined
 
             // Accel & Gyro
             context.DS4[DS4Controller.GyroX] = context.Steam.GyroPitch;
-            context.DS4[DS4Controller.GyroY] = context.Steam.GyroRoll;
-            context.DS4[DS4Controller.GyroZ] = context.Steam.GyroYaw;
+            context.DS4[DS4Controller.GyroY] = context.Steam.GyroYaw;
+            context.DS4[DS4Controller.GyroZ] = context.Steam.GyroRoll;
             context.DS4[DS4Controller.AccelX] = context.Steam.AccelX;
             context.DS4[DS4Controller.AccelY] = context.Steam.AccelY;
             context.DS4[DS4Controller.AccelZ] = context.Steam.AccelZ;

@@ -48,8 +48,8 @@ namespace SteamController.Devices
         public readonly SteamAxis AccelY = new SteamAxis(0x1A);
         public readonly SteamAxis AccelZ = new SteamAxis(0x1C);
         public readonly SteamAxis GyroPitch = new SteamAxis(0x1E);
-        public readonly SteamAxis GyroYaw = new SteamAxis(0x20);
-        public readonly SteamAxis GyroRoll = new SteamAxis(0x22);
+        public readonly SteamAxis GyroRoll = new SteamAxis(0x20);
+        public readonly SteamAxis GyroYaw = new SteamAxis(0x22);
         public readonly SteamAxis LeftTrigger = new SteamAxis(0x2C);
         public readonly SteamAxis RightTrigger = new SteamAxis(0x2E);
         public readonly SteamAxis LeftThumbX = new SteamAxis(0x30) { Deadzone = 5000, MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
