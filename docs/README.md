@@ -96,6 +96,7 @@ So, it validates bios version. Those are currently supported:
 - F7A0107 (PD ver: 0xB030)
 - F7A0110 (PD ver: 0xB030)
 - F7A0113 (PD ver: 0xB030)
+- F7A0115 (PD ver: 0xB030)
 
 ## Author
 

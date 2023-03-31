@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- PowerControl: Support SMU of Vangogh GPU shipped with BIOS 115
 - SteamController: Add `DS4` support (with Gyro, Accel, Trackpads and Haptics)
 - SteamController: Move `KeepX360AlwaysConnected` to `Settings`
 - PowerControl: Install custom resolutions (EDID) (experimental feature)
@@ -34,22 +35,3 @@
 - SteamController: Add experimental RTSS-based detection (disables the need to use Steam, or Playnite workflow)
 - SteamController: Hold Press Left and Right Pad to toggle touchpads in X360 mode
 - PowerControl: Make all PowerControl options to accept Strings
-
-## 0.5.x
-
-- Try to disable usage of Kernel Drivers (when FAN in Default, and OSD Kernel Drivers are disabled)
-  to allow apps to work with Anti-Cheat detections
-- The X360 has Haptics enabled by default
-- Allow to assign BackPanel keys to X360 controller (breaks all current configs to set mappings)
-- Use `white` icons when using `Dark Theme` (thanks @maniman303 https://github.com/ayufan/steam-deck-tools/pull/23)
-- Validate that all dependencies are installed
-- Allow `Updater.exe` to disable automatic updates - this is selectable option via `setup.exe`
-- Use `Sentry.io` for error tracking for all builds
-- Make `Updater.exe` to be able to update from `.zip` to `setup.exe`
-- Bug fixing to handle all known exceptions
-- Require to acknowledge when using function that might trigger `Anti-Cheat` protection via top-most window
-- GPU detection will log errors to `Sentry.io`
-- Support SMU of Vangogh GPU shipped with BIOS 113
-- Fix Steam Game detection when in X360 controller mode
-- Force to reconnect X360 controller on Resume (deadlock)
-- Hold-press Guide button for 100ms in X360 mode
