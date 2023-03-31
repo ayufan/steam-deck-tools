@@ -42,7 +42,7 @@ This project provides the following applications:
 
 ## Join Us
 
-Join Us for help or chat. We are at [#windows of Steam Deck Discord](https://discord.gg/steamdeck).
+Join Us for help or chat. We are at [Official WindowsOnDeck](https://discord.gg/uF7kd33u7u) Discord server.
 
 ## Anti-Cheat and Antivirus software
 
