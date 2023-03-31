@@ -100,7 +100,7 @@ So, it validates bios version. Those are currently supported:
 
 ## Author
 
-Kamil Trzciński, 2022
+Kamil Trzciński, 2022-2023
 
 Steam Deck Tools is not affiliated with Valve, Steam, or any of their partners.
 
