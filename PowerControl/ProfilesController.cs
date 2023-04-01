@@ -31,14 +31,20 @@ namespace PowerControl
         public ProfileSettings? GameProfileSettings { get; private set; }
 
         public ProfileSettings? SessionProfileSettings { get; private set; }
+        public ProfileSettings AutostartProfileSettings { get; private set; }
 
         public ProfilesController()
         {
             PowerControl.Options.Profiles.Controller = this;
             MenuStack.Root.ValueChanged += Root_OnOptionValueChange;
 
+            AutostartProfileSettings = new ProfileSettings("PowerControl", "Autostart");
+
             timer.Start();
             timer.Tick += Timer_Tick;
+
+            ProfileChanged(null);
+            ApplyProfile(AutostartProfileSettings);
         }
 
         ~ProfilesController()
@@ -106,13 +112,13 @@ namespace PowerControl
         {
             Log.TraceLine("ProfilesController: New Process: {0}/{1}", processId, processName);
 
-            var profileSettings = new ProfileSettings(processName);
+            var profileSettings = new ProfileSettings("PowerControl.Process", processName);
             watchedProcesses.Add(processId, profileSettings);
 
             // Create memory only SessionProfileSettings
             if (SessionProfileSettings is null)
             {
-                SessionProfileSettings = new ProfileSettings("Session:" + processName) { UseConfigFile = false };
+                SessionProfileSettings = new ProfileSettings("PowerControl.Session", "Session." + processName) { UseConfigFile = false };
                 SaveProfile(SessionProfileSettings);
             }
 

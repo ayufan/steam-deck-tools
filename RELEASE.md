@@ -37,6 +37,7 @@
 
 ## 0.6.16
 
+- PowerControl: Allow to set Autostart Profile Settings
 - PowerControl: Show Game Profiles menu item
 - PowerControl: Improve handling of restoring DesktopProfile
 - All: Support [unofficial APU drivers](https://sourceforge.net/projects/amernimezone/files/Release%20Polaris-Vega-Navi/AMD%20SOC%20Driver%20Variant/) that present themselves as `AMD Radeon 670M`
