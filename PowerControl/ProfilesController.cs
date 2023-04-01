@@ -10,10 +10,8 @@ namespace PowerControl
     {
         public const bool AutoCreateProfiles = true;
         public const int ApplyProfileDelayMs = 500;
-        public const int ResetProfileDelayMs = 500;
 
         private Dictionary<int, PowerControl.Helper.ProfileSettings> watchedProcesses = new Dictionary<int, PowerControl.Helper.ProfileSettings>();
-        private Dictionary<MenuItemWithOptions, String>? changedSettings;
         private CancellationTokenSource? changeTask;
 
         private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer()
@@ -30,7 +28,9 @@ namespace PowerControl
             }
         }
 
-        public ProfileSettings? CurrentProfileSettings { get; private set; }
+        public ProfileSettings? GameProfileSettings { get; private set; }
+
+        public ProfileSettings? SessionProfileSettings { get; private set; }
 
         public ProfilesController()
         {
@@ -92,12 +92,12 @@ namespace PowerControl
             if (!watchedProcesses.TryGetValue(processId, out var profileSettings))
                 return false;
 
-            if (CurrentProfileSettings != profileSettings)
+            if (GameProfileSettings != profileSettings)
             {
                 Log.TraceLine("ProfilesController: Foreground changed: {0} => {1}",
-                    CurrentProfileSettings?.ProfileName, profileSettings.ProfileName);
-                CurrentProfileSettings = profileSettings;
-                ProfileChanged();
+                    GameProfileSettings?.ProfileName, profileSettings.ProfileName);
+                GameProfileSettings = profileSettings;
+                ProfileChanged(profileSettings);
             }
             return true;
         }
@@ -106,12 +106,18 @@ namespace PowerControl
         {
             Log.TraceLine("ProfilesController: New Process: {0}/{1}", processId, processName);
 
-            if (changedSettings == null)
-                changedSettings = new Dictionary<MenuItemWithOptions, string>();
-
             var profileSettings = new ProfileSettings(processName);
             watchedProcesses.Add(processId, profileSettings);
 
+            // Create memory only SessionProfileSettings
+            if (SessionProfileSettings is null)
+            {
+                SessionProfileSettings = new ProfileSettings("Session:" + processName) { UseConfigFile = false };
+                SaveProfile(SessionProfileSettings);
+            }
+
+            GameProfileSettings = profileSettings;
+            ProfileChanged(profileSettings);
             ApplyProfile(profileSettings);
         }
 
@@ -120,8 +126,8 @@ namespace PowerControl
             if (!watchedProcesses.Remove(processId, out var profileSettings))
                 return;
 
-            if (CurrentProfileSettings == profileSettings)
-                CurrentProfileSettings = null;
+            if (GameProfileSettings == profileSettings)
+                GameProfileSettings = null;
 
             Log.TraceLine("ProfilesController: Removed Process: {0}", processId);
 
@@ -136,79 +142,77 @@ namespace PowerControl
             if (options.PersistentKey is null)
                 return;
 
-            if (oldValue is not null)
-            {
-                if (changedSettings?.TryAdd(options, oldValue) == true)
-                {
-                    Log.TraceLine("ProfilesController: Saved change: {0} from {1}", options.PersistentKey, oldValue);
-                }
-            }
+            // No active profile, cannot persist
+            if (GameProfileSettings is null)
+                return;
 
-            // If profile exists persist value
-            if (CurrentProfileSettings != null && (CurrentProfileSettings.Exists || AutoCreateProfiles))
-            {
-                CurrentProfileSettings.SetValue(options.PersistentKey, newValue);
-                options.ProfileOption = newValue;
+            // Do not auto-create profile unless requested
+            if (!GameProfileSettings.Exists && !AutoCreateProfiles)
+                return;
 
-                Log.TraceLine("ProfilesController: Stored: {0} {1} = {2}",
-                    CurrentProfileSettings.ProfileName, options.PersistentKey, newValue);
-            }
+            GameProfileSettings.SetValue(options.PersistentKey, newValue);
+            options.ProfileOption = newValue;
+
+            Log.TraceLine("ProfilesController: Stored: {0} {1} = {2}",
+                GameProfileSettings.ProfileName, options.PersistentKey, newValue);
         }
 
-        private void ProfileChanged()
+        private void ProfileChanged(ProfileSettings? profileSettings)
         {
             foreach (var menuItem in PersistableOptions())
             {
-                menuItem.ProfileOption = CurrentProfileSettings?.GetValue(menuItem.PersistentKey ?? "");
+                menuItem.ProfileOption = profileSettings?.GetValue(menuItem.PersistentKey ?? "");
             }
         }
 
         public void CreateProfile(bool saveAll = true)
         {
-            var profileSettings = CurrentProfileSettings;
-
-            profileSettings?.TouchFile();
-
-            Log.TraceLine("ProfilesController: Created Profile: {0}, SaveAll={1}",
-                profileSettings?.ProfileName, saveAll);
-
-            if (!saveAll)
+            var profileSettings = GameProfileSettings;
+            if (profileSettings is null)
                 return;
 
-            foreach (var menuItem in PersistableOptions())
-            {
-                if (menuItem.ActiveOption is null || !menuItem.PersistOnCreate)
-                    continue;
-                profileSettings?.SetValue(menuItem.PersistentKey ?? "", menuItem.ActiveOption);
-            }
+            profileSettings.TouchFile();
 
-            ProfileChanged();
+            Log.TraceLine("ProfilesController: Created Profile: {0}, SaveAll={1}",
+                profileSettings.ProfileName, saveAll);
+
+            if (saveAll)
+                SaveProfile(profileSettings);
+
+            ProfileChanged(profileSettings);
         }
 
         public void DeleteProfile()
         {
-            CurrentProfileSettings?.DeleteFile();
-            ProfileChanged();
+            GameProfileSettings?.DeleteFile();
+            ProfileChanged(GameProfileSettings);
 
-            Log.TraceLine("ProfilesController: Deleted Profile: {0}", CurrentProfileSettings?.ProfileName);
+            Log.TraceLine("ProfilesController: Deleted Profile: {0}", GameProfileSettings?.ProfileName);
+        }
+
+        private void SaveProfile(ProfileSettings profileSettings, bool force = false)
+        {
+            foreach (var menuItem in PersistableOptions())
+            {
+                if (menuItem.ActiveOption is null || !menuItem.PersistOnCreate && !force)
+                    continue;
+                profileSettings?.SetValue(menuItem.PersistentKey ?? "", menuItem.ActiveOption);
+            }
         }
 
         private void ApplyProfile(ProfileSettings profileSettings)
         {
-            CurrentProfileSettings = profileSettings;
-            ProfileChanged();
-
-            if (CurrentProfileSettings is null || CurrentProfileSettings?.Exists != true)
+            if (profileSettings is null || profileSettings?.Exists != true)
                 return;
 
-            int delay = CurrentProfileSettings.GetInt("ApplyDelay", ApplyProfileDelayMs);
+            int delay = profileSettings.GetInt("ApplyDelay", ApplyProfileDelayMs);
 
             changeTask?.Cancel();
             changeTask = Dispatcher.RunWithDelay(delay, () =>
             {
                 foreach (var menuItem in PersistableOptions())
                 {
-                    var persistedValue = CurrentProfileSettings.GetValue(menuItem.PersistentKey ?? "");
+                    var persistedValue = profileSettings.GetValue(menuItem.PersistentKey ?? "");
                     if (persistedValue is null)
                         continue;
 
@@ -217,14 +221,14 @@ namespace PowerControl
                         menuItem.Set(persistedValue, true, false);
 
                         Log.TraceLine("ProfilesController: Applied from Profile: {0}: {1} = {2}",
-                            CurrentProfileSettings.ProfileName, menuItem.PersistentKey, persistedValue);
+                            profileSettings.ProfileName, menuItem.PersistentKey, persistedValue);
                     }
                     catch (Exception e)
                     {
                         Log.TraceLine("ProfilesController: Exception Profile: {0}: {1} = {2} => {3}",
-                            CurrentProfileSettings.ProfileName, menuItem.PersistentKey, persistedValue, e);
+                            profileSettings.ProfileName, menuItem.PersistentKey, persistedValue, e);
 
-                        CurrentProfileSettings.DeleteKey(menuItem.PersistentKey ?? "");
+                        profileSettings.DeleteKey(menuItem.PersistentKey ?? "");
                         menuItem.ProfileOption = null;
                     }
                 }
@@ -233,38 +237,14 @@ namespace PowerControl
 
         private void ResetProfile()
         {
-            CurrentProfileSettings = null;
-            ProfileChanged();
+            GameProfileSettings = null;
+            ProfileChanged(null);
 
-            if (changedSettings is null)
-                return;
-
-            // Revert all changes made to original value
-            var appliedSettings = changedSettings;
-            changedSettings = null;
-
-            changeTask?.Cancel();
-            changeTask = Dispatcher.RunWithDelay(ResetProfileDelayMs, () =>
+            if (SessionProfileSettings is not null)
             {
-                foreach (var menuItem in PersistableOptions())
-                {
-                    if (!appliedSettings.TryGetValue(menuItem, out var setting))
-                        continue;
-
-                    try
-                    {
-                        menuItem.Set(setting, true, true);
-
-                        Log.TraceLine("ProfilesController: Reset: {0} = {1}",
-                            menuItem.PersistentKey, setting);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.TraceLine("ProfilesController: Reset Exception: {0} = {1} => {2}",
-                            menuItem.PersistentKey, setting, e);
-                    }
-                }
-            });
+                ApplyProfile(SessionProfileSettings);
+                SessionProfileSettings = null;
+            }
         }
 
         private IEnumerable<MenuItemWithOptions> PersistableOptions()
