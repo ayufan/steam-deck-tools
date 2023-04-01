@@ -17,6 +17,12 @@ namespace CommonHelpers
         public bool TouchSettings { get; set; }
 
         [Browsable(false)]
+        public bool UseMemoryCache { get; set; } = true;
+
+        [Browsable(false)]
+        public bool UseConfigFile { get; set; } = true;
+
+        [Browsable(false)]
         public String SettingsKey { get; protected set; }
 
         [Browsable(false)]
@@ -34,7 +40,7 @@ namespace CommonHelpers
         [Browsable(false)]
         public bool Exists
         {
-            get { return File.Exists(this.ConfigFile); }
+            get { return !this.UseConfigFile || File.Exists(this.ConfigFile); }
         }
 
         public override string ToString()
@@ -61,7 +67,7 @@ namespace CommonHelpers
                 return false;
 
             SettingChanging(key);
-            if (!SetProfileString(key, valueString))
+            if (this.UseConfigFile && !SetProfileString(key, valueString))
                 return false;
 
             cachedValues[key] = value;
@@ -71,12 +77,21 @@ namespace CommonHelpers
 
         protected T Get<T>(string key, T defaultValue, bool touchSettings = false)
         {
-            if (cachedValues.TryGetValue(key, out var cachedValue))
-                return ((T?)cachedValue) ?? defaultValue;
+            if (this.UseMemoryCache)
+            {
+                if (cachedValues.TryGetValue(key, out var cachedValue))
+                    return ((T?)cachedValue) ?? defaultValue;
+            }
 
             var typeConverter = TypeDescriptor.GetConverter(typeof(T));
             var defaultString = typeConverter.ConvertToString(defaultValue);
             if (defaultString is null)
+            {
+                cachedValues[key] = defaultValue;
+                return defaultValue;
+            }
+
+            if (!this.UseConfigFile)
             {
                 cachedValues[key] = defaultValue;
                 return defaultValue;
@@ -131,7 +146,12 @@ namespace CommonHelpers
             lock (this)
             {
                 cachedValues.Remove(key);
-                return WritePrivateProfileString(SettingsKey, key, null, ConfigFile);
+
+                if (this.UseConfigFile)
+                {
+                    return WritePrivateProfileString(SettingsKey, key, null, ConfigFile);
+                }
+                return true;
             }
         }
 
@@ -140,7 +160,12 @@ namespace CommonHelpers
             lock (this)
             {
                 cachedValues.Clear();
-                return WritePrivateProfileString(SettingsKey, null, null, ConfigFile);
+
+                if (this.UseConfigFile)
+                {
+                    return WritePrivateProfileString(SettingsKey, null, null, ConfigFile);
+                }
+                return true;
             }
         }
 
@@ -148,10 +173,10 @@ namespace CommonHelpers
         {
             lock (this)
             {
-                if (Exists)
-                    return;
-
-                using (File.Create(ConfigFile)) { }
+                if (this.UseConfigFile && Exists)
+                {
+                    using (File.Create(ConfigFile)) { }
+                }
             }
         }
 
@@ -160,8 +185,12 @@ namespace CommonHelpers
             lock (this)
             {
                 cachedValues.Clear();
-                try { File.Delete(ConfigFile); }
-                catch (DirectoryNotFoundException) { }
+
+                if (this.UseConfigFile)
+                {
+                    try { File.Delete(ConfigFile); }
+                    catch (DirectoryNotFoundException) { }
+                }
             }
         }
 
