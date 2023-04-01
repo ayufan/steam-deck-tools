@@ -113,6 +113,10 @@ namespace PowerControl
             missingRTSSItem.Click += delegate { Dependencies.OpenLink(Dependencies.RTSSURL); };
             contextMenu.Opening += delegate { missingRTSSItem.Visible = !Dependencies.EnsureRTSS(null); };
 
+            var showGameProfilesItem = contextMenu.Items.Add("Show Game &Profiles");
+            showGameProfilesItem.Click += delegate { Dependencies.OpenLink(Helper.ProfileSettings.UserProfilesPath); };
+            contextMenu.Items.Add(new ToolStripSeparator());
+
             var checkForUpdatesItem = contextMenu.Items.Add("&Check for Updates");
             checkForUpdatesItem.Click += delegate { Instance.RunUpdater(TitleWithVersion, true); };
 
