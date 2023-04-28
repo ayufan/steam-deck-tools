@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- All: Support [unofficial APU drivers](https://sourceforge.net/projects/amernimezone/files/Release%20Polaris-Vega-Navi/AMD%20SOC%20Driver%20Variant/) that present themselves as `AMD Radeon 670M`
 - PowerControl: Show Game Profiles menu item
 - PowerControl: Support SMU of Vangogh GPU shipped with BIOS 115
 - SteamController: Add `DS4` support (with Gyro, Accel, Trackpads and Haptics)

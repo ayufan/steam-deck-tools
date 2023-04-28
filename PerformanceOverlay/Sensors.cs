@@ -52,6 +52,7 @@ namespace PerformanceOverlay
         public class HardwareSensor : ValueSensor
         {
             public string HardwareName { get; set; } = "";
+            public IList<string> HardwareNames { get; set; } = new List<string>();
             public HardwareType HardwareType { get; set; }
             public string SensorName { get; set; } = "";
             public SensorType SensorType { get; set; }
@@ -60,9 +61,27 @@ namespace PerformanceOverlay
             {
                 return sensor != null &&
                     sensor.Hardware.HardwareType == HardwareType &&
-                    sensor.Hardware.Name.StartsWith(HardwareName) &&
+                    MatchesHardwareName(sensor.Hardware.Name) &&
                     sensor.SensorType == SensorType &&
                     sensor.Name == SensorName;
+            }
+
+            private bool MatchesHardwareName(string sensorHardwareName)
+            {
+                if (HardwareNames.Count > 0)
+                {
+                    if (HardwareNames.Any(hardwareName => sensorHardwareName.StartsWith(hardwareName)))
+                        return true;
+                }
+
+                // Empty string matches always
+                if (HardwareName.Length == 0)
+                    return true;
+
+                if (sensorHardwareName.StartsWith(HardwareName))
+                    return true;
+
+                return false;
             }
 
             public string? GetValue(ISensor sensor)
@@ -216,7 +235,7 @@ namespace PerformanceOverlay
                 "GPU_%", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareName = "AMD Custom GPU 0405",
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
                     SensorType = SensorType.Load,
                     SensorName = "D3D 3D",
                     Format = "F0"
@@ -226,7 +245,7 @@ namespace PerformanceOverlay
                 "GPU_MB", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareName = "AMD Custom GPU 0405",
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
                     SensorType = SensorType.SmallData,
                     SensorName = "D3D Dedicated Memory Used",
                     Format = "F0"
@@ -236,7 +255,7 @@ namespace PerformanceOverlay
                 "GPU_GB", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareName = "AMD Custom GPU 0405",
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
                     SensorType = SensorType.SmallData,
                     SensorName = "D3D Dedicated Memory Used",
                     Format = "F0",
@@ -247,7 +266,7 @@ namespace PerformanceOverlay
                 "GPU_W", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareName = "AMD Custom GPU 0405",
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
                     SensorType = SensorType.Power,
                     SensorName = "GPU SoC",
                     Format = "F1"
@@ -257,7 +276,7 @@ namespace PerformanceOverlay
                 "GPU_MHZ", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareName = "AMD Custom GPU 0405",
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
                     SensorType = SensorType.Clock,
                     SensorName = "GPU Core",
                     Format = "F0"
@@ -267,7 +286,7 @@ namespace PerformanceOverlay
                 "GPU_T", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareName = "AMD Custom GPU 0405",
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
                     SensorType = SensorType.Temperature,
                     SensorName = "GPU Temperature",
                     Format = "F1",
