@@ -427,9 +427,7 @@ namespace SteamController
                 Dock = DockStyle.Top,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 Text = String.Join("\n",
-                    "This project is provided free of charge, but development of it is not free:",
-                    "- Consider donating to keep this project alive.",
-                    "- Donating also helps to fund new features."
+                    "Consider donating if you are happy with this project."
                 ),
                 TextAlign = ContentAlignment.MiddleLeft,
                 Height = 100
