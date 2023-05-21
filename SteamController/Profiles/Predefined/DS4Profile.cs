@@ -1,5 +1,6 @@
 using CommonHelpers;
 using SteamController.Devices;
+using SteamController.ProfilesSettings;
 
 namespace SteamController.Profiles.Predefined
 {
@@ -108,6 +109,25 @@ namespace SteamController.Profiles.Predefined
             context.DS4[DS4Controller.RightFinger] = GetTPadPoint(context.Steam.RPadX, context.Steam.RPadY);
 
             return Status.Continue;
+        }
+
+        private void SetVirtualDS4Code(Context c, VirtualDS4Code ds4Code, bool value)
+        {
+            var button = ds4Code.ToDS4Button();
+            if (button is not null)
+                c.DS4[button.Value] = value;
+        }
+
+        protected override void BackPanelShortcuts(Context c)
+        {
+            base.BackPanelShortcuts(c);
+
+            var settings = ProfilesSettings.DS4BackPanelSettings.Default;
+
+            SetVirtualDS4Code(c, settings.L4_DS4, c.Steam.BtnL4);
+            SetVirtualDS4Code(c, settings.L5_DS4, c.Steam.BtnL5);
+            SetVirtualDS4Code(c, settings.R4_DS4, c.Steam.BtnR4);
+            SetVirtualDS4Code(c, settings.R5_DS4, c.Steam.BtnR5);
         }
 
         private Point? GetTPadPoint(SteamAxis x, SteamAxis y)

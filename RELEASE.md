@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- SteamController: Allow to configure DS4 back buttons
 - SteamController: Allow to `EnableDS4Support=false` to hide DS4 controller
 - All: Support [unofficial APU drivers](https://sourceforge.net/projects/amernimezone/files/Release%20Polaris-Vega-Navi/AMD%20SOC%20Driver%20Variant/) that present themselves as `AMD Radeon 670M`
 - PowerControl: Show Game Profiles menu item
