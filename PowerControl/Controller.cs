@@ -50,6 +50,10 @@ namespace PowerControl
                 startupManager.Startup = false;
             });
 
+            Log.CleanupLogFiles(DateTime.UtcNow.AddDays(-7));
+            Log.LogToFile = true;
+            Log.LogToFileDebug = true;
+
             Instance.RunOnce(TitleWithVersion, "Global\\PowerControl");
             Instance.RunUpdater(TitleWithVersion);
 

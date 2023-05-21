@@ -4,7 +4,8 @@ namespace SteamController
 {
     public partial class Context
     {
-        List<string> debugLastItems = new List<string>();
+        private List<string> debugLastItems = new List<string>();
+        private Profiles.Profile? debugLastProfile = null;
 
         public void Debug()
         {
@@ -15,6 +16,12 @@ namespace SteamController
                 items.Add("[DESKTOP]");
             else
                 items.Add("[CONTROLLER]");
+
+            if (profile != debugLastProfile)
+            {
+                Log.TraceLine("ProfileChanged: {0} to {1}", debugLastProfile?.Name ?? "null", profile?.Name ?? "null");
+                debugLastProfile = profile;
+            }
 
             if (Steam.LizardButtons)
                 items.Add("[LB]");
@@ -51,7 +58,7 @@ namespace SteamController
 
             if (!items.SequenceEqual(debugLastItems))
             {
-                Log.TraceLine("DEBUG: {0}", String.Join(" ", items));
+                Log.TraceDebug("DEBUG: {0}", String.Join(" ", items));
                 debugLastItems = items;
             }
         }

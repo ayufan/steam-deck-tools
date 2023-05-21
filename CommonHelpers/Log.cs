@@ -13,11 +13,13 @@ namespace CommonHelpers
 #endif
 
 #if DEBUG
-        private static bool LogToTrace = true;
+        public static bool LogToTrace = true;
 #else
-        private static bool LogToTrace = false;
+        public static bool LogToTrace = false;
 #endif
-        private static bool LogToConsole = Environment.UserInteractive;
+        public static bool LogToConsole = Environment.UserInteractive;
+        public static bool LogToFile = false;
+        public static bool LogToFileDebug = false;
 
         internal static void SentryOptions(Sentry.SentryOptions o)
         {
@@ -43,18 +45,53 @@ namespace CommonHelpers
 
         private static String? LogFileFolder;
 
+        private static void EnsureLogFileFolder()
+        {
+            if (LogFileFolder is not null)
+                return;
+
+            var documentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var steamControllerDocumentsFolder = Path.Combine(documentsFolder, "SteamDeckTools", "Logs");
+            Directory.CreateDirectory(steamControllerDocumentsFolder);
+            LogFileFolder = steamControllerDocumentsFolder;
+        }
+
+        public static void CleanupLogFiles(DateTime beforeTime)
+        {
+            EnsureLogFileFolder();
+
+            if (LogFileFolder is null)
+                return;
+
+            var searchPattern = String.Format("{0}_*.log", Instance.ApplicationName);
+            string[] files = Directory.GetFiles(LogFileFolder, searchPattern);
+
+            foreach (string file in files)
+            {
+                FileInfo fi = new FileInfo(file);
+                if (fi.LastAccessTime >= beforeTime)
+                    continue;
+
+                try
+                {
+                    fi.Delete();
+                }
+                catch (Exception ex)
+                {
+                    TraceException("CleanupLog", fi.Name, ex);
+                }
+            }
+        }
+
         private static SentryEvent? Sentry_BeforeSend(SentryEvent arg)
         {
             if (Instance.HasFile("DisableCheckForUpdates.txt") || Instance.HasFile("DisableSentryTracking.txt"))
                 return null;
 
-            if (LogFileFolder == null)
-            {
-                var documentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                var steamControllerDocumentsFolder = Path.Combine(documentsFolder, "SteamDeckTools", "Logs");
-                Directory.CreateDirectory(steamControllerDocumentsFolder);
-                LogFileFolder = steamControllerDocumentsFolder;
-            }
+            EnsureLogFileFolder();
+
+            if (LogFileFolder is null)
+                return null;
 
             String logFile = Path.Combine(LogFileFolder, String.Format("SentryLog_{0}.json", arg.Timestamp.ToString("yyyy-MM-dd")));
 
@@ -67,9 +104,34 @@ namespace CommonHelpers
             return arg;
         }
 
+        private static void WriteToLogFile(String line)
+        {
+            EnsureLogFileFolder();
+
+            if (LogFileFolder is null)
+                return;
+
+            String logFile = Path.Combine(LogFileFolder, String.Format("{0}_{1}.json",
+                Instance.ApplicationName, DateTime.UtcNow.ToString("yyyy-MM-dd")));
+
+            for (int i = 0; i < 3; i++)
+            {
+                try
+                {
+                    File.AppendAllText(logFile, String.Format("{0}: {1}: {2}\r\n",
+                        DateTime.UtcNow, Process.GetCurrentProcess().Id, line));
+                    return;
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(0);
+                }
+            }
+        }
+
         public static void TraceLine(string format, params object?[] arg)
         {
-            if (!LogToTrace && !LogToConsole)
+            if (!LogToTrace && !LogToConsole && !LogToFile)
                 return;
 
             String line = string.Format(format, arg);
@@ -77,6 +139,22 @@ namespace CommonHelpers
                 Trace.WriteLine(line);
             if (LogToConsole)
                 Console.WriteLine(line);
+            if (LogToFile)
+                WriteToLogFile(line);
+        }
+
+        public static void TraceDebug(string format, params object?[] arg)
+        {
+            if (!LogToTrace && !LogToConsole && !LogToFileDebug)
+                return;
+
+            String line = string.Format(format, arg);
+            if (LogToTrace)
+                Trace.WriteLine(line);
+            if (LogToConsole)
+                Console.WriteLine(line);
+            if (LogToFileDebug)
+                WriteToLogFile(line);
         }
 
         public static void TraceError(string format, params object?[] arg)
@@ -87,6 +165,8 @@ namespace CommonHelpers
                 Trace.WriteLine(line);
             if (LogToConsole)
                 Console.WriteLine(line);
+            if (LogToFile)
+                WriteToLogFile(line);
         }
 
         public static void TraceException(String type, Object? name, Exception e)

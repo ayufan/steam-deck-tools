@@ -41,6 +41,13 @@ namespace SteamController
             set { Set("DetectRTSSForeground", value); }
         }
 
+        [Description("Create a debug log in Documents/SteamDeckTools/Logs.")]
+        public bool EnableDebugLogging
+        {
+            get { return Get<bool>("EnableDebugLogging", false); }
+            set { Set("EnableDebugLogging", value); CommonHelpers.Log.LogToFileDebug = value; }
+        }
+
         [Description("Default profile used when going back to Desktop mode")]
         [Browsable(true)]
         [TypeConverter(typeof(ProfilesSettings.Helpers.ProfileStringConverter))]

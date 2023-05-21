@@ -9,6 +9,7 @@
 
 ## 0.6.x
 
+- SteamController/PowerControl: Create Logs in Documents/SteamDeckTools/Logs
 - SteamController: Improve **Steam Input** support for **Steam Version 1684535786** WARNING: only English is supported!
 - SteamController: Allow to configure DS4 back buttons
 - SteamController: Allow to `EnableDS4Support=false` to hide DS4 controller
