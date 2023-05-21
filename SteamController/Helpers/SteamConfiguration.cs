@@ -19,6 +19,7 @@ namespace SteamController.Helpers
         public const String PIDValue = @"pid";
 
         public const String RelativeConfigPath = @"config/config.vdf";
+        public const String CrashReportConfigPath = @"bin/cef/cef.win7x64/crash_reporter.cfg";
 
         private static readonly Regex ControllerBlacklistRegex = new Regex("^(\\s*\"controller_blacklist\"\\s*\")([^\"]*)(\"\\s*)$");
 
@@ -48,6 +49,18 @@ namespace SteamController.Helpers
             {
                 var value = GetValue<int>(SteamKey, RunningAppIDValue);
                 return value.HasValue ? value != 0 : null;
+            }
+        }
+
+        public static uint SteamVersion
+        {
+            get
+            {
+                var path = GetConfigPath(CrashReportConfigPath);
+                if (path is null)
+                    return 0;
+
+                return GetPrivateProfileInt("Config", "ProductVersion", 0, path);
             }
         }
 
@@ -400,5 +413,8 @@ namespace SteamController.Helpers
                 return null;
             }
         }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern uint GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName);
     }
 }

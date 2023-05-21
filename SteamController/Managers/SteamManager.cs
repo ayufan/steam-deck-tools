@@ -10,12 +10,21 @@ namespace SteamController.Managers
     {
         private static readonly Classifier[] Classifiers = new Classifier[]
         {
-            new Classifier() { Type = "gamepadui", ClassName = "SDL_app", WindowText = "SP", ProcessName = "steamwebhelper" },
-            new Classifier() { Type = "possiblegamepadui", ClassName = "SDL_app", WindowTextPrefix = "SP", ProcessName = "steamwebhelper" },
+            new Classifier() { Type = "gamepadui", ClassName = "SDL_app", WindowText = "SP", ProcessName = "steamwebhelper", MaxVersion = 1674182294-1 },
+            new Classifier() { Type = "possiblegamepadui", ClassName = "SDL_app", WindowTextPrefix = "SP", ProcessName = "steamwebhelper", MaxVersion = 1674182294-1 },
+
+            // Support Steam client released around 2023-05-21, version: 1684535786
+            new Classifier() { Type = "bigpicturemode_2023_05_21", ClassName = "SDL_app", ProcessName = "steamwebhelper", WindowTextSuffix = "Steam Big Picture Mode", MinVersion = 1684535786 },
+            new Classifier() { Type = "controller_layout_2023_05_21", ClassName = "SDL_app", ProcessName = "steamwebhelper", WindowText = "Controller Layout", MinVersion = 1684535786 }, // Controller Calibration
+            new Classifier() { Type = "desktop_guide_layout_2023_05_21", ClassName = "SDL_app", ProcessName = "steamwebhelper", WindowTextPrefix = "Steam Controller Configs -", MinVersion = 1684535786 }, // Desktop and Guide
+            new Classifier() { Type = "game_layout_2023_05_21", ClassName = "SDL_app", ProcessName = "steamwebhelper", WindowTextSuffix = "- Controller Layout", MinVersion = 1684535786 }, // for Game
 
             // Support Steam client released around 2023-01-20, version: 1674182294
-            new Classifier() { Type = "gamepadui_2023_01_20", ClassName = "SDL_app", ProcessName = "steamwebhelper" },
-            new Classifier() { Type = "controllerui_2023_01_20", ClassName = "CUIEngineWin32", ProcessName = "steam" },
+            new Classifier() { Type = "gamepadui_2023_05_21", ClassName = "SDL_app", ProcessName = "steamwebhelper", WindowText = "Steam", Forbid = true, MaxVersion = 1684535786-1 },
+            new Classifier() { Type = "gamepadui_2023_05_21", ClassName = "SDL_app", ProcessName = "steamwebhelper", WindowText = "Steam Settings", Forbid = true, MaxVersion = 1684535786-1 },
+            new Classifier() { Type = "gamepadui_2023_05_21", ClassName = "SDL_app", ProcessName = "steamwebhelper", WindowText = "Special Offers", Forbid = true, MaxVersion = 1684535786-1 },
+            new Classifier() { Type = "gamepadui_2023_01_20", ClassName = "SDL_app", ProcessName = "steamwebhelper", MaxVersion = 1684535786-1 },
+            new Classifier() { Type = "controllerui_2023_01_20", ClassName = "CUIEngineWin32", ProcessName = "steam", MaxVersion = 1684535786-1 },
             // new Classifier() { Type = "possiblegamepadui_2023_01_20", ClassName = "SDL_app", WindowTextSuffix = "Controller Layout", ProcessName = "steamwebhelper" },
         };
 
@@ -118,10 +127,18 @@ namespace SteamController.Managers
             if (processName is null)
                 return null;
 
+            var steamVersion = SteamConfiguration.SteamVersion;
+
             foreach (var classifier in Classifiers)
             {
-                if (classifier.Match(className, windowText, processName))
-                    return classifier.Type;
+                if (classifier.Match(className, windowText, processName, steamVersion))
+                {
+                    if (classifier.Forbid)
+                        return null;
+
+                    return String.Format("{0} (className={1}, windowText={2}, processName={3}, steamVersion={4})",
+                        classifier.Type, className, windowText, processName, steamVersion);
+                }
             }
 
             return null;
@@ -136,20 +153,27 @@ namespace SteamController.Managers
             public String? WindowTextSuffix { get; set; }
             public Regex? WindowTextRegex { get; set; }
             public String? ProcessName { get; set; }
+            public uint MinVersion { get; set; }
+            public uint MaxVersion { get; set; }
+            public bool Forbid { get; set; }
 
-            public bool Match(string className, string windowText, string processName)
+            public bool Match(string className, string windowText, string processName, uint steamVersion)
             {
                 if (ClassName is not null && className != ClassName)
                     return false;
                 if (WindowText is not null && windowText != WindowText)
                     return false;
-                if (WindowTextRegex is not null && WindowTextRegex.IsMatch(windowText))
+                if (WindowTextRegex is not null && !WindowTextRegex.IsMatch(windowText))
                     return false;
                 if (WindowTextPrefix is not null && !windowText.StartsWith(WindowTextPrefix))
                     return false;
                 if (WindowTextSuffix is not null && !windowText.EndsWith(WindowTextSuffix))
                     return false;
                 if (ProcessName is not null && !processName.EndsWith(ProcessName))
+                    return false;
+                if (MinVersion > 0 && steamVersion < MinVersion)
+                    return false;
+                if (MaxVersion > 0 && steamVersion > MaxVersion)
                     return false;
                 return true;
             }
