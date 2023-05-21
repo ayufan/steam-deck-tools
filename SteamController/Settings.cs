@@ -27,6 +27,13 @@ namespace SteamController
             set { Set("KeepX360AlwaysConnected", value); }
         }
 
+        [Description("Enable DS4 support. If disabled the DS4 will be hidden.")]
+        public bool EnableDS4Support
+        {
+            get { return Get<bool>("EnableDS4Support", true); }
+            set { Set("EnableDS4Support", value); }
+        }
+
         [Description("If current foreground process uses overlay, treat it as a game.")]
         public bool DetectRTSSForeground
         {

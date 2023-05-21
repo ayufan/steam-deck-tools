@@ -16,9 +16,15 @@ namespace SteamController.Profiles.Predefined
             }
         }
 
+        public override bool Visible
+        {
+            get => Settings.Default.EnableDS4Support && base.Visible;
+            set => base.Visible = value;
+        }
+
         public override bool Selected(Context context)
         {
-            return context.Enabled && context.DS4.Valid && context.KeyboardMouseValid && !context.State.SteamUsesSteamInput;
+            return Settings.Default.EnableDS4Support && context.Enabled && context.DS4.Valid && context.KeyboardMouseValid && !context.State.SteamUsesSteamInput;
         }
 
         internal override ProfilesSettings.BackPanelSettings BackPanelSettings

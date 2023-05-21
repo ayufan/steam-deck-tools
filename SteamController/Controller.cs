@@ -95,9 +95,7 @@ namespace SteamController
 #endif
 
             // Set available profiles
-            ProfilesSettings.Helpers.ProfileStringConverter.Profiles = context.Profiles.
-                Where((profile) => profile.Visible).
-                Select((profile) => profile.Name).ToArray();
+            ProfilesSettings.Helpers.ProfileStringConverter.Profiles = context.Profiles;
 
             var contextMenu = new ContextMenuStrip(components);
 
@@ -109,7 +107,7 @@ namespace SteamController
 
             foreach (var profile in context.Profiles)
             {
-                if (profile.Name == "" || !profile.Visible)
+                if (profile.Name == "")
                     continue;
 
                 var profileItem = new ToolStripMenuItem(profile.Name);
@@ -119,6 +117,7 @@ namespace SteamController
                     profileItem.Checked = context.CurrentProfile == profile;
                     profileItem.ToolTipText = String.Join("\n", profile.Errors ?? new string[0]);
                     profileItem.Enabled = profile.Errors is null;
+                    profileItem.Visible = profile.Visible;
                 };
                 contextMenu.Items.Add(profileItem);
             }
