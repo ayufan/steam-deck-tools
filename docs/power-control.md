@@ -32,6 +32,7 @@ Additional shortcuts:
 - Control Volume: use Volume Up and Down
 - Control Brightness: press and hold Quick Access (3 dots), and then Volume Up and Down
 - Press `3 dots + L4 + R4 + L5 + R5` to reset (TDP, Refresh Rate, FPS limit) to default
+- Press `3 dots + L1 + R1` to reset current resolution (allows to fix black screen)
 
 ## 2. SWICD configuration
 

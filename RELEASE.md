@@ -4,14 +4,24 @@
 
 [**READ IF PLAYING ONLINE GAMES AND/OR GAMES THAT HAVE ANTI-CHEAT ENABLED**](https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software)
 
-## 0.6.x
+## Latest
+
+- PowerControl: Add `3 dots + L1 + R1` to reset current resolution
+
+## 0.6.17
 
 - SteamController/PowerControl: Create Logs in Documents/SteamDeckTools/Logs
 - SteamController: Improve **Steam Input** support for **Steam Version 1684535786** WARNING: only English is supported!
 - SteamController: Allow to configure DS4 back buttons
 - SteamController: Allow to `EnableDS4Support=false` to hide DS4 controller
+
+## 0.6.16
+
 - All: Support [unofficial APU drivers](https://sourceforge.net/projects/amernimezone/files/Release%20Polaris-Vega-Navi/AMD%20SOC%20Driver%20Variant/) that present themselves as `AMD Radeon 670M`
 - PowerControl: Show Game Profiles menu item
+
+## 0.6.15
+
 - PowerControl: Support SMU of Vangogh GPU shipped with BIOS 115
 - SteamController: Add `DS4` support (with Gyro, Accel, Trackpads and Haptics)
 - SteamController: Move `KeepX360AlwaysConnected` to `Settings`

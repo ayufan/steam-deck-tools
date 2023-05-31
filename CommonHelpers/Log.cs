@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json;
 using Sentry;
 
 namespace CommonHelpers
@@ -127,6 +128,15 @@ namespace CommonHelpers
                     Thread.Sleep(0);
                 }
             }
+        }
+
+        public static void TraceObject(string name, object subject)
+        {
+            var serialized = JsonSerializer.Serialize(
+                subject,
+                new JsonSerializerOptions { IncludeFields = true }
+            );
+            TraceLine("Object: {0}: {1}", name, serialized);
         }
 
         public static void TraceLine(string format, params object?[] arg)

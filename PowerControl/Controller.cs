@@ -323,9 +323,24 @@ namespace PowerControl
                 input.buttons4 == (SDCButton4.BTN_L4 | SDCButton4.BTN_R4) &&
                 input.buttons5 == SDCButton5.BTN_QUICK_ACCESS)
             {
+                dismissNeptuneInput();
                 rootMenu.Show();
                 rootMenu.Reset();
                 notifyIcon.ShowBalloonTip(3000, TitleWithVersion, "Settings were reset to default.", ToolTipIcon.Info);
+                return;
+            }
+
+            // Display reset sequence
+            if (input.buttons0 == (SDCButton0.BTN_L1 | SDCButton0.BTN_R1) &&
+                input.buttons1 == 0 &&
+                input.buttons2 == 0 &&
+                input.buttons3 == 0 &&
+                input.buttons4 == 0 &&
+                input.buttons5 == SDCButton5.BTN_QUICK_ACCESS)
+            {
+                dismissNeptuneInput();
+                DisplayResolutionController.ResetCurrentResolution();
+                notifyIcon.ShowBalloonTip(3000, TitleWithVersion, "Resolution was reset.", ToolTipIcon.Info);
                 return;
             }
 

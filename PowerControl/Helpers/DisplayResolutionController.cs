@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using CommonHelpers;
 using static PowerControl.Helpers.PhysicalMonitorBrightnessController;
 
 namespace PowerControl.Helpers
@@ -71,15 +72,91 @@ namespace PowerControl.Helpers
             return null;
         }
 
-        public static bool SetDisplaySettings(DEVMODE? best)
+        private static bool SetDisplaySettings(String type, DEVMODE? best)
         {
             if (best == null)
                 return false;
 
+            DEVMODE oldDm = new DEVMODE();
+            if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref oldDm))
+                return false;
+
+            Log.TraceObject("SetDisplaySettings:" + type + ":IN", oldDm);
+
             DEVMODE dm = best.Value;
 
-            var dispChange = ChangeDisplaySettingsEx(null, ref dm, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_NONE, IntPtr.Zero);
-            return dispChange == DISP_CHANGE.Successful;
+            if (dm.dmPelsWidth == oldDm.dmPelsWidth &&
+                dm.dmPelsHeight == oldDm.dmPelsHeight &&
+                dm.dmDisplayFrequency == oldDm.dmDisplayFrequency)
+            {
+                Log.TraceLine(
+                    "DispChange: {0}, already set: {1}x{2}@{3}",
+                    type,
+                    oldDm.dmPelsWidth, oldDm.dmPelsHeight, oldDm.dmDisplayFrequency);
+                return true;
+            }
+
+            var testChange = ChangeDisplaySettingsEx(
+                null, ref dm, IntPtr.Zero,
+                ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
+            var applyChange = DISP_CHANGE.NotUpdated;
+            Log.TraceObject("SetDisplaySettings:" + type + ":REQ", dm);
+
+            if (testChange == DISP_CHANGE.Successful)
+            {
+                applyChange = ChangeDisplaySettingsEx(
+                    null, ref dm, IntPtr.Zero,
+                    ChangeDisplaySettingsFlags.CDS_RESET, IntPtr.Zero);
+            }
+
+            DEVMODE newDm = new DEVMODE();
+            if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref newDm))
+                return false;
+
+            Log.TraceObject("SetDisplaySettings:" + type + ":OUT", newDm);
+
+            Log.TraceLine(
+                "DispChange: {0}, Test: {1}, Set: {8}, from: {2}x{3}@{4}, to: {5}x{6}@{7}",
+                type, testChange,
+                oldDm.dmPelsWidth, oldDm.dmPelsHeight, oldDm.dmDisplayFrequency,
+                newDm.dmPelsWidth, newDm.dmPelsHeight, newDm.dmDisplayFrequency,
+                applyChange
+            );
+
+            return applyChange == DISP_CHANGE.Successful;
+        }
+
+        public static bool SetDisplaySettings(DisplayResolution size, int hz, String type = "DisplaySettings")
+        {
+            DEVMODE? best = FindAllDisplaySettings()
+                .Where((dm) => dm.dmPelsWidth == size.Width && dm.dmPelsHeight == size.Height)
+                .Where((dm) => dm.dmDisplayFrequency == hz)
+                .First();
+
+            if (best is null)
+                return false;
+
+            return SetDisplaySettings(type, best);
+        }
+
+        public static bool ResetCurrentResolution()
+        {
+            try
+            {
+                var dm = CurrentDisplaySettings();
+
+                // Reset to best default
+                var bestResolution = GetAllResolutions().Last();
+                var bestRefreshRate = GetRefreshRates(bestResolution).Max();
+                SetDisplaySettings(bestResolution, bestRefreshRate, "ResetToDefault");
+
+                return SetDisplaySettings("Reset", dm);
+            }
+            catch (Exception e)
+            {
+                Log.TraceException("ResetResolution", e);
+                return false;
+            }
         }
 
         public static DisplayResolution[] GetAllResolutions()
@@ -108,20 +185,7 @@ namespace PowerControl.Helpers
             if (best == null)
                 return false;
 
-            DEVMODE dm = best.Value;
-
-            var dispChange = ChangeDisplaySettingsEx(null, ref dm, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_NONE, IntPtr.Zero);
-
-            if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref dm))
-                return false;
-
-            Trace.WriteLine("DispChange: " + dispChange.ToString() + " Size:" + size.ToString() +
-                " SetSize:" + new DisplayResolution(dm.dmPelsWidth, dm.dmPelsHeight).ToString());
-
-            if (dispChange == DISP_CHANGE.Successful)
-                return true;
-
-            return true;
+            return SetDisplaySettings("Resolution", best);
         }
 
         public static int[] GetRefreshRates(DisplayResolution? size = null)
@@ -150,32 +214,11 @@ namespace PowerControl.Helpers
 
         public static bool SetRefreshRate(int hz)
         {
-            var current = CurrentDisplaySettings();
-
+            var current = GetResolution();
             if (current is null)
                 return false;
 
-            DEVMODE? best = FindAllDisplaySettings()
-                .Where((dm) => dm.dmPelsWidth == current.Value.dmPelsWidth && dm.dmPelsHeight == current.Value.dmPelsHeight)
-                .Where((dm) => dm.dmDisplayFrequency == hz)
-                .First();
-
-            if (best is null)
-                return false;
-
-            DEVMODE dm = best.Value;
-
-            var dispChange = ChangeDisplaySettingsEx(null, ref dm, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_NONE, IntPtr.Zero);
-
-            if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref dm))
-                return false;
-
-            Trace.WriteLine("DispChange: " + dispChange.ToString() + " HZ:" + hz.ToString() + " SetHZ:" + dm.dmDisplayFrequency.ToString());
-
-            if (dispChange == DISP_CHANGE.Successful)
-                return true;
-
-            return true;
+            return SetDisplaySettings(current.Value, hz, "SetRefreshRate");
         }
 
 
