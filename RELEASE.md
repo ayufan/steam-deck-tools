@@ -4,7 +4,7 @@
 
 [**READ IF PLAYING ONLINE GAMES AND/OR GAMES THAT HAVE ANTI-CHEAT ENABLED**](https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software)
 
-## Latest
+## #{GIT_TAG_NAME}
 
 - PowerControl: Add `3 dots + L1 + R1` to reset current resolution
 

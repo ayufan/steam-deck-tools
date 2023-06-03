@@ -63,6 +63,10 @@ jobs:
           /DVERSION=${{ env.RELEASE_VERSION }}
           /DBUILD_DIR=../${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}
           /DOUTPUT_FILE=../${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}-setup.exe
+    - name: Update version in RELEASE.md
+      shell: bash
+      run: |
+        sed -i 's|#{GIT_TAG_NAME}|${{ env.RELEASE_VERSION }}|g' RELEASE.md
     - uses: ncipollo/release-action@v1
       with:
         tag: ${{ env.RELEASE_VERSION }}
