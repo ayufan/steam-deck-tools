@@ -6,6 +6,10 @@
 
 ## #{GIT_TAG_NAME}
 
+- FanControl: Support `0xB030/0xA` device
+
+## 0.6.18
+
 - PowerControl: Add `3 dots + L1 + R1` to reset current resolution
 
 ## 0.6.17

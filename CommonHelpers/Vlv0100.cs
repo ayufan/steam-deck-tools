@@ -24,7 +24,8 @@
         };
 
         public static readonly byte[] SupportedBoardID = {
-            6
+            6,
+            0xA
         };
 
         public static readonly byte[] SupportedPDCS = {
