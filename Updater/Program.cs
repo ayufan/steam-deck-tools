@@ -236,34 +236,7 @@ namespace Updater
         {
             get
             {
-                try
-                {
-                    using (var registryKey = Registry.CurrentUser.CreateSubKey(@"Software\SteamDeckTools", true))
-                    {
-                        var installationTime = registryKey?.GetValue("InstallationTime") as string;
-                        if (installationTime is null)
-                        {
-                            var previousTime = RegistryUtils.GetDateModified(
-                                RegistryHive.CurrentUser, @"Software\SteamDeckTools");
-                            Log.TraceLine("PreviousTime: {0}", previousTime);
-                            previousTime ??= DateTimeOffset.UtcNow;
-
-                            registryKey?.SetValue("InstallationTime", previousTime.Value.ToUnixTimeMilliseconds());
-                            installationTime = registryKey?.GetValue("InstallationTime") as string;
-                        }
-
-                        if (!Instance.AcceptedTerms)
-                        {
-                            return "";
-                        }
-
-                        return installationTime ?? "";
-                    }
-                }
-                catch (Exception e)
-                {
-                    return "";
-                }
+                return "";
             }
         }
 

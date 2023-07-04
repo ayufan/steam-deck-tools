@@ -220,11 +220,6 @@ namespace CommonHelpers
             return File.Exists(uninstallExe);
         }
 
-        public static bool AcceptedTerms
-        {
-            get { return HasFile("Uninstall.exe"); }
-        }
-
         private static System.Timers.Timer? updateTimer;
 
         public static void RunUpdater(string Title, bool user = false, int recheckIntervalHours = 24)

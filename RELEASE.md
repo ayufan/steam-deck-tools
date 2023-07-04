@@ -8,6 +8,7 @@
 
 - FanControl: Support `0xB030/0xA` device
 - SteamController: `DS4` backpanel and haptic settings are part of Release build
+- Updater: Remove `InstallationTime`
 
 ## 0.6.18
 
