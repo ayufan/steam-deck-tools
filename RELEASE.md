@@ -7,6 +7,7 @@
 ## #{GIT_TAG_NAME}
 
 - FanControl: Support `0xB030/0xA` device
+- SteamController: `DS4` backpanel and haptic settings are part of Release build
 
 ## 0.6.18
 

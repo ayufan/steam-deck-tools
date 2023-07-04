@@ -400,10 +400,8 @@ namespace SteamController
                     Desktop = ProfilesSettings.DesktopPanelSettings.Default,
                     X360 = ProfilesSettings.X360BackPanelSettings.Default,
                     X360Haptic = ProfilesSettings.HapticSettings.X360,
-#if DEBUG
                     DS4 = ProfilesSettings.DS4BackPanelSettings.Default,
                     DS4Haptic = ProfilesSettings.HapticSettings.DS4,
-#endif
                     Application = Settings.Default,
 #if DEBUG
                     DEBUG = SettingsDebug.Default
