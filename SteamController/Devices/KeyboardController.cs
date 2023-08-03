@@ -126,6 +126,15 @@ namespace SteamController.Devices
         {
             Safe(() => simulator.Keyboard.KeyPress(keyCodes));
         }
+        public void KeyPressDown(params VirtualKeyCode[] keyCodes)
+        {
+            Safe(() => simulator.Keyboard.KeyDown(keyCodes));
+        }
+
+        public void KeyPressUp(params VirtualKeyCode[] keyCodes)
+        {
+            Safe(() => simulator.Keyboard.KeyUp(keyCodes));
+        }
 
         public void KeyPress(VirtualKeyCode modifierKey, params VirtualKeyCode[] keyCodes)
         {
