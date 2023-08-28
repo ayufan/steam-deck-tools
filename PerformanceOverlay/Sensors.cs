@@ -235,7 +235,7 @@ namespace PerformanceOverlay
                 "GPU_%", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M", "AMD Radeon RX 670 Graphics" },
                     SensorType = SensorType.Load,
                     SensorName = "D3D 3D",
                     Format = "F0"
@@ -245,7 +245,7 @@ namespace PerformanceOverlay
                 "GPU_MB", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M", "AMD Radeon RX 670 Graphics" },
                     SensorType = SensorType.SmallData,
                     SensorName = "D3D Dedicated Memory Used",
                     Format = "F0"
@@ -255,7 +255,7 @@ namespace PerformanceOverlay
                 "GPU_GB", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M", "AMD Radeon RX 670 Graphics" },
                     SensorType = SensorType.SmallData,
                     SensorName = "D3D Dedicated Memory Used",
                     Format = "F0",
@@ -266,7 +266,7 @@ namespace PerformanceOverlay
                 "GPU_W", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M", "AMD Radeon RX 670 Graphics" },
                     SensorType = SensorType.Power,
                     SensorName = "GPU SoC",
                     Format = "F1"
@@ -276,7 +276,7 @@ namespace PerformanceOverlay
                 "GPU_MHZ", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M", "AMD Radeon RX 670 Graphics" },
                     SensorType = SensorType.Clock,
                     SensorName = "GPU Core",
                     Format = "F0"
@@ -286,7 +286,7 @@ namespace PerformanceOverlay
                 "GPU_T", new HardwareSensor()
                 {
                     HardwareType = HardwareType.GpuAmd,
-                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M" },
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Radeon 670M", "AMD Radeon RX 670 Graphics" },
                     SensorType = SensorType.Temperature,
                     SensorName = "GPU Temperature",
                     Format = "F1",
