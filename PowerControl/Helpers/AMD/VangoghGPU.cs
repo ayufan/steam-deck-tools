@@ -15,6 +15,8 @@ namespace PowerControl.Helpers.AMD
             // SteamDeck unofficial APU drivers
             // https://sourceforge.net/projects/amernimezone/files/Release%20Polaris-Vega-Navi/AMD%20SOC%20Driver%20Variant/
             new Device("AMD Radeon 670M", 0x80300000, 0x8037ffff, new uint[] { 0x43F3900, 0x43F3C05, 0x43F3E00 }),
+            new Device("AMD Radeon RX 670 Graphics", 0x80300000, 0x8037ffff, new uint[] { 0x43F3900, 0x43F3C05, 0x43F3E00 }),
+            
         };
 
         private static Device? DetectedDevice;
