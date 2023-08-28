@@ -6,6 +6,10 @@
 
 ## #{GIT_TAG_NAME}
 
+- PerformanceOverlay/PowerControl: Add support for `AMD Radeon RX 670 Graphics`
+
+## 0.6.19
+
 - FanControl: Support `0xB030/0xA` device
 - SteamController: `DS4` backpanel and haptic settings are part of Release build
 - Updater: Remove `InstallationTime`
