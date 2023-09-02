@@ -41,6 +41,14 @@ namespace SteamController
             set { Set("DetectRTSSForeground", value); }
         }
 
+        [Browsable(true)]
+        [Description("Deadzone for left and right sticks. Enter a number between 0 and 32768. If this number is too small you may experience drift. 5000 or smaller is recommended.")]
+        public short JoystickDeadZone
+        {
+            get { return Get<short>("JoystickDeadZone", 5000); }
+            set { Set("JoystickDeadZone", value); }
+        }
+
         [Description("Create a debug log in Documents/SteamDeckTools/Logs.")]
         public bool EnableDebugLogging
         {
@@ -86,6 +94,8 @@ namespace SteamController
             get { return Get<SteamControllerConfigsMode>("SteamControllerConfigs", SteamControllerConfigsMode.Overwrite); }
             set { Set("SteamControllerConfigs", value); }
         }
+
+        
 
         public enum KeyboardStyles
         {

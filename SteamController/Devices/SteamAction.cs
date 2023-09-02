@@ -271,8 +271,10 @@ namespace SteamController.Devices
         public SteamButton? ActiveButton { get; internal set; }
         public SteamButton? VirtualLeft { get; internal set; }
         public SteamButton? VirtualRight { get; internal set; }
+
         public short Deadzone { get; internal set; }
-        public short MinChange { get; internal set; }
+        public bool UseDeadzoneSetting {get; internal set;} = false;
+        public short MinChange { get; internal set; } = 10;
         public DeltaValueMode DeltaValueMode { get; internal set; } = DeltaValueMode.Absolute;
         public SteamAxis? PartnerAxis { get; internal set; }
 
@@ -293,8 +295,9 @@ namespace SteamController.Devices
         public static implicit operator bool(SteamAxis button) => button.Active;
         public static implicit operator short(SteamAxis button)
         {
+            if (button.UseDeadzoneSetting)
+                button.Deadzone = Settings.Default.JoystickDeadZone;
             int pValue = button.PartnerAxis?.Value ?? button.Value;
-            // get circular deadzone reference
             int dzValue = pValue == button.Value ? button.Value : (int)Math.Sqrt(pValue * pValue + button.Value * button.Value);
             return dzValue > button.Deadzone ? button.Value : (short)0;
         }
@@ -316,8 +319,7 @@ namespace SteamController.Devices
             
             int value = 0;
             int pValue = PartnerAxis?.Value ?? Value;
-           
-            // get circular deadzone reference
+            if (UseDeadzoneSetting) Deadzone = Settings.Default.JoystickDeadZone;
             int dzValue = (int)Math.Sqrt(pValue * pValue + Value * Value);
 
             switch (mode)
