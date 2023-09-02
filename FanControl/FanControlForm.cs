@@ -133,7 +133,7 @@ namespace FanControl
             if (selectedFanMode == FanMode.Silent)
             {
                 sharedPCSData.GetValue(out var sharedPCS);
-                sharedPCS.DesiredTDP = "10W";
+                sharedPCS.DesiredTDP = GlobalConstants.DefaultSilentTDP;
                 sharedPCSData.SetValue(sharedPCS);
             }
         }
