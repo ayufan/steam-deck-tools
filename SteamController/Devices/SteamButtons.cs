@@ -71,6 +71,12 @@ namespace SteamController.Devices
             LeftThumbX.VirtualRight = BtnVirtualLeftThumbRight;
             LeftThumbY.VirtualLeft = BtnVirtualLeftThumbDown;
             LeftThumbY.VirtualRight = BtnVirtualLeftThumbUp;
+
+            // set partner axes for circle deadzone
+            LeftThumbX.PartnerAxis = LeftThumbY;
+            LeftThumbY.PartnerAxis = LeftThumbX;
+            RightThumbX.PartnerAxis = RightThumbY;
+            RightThumbY.PartnerAxis = RightThumbX;
         }
     }
 }
