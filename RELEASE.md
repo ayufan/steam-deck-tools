@@ -6,6 +6,10 @@
 
 ## #{GIT_TAG_NAME}
 
+- ...
+
+## 0.6.20
+
 - PerformanceOverlay/PowerControl: Add support for `AMD Radeon RX 670 Graphics`
 
 ## 0.6.19
