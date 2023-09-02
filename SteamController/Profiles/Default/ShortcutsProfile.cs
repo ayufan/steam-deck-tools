@@ -59,7 +59,15 @@ namespace SteamController.Profiles.Default
                 return true;
             }
 
-            if (c.Steam.BtnMenu.Pressed())
+            if (c.Steam.BtnMenu.HoldOnce(HoldToSwitchProfile, ShortcutConsumed))
+            {
+                c.Keyboard.KeyPressDown(VirtualKeyCode.LWIN);
+                c.Keyboard.KeyPress(VirtualKeyCode.LSHIFT, VirtualKeyCode.RETURN);
+                c.Keyboard.KeyPressUp(VirtualKeyCode.LWIN);
+                return true;
+            }
+
+            else if (c.Steam.BtnMenu.Pressed())
             {
                 c.Keyboard.KeyPress(VirtualKeyCode.F11);
                 return true;
