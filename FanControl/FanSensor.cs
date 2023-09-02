@@ -1,12 +1,6 @@
 ﻿using CommonHelpers;
 using LibreHardwareMonitor.Hardware;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FanControl
 {
@@ -36,7 +30,8 @@ namespace FanControl
             {
                 Constant,
                 Quadratic,
-                Pid
+                Pid,
+                Exponential
             }
 
             public ProfileType Type { get; set; }
@@ -78,6 +73,10 @@ namespace FanControl
                     case ProfileType.Pid:
                         rpm = calculatePidRPM(input);
                         break;
+
+                    case ProfileType.Exponential:
+                        rpm = calculateExponentialRPM(input);
+                        break;
                 }
 
                 if (input < MinInput)
@@ -118,6 +117,11 @@ namespace FanControl
                 pidLastTime = DateTime.Now;
 
                 return pidP + pidI + pidD;
+            }
+
+            private float calculateExponentialRPM(float input)
+            {
+                return (float)(Math.Pow(A, input - B) + C);
             }
         }
 

@@ -10,6 +10,7 @@ namespace CommonHelpers
     public enum FanMode : uint
     {
         Default = 17374,
+        Silent,
         SteamOS,
         Max
     }
