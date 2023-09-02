@@ -27,6 +27,14 @@ namespace PowerControl.Options
                 value.Desired = Enum.Parse<FanMode>(selected);
                 if (!SharedData<FanModeSetting>.SetExistingValue(value))
                     return null;
+                if (value.Desired == FanMode.Silent && TDP.Instance != null && TDP.Instance.Options.Contains(GlobalConstants.DefaultSilentTDP))
+                {
+                    TDP.Instance.Set(GlobalConstants.DefaultSilentTDP, false, true);
+                    Notifier.Notify(
+                        $"TDP reset to {GlobalConstants.DefaultSilentTDP}.",
+                        Controller.TitleWithVersion,
+                        Controller.Icon);
+                }
                 return selected;
             }
         };

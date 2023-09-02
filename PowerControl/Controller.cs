@@ -1,6 +1,5 @@
 ﻿using CommonHelpers;
 using ExternalHelpers;
-using hidapi;
 using Microsoft.Win32;
 using PowerControl.External;
 using PowerControl.Helpers;
@@ -12,13 +11,16 @@ namespace PowerControl
 {
     internal class Controller : IDisposable
     {
-        public const String Title = "Power Control";
-        public static readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
+        public const string Title = "Power Control";
+        public static readonly string TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
         public const int KeyPressRepeatTime = 400;
         public const int KeyPressNextRepeatTime = 90;
+        public static readonly Icon Icon = WindowsDarkMode.IsDarkModeEnabled 
+            ? Resources.traffic_light_outline_light 
+            : Resources.traffic_light_outline;
 
         Container components = new Container();
-        System.Windows.Forms.NotifyIcon notifyIcon;
+        NotifyIcon notifyIcon;
         StartupManager startupManager = new StartupManager(Title);
 
         Menu.MenuRoot rootMenu = MenuStack.Root;
@@ -32,6 +34,7 @@ namespace PowerControl
         SDCInput neptuneDeviceState = new SDCInput();
         DateTime? neptuneDeviceNextKey;
         System.Windows.Forms.Timer neptuneTimer;
+        System.Windows.Forms.Timer powerControlLoopTimer;
 
         ProfilesController? profilesController;
 
@@ -131,8 +134,8 @@ namespace PowerControl
             var exitItem = contextMenu.Items.Add("&Exit");
             exitItem.Click += ExitItem_Click;
 
-            notifyIcon = new System.Windows.Forms.NotifyIcon(components);
-            notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.traffic_light_outline_light : Resources.traffic_light_outline;
+            notifyIcon = new NotifyIcon(components);
+            notifyIcon.Icon = Icon;
             notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenu;
@@ -250,6 +253,11 @@ namespace PowerControl
 
             wasInternalDisplayConnected = ExternalHelpers.DisplayConfig.IsInternalConnected.GetValueOrDefault(false);
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+
+            powerControlLoopTimer = new System.Windows.Forms.Timer(components);
+            powerControlLoopTimer.Enabled = true;
+            powerControlLoopTimer.Interval = 250;
+            powerControlLoopTimer.Tick += new EventHandler(PowerControlLoopTimer_Tick);
         }
 
         private void OsdTimer_Tick(object? sender, EventArgs e)
@@ -257,7 +265,7 @@ namespace PowerControl
             try
             {
                 notifyIcon.Text = TitleWithVersion + ". RTSS Version: " + OSD.Version;
-                notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.traffic_light_outline_light : Resources.traffic_light_outline;
+                notifyIcon.Icon = Icon;
             }
             catch
             {
@@ -297,6 +305,35 @@ namespace PowerControl
                 Thread.Sleep(50);
 
             return new Task(() => { });
+        }
+
+        private void PowerControlLoopTimer_Tick(object sender, EventArgs e)
+        {
+            if (powerControlLoopTimer is null)
+                return;
+
+            try
+            {
+                powerControlLoopTimer.Enabled = false;
+
+                //if (TDP.Instance != null
+                //    && sharedData.GetValue(out var sharedPCS)
+                //    && TDP.Instance.Options.Contains(sharedPCS.DesiredTDP)
+                //    && TDP.Instance.ActiveOption != sharedPCS.DesiredTDP)
+                //{
+                //    TDP.Instance.Set(sharedPCS.DesiredTDP, false, true);
+                //    Notifier.Notify(
+                //        $"TDP reset to {TDP.DefaultSilentTDP}.",
+                //        TitleWithVersion,
+                //        Icon);
+                //    sharedPCS.CurrentTDP = sharedPCS.DesiredTDP;
+                //    sharedData.SetValue(sharedPCS);
+                //}
+            }
+            finally
+            {
+                powerControlLoopTimer.Enabled = true;
+            }
         }
 
         private void dismissNeptuneInput()
@@ -410,7 +447,7 @@ namespace PowerControl
         {
             sharedData.SetValue(new PowerControlSetting()
             {
-                Current = rootMenu.Visible ? PowerControlVisible.Yes : PowerControlVisible.No
+                Visible = rootMenu.Visible ? PowerControlVisible.Yes : PowerControlVisible.No
             });
 
             if (!rootMenu.Visible)

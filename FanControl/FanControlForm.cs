@@ -11,7 +11,8 @@ namespace FanControl
             "Starts Steam Deck Fan Control on Windows startup."
         );
 
-        private SharedData<FanModeSetting> sharedData = SharedData<FanModeSetting>.CreateNew();
+        private SharedData<FanModeSetting> sharedFMSData = SharedData<FanModeSetting>.CreateNew();
+        private SharedData<PowerControlSetting> sharedPCSData = SharedData<PowerControlSetting>.CreateNew();
 
         public FanControlForm()
         {
@@ -23,6 +24,9 @@ namespace FanControl
             InitializeComponent();
 
             Text += " v" + Application.ProductVersion.ToString();
+            Icon = WindowsDarkMode.IsDarkModeEnabled
+                ? Resources.fan_white
+                : Resources.fan;
             Instance.Open(Text, true, "Global\\FanControlOnce");
             Instance.RunUpdater(Text);
 
@@ -34,7 +38,7 @@ namespace FanControl
 
             notifyIcon.Text = Text;
             notifyIcon.Visible = true;
-            notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.fan_white : Resources.fan;
+            notifyIcon.Icon = Icon;
 
             TopMost = Settings.Default.AlwaysOnTop;
             toolStripMenuItemAlwaysOnTop.Checked = TopMost;
@@ -124,7 +128,14 @@ namespace FanControl
         private void fanModeSelectMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
             var menuItem = (ToolStripComboBox)sender;
-            setFanMode((FanMode)menuItem.SelectedItem);
+            var selectedFanMode = (FanMode)menuItem.SelectedItem;
+            setFanMode(selectedFanMode);
+            if (selectedFanMode == FanMode.Silent)
+            {
+                sharedPCSData.GetValue(out var sharedPCS);
+                sharedPCS.DesiredTDP = "10W";
+                sharedPCSData.SetValue(sharedPCS);
+            }
         }
 
         private void FanControlForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -157,12 +168,12 @@ namespace FanControl
 
         private void SharedData_Update()
         {
-            if (sharedData.GetValue(out var value) && Enum.IsDefined<FanMode>(value.Desired))
+            if (sharedFMSData.GetValue(out var value) && Enum.IsDefined<FanMode>(value.Desired))
             {
                 setFanMode((FanMode)value.Desired);
             }
 
-            sharedData.SetValue(new FanModeSetting()
+            sharedFMSData.SetValue(new FanModeSetting()
             {
                 Current = fanControl.Mode,
                 KernelDriversLoaded = Instance.UseKernelDrivers ? KernelDriversLoaded.Yes : KernelDriversLoaded.No
@@ -192,7 +203,7 @@ namespace FanControl
 
         private void propertyGridUpdateTimer_Tick(object sender, EventArgs e)
         {
-            notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.fan_white : Resources.fan;
+            notifyIcon.Icon = Icon;
 
             if (!Visible)
                 return;

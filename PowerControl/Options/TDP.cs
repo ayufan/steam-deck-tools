@@ -9,6 +9,8 @@ namespace PowerControl.Options
         public const string SlowTDP = "SlowTDP";
         public const string FastTDP = "FastTDP";
 
+        public const string ResetTDP = "15W";
+
         public const int DefaultSlowTDP = 15000;
         public const int DefaultFastTDP = 15000;
 
@@ -27,9 +29,12 @@ namespace PowerControl.Options
                     options.ForOption("7W").Set(SlowTDP, 7000).Set(FastTDP, 7000),
                     options.ForOption("8W").Set(SlowTDP, 8000).Set(FastTDP, 8000),
                     options.ForOption("9W").Set(SlowTDP, 9000).Set(FastTDP, 9000),
-                    options.ForOption("10W").Set(SlowTDP, 10000).Set(FastTDP, 10000),
+                    options.ForOption(GlobalConstants.DefaultSilentTDP).Set(SlowTDP, 10000).Set(FastTDP, 10000),
+                    options.ForOption("11W").Set(SlowTDP, 11000).Set(FastTDP, 11000),
                     options.ForOption("12W").Set(SlowTDP, 12000).Set(FastTDP, 12000),
-                    options.ForOption("15W").Set(SlowTDP, 15000).Set(FastTDP, 15000),
+                    options.ForOption("13W").Set(SlowTDP, 13000).Set(FastTDP, 13000),
+                    options.ForOption("14W").Set(SlowTDP, 14000).Set(FastTDP, 14000),
+                    options.ForOption(ResetTDP).Set(SlowTDP, 15000).Set(FastTDP, 15000),
                 });
             }
 
@@ -43,7 +48,7 @@ namespace PowerControl.Options
             PersistOnCreate = false,
             OptionsValues = () => { return UserOptions().GetOptions(); },
             ApplyDelay = 1000,
-            ResetValue = () => { return "15W"; },
+            ResetValue = () => { return ResetTDP; },
             ActiveOption = "?",
             ApplyValue = (selected) =>
             {
@@ -65,12 +70,17 @@ namespace PowerControl.Options
                     return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>
                     {
                         using (var sd = VangoghGPU.Open())
+                        using (var sharedData = SharedData<PowerControlSetting>.CreateNew())
                         {
                             if (sd is null)
                                 return null;
 
                             sd.SlowTDP = (uint)slowTDP;
                             sd.FastTDP = (uint)fastTDP;
+
+                            sharedData.GetValue(out var sharedPCS);
+                            sharedPCS.DesiredTDP = GlobalConstants.DefaultSilentTDP;
+                            sharedData.SetValue(sharedPCS);
                         }
 
                         return selected;
@@ -84,9 +94,9 @@ namespace PowerControl.Options
                     {
                         FileName = "Resources/RyzenAdj/ryzenadj.exe",
                         ArgumentList = {
-                                    "--stapm-limit=" + stampLimit.ToString(),
-                                    "--slow-limit=" + slowTDP.ToString(),
-                                    "--fast-limit=" + fastTDP.ToString(),
+                            "--stapm-limit=" + stampLimit.ToString(),
+                            "--slow-limit=" + slowTDP.ToString(),
+                            "--fast-limit=" + fastTDP.ToString(),
                         },
                         WindowStyle = ProcessWindowStyle.Hidden,
                         UseShellExecute = false,

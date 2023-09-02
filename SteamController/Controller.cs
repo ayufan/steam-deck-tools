@@ -2,14 +2,19 @@ using CommonHelpers;
 using ExternalHelpers;
 using Microsoft.Win32;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace SteamController
 {
     internal class Controller : IDisposable
     {
-        public const String Title = "Steam Controller";
-        public static readonly String TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
+        public const string Title = "Steam Controller";
+        public static readonly string TitleWithVersion = Title + " v" + Application.ProductVersion.ToString();
+        public static readonly Icon IconController = WindowsDarkMode.IsDarkModeEnabled 
+            ? Resources.microsoft_xbox_controller_off_white 
+            : Resources.microsoft_xbox_controller_off;
+        public static readonly Icon IconMonitor = WindowsDarkMode.IsDarkModeEnabled
+            ? Resources.monitor_off_white
+            : Resources.monitor;
 
         public const int ControllerDelayAfterResumeMs = 1000;
 
@@ -77,7 +82,7 @@ namespace SteamController
                 startupManager.Startup = true;
 
             notifyIcon = new NotifyIcon(components);
-            notifyIcon.Icon = WindowsDarkMode.IsDarkModeEnabled ? Resources.microsoft_xbox_controller_off_white : Resources.microsoft_xbox_controller_off;
+            notifyIcon.Icon = IconController;
             notifyIcon.Text = TitleWithVersion;
             notifyIcon.Visible = true;
 
@@ -218,10 +223,7 @@ namespace SteamController
             if (!context.KeyboardMouseValid)
             {
                 notifyIcon.Text = TitleWithVersion + ". Cannot send input.";
-                if (WindowsDarkMode.IsDarkModeEnabled)
-                    notifyIcon.Icon = Resources.monitor_off_white;
-                else
-                    notifyIcon.Icon = Resources.monitor_off;
+                notifyIcon.Icon = IconMonitor;
             }
             else if (!context.X360.Valid || !context.DS4.Valid)
             {
@@ -236,10 +238,7 @@ namespace SteamController
             else
             {
                 notifyIcon.Text = TitleWithVersion + ". Disabled";
-                if (WindowsDarkMode.IsDarkModeEnabled)
-                    notifyIcon.Icon = Resources.microsoft_xbox_controller_off_white;
-                else
-                    notifyIcon.Icon = Resources.microsoft_xbox_controller_off;
+                notifyIcon.Icon = IconController;
             }
 
             notifyIcon.Text += String.Format(". Updates: {0}/s", context.UpdatesPerSec);
