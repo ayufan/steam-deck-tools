@@ -1,11 +1,6 @@
 ﻿using CommonHelpers;
 using LibreHardwareMonitor.Hardware;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FanControl
 {
@@ -40,6 +35,13 @@ namespace FanControl
                                 MinRPM = 1500
                             }
                         },
+                        {
+                            FanMode.Silent, new FanSensor.Profile()
+                            {
+                                Type = FanSensor.Profile.ProfileType.Constant,
+                                MinRPM = 1500
+                            }
+                        },
                     }
                 }
             },
@@ -64,7 +66,18 @@ namespace FanControl
                                 B = -188.6f,
                                 C = 5457.0f
                             }
-                        }
+                        },
+                        {
+                            FanMode.Silent, new FanSensor.Profile()
+                            {
+                                Type = FanSensor.Profile.ProfileType.Exponential,
+                                MinInput = 55,
+                                MaxInput = 93,
+                                A = 1.28f,
+                                B = 60f,
+                                C = 3000f
+                            }
+                        },
                     }
                 }
             },
@@ -89,7 +102,18 @@ namespace FanControl
                                 B = -188.6f,
                                 C = 5457.0f
                             }
-                        }
+                        },
+                        {
+                            FanMode.Silent, new FanSensor.Profile()
+                            {
+                                Type = FanSensor.Profile.ProfileType.Exponential,
+                                MinInput = 55,
+                                MaxInput = 93,
+                                A = 1.28f,
+                                B = 60f,
+                                C = 3000f
+                            }
+                        },
                     }
                 }
             },
@@ -104,6 +128,19 @@ namespace FanControl
                     {
                         {
                             FanMode.SteamOS, new FanSensor.Profile()
+                            {
+                                Type = FanSensor.Profile.ProfileType.Pid,
+                                MinInput = 30,
+                                MaxInput = 70,
+                                MaxRPM = 3000,
+                                PidSetPoint = 70,
+                                Kp = 0,
+                                Ki = -20,
+                                Kd = 0
+                            }
+                        },
+                        {
+                            FanMode.Silent, new FanSensor.Profile()
                             {
                                 Type = FanSensor.Profile.ProfileType.Pid,
                                 MinInput = 30,
@@ -129,6 +166,17 @@ namespace FanControl
                     {
                         {
                             FanMode.SteamOS, new FanSensor.Profile()
+                            {
+                                // If battery goes over 40oC require 2kRPM
+                                Type = FanSensor.Profile.ProfileType.Constant,
+                                MinInput = 0,
+                                MaxInput = 40,
+                                MinRPM = 0,
+                                MaxRPM = 2000,
+                            }
+                        },
+                        {
+                            FanMode.Silent, new FanSensor.Profile()
                             {
                                 // If battery goes over 40oC require 2kRPM
                                 Type = FanSensor.Profile.ProfileType.Constant,
