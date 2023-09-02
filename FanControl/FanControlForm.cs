@@ -11,8 +11,7 @@ namespace FanControl
             "Starts Steam Deck Fan Control on Windows startup."
         );
 
-        private SharedData<FanModeSetting> sharedFMSData = SharedData<FanModeSetting>.CreateNew();
-        private SharedData<PowerControlSetting> sharedPCSData = SharedData<PowerControlSetting>.CreateNew();
+        private SharedData<FanModeSetting> sharedData = SharedData<FanModeSetting>.CreateNew();
 
         public FanControlForm()
         {
@@ -132,9 +131,10 @@ namespace FanControl
             setFanMode(selectedFanMode);
             if (selectedFanMode == FanMode.Silent)
             {
-                sharedPCSData.GetValue(out var sharedPCS);
-                sharedPCS.DesiredTDP = GlobalConstants.DefaultSilentTDP;
-                sharedPCSData.SetValue(sharedPCS);
+                Notifier.Notify(
+                    GlobalConstants.DefaultSilentTDPChangeWarning,
+                    Text,
+                    Icon);
             }
         }
 
@@ -168,12 +168,12 @@ namespace FanControl
 
         private void SharedData_Update()
         {
-            if (sharedFMSData.GetValue(out var value) && Enum.IsDefined<FanMode>(value.Desired))
+            if (sharedData.GetValue(out var value) && Enum.IsDefined<FanMode>(value.Desired))
             {
                 setFanMode((FanMode)value.Desired);
             }
 
-            sharedFMSData.SetValue(new FanModeSetting()
+            sharedData.SetValue(new FanModeSetting()
             {
                 Current = fanControl.Mode,
                 KernelDriversLoaded = Instance.UseKernelDrivers ? KernelDriversLoaded.Yes : KernelDriversLoaded.No

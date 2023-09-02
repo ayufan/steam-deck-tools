@@ -49,7 +49,15 @@ namespace PowerControl.Options
             OptionsValues = () => { return UserOptions().GetOptions(); },
             ApplyDelay = 1000,
             ResetValue = () => { return ResetTDP; },
-            ActiveOption = "?",
+            CurrentValue = delegate ()
+            {
+                if (SharedData<FanModeSetting>.GetExistingValue(out var value) && value.Current == FanMode.Silent)
+                    return GlobalConstants.DefaultSilentTDP;
+                else if (Instance != null)
+                    return Instance.ActiveOption;
+                else
+                    return ResetTDP;
+            },
             ApplyValue = (selected) =>
             {
                 if (!AntiCheatSettings.Default.AckAntiCheat(
@@ -65,22 +73,25 @@ namespace PowerControl.Options
                 var slowTDP = selectedOption.Get(SlowTDP, DefaultSlowTDP);
                 var fastTDP = selectedOption.Get(FastTDP, DefaultFastTDP);
 
+                if (SharedData<FanModeSetting>.GetExistingValue(out var fanMode) 
+                    && fanMode.Current == FanMode.Silent
+                    && selected != GlobalConstants.DefaultSilentTDP)
+                {
+                    fanMode.Desired = FanMode.SemiSilent;
+                    SharedData<FanModeSetting>.SetExistingValue(fanMode);
+                }
+
                 if (VangoghGPU.IsSupported)
                 {
                     return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>
                     {
                         using (var sd = VangoghGPU.Open())
-                        using (var sharedData = SharedData<PowerControlSetting>.CreateNew())
                         {
                             if (sd is null)
                                 return null;
 
                             sd.SlowTDP = (uint)slowTDP;
                             sd.FastTDP = (uint)fastTDP;
-
-                            sharedData.GetValue(out var sharedPCS);
-                            sharedPCS.DesiredTDP = GlobalConstants.DefaultSilentTDP;
-                            sharedData.SetValue(sharedPCS);
                         }
 
                         return selected;

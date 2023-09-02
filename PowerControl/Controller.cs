@@ -34,7 +34,6 @@ namespace PowerControl
         SDCInput neptuneDeviceState = new SDCInput();
         DateTime? neptuneDeviceNextKey;
         System.Windows.Forms.Timer neptuneTimer;
-        System.Windows.Forms.Timer powerControlLoopTimer;
 
         ProfilesController? profilesController;
 
@@ -253,11 +252,6 @@ namespace PowerControl
 
             wasInternalDisplayConnected = ExternalHelpers.DisplayConfig.IsInternalConnected.GetValueOrDefault(false);
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
-
-            powerControlLoopTimer = new System.Windows.Forms.Timer(components);
-            powerControlLoopTimer.Enabled = true;
-            powerControlLoopTimer.Interval = 250;
-            powerControlLoopTimer.Tick += new EventHandler(PowerControlLoopTimer_Tick);
         }
 
         private void OsdTimer_Tick(object? sender, EventArgs e)
@@ -305,35 +299,6 @@ namespace PowerControl
                 Thread.Sleep(50);
 
             return new Task(() => { });
-        }
-
-        private void PowerControlLoopTimer_Tick(object sender, EventArgs e)
-        {
-            if (powerControlLoopTimer is null)
-                return;
-
-            try
-            {
-                powerControlLoopTimer.Enabled = false;
-
-                //if (TDP.Instance != null
-                //    && sharedData.GetValue(out var sharedPCS)
-                //    && TDP.Instance.Options.Contains(sharedPCS.DesiredTDP)
-                //    && TDP.Instance.ActiveOption != sharedPCS.DesiredTDP)
-                //{
-                //    TDP.Instance.Set(sharedPCS.DesiredTDP, false, true);
-                //    Notifier.Notify(
-                //        $"TDP reset to {TDP.DefaultSilentTDP}.",
-                //        TitleWithVersion,
-                //        Icon);
-                //    sharedPCS.CurrentTDP = sharedPCS.DesiredTDP;
-                //    sharedData.SetValue(sharedPCS);
-                //}
-            }
-            finally
-            {
-                powerControlLoopTimer.Enabled = true;
-            }
         }
 
         private void dismissNeptuneInput()
@@ -447,7 +412,7 @@ namespace PowerControl
         {
             sharedData.SetValue(new PowerControlSetting()
             {
-                Visible = rootMenu.Visible ? PowerControlVisible.Yes : PowerControlVisible.No
+                Current = rootMenu.Visible ? PowerControlVisible.Yes : PowerControlVisible.No
             });
 
             if (!rootMenu.Visible)

@@ -6,6 +6,7 @@ namespace CommonHelpers
     {
         Default = 17374,
         Silent,
+        SemiSilent,
         SteamOS,
         Max
     }
@@ -56,9 +57,7 @@ namespace CommonHelpers
     [StructLayout(LayoutKind.Sequential)]
     public struct PowerControlSetting
     {
-        public PowerControlVisible Visible;
-        public string? CurrentTDP;
-        public string DesiredTDP;
+        public PowerControlVisible Current;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

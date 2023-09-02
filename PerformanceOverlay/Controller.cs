@@ -270,7 +270,7 @@ namespace PerformanceOverlay
             // If Power Control is visible use temporarily full OSD
             if (Settings.Default.EnableFullOnPowerControl)
             {
-                if (SharedData<PowerControlSetting>.GetExistingValue(out var value) && value.Visible == PowerControlVisible.Yes)
+                if (SharedData<PowerControlSetting>.GetExistingValue(out var value) && value.Current == PowerControlVisible.Yes)
                     osdMode = OverlayMode.Full;
             }
 

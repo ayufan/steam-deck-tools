@@ -31,7 +31,7 @@ namespace PowerControl.Options
                 {
                     TDP.Instance.Set(GlobalConstants.DefaultSilentTDP, false, true);
                     Notifier.Notify(
-                        $"TDP reset to {GlobalConstants.DefaultSilentTDP}.",
+                        GlobalConstants.DefaultSilentTDPChangeWarning,
                         Controller.TitleWithVersion,
                         Controller.Icon);
                 }
