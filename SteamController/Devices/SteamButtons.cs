@@ -52,10 +52,10 @@ namespace SteamController.Devices
         public readonly SteamAxis GyroYaw = new SteamAxis(0x22);
         public readonly SteamAxis LeftTrigger = new SteamAxis(0x2C);
         public readonly SteamAxis RightTrigger = new SteamAxis(0x2E);
-        public readonly SteamAxis LeftThumbX = new SteamAxis(0x30) {UseDeadzoneSetting = true, MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
-        public readonly SteamAxis LeftThumbY = new SteamAxis(0x32) {UseDeadzoneSetting = true, MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
-        public readonly SteamAxis RightThumbX = new SteamAxis(0x34) {UseDeadzoneSetting = true, MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
-        public readonly SteamAxis RightThumbY = new SteamAxis(0x36) {UseDeadzoneSetting = true, MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
+        public readonly SteamAxis LeftThumbX = new SteamAxis(0x30) {MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
+        public readonly SteamAxis LeftThumbY = new SteamAxis(0x32) {MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
+        public readonly SteamAxis RightThumbX = new SteamAxis(0x34) {MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
+        public readonly SteamAxis RightThumbY = new SteamAxis(0x36) {MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
         public readonly SteamAxis LPadPressure = new SteamAxis(0x38);
         public readonly SteamAxis RPadPressure = new SteamAxis(0x38);
 
@@ -71,12 +71,6 @@ namespace SteamController.Devices
             LeftThumbX.VirtualRight = BtnVirtualLeftThumbRight;
             LeftThumbY.VirtualLeft = BtnVirtualLeftThumbDown;
             LeftThumbY.VirtualRight = BtnVirtualLeftThumbUp;
-
-            // set partner axes for circle deadzone
-            LeftThumbX.PartnerAxis = LeftThumbY;
-            LeftThumbY.PartnerAxis = LeftThumbX;
-            RightThumbX.PartnerAxis = RightThumbY;
-            RightThumbY.PartnerAxis = RightThumbX;
         }
     }
 }

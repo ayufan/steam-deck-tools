@@ -80,10 +80,13 @@ namespace SteamController.Profiles.Predefined
             context.DS4[DS4Controller.Triangle] = context.Steam.BtnY;
 
             // Sticks
-            context.DS4[DS4Controller.LeftThumbX] = context.Steam.LeftThumbX;
-            context.DS4[DS4Controller.LeftThumbY] = context.Steam.LeftThumbY;
-            context.DS4[DS4Controller.RightThumbX] = context.Steam.RightThumbX;
-            context.DS4[DS4Controller.RightThumbY] = context.Steam.RightThumbY;
+            double dzcheckR = Math.Sqrt(context.Steam.RightThumbX.Value*context.Steam.RightThumbX.Value + context.Steam.RightThumbY.Value*context.Steam.RightThumbY.Value);
+            double dzcheckL = Math.Sqrt(context.Steam.LeftThumbX.Value*context.Steam.LeftThumbX.Value + context.Steam.LeftThumbY.Value*context.Steam.LeftThumbY.Value);
+         
+            context.DS4[DS4Controller.LeftThumbX] = dzcheckL < Settings.Default.JoystickDeadZone ? (short)0: context.Steam.LeftThumbX;
+            context.DS4[DS4Controller.LeftThumbY] = dzcheckL < Settings.Default.JoystickDeadZone ? (short)0: context.Steam.LeftThumbY;
+            context.DS4[DS4Controller.RightThumbX] = dzcheckR < Settings.Default.JoystickDeadZone ? (short)0: context.Steam.RightThumbX;
+            context.DS4[DS4Controller.RightThumbY] = dzcheckR < Settings.Default.JoystickDeadZone ? (short)0: context.Steam.RightThumbY;
             context.DS4[DS4Controller.ThumbLeft] = context.Steam.BtnLeftStickPress;
             context.DS4[DS4Controller.ThumbRight] = context.Steam.BtnRightStickPress;
 

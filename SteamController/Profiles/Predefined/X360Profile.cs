@@ -88,10 +88,12 @@ namespace SteamController.Profiles.Predefined
             context.X360[Xbox360Button.Y] = context.Steam.BtnY;
 
             // Sticks
-            context.X360[Xbox360Axis.LeftThumbX] = context.Steam.LeftThumbX;
-            context.X360[Xbox360Axis.LeftThumbY] = context.Steam.LeftThumbY;
-            context.X360[Xbox360Axis.RightThumbX] = context.Steam.RightThumbX;
-            context.X360[Xbox360Axis.RightThumbY] = context.Steam.RightThumbY;
+            double dzcheckR = Math.Sqrt(context.Steam.RightThumbX.Value*context.Steam.RightThumbX.Value + context.Steam.RightThumbY.Value*context.Steam.RightThumbY.Value);
+            double dzcheckL = Math.Sqrt(context.Steam.LeftThumbX.Value*context.Steam.LeftThumbX.Value + context.Steam.LeftThumbY.Value*context.Steam.LeftThumbY.Value);
+            context.X360[Xbox360Axis.LeftThumbX] = dzcheckL < Settings.Default.JoystickDeadZone ? (short)0: context.Steam.LeftThumbX;
+            context.X360[Xbox360Axis.LeftThumbY] = dzcheckL < Settings.Default.JoystickDeadZone ? (short)0: context.Steam.LeftThumbY;
+            context.X360[Xbox360Axis.RightThumbX] = dzcheckR < Settings.Default.JoystickDeadZone ? (short)0: context.Steam.RightThumbX;
+            context.X360[Xbox360Axis.RightThumbY] = dzcheckR < Settings.Default.JoystickDeadZone ? (short)0: context.Steam.RightThumbY;
             context.X360[Xbox360Button.LeftThumb] = context.Steam.BtnLeftStickPress;
             context.X360[Xbox360Button.RightThumb] = context.Steam.BtnRightStickPress;
 

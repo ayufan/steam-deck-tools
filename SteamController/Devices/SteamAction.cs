@@ -276,8 +276,6 @@ namespace SteamController.Devices
         public bool UseDeadzoneSetting {get; internal set;} = false;
         public short MinChange { get; internal set; } = 10;
         public DeltaValueMode DeltaValueMode { get; internal set; } = DeltaValueMode.Absolute;
-        public SteamAxis? PartnerAxis { get; internal set; }
-
         public short Value
         {
             get { return ValueCanBeUsed ? rawValue : (short)0; }
@@ -295,11 +293,7 @@ namespace SteamController.Devices
         public static implicit operator bool(SteamAxis button) => button.Active;
         public static implicit operator short(SteamAxis button)
         {
-            if (button.UseDeadzoneSetting)
-                button.Deadzone = Settings.Default.JoystickDeadZone;
-            int pValue = button.PartnerAxis?.Value ?? button.Value;
-            int dzValue = pValue == button.Value ? button.Value : (int)Math.Sqrt(pValue * pValue + button.Value * button.Value);
-            return dzValue > button.Deadzone ? button.Value : (short)0;
+            return button.Value;
         }
 
         public bool Active
@@ -318,22 +312,13 @@ namespace SteamController.Devices
         {
             
             int value = 0;
-            int pValue = PartnerAxis?.Value ?? Value;
-            if (UseDeadzoneSetting) Deadzone = Settings.Default.JoystickDeadZone;
-            int dzValue = (int)Math.Sqrt(pValue * pValue + Value * Value);
-
             switch (mode)
             {
                 case DeltaValueMode.Absolute:
-                    if (Math.Abs(dzValue) < Deadzone)
-                        return 0.0;
                     value = Value;
                     break;
 
                 case DeltaValueMode.AbsoluteTime:
-
-                    if (Math.Abs(dzValue) < Deadzone)
-                        return 0.0;
                     value = (int)(Value * (Controller?.DeltaTime ?? 0.0));
                     break;
 

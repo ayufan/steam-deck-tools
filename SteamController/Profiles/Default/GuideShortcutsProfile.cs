@@ -129,10 +129,15 @@ namespace SteamController.Profiles.Default
         {
             if (c.Steam.RightThumbX || c.Steam.RightThumbY)
             {
-                c.Mouse.MoveBy(
-                    c.Steam.RightThumbX.DeltaValue * Context.JoystickToMouseSensitivity,
-                    -c.Steam.RightThumbY.DeltaValue * Context.JoystickToMouseSensitivity
-                );
+                //use hardwired dead zone of 5000 for desktop mode
+                double dzcheck = Math.Sqrt(c.Steam.RightThumbX.Value*c.Steam.RightThumbX.Value + c.Steam.RightThumbY.Value*c.Steam.RightThumbY.Value);
+                if (dzcheck > 5000) {
+                    c.Mouse.MoveBy(
+                        c.Steam.RightThumbX.DeltaValue * Context.JoystickToMouseSensitivity,
+                        -c.Steam.RightThumbY.DeltaValue * Context.JoystickToMouseSensitivity
+                    );
+                }
+                
             }
         }
 
