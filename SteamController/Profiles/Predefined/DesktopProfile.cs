@@ -66,16 +66,20 @@ namespace SteamController.Profiles.Predefined
 
         private void EmulateScrollOnLStick(Context c)
         {
-            if (c.Steam.LeftThumbX)
-            {
-                c.Mouse.HorizontalScroll(c.Steam.LeftThumbX.DeltaValue * Context.ThumbToWhellSensitivity);
-            }
-            if (c.Steam.LeftThumbY)
-            {
-                c.Mouse.VerticalScroll(c.Steam.LeftThumbY.DeltaValue * Context.ThumbToWhellSensitivity * (double)Settings.Default.ScrollDirection);
+             //use hardwired dead zone of 5000 for desktop mode
+            double dzcheck = Math.Sqrt(c.Steam.LeftThumbX.Value*c.Steam.LeftThumbX.Value + c.Steam.LeftThumbY.Value*c.Steam.LeftThumbY.Value);
+            if (dzcheck > 5000) {
+                if (c.Steam.LeftThumbX)
+                {
+                    c.Mouse.HorizontalScroll(c.Steam.LeftThumbX.DeltaValue * Context.ThumbToWhellSensitivity);
+                }
+                if (c.Steam.LeftThumbY)
+                {
+                    c.Mouse.VerticalScroll(c.Steam.LeftThumbY.DeltaValue * Context.ThumbToWhellSensitivity * (double)Settings.Default.ScrollDirection);
+                }
             }
         }
-
+ 
         private void EmulateDPadArrows(Context c)
         {
             c.Keyboard[VirtualKeyCode.LEFT] = c.Steam.BtnDpadLeft;
