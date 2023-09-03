@@ -271,9 +271,6 @@ namespace SteamController.Devices
         public SteamButton? ActiveButton { get; internal set; }
         public SteamButton? VirtualLeft { get; internal set; }
         public SteamButton? VirtualRight { get; internal set; }
-
-        public short Deadzone { get; internal set; }
-        public bool UseDeadzoneSetting {get; internal set;} = false;
         public short MinChange { get; internal set; } = 10;
         public DeltaValueMode DeltaValueMode { get; internal set; } = DeltaValueMode.Absolute;
         public short Value
