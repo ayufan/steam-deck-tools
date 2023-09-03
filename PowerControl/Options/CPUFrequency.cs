@@ -7,22 +7,23 @@ namespace PowerControl.Options
     {
         public const string SoftMin = "SoftMin";
         public const string SoftMax = "SoftMax";
+        public const string Name = "CPUFrequency";
 
         public const int DefaultMin = 1400;
         public const int DefaultMax = 3500;
 
         public static PersistedOptions UserOptions()
         {
-            var options = new PersistedOptions("CPUFrequency");
+            var options = new PersistedOptions(Name);
 
             if (options.GetOptions().Count() == 0)
             {
                 options.SetOptions(new PersistedOptions.Option[]
                 {
-                    options.ForOption("Default").Set(SoftMin, DefaultMin).Set(SoftMax, DefaultMax),
-                    options.ForOption("Power-Save").Set(SoftMin, 1400).Set(SoftMax, 1800),
-                    options.ForOption("Balanced").Set(SoftMin, 2200).Set(SoftMax, 2800),
-                    options.ForOption("Max").Set(SoftMin, 3000).Set(SoftMax, 3500),
+                    options.ForOption("Default")    .Set(SoftMin, DefaultMin)   .Set(SoftMax, DefaultMax),
+                    options.ForOption("Power-Save") .Set(SoftMin, 1400)         .Set(SoftMax, 1800),
+                    options.ForOption("Balanced")   .Set(SoftMin, 2200)         .Set(SoftMax, 2800),
+                    options.ForOption("Max")        .Set(SoftMin, 3000)         .Set(SoftMax, 3500),
                 });
             }
 

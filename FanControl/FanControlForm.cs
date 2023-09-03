@@ -127,15 +127,7 @@ namespace FanControl
         private void fanModeSelectMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
             var menuItem = (ToolStripComboBox)sender;
-            var selectedFanMode = (FanMode)menuItem.SelectedItem;
-            setFanMode(selectedFanMode);
-            if (selectedFanMode == FanMode.Silent)
-            {
-                Notifier.Notify(
-                    GlobalConstants.DefaultSilentTDPChangeWarning,
-                    Text,
-                    Icon);
-            }
+            setFanMode((FanMode)menuItem.SelectedItem);
         }
 
         private void FanControlForm_FormClosing(object sender, FormClosingEventArgs e)

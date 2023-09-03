@@ -27,11 +27,16 @@ namespace PowerControl.Options
                 value.Desired = Enum.Parse<FanMode>(selected);
                 if (!SharedData<FanModeSetting>.SetExistingValue(value))
                     return null;
-                if (value.Desired == FanMode.Silent && TDP.Instance != null && TDP.Instance.Options.Contains(GlobalConstants.DefaultSilentTDP))
+                if (value.Desired == FanMode.Silent 
+                    && TDP.Instance != null 
+                    && !string.IsNullOrWhiteSpace(TDP.Instance.ActiveOption)
+                    && TDP.Instance.Options.Contains(TDP.MaxSilentTDP)
+                    && TDP.UserOptions().ForOption(TDP.Instance.ActiveOption) > TDP.UserOptions().ForOption(TDP.MaxSilentTDP))
                 {
-                    TDP.Instance.Set(GlobalConstants.DefaultSilentTDP, false, true);
+                    TDP.Instance.Set(TDP.MaxSilentTDP, false, true);
+                    
                     Notifier.Notify(
-                        GlobalConstants.DefaultSilentTDPChangeWarning,
+                        TDP.SwitchedToSilentWithTooHighTDPWarning,
                         Controller.TitleWithVersion,
                         Controller.Icon);
                 }

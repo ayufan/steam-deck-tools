@@ -1,10 +1,12 @@
+using PowerControl.Options;
+
 namespace PowerControl
 {
     public class PersistedOptions : CommonHelpers.BaseSettings
     {
         public const string OptionsKey = "Options";
 
-        public PersistedOptions(string name) : base(name + "Options")
+        public PersistedOptions(string name) : base(name + OptionsKey)
         {
         }
 
@@ -34,6 +36,38 @@ namespace PowerControl
             {
                 // Get and do not persist value
                 return Options.Get(FullKey(setting), defaultValue, false);
+            }
+
+            public static bool operator <(Option a, Option b)
+            {
+                if (a.Options.SettingsKey == TDP.Name + OptionsKey && b.Options.SettingsKey == TDP.Name + OptionsKey)
+                {
+                    return a.Get(TDP.SlowTDP, TDP.DefaultSlowTDP) < b.Get(TDP.SlowTDP, TDP.DefaultSlowTDP)
+                        && a.Get(TDP.FastTDP, TDP.DefaultFastTDP) < b.Get(TDP.FastTDP, TDP.DefaultFastTDP);
+                }
+                else if (a.Options.SettingsKey == CPUFrequency.Name + OptionsKey && b.Options.SettingsKey == CPUFrequency.Name + OptionsKey)
+                {
+                    return a.Get(CPUFrequency.SoftMin, CPUFrequency.DefaultMin) < b.Get(CPUFrequency.SoftMin, CPUFrequency.DefaultMin)
+                        && a.Get(CPUFrequency.SoftMax, CPUFrequency.DefaultMax) < b.Get(CPUFrequency.SoftMax, CPUFrequency.DefaultMax);
+                }
+                else
+                    throw new NotSupportedException($"Operation \"<\" is not supported for operands of types \"{a.Options.SettingsKey}\" and \"{b.Options.SettingsKey}\".");
+            }
+
+            public static bool operator >(Option a, Option b)
+            {
+                if (a.Options.SettingsKey == TDP.Name + OptionsKey && b.Options.SettingsKey == TDP.Name + OptionsKey)
+                {
+                    return a.Get(TDP.SlowTDP, TDP.DefaultSlowTDP) > b.Get(TDP.SlowTDP, TDP.DefaultSlowTDP)
+                        && a.Get(TDP.FastTDP, TDP.DefaultFastTDP) > b.Get(TDP.FastTDP, TDP.DefaultFastTDP);
+                }
+                else if (a.Options.SettingsKey == CPUFrequency.Name + OptionsKey && b.Options.SettingsKey == CPUFrequency.Name + OptionsKey)
+                {
+                    return a.Get(CPUFrequency.SoftMin, CPUFrequency.DefaultMin) > b.Get(CPUFrequency.SoftMin, CPUFrequency.DefaultMin)
+                        && a.Get(CPUFrequency.SoftMax, CPUFrequency.DefaultMax) > b.Get(CPUFrequency.SoftMax, CPUFrequency.DefaultMax);
+                }
+                else
+                    throw new NotSupportedException($"Operation \">\" is not supported for operands of types \"{a.Options.SettingsKey}\" and \"{b.Options.SettingsKey}\".");
             }
         }
 
