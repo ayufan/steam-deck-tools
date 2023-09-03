@@ -42,10 +42,10 @@ namespace SteamController
         }
 
         [Browsable(true)]
-        [Description("Deadzone for left and right sticks. Enter a number between 0 and 32768. If this number is too small you may experience drift. 5000 or smaller is recommended.")]
+        [Description("Deadzone for left and right sticks in X360 and DS4 mode. Enter a number between 0 and 32767. If this number is too small you may experience drift. 5000 or smaller is recommended, 3000 is default.")]
         public short JoystickDeadZone
         {
-            get { return Get<short>("JoystickDeadZone", 5000); }
+            get { return Get<short>("JoystickDeadZone", 3000); }
             set { Set("JoystickDeadZone", value); }
         }
 
