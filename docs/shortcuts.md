@@ -18,8 +18,8 @@
 | STEAM + R1                 | Screenshot             | Screenshot             | Screenshot             |                        | Screenshot             |
 | STEAM + Left Joystick Up   | Increase Brightness    | Increase Brightness    | Increase Brightness    |                        | Increase Brightness    |
 | STEAM + Left Joystick Down | Decrease Brightness    | Decrease Brightness    | Decrease Brightness    |                        | Decrease Brightness    |
-| STEAM + DPad Right         | RETURN                 | RETURN                 | RETURN                 |                        | RETURN                 |
-| STEAM + DPad Down          | TAB                    | TAB                    | TAB                    |                        | TAB                    |
+| STEAM + DPad Right         | TAB                    | TAB                    | TAB                    |                        | TAB                    |
+| STEAM + DPad Down          | WIN + D (Desktop)      | WIN + D (Desktop)      | WIN + D (Desktop)      |                        | WIN + D (Desktop)      |
 | STEAM + DPad Left          | ESCAPE                 | ESCAPE                 | ESCAPE                 |                        | ESCAPE                 |
 | STEAM + DPad Up            | CTRL + ALT + U         | CTRL + ALT + U         | CTRL + ALT + U         |                        | CTRL + ALT + U         |
 | STEAM + Left Pad           | Mouse Scroll           | Mouse Scroll           | Mouse Scroll           |                        | Mouse Scroll           |
