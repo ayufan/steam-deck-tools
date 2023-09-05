@@ -91,19 +91,22 @@ namespace SteamController.Profiles.Default
 
             if (c.Steam.BtnDpadRight.Pressed())
             {
-                //c.Keyboard.KeyPress(VirtualKeyCode.RETURN); // old!
                 c.Keyboard.KeyPress(VirtualKeyCode.TAB);
             }
 
             if (c.Steam.BtnDpadDown.Pressed())
             {
-                //c.Keyboard.KeyPress(VirtualKeyCode.TAB);
-                c.Keyboard.KeyPress(VirtualKeyCode.LWIN,VirtualKeyCode.VK_D);
+                c.Keyboard.KeyPress(VirtualKeyCode.TAB);
             }
 
             if (c.Steam.BtnDpadLeft.Pressed())
             {
                 c.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
+            }
+
+            if (c.Steam.BtnRightStickPress.Pressed())
+            {
+                c.Keyboard.KeyPress(VirtualKeyCode.LWIN,VirtualKeyCode.VK_D);
             }
 
             // Additional binding for tool hotkeys (Lossless Fullscreen is nice)
