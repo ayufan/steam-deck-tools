@@ -91,7 +91,7 @@ namespace SteamController.Profiles.Default
 
             if (c.Steam.BtnDpadRight.Pressed())
             {
-                c.Keyboard.KeyPress(VirtualKeyCode.TAB);
+                c.Keyboard.KeyPress(VirtualKeyCode.RETURN);
             }
 
             if (c.Steam.BtnDpadDown.Pressed())
