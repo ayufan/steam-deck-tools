@@ -71,10 +71,10 @@ namespace FanControl
                             FanMode.Silent, new FanSensor.Profile()
                             {
                                 Type = FanSensor.Profile.ProfileType.Exponential,
-                                MinInput = 55,
-                                MaxInput = 93,
+                                MinInput = 40,
+                                MaxInput = 95,
                                 A = 1.28f,
-                                B = 60f,
+                                B = Settings.Default.Silent4000RPMTemp - 28,
                                 C = 3000f
                             }
                         },
@@ -107,10 +107,10 @@ namespace FanControl
                             FanMode.Silent, new FanSensor.Profile()
                             {
                                 Type = FanSensor.Profile.ProfileType.Exponential,
-                                MinInput = 55,
-                                MaxInput = 93,
+                                MinInput = 40,
+                                MaxInput = 95,
                                 A = 1.28f,
-                                B = 60f,
+                                B = Settings.Default.Silent4000RPMTemp - 28,
                                 C = 3000f
                             }
                         },

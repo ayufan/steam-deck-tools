@@ -23,9 +23,20 @@ namespace FanControl
             set { Set("AlwaysOnTop", value); }
         }
 
+        public int Silent4000RPMTemp
+        {
+            get { return ClampSilent4000RPMTemp(Get("Silent4000RPMTemp", 85)); }
+            set { Set("Silent4000RPMTemp", ClampSilent4000RPMTemp(value)); }
+        }
+
         public bool EnableExperimentalFeatures
         {
             get { return Instance.IsDEBUG; }
+        }
+
+        private int ClampSilent4000RPMTemp(int value)
+        {
+            return Math.Clamp(value, 70, 90);
         }
     }
 }
