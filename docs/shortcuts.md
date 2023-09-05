@@ -10,6 +10,7 @@
 | STEAM + 3 dots             | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  |
 | STEAM + Options            | WIN + TAB              | WIN + TAB              | WIN + TAB              | WIN + TAB              | WIN + TAB              |
 | STEAM + Menu               | F11                    | F11                    | F11                    | F11                    | F11                    |
+| STEAM + Right Stick Press  | WIN + D (Desktop)      | WIN + D (Desktop)      | WIN + D (Desktop)      |                        | WIN + D (Desktop)      |
 | STEAM + A                  | RETURN                 | RETURN                 | RETURN                 |                        | RETURN                 |
 | STEAM + B (hold for 1s)    | ALT + F4               | ALT + F4               | ALT + F4               |                        | ALT + F4               |
 | STEAM + B (hold for 3s)    | Kill active process    | Kill active process    | Kill active process    |                        | Kill active process    |
@@ -18,8 +19,8 @@
 | STEAM + R1                 | Screenshot             | Screenshot             | Screenshot             |                        | Screenshot             |
 | STEAM + Left Joystick Up   | Increase Brightness    | Increase Brightness    | Increase Brightness    |                        | Increase Brightness    |
 | STEAM + Left Joystick Down | Decrease Brightness    | Decrease Brightness    | Decrease Brightness    |                        | Decrease Brightness    |
-| STEAM + DPad Right         | TAB                    | TAB                    | TAB                    |                        | TAB                    |
-| STEAM + DPad Down          | WIN + D (Desktop)      | WIN + D (Desktop)      | WIN + D (Desktop)      |                        | WIN + D (Desktop)      |
+| STEAM + DPad Right         | RETURN                 | RETURN                 | RETURN                 |                        | RETURN                 |
+| STEAM + DPad Down          | TAB                    | TAB                    | TAB                    |                        | TAB                    |
 | STEAM + DPad Left          | ESCAPE                 | ESCAPE                 | ESCAPE                 |                        | ESCAPE                 |
 | STEAM + DPad Up            | CTRL + ALT + U         | CTRL + ALT + U         | CTRL + ALT + U         |                        | CTRL + ALT + U         |
 | STEAM + Left Pad           | Mouse Scroll           | Mouse Scroll           | Mouse Scroll           |                        | Mouse Scroll           |
