@@ -23,6 +23,12 @@ namespace FanControl
             set { Set("AlwaysOnTop", value); }
         }
 
+        public int Silent4000RPMThreshold
+        {
+            get { return Get("Silent4000RPMThreshold", 85); }
+            set { Set("Silent4000RPMThreshold", Math.Min(Math.Max(80, value), 90)); }
+        }
+
         public bool EnableExperimentalFeatures
         {
             get { return Instance.IsDEBUG; }
