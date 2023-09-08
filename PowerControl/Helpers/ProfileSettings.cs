@@ -26,10 +26,10 @@ namespace PowerControl.Helper
 
         public String ProfileName { get; }
 
-        public ProfileSettings(string profileName) : base("PersistentSettings")
+        public ProfileSettings(string prefix, string profileName) : base("PersistentSettings")
         {
             this.ProfileName = profileName;
-            this.ConfigFile = Path.Combine(UserProfilesPath, String.Format("PowerControl.Process.{0}.ini", profileName));
+            this.ConfigFile = Path.Combine(UserProfilesPath, String.Format("{0}.{1}.ini", prefix, profileName));
 
             this.SettingChanging += delegate { };
             this.SettingChanged += delegate { };

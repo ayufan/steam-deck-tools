@@ -10,7 +10,7 @@ namespace PowerControl.Options
             ApplyDelay = 500,
             OptionsValues = delegate ()
             {
-                var currentProfileSettings = Controller?.CurrentProfileSettings;
+                var currentProfileSettings = Controller?.GameProfileSettings;
                 if (currentProfileSettings == null)
                     return null;
 
@@ -34,7 +34,7 @@ namespace PowerControl.Options
             CycleOptions = false,
             CurrentValue = delegate ()
             {
-                var currentProfileSettings = Controller?.CurrentProfileSettings;
+                var currentProfileSettings = Controller?.GameProfileSettings;
                 if (currentProfileSettings == null)
                     return null;
 
@@ -53,11 +53,11 @@ namespace PowerControl.Options
 
                     case "Create New":
                         Controller?.CreateProfile(false);
-                        return Controller?.CurrentProfileSettings?.ProfileName;
+                        return Controller?.GameProfileSettings?.ProfileName;
 
                     case "Save All":
                         Controller?.CreateProfile(true);
-                        return Controller?.CurrentProfileSettings?.ProfileName;
+                        return Controller?.GameProfileSettings?.ProfileName;
 
                     default:
                         return selected;

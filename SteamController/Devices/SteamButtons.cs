@@ -52,10 +52,10 @@ namespace SteamController.Devices
         public readonly SteamAxis GyroYaw = new SteamAxis(0x22);
         public readonly SteamAxis LeftTrigger = new SteamAxis(0x2C);
         public readonly SteamAxis RightTrigger = new SteamAxis(0x2E);
-        public readonly SteamAxis LeftThumbX = new SteamAxis(0x30) { Deadzone = 5000, MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
-        public readonly SteamAxis LeftThumbY = new SteamAxis(0x32) { Deadzone = 5000, MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
-        public readonly SteamAxis RightThumbX = new SteamAxis(0x34) { Deadzone = 5000, MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
-        public readonly SteamAxis RightThumbY = new SteamAxis(0x36) { Deadzone = 5000, MinChange = 10, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
+        public readonly SteamAxis LeftThumbX = new SteamAxis(0x30) { Deadzone = 1400, MinChange = 0, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
+        public readonly SteamAxis LeftThumbY = new SteamAxis(0x32) { Deadzone = 1400, MinChange = 0, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
+        public readonly SteamAxis RightThumbX = new SteamAxis(0x34) { Deadzone = 1400, MinChange = 0, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
+        public readonly SteamAxis RightThumbY = new SteamAxis(0x36) { Deadzone = 1400, MinChange = 0, DeltaValueMode = Devices.DeltaValueMode.AbsoluteTime };
         public readonly SteamAxis LPadPressure = new SteamAxis(0x38);
         public readonly SteamAxis RPadPressure = new SteamAxis(0x38);
 
