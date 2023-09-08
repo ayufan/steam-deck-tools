@@ -10,6 +10,7 @@
 | STEAM + 3 dots             | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  | CTRL + SHIFT + ESCAPE  |
 | STEAM + Options            | WIN + TAB              | WIN + TAB              | WIN + TAB              | WIN + TAB              | WIN + TAB              |
 | STEAM + Menu               | F11                    | F11                    | F11                    | F11                    | F11                    |
+| STEAM + Right Stick Press  | WIN + D (Desktop)      | WIN + D (Desktop)      | WIN + D (Desktop)      |                        | WIN + D (Desktop)      |
 | STEAM + A                  | RETURN                 | RETURN                 | RETURN                 |                        | RETURN                 |
 | STEAM + B (hold for 1s)    | ALT + F4               | ALT + F4               | ALT + F4               |                        | ALT + F4               |
 | STEAM + B (hold for 3s)    | Kill active process    | Kill active process    | Kill active process    |                        | Kill active process    |

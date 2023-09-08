@@ -104,6 +104,11 @@ namespace SteamController.Profiles.Default
                 c.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
             }
 
+            if (c.Steam.BtnRightStickPress.Pressed())
+            {
+                c.Keyboard.KeyPress(VirtualKeyCode.LWIN, VirtualKeyCode.VK_D);
+            }
+
             // Additional binding for tool hotkeys (Lossless Fullscreen is nice)
             if (c.Steam.BtnDpadUp.Pressed())
             {
