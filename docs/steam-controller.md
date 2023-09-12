@@ -156,7 +156,7 @@ To configure the program:
 5. Close the settings and leave the app running in the background. When it is running, "STEAM + Left Stick" should pause any running games
 
 
-## 7. Uninstall
+## 8. Uninstall
 
 Since `Steam Controller` changes Steam you need to follow those steps to properly uninstall the app:
 
@@ -165,7 +165,7 @@ Since `Steam Controller` changes Steam you need to follow those steps to properl
 3. Now, select `Ignore Steam` to remove `Steam Controller` from Steam
 4. Next go to `Steam > Settings > Controller` and revert all changes made to `Desktop configuration`
 
-## 8. Managed configs
+## 9. Managed configs
 
 The `Steam Controller` will manage default steam controller configs
 and install controller templates to ease controller management.
