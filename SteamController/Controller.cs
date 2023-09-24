@@ -397,10 +397,10 @@ namespace SteamController
                 LargeButtons = true,
                 SelectedObject = new
                 {
-                    Desktop = ProfilesSettings.DesktopPanelSettings.Default,
-                    X360 = ProfilesSettings.X360BackPanelSettings.Default,
+                    DesktopShortcuts = ProfilesSettings.DesktopPanelSettings.Default,
+                    X360Shortcuts = ProfilesSettings.X360BackPanelSettings.Default,
                     X360Haptic = ProfilesSettings.HapticSettings.X360,
-                    DS4 = ProfilesSettings.DS4BackPanelSettings.Default,
+                    DS4Shortcuts = ProfilesSettings.DS4BackPanelSettings.Default,
                     DS4Haptic = ProfilesSettings.HapticSettings.DS4,
                     Application = Settings.Default,
 #if DEBUG

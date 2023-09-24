@@ -88,10 +88,10 @@ namespace SteamController.Profiles.Predefined
             context.X360[Xbox360Button.Y] = context.Steam.BtnY;
 
             // Sticks
-            context.X360[Xbox360Axis.LeftThumbX] = context.Steam.LeftThumbX;
-            context.X360[Xbox360Axis.LeftThumbY] = context.Steam.LeftThumbY;
-            context.X360[Xbox360Axis.RightThumbX] = context.Steam.RightThumbX;
-            context.X360[Xbox360Axis.RightThumbY] = context.Steam.RightThumbY;
+            context.X360[Xbox360Axis.LeftThumbX] = context.Steam.LeftThumbX.GetValue(Settings.Default.JoystickDeadzone);
+            context.X360[Xbox360Axis.LeftThumbY] = context.Steam.LeftThumbY.GetValue(Settings.Default.JoystickDeadzone);
+            context.X360[Xbox360Axis.RightThumbX] = context.Steam.RightThumbX.GetValue(Settings.Default.JoystickDeadzone);
+            context.X360[Xbox360Axis.RightThumbY] = context.Steam.RightThumbY.GetValue(Settings.Default.JoystickDeadzone);
             context.X360[Xbox360Button.LeftThumb] = context.Steam.BtnLeftStickPress;
             context.X360[Xbox360Button.RightThumb] = context.Steam.BtnRightStickPress;
 

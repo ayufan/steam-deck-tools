@@ -35,8 +35,9 @@ namespace SteamController.Profiles.Dynamic
             public struct Axis
             {
                 internal Devices.SteamAxis Target;
-                public static implicit operator short(Axis button) => button.Target;
-                public Axis(Devices.SteamAxis target) { Target = target; }
+                internal short Deadzone;
+                public static implicit operator short(Axis button) => button.Target.GetValue(button.Deadzone);
+                public Axis(Devices.SteamAxis target, short deadzone = 0) { Target = target; Deadzone = deadzone; }
             }
 
             public Button BtnL5 { get => new Button(Target.BtnL5); }
@@ -85,10 +86,10 @@ namespace SteamController.Profiles.Dynamic
             public Axis GyroRoll { get => new Axis(Target.GyroRoll); }
             public Axis LeftTrigger { get => new Axis(Target.LeftTrigger); }
             public Axis RightTrigger { get => new Axis(Target.RightTrigger); }
-            public Axis LeftThumbX { get => new Axis(Target.LeftThumbX); }
-            public Axis LeftThumbY { get => new Axis(Target.LeftThumbY); }
-            public Axis RightThumbX { get => new Axis(Target.RightThumbX); }
-            public Axis RightThumbY { get => new Axis(Target.RightThumbY); }
+            public Axis LeftThumbX { get => new Axis(Target.LeftThumbX, Settings.Default.JoystickDeadzone); }
+            public Axis LeftThumbY { get => new Axis(Target.LeftThumbY, Settings.Default.JoystickDeadzone); }
+            public Axis RightThumbX { get => new Axis(Target.RightThumbX, Settings.Default.JoystickDeadzone); }
+            public Axis RightThumbY { get => new Axis(Target.RightThumbY, Settings.Default.JoystickDeadzone); }
             public Axis LPadPressure { get => new Axis(Target.LPadPressure); }
             public Axis RPadPressure { get => new Axis(Target.RPadPressure); }
         }

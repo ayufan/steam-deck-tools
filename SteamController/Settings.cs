@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace SteamController
 {
-    [Category("Settings")]
+    [Category("1. Settings")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     internal sealed partial class Settings : CommonHelpers.BaseSettings
     {
@@ -100,6 +100,20 @@ namespace SteamController
         {
             get { return Get<KeyboardStyles>("KeyboardStyle", KeyboardStyles.WindowsTouch); }
             set { Set("KeyboardStyle", value); }
+        }
+
+        [Browsable(false)]
+        public short DesktopJoystickDeadzone
+        {
+            get { return 5000; }
+        }
+
+        [Browsable(true)]
+        [Description("Deadzone for Left and Right sticks. Enter a number between 0 and 32767. If this number is too small you may experience drift. 5000 or smaller is recommended.")]
+        public short JoystickDeadzone
+        {
+            get { return Get<short>("JoystickDeadZone", 5000); }
+            set { Set("JoystickDeadZone", value); }
         }
 
         public override string ToString()

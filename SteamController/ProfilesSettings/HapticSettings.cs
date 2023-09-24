@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace SteamController.ProfilesSettings
 {
-    [Category("Settings")]
+    [Category("3. Haptic")]
     internal sealed class HapticSettings : CommonHelpers.BaseSettings
     {
         public const sbyte MinIntensity = -2;

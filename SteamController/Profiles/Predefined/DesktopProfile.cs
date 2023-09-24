@@ -68,11 +68,23 @@ namespace SteamController.Profiles.Predefined
         {
             if (c.Steam.LeftThumbX)
             {
-                c.Mouse.HorizontalScroll(c.Steam.LeftThumbX.DeltaValue * Context.ThumbToWhellSensitivity);
+                c.Mouse.HorizontalScroll(
+                    c.Steam.LeftThumbX.GetDeltaValue(
+                        Context.ThumbToWhellSensitivity,
+                        Devices.DeltaValueMode.AbsoluteTime,
+                        Settings.Default.DesktopJoystickDeadzone
+                    )
+                );
             }
             if (c.Steam.LeftThumbY)
             {
-                c.Mouse.VerticalScroll(c.Steam.LeftThumbY.DeltaValue * Context.ThumbToWhellSensitivity * (double)Settings.Default.ScrollDirection);
+                c.Mouse.VerticalScroll(
+                    c.Steam.LeftThumbY.GetDeltaValue(
+                        Context.ThumbToWhellSensitivity * (double)Settings.Default.ScrollDirection,
+                        Devices.DeltaValueMode.AbsoluteTime,
+                        Settings.Default.DesktopJoystickDeadzone
+                    )
+                );
             }
         }
 

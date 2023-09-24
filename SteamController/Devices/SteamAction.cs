@@ -271,9 +271,7 @@ namespace SteamController.Devices
         public SteamButton? ActiveButton { get; internal set; }
         public SteamButton? VirtualLeft { get; internal set; }
         public SteamButton? VirtualRight { get; internal set; }
-        public short Deadzone { get; internal set; }
-        public short MinChange { get; internal set; }
-        public DeltaValueMode DeltaValueMode { get; internal set; } = DeltaValueMode.Absolute;
+        public SteamAxis[] DeadzoneAxis { get; internal set; } = new SteamAxis[0];
 
         public short Value
         {
@@ -292,7 +290,7 @@ namespace SteamController.Devices
         public static implicit operator bool(SteamAxis button) => button.Active;
         public static implicit operator short(SteamAxis button)
         {
-            return Math.Abs(button.Value) > button.Deadzone ? button.Value : (short)0;
+            return button.Value;
         }
 
         public bool Active
@@ -300,39 +298,52 @@ namespace SteamController.Devices
             get { return ActiveButton?.Value ?? true; }
         }
 
-        public double DeltaValue
+        private bool CheckDeadzone(short deadzone)
         {
-            get { return GetDeltaValue(-1, 1, DeltaValueMode); }
+            if (deadzone == 0)
+                return true;
+
+            int sum = Value * Value;
+            foreach (SteamAxis otherAxis in this.DeadzoneAxis)
+                sum += otherAxis.Value * otherAxis.Value;
+            return Math.Sqrt(sum) > deadzone;
         }
 
-        public double GetDeltaValue(double min, double max, DeltaValueMode mode)
+        public short GetValue(short deadzone)
         {
+            if (CheckDeadzone(deadzone))
+                return Value;
+            return 0;
+        }
+
+        public double GetDeltaValue(double range, DeltaValueMode mode, short deadzone)
+        {
+            return GetDeltaValue(-range, range, mode, deadzone);
+        }
+
+        public double GetDeltaValue(double min, double max, DeltaValueMode mode, short deadzone)
+        {
+            if (!CheckDeadzone(deadzone))
+                return 0.0;
+
             int value = 0;
 
             switch (mode)
             {
                 case DeltaValueMode.Absolute:
-                    if (Math.Abs(Value) < Deadzone)
-                        return 0.0;
                     value = Value;
                     break;
 
                 case DeltaValueMode.AbsoluteTime:
-                    if (Math.Abs(Value) < Deadzone)
-                        return 0.0;
                     value = (int)(Value * (Controller?.DeltaTime ?? 0.0));
                     break;
 
                 case DeltaValueMode.Delta:
                     value = Value - LastValue;
-                    if (Math.Abs(Value) < MinChange)
-                        return 0.0;
                     break;
 
                 case DeltaValueMode.DeltaTime:
                     value = Value - LastValue;
-                    if (Math.Abs(Value) < MinChange)
-                        return 0.0;
                     value = (int)(value * (Controller?.DeltaTime ?? 0.0));
                     break;
             }

@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace SteamController
 {
-    [Category("Settings")]
+    [Category("1. Settings")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     internal sealed partial class SettingsDebug : CommonHelpers.BaseSettings
     {

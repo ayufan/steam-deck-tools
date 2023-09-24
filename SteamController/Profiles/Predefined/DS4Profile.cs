@@ -80,10 +80,10 @@ namespace SteamController.Profiles.Predefined
             context.DS4[DS4Controller.Triangle] = context.Steam.BtnY;
 
             // Sticks
-            context.DS4[DS4Controller.LeftThumbX] = context.Steam.LeftThumbX;
-            context.DS4[DS4Controller.LeftThumbY] = context.Steam.LeftThumbY;
-            context.DS4[DS4Controller.RightThumbX] = context.Steam.RightThumbX;
-            context.DS4[DS4Controller.RightThumbY] = context.Steam.RightThumbY;
+            context.DS4[DS4Controller.LeftThumbX] = context.Steam.LeftThumbX.GetValue(Settings.Default.JoystickDeadzone);
+            context.DS4[DS4Controller.LeftThumbY] = context.Steam.LeftThumbY.GetValue(Settings.Default.JoystickDeadzone);
+            context.DS4[DS4Controller.RightThumbX] = context.Steam.RightThumbX.GetValue(Settings.Default.JoystickDeadzone);
+            context.DS4[DS4Controller.RightThumbY] = context.Steam.RightThumbY.GetValue(Settings.Default.JoystickDeadzone);
             context.DS4[DS4Controller.ThumbLeft] = context.Steam.BtnLeftStickPress;
             context.DS4[DS4Controller.ThumbRight] = context.Steam.BtnRightStickPress;
 
@@ -135,8 +135,8 @@ namespace SteamController.Profiles.Predefined
             if (x || y)
             {
                 return new Point(
-                    (int)x.GetDeltaValue(0, 1920, DeltaValueMode.Absolute),
-                    (int)y.GetDeltaValue(943 + 488, -488, DeltaValueMode.Absolute)
+                    (int)x.GetDeltaValue(0, 1920, DeltaValueMode.Absolute, 0),
+                    (int)y.GetDeltaValue(943 + 488, -488, DeltaValueMode.Absolute, 0)
                 );
             }
             else
