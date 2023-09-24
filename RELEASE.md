@@ -6,7 +6,9 @@
 
 ## #{GIT_TAG_NAME}
 
-- ...
+- SteamController: Add support for circular deadzone on left/right sticks
+- FanControl: Add Silent fan profile. Configure `Silent4000RPMTemp` threshold in `FanControl.dll.ini`
+- SteamController: Added `Win+D` shortcut under `Steam+RightStickPress`
 
 ## 0.6.20
 
