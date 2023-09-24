@@ -132,7 +132,7 @@ namespace SteamController.Profiles.Default
             }
             if (c.Steam.LPadY)
             {
-                c.Mouse.HorizontalScroll(
+                c.Mouse.VerticalScroll(
                     c.Steam.LPadY.GetDeltaValue(
                         Context.PadToWhellSensitivity * (double)Settings.Default.ScrollDirection,
                         Devices.DeltaValueMode.Delta,

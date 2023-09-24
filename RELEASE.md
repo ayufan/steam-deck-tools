@@ -6,6 +6,10 @@
 
 ## #{GIT_TAG_NAME}
 
+- SteamController: Fix broken scroll on left pad introduced by 0.6.21
+
+## 0.6.21
+
 - SteamController: Add support for circular deadzone on left/right sticks
 - FanControl: Add Silent fan profile. Configure `Silent4000RPMTemp` threshold in `FanControl.dll.ini`
 - SteamController: Added `Win+D` shortcut under `Steam+RightStickPress`
