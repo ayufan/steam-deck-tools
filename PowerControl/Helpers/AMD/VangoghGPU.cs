@@ -182,7 +182,7 @@ namespace PowerControl.Helpers.AMD
         }
 
         const uint MIN_TDP = 3000;
-        const uint MAX_TDP = 21000;
+        const uint MAX_TDP = 45000;
 
         public uint SlowTDP
         {
@@ -206,8 +206,8 @@ namespace PowerControl.Helpers.AMD
             get { return getValue(Message.PPSMC_MSG_GetFclkFrequency); }
         }
 
-        const uint MIN_CPU_CLOCK = 1400;
-        const uint MAX_CPU_CLOCK = 4000;
+        const uint MIN_CPU_CLOCK = 600;
+        const uint MAX_CPU_CLOCK = 4500;
 
         public uint MinCPUClock
         {
@@ -220,7 +220,7 @@ namespace PowerControl.Helpers.AMD
         }
 
         const uint MIN_GFX_CLOCK = 200;
-        const uint MAX_GFX_CLOCK = 1900;
+        const uint MAX_GFX_CLOCK = 2500;
 
         public uint HardMinGfxClock
         {
