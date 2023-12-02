@@ -19,17 +19,33 @@
 
         public const ushort MAX_FAN_RPM = 0x1C84;
 
-        public static readonly ushort[] SupportedFirmwares = {
-            0xB030 // 45104
+        public struct DeviceVersion
+        {
+            public ushort Firmware { get; set; }
+            public byte BoardID { get; set; }
+            public byte PDCS { get; set; }
+
+            public bool BatteryTempLE { get; set; }
+
+            public bool IsSupported(ushort deviceFirmware, byte deviceBoardID, byte devicePDCS)
+            {
+                if (Firmware != 0 && Firmware != deviceFirmware)
+                    return false;
+                if (BoardID != 0 && BoardID != deviceBoardID)
+                    return false;
+                if (PDCS != 0 && PDCS != devicePDCS)
+                    return false;
+                return true;
+            }
         };
 
-        public static readonly byte[] SupportedBoardID = {
-            6,
-            0xA
-        };
+        private static readonly DeviceVersion[] deviceVersions = {
+            // Steam Deck - LCD version
+            new DeviceVersion() { Firmware = 0xB030, BoardID = 0x6, PDCS = 0 /* 0x2B */, BatteryTempLE = false },
+            new DeviceVersion() { Firmware = 0xB030, BoardID = 0xA, PDCS = 0 /* 0x2B */, BatteryTempLE = false },
 
-        public static readonly byte[] SupportedPDCS = {
-            0x2B // 43
+            // Steam Deck - OLED version
+            new DeviceVersion() { Firmware = 0x1030, BoardID = 0x5, PDCS = 0 /* 0x2F */, BatteryTempLE = true },
         };
 
         private static InpOut? inpOut;
@@ -39,13 +55,14 @@
             get { return inpOut is not null; }
         }
 
+        public static DeviceVersion? SupportedDevice
+        {
+            get { return deviceVersions.First((v) => v.IsSupported(FirmwareVersion, BoardID, PDCS)); }
+        }
+
         public static bool IsSupported
         {
-            get
-            {
-                return SupportedFirmwares.Contains(FirmwareVersion) &&
-                    SupportedBoardID.Contains(BoardID);
-            }
+            get { return SupportedDevice is not null; }
         }
 
         public static ushort FirmwareVersion { get; private set; }
@@ -142,7 +159,9 @@
             var data = inpOut?.ReadMemory(BATH_BATL, 2);
             if (data is null)
                 return 0;
-            int value = (data[0] << 8) + data[1];
+            int value = SupportedDevice?.BatteryTempLE == true ?
+                ((data[1] << 8) + data[0]) :
+                ((data[0] << 8) + data[1]);
             return (float)(value - 0x0AAC) / 10.0f;
         }
 
