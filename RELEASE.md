@@ -4,7 +4,16 @@
 
 [**READ IF PLAYING ONLINE GAMES AND/OR GAMES THAT HAVE ANTI-CHEAT ENABLED**](https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software)
 
+## SteamDeck OLED support
+
+- There's incorrect CPU temperature reading
+- There's a lack of GPU frequency reading
+
 ## #{GIT_TAG_NAME}
+
+- FanControl: Support for SteamDeck OLED
+- PerformanceOverlay: Support the `AMD Custom GPU 0932` found in SteamDeck OLED
+- PowerControl: Support `AMD Custom GPU 0932` with a SMU at `0x80600000-0x8067ffff` ver.: `0x063F0E00`
 
 ## 0.6.22
 
