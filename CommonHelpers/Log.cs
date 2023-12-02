@@ -112,7 +112,7 @@ namespace CommonHelpers
             if (LogFileFolder is null)
                 return;
 
-            String logFile = Path.Combine(LogFileFolder, String.Format("{0}_{1}.json",
+            String logFile = Path.Combine(LogFileFolder, String.Format("{0}_{1}.log",
                 Instance.ApplicationName, DateTime.UtcNow.ToString("yyyy-MM-dd")));
 
             for (int i = 0; i < 3; i++)
