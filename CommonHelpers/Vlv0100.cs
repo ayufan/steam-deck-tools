@@ -46,6 +46,7 @@
 
             // Steam Deck - OLED version
             new DeviceVersion() { Firmware = 0x1030, BoardID = 0x5, PDCS = 0 /* 0x2F */, BatteryTempLE = true },
+            new DeviceVersion() { Firmware = 0x1050, BoardID = 0x5, PDCS = 0 /* 0x2F */, BatteryTempLE = true }
         };
 
         private static InpOut? inpOut;

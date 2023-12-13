@@ -11,6 +11,12 @@
 
 ## #{GIT_TAG_NAME}
 
+## 0.7.1
+
+- SteamDeck OLED: Support bios 107
+
+## 0.7.0
+
 - FanControl: Support for SteamDeck OLED
 - PerformanceOverlay: Support the `AMD Custom GPU 0932` found in SteamDeck OLED
 - PowerControl: Support `AMD Custom GPU 0932` with a SMU at `0x80600000-0x8067ffff` ver.: `0x063F0E00`
