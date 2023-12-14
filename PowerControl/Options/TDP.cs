@@ -43,6 +43,7 @@ namespace PowerControl.Options
             PersistOnCreate = false,
             OptionsValues = () => { return UserOptions().GetOptions(); },
             ApplyDelay = 1000,
+            Visible = VangoghGPU.IsSupported,
             ResetValue = () => { return "15W"; },
             ActiveOption = "?",
             ApplyValue = (selected) =>
@@ -60,41 +61,19 @@ namespace PowerControl.Options
                 var slowTDP = selectedOption.Get(SlowTDP, DefaultSlowTDP);
                 var fastTDP = selectedOption.Get(FastTDP, DefaultFastTDP);
 
-                if (VangoghGPU.IsSupported)
+                return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>
                 {
-                    return CommonHelpers.Instance.WithGlobalMutex<string>(200, () =>
+                    using (var sd = VangoghGPU.Open())
                     {
-                        using (var sd = VangoghGPU.Open())
-                        {
-                            if (sd is null)
-                                return null;
+                        if (sd is null)
+                            return null;
 
-                            sd.SlowTDP = (uint)slowTDP;
-                            sd.FastTDP = (uint)fastTDP;
-                        }
-
-                        return selected;
-                    });
-                }
-                else
-                {
-                    int stampLimit = slowTDP / 10;
-
-                    Process.Start(new ProcessStartInfo()
-                    {
-                        FileName = "Resources/RyzenAdj/ryzenadj.exe",
-                        ArgumentList = {
-                                    "--stapm-limit=" + stampLimit.ToString(),
-                                    "--slow-limit=" + slowTDP.ToString(),
-                                    "--fast-limit=" + fastTDP.ToString(),
-                        },
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    });
+                        sd.SlowTDP = (uint)slowTDP;
+                        sd.FastTDP = (uint)fastTDP;
+                    }
 
                     return selected;
-                }
+                });
             }
         };
     }
