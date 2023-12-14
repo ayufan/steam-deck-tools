@@ -8,7 +8,8 @@
 
 ## 0.7.1
 
-- SteamDeck OLED: Support Bios 107 with temperature readings
+- SteamDeck OLED: Support BIOS 107 with temperature readings
+- SteamDeck OLED: Remove BIOS 105 support as it is buggy
 
 ## 0.7.0
 
