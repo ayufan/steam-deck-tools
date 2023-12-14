@@ -12,7 +12,7 @@ namespace FanControl
                 "APU", new FanSensor()
                 {
                     // TODO: Is this correct?
-                    HardwareName = "AMD Custom APU 0405",
+                    HardwareNames = { "AMD Custom APU 0405", "AMD Custom APU 0932" },
                     HardwareType = HardwareType.Cpu,
                     SensorName = "Package",
                     SensorType = SensorType.Power,
@@ -48,7 +48,7 @@ namespace FanControl
             {
                 "CPU", new FanSensor()
                 {
-                    HardwareName = "AMD Custom APU 0405",
+                    HardwareNames = { "AMD Custom APU 0405", "AMD Custom APU 0932" },
                     HardwareType = HardwareType.Cpu,
                     SensorName = "Core (Tctl/Tdie)",
                     SensorType = SensorType.Temperature,
@@ -84,11 +84,12 @@ namespace FanControl
             {
                 "GPU", new FanSensor()
                 {
-                    HardwareName = "AMD Custom GPU 0405",
+                    HardwareNames = { "AMD Custom GPU 0405", "AMD Custom GPU 0932" },
                     HardwareType = HardwareType.GpuAmd,
                     SensorName = "GPU Core",
                     SensorType = SensorType.Temperature,
                     ValueDeadZone = 0.0f,
+                    InvalidValue = 5.0f,
                     AvgSamples = 20,
                     Profiles = new Dictionary<FanMode, FanSensor.Profile>()
                     {

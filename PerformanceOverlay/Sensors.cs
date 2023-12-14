@@ -165,7 +165,7 @@ namespace PerformanceOverlay
                 "CPU_%", new HardwareSensor()
                 {
                     HardwareType = HardwareType.Cpu,
-                    HardwareName = "AMD Custom APU 0405",
+                    HardwareNames = { "AMD Custom APU 0405", "AMD Custom APU 0932" },
                     SensorType = SensorType.Load,
                     SensorName = "CPU Total",
                     Format = "F0"
@@ -175,7 +175,7 @@ namespace PerformanceOverlay
                 "CPU_W", new HardwareSensor()
                 {
                     HardwareType = HardwareType.Cpu,
-                    HardwareName = "AMD Custom APU 0405",
+                    HardwareNames = { "AMD Custom APU 0405", "AMD Custom APU 0932" },
                     SensorType = SensorType.Power,
                     SensorName = "Package",
                     Format = "F1"
@@ -185,7 +185,7 @@ namespace PerformanceOverlay
                 "CPU_T", new HardwareSensor()
                 {
                     HardwareType = HardwareType.Cpu,
-                    HardwareName = "AMD Custom APU 0405",
+                    HardwareNames = { "AMD Custom APU 0405", "AMD Custom APU 0932" },
                     SensorType = SensorType.Temperature,
                     SensorName = "Core (Tctl/Tdie)",
                     Format = "F1",
@@ -201,7 +201,7 @@ namespace PerformanceOverlay
                         return new HardwareSensor()
                         {
                             HardwareType = HardwareType.Cpu,
-                            HardwareName = "AMD Custom APU 0405",
+                            HardwareNames = { "AMD Custom APU 0405", "AMD Custom APU 0932" },
                             SensorType = SensorType.Clock,
                             SensorName = "Core #" + index.ToString(),
                             Format = "F0",

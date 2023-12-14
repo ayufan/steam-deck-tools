@@ -13,9 +13,11 @@ namespace FanControl
 
         public float ValueDeadZone { get; set; }
         public int AvgSamples { get; set; } = 5;
+        public float InvalidValue { get; set; } = 0.0f;
         public float? MaxValue { get; set; }
 
         internal string HardwareName { get; set; } = "";
+        internal IList<string> HardwareNames { get; set; } = new List<string>();
         internal HardwareType HardwareType { get; set; }
         internal string SensorName { get; set; } = "";
         internal SensorType SensorType { get; set; }
@@ -132,11 +134,29 @@ namespace FanControl
             CalculatedRPM = 0;
         }
 
+        private bool MatchesHardwareName(string sensorHardwareName)
+        {
+            if (HardwareNames.Count > 0)
+            {
+                if (HardwareNames.Any(hardwareName => sensorHardwareName.StartsWith(hardwareName)))
+                    return true;
+            }
+
+            // Empty string matches always
+            if (HardwareName.Length == 0)
+                return true;
+
+            if (sensorHardwareName.StartsWith(HardwareName))
+                return true;
+
+            return false;
+        }
+
         public bool Matches(ISensor sensor)
         {
             return sensor != null &&
                 sensor.Hardware.HardwareType == HardwareType &&
-                sensor.Hardware.Name.StartsWith(HardwareName) &&
+                MatchesHardwareName(sensor.Hardware.Name) &&
                 sensor.SensorType == SensorType &&
                 sensor.Name == SensorName;
         }
@@ -156,7 +176,7 @@ namespace FanControl
 
         public bool Update(string name, float? newValue, FanMode mode)
         {
-            if (!newValue.HasValue || newValue <= 0.0)
+            if (!newValue.HasValue || newValue <= InvalidValue)
                 return false;
 
             if (MaxValue.HasValue)
@@ -210,8 +230,8 @@ namespace FanControl
                 return "";
 
             String value = "";
-            
-            if (AllSamples.Count > 0) 
+
+            if (AllSamples.Count > 0)
                 value += AllSamples.Last().ToString("F1") + Unit();
 
             value += " (avg: " + Value.Value.ToString("F1") + Unit() + ")";

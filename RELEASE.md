@@ -4,16 +4,11 @@
 
 [**READ IF PLAYING ONLINE GAMES AND/OR GAMES THAT HAVE ANTI-CHEAT ENABLED**](https://steam-deck-tools.ayufan.dev/#anti-cheat-and-antivirus-software)
 
-## SteamDeck OLED support
-
-- There's incorrect CPU temperature reading
-- There's a lack of GPU frequency reading
-
 ## #{GIT_TAG_NAME}
 
 ## 0.7.1
 
-- SteamDeck OLED: Support bios 107
+- SteamDeck OLED: Support Bios 107 with temperature readings
 
 ## 0.7.0
 
