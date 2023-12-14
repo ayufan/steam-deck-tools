@@ -36,7 +36,7 @@ namespace FanControl
         public ushort DesiredRPM { get; private set; }
 
         [CategoryAttribute("Board")]
-        public String PDVersion { get; private set; } = Vlv0100.FirmwareVersion.ToString("X");
+        public String PDVersion { get; private set; } = Vlv0100.Instance.FirmwareVersion.ToString("X");
 
         public FanController()
         {
@@ -80,7 +80,7 @@ namespace FanControl
         [Browsable(false)]
         public bool IsActive
         {
-            get { return Vlv0100.IsOpen; }
+            get { return Vlv0100.Instance.IsOpen; }
         }
 
         public void Update(bool showForDefault = false)
@@ -89,7 +89,7 @@ namespace FanControl
             if (mutex is null)
             {
                 // If we cannot acquire mutex slightly increase FAN to compensate just in case
-                Vlv0100.SetFanDesiredRPM((ushort)(Vlv0100.GetFanDesiredRPM() * 110 / 100));
+                Vlv0100.Instance.SetFanDesiredRPM((ushort)(Vlv0100.Instance.GetFanDesiredRPM() * 110 / 100));
                 return;
             }
 
@@ -104,7 +104,7 @@ namespace FanControl
                         sensor.Reset();
                     return;
                 }
-                else if (!Vlv0100.IsOpen)
+                else if (!Vlv0100.Instance.IsOpen)
                 {
                     Instance.UseKernelDrivers = true;
                     SetMode(Mode);
@@ -121,12 +121,12 @@ namespace FanControl
                 mutex.ReleaseMutex();
             }
 
-            allSensors["Batt"].Update("VLV0100", Vlv0100.GetBattTemperature(), Mode);
+            allSensors["Batt"].Update("VLV0100", Vlv0100.Instance.GetBattTemperature(), Mode);
 
-            Vlv0100.SetFanDesiredRPM(getDesiredRPM());
+            Vlv0100.Instance.SetFanDesiredRPM(getDesiredRPM());
 
-            CurrentRPM = Vlv0100.GetFanRPM();
-            DesiredRPM = Vlv0100.GetFanDesiredRPM();
+            CurrentRPM = Vlv0100.Instance.GetFanRPM();
+            DesiredRPM = Vlv0100.Instance.GetFanDesiredRPM();
         }
 
         public void SetMode(FanMode mode)
@@ -134,12 +134,12 @@ namespace FanControl
             switch (mode)
             {
                 case FanMode.Default:
-                    Vlv0100.SetFanControl(false);
+                    Vlv0100.Instance.SetFanControl(false);
                     break;
 
                 default:
                     Instance.UseKernelDrivers = true;
-                    Vlv0100.SetFanControl(true);
+                    Vlv0100.Instance.SetFanControl(true);
                     break;
             }
 

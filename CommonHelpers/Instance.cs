@@ -78,9 +78,9 @@ namespace CommonHelpers
                 useKernelDrivers = value;
 
                 if (value)
-                    Vlv0100.Open();
+                    Vlv0100.Instance.Open();
                 else
-                    Vlv0100.Close();
+                    Vlv0100.Instance.Close();
 
                 // CPU requires reading RyzenSMU
                 HardwareComputer.IsCpuEnabled = value;
@@ -140,13 +140,13 @@ namespace CommonHelpers
             {
                 UseKernelDrivers = useKernelDrivers;
 
-                if (Vlv0100.IsOpen && !Vlv0100.IsSupported)
+                if (Vlv0100.Instance.IsOpen && !Vlv0100.Instance.IsSupported)
                 {
                     String message = "";
                     message += "Current device is not supported.\n";
-                    message += "FirmwareVersion: " + Vlv0100.FirmwareVersion.ToString("X") + "\n";
-                    message += "BoardID: " + Vlv0100.BoardID.ToString("X") + "\n";
-                    message += "PDCS: " + Vlv0100.PDCS.ToString("X") + "\n";
+                    message += "FirmwareVersion: " + Vlv0100.Instance.FirmwareVersion.ToString("X") + "\n";
+                    message += "BoardID: " + Vlv0100.Instance.BoardID.ToString("X") + "\n";
+                    message += "PDCS: " + Vlv0100.Instance.PDCS.ToString("X") + "\n";
 
                     Fatal(title, message);
                 }

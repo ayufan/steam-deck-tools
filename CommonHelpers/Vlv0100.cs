@@ -1,6 +1,6 @@
 ﻿namespace CommonHelpers
 {
-    public class Vlv0100
+    public class Vlv0100 : IDisposable
     {
         // Those addresses are taken from DSDT for VLV0100
         // and might change at any time with a BIOS update
@@ -49,28 +49,41 @@
             new DeviceVersion() { Firmware = 0x1050, BoardID = 0x5, PDCS = 0 /* 0x2F */, BatteryTempLE = true }
         };
 
-        private static InpOut? inpOut;
+        public static Vlv0100 Instance = new Vlv0100();
 
-        public static bool IsOpen
+        ~Vlv0100()
+        {
+            Close();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            Close();
+        }
+
+        private InpOut? inpOut;
+
+        public bool IsOpen
         {
             get { return inpOut is not null; }
         }
 
-        public static DeviceVersion? SupportedDevice
+        public DeviceVersion? SupportedDevice
         {
-            get { return deviceVersions.First((v) => v.IsSupported(FirmwareVersion, BoardID, PDCS)); }
+            get { return deviceVersions.FirstOrDefault((v) => v.IsSupported(FirmwareVersion, BoardID, PDCS)); }
         }
 
-        public static bool IsSupported
+        public bool IsSupported
         {
             get { return SupportedDevice is not null; }
         }
 
-        public static ushort FirmwareVersion { get; private set; }
-        public static byte BoardID { get; private set; }
-        public static byte PDCS { get; private set; }
+        public ushort FirmwareVersion { get; private set; }
+        public byte BoardID { get; private set; }
+        public byte PDCS { get; private set; }
 
-        public static bool Open()
+        public bool Open()
         {
             if (inpOut != null)
                 return true;
@@ -96,7 +109,6 @@
                     PDCS = data[0];
                 else
                     PDCS = 0xFF;
-
                 return true;
             }
             catch (Exception e)
@@ -107,14 +119,14 @@
             }
         }
 
-        public static void Close()
+        public void Close()
         {
             SetFanControl(false);
             using (inpOut) { }
             inpOut = null;
         }
 
-        public static ushort GetFanDesiredRPM()
+        public ushort GetFanDesiredRPM()
         {
             var data = inpOut?.ReadMemory(FSLO_FSHI, 2);
             if (data is null)
@@ -122,7 +134,7 @@
             return BitConverter.ToUInt16(data);
         }
 
-        public static ushort? GetFanRPM()
+        public ushort? GetFanRPM()
         {
             var data = inpOut?.ReadMemory(FNRL_FNRH, 2);
             if (data is null)
@@ -130,7 +142,7 @@
             return BitConverter.ToUInt16(data);
         }
 
-        public static void SetFanControl(Boolean userControlled)
+        public void SetFanControl(Boolean userControlled)
         {
             SetGain(10);
             SetRampRate(userControlled ? (byte)10 : (byte)20);
@@ -138,7 +150,7 @@
             inpOut?.DlPortWritePortUchar(IO6C, userControlled ? (byte)0xCC : (byte)0xCD);
         }
 
-        public static void SetFanDesiredRPM(ushort rpm)
+        public void SetFanDesiredRPM(ushort rpm)
         {
             if (rpm > MAX_FAN_RPM)
                 rpm = MAX_FAN_RPM;
@@ -147,7 +159,7 @@
             inpOut?.WriteMemory(FSLO_FSHI, data);
         }
 
-        public static bool GetFanCheck()
+        public bool GetFanCheck()
         {
             var data = inpOut?.ReadMemory(FNCK, 1);
             if (data is null)
@@ -155,7 +167,7 @@
             return (data[0] & 0x1) != 0;
         }
 
-        public static float GetBattTemperature()
+        public float GetBattTemperature()
         {
             var data = inpOut?.ReadMemory(BATH_BATL, 2);
             if (data is null)
@@ -166,12 +178,12 @@
             return (float)(value - 0x0AAC) / 10.0f;
         }
 
-        private static void SetGain(ushort gain)
+        private void SetGain(ushort gain)
         {
             byte[] data = BitConverter.GetBytes(gain);
             inpOut?.WriteMemory(GNLO_GNHI, data);
         }
-        private static void SetRampRate(byte rampRate)
+        private void SetRampRate(byte rampRate)
         {
             byte[] data = BitConverter.GetBytes(rampRate);
             inpOut?.WriteMemory(FRPR, data);

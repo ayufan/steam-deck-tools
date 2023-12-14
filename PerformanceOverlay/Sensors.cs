@@ -335,7 +335,7 @@ namespace PerformanceOverlay
                 {
                     Value = delegate ()
                     {
-                        return CommonHelpers.Vlv0100.GetFanRPM();
+                        return Vlv0100.Instance.GetFanRPM();
                     },
                     Format = "F0"
                 }
