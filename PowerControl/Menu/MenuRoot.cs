@@ -78,13 +78,18 @@ namespace PowerControl.Menu
             if (Name != "")
                 sb.AppendLine(Color(Name, Colors.Blue));
 
+            bool lastSelectable = false;
+
             foreach (var item in Items)
             {
                 if (!item.Visible)
                     continue;
+                if (!item.Selectable && !lastSelectable)
+                    continue;
                 var lines = item.Render(Selected).Split("\r\n").Select(line => "  " + line);
                 foreach (var line in lines)
                     sb.AppendLine(line);
+                lastSelectable = item.Selectable;
             }
 
             return sb.ToString();
