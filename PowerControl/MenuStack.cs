@@ -36,7 +36,8 @@ namespace PowerControl
                 Options.PerformanceOverlay.ModeInstance,
                 Options.PerformanceOverlay.KernelDriversInstance,
                 Options.FanControl.Instance,
-                Options.SteamController.Instance
+                Options.SteamController.Instance,
+                Options.BatteryChargeLimit.Instance
             }
         };
 

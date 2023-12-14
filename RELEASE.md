@@ -6,6 +6,8 @@
 
 ## #{GIT_TAG_NAME}
 
+- PowerControl: Add Charge Limit (70%, 80%, 90%, 100%)
+
 ## 0.7.1
 
 - SteamDeck OLED: Support BIOS 107 with temperature readings

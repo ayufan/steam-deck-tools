@@ -15,6 +15,7 @@
         static IntPtr PDFV = new IntPtr(0xFE700C00 + 0x4C);
         static IntPtr XBID = new IntPtr(0xFE700300 + 0xBD);
         static IntPtr PDCT = new IntPtr(0xFE700C00 + 0x01);
+        static IntPtr MCBL = new IntPtr(0xFE700B00 + 0x9F);
         static ushort IO6C = 0x6C;
 
         public const ushort MAX_FAN_RPM = 0x1C84;
@@ -26,6 +27,7 @@
             public byte PDCS { get; set; }
 
             public bool BatteryTempLE { get; set; }
+            public bool MaxBatteryCharge { get; set; }
 
             public bool IsSupported(ushort deviceFirmware, byte deviceBoardID, byte devicePDCS)
             {
@@ -42,11 +44,11 @@
         private static readonly DeviceVersion[] deviceVersions = {
             // Steam Deck - LCD version
             new DeviceVersion() { Firmware = 0xB030, BoardID = 0x6, PDCS = 0 /* 0x2B */, BatteryTempLE = false },
-            new DeviceVersion() { Firmware = 0xB030, BoardID = 0xA, PDCS = 0 /* 0x2B */, BatteryTempLE = false },
+            new DeviceVersion() { Firmware = 0xB030, BoardID = 0xA, PDCS = 0 /* 0x2B */, BatteryTempLE = false, MaxBatteryCharge = true },
 
             // Steam Deck - OLED version
             // new DeviceVersion() { Firmware = 0x1030, BoardID = 0x5, PDCS = 0 /* 0x2F */, BatteryTempLE = true },
-            new DeviceVersion() { Firmware = 0x1050, BoardID = 0x5, PDCS = 0 /* 0x2F */, BatteryTempLE = true }
+            new DeviceVersion() { Firmware = 0x1050, BoardID = 0x5, PDCS = 0 /* 0x2F */, BatteryTempLE = true, MaxBatteryCharge = true }
         };
 
         public static Vlv0100 Instance = new Vlv0100();
@@ -176,6 +178,27 @@
                 ((data[1] << 8) + data[0]) :
                 ((data[0] << 8) + data[1]);
             return (float)(value - 0x0AAC) / 10.0f;
+        }
+
+        public int? GetMaxBatteryCharge()
+        {
+            if (SupportedDevice?.MaxBatteryCharge != true)
+                return null;
+            var data = inpOut?.ReadMemory(MCBL, 1);
+            if (data is null)
+                return null;
+            if (data[0] > 100)
+                return null;
+            return data[0];
+        }
+        public void SetMaxBatteryCharge(int chargeLimit)
+        {
+            if (SupportedDevice?.MaxBatteryCharge != true)
+                return;
+            if (chargeLimit < 0 || chargeLimit > 100)
+                return;
+            byte[] data = BitConverter.GetBytes(chargeLimit);
+            inpOut?.WriteMemory(MCBL, data);
         }
 
         private void SetGain(ushort gain)
