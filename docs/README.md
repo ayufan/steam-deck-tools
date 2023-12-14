@@ -90,10 +90,18 @@ By disabling usage of Kernel Drivers you are loosing the:
 The application tries it best to not harm device (just in case).
 So, it validates bios version. Those are currently supported:
 
-- F7A0107 (PD ver: 0xB030)
-- F7A0110 (PD ver: 0xB030)
-- F7A0113 (PD ver: 0xB030)
-- F7A0115 (PD ver: 0xB030)
+- SteamDeck LCD:
+
+  - F7A0107 (PD ver: 0xB030)
+  - F7A0110 (PD ver: 0xB030)
+  - F7A0113 (PD ver: 0xB030)
+  - F7A0115 (PD ver: 0xB030)
+  - F7A0116 (PD ver: 0xB030)
+  - F7A0119 (PD ver: 0xB030)
+
+- SteamDeck OLED:
+
+  - F7G0107 (PD ver: 0x1050)
 
 ## Author
 
