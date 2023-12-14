@@ -20,6 +20,8 @@ namespace CommonHelpers
         public InpOut()
         {
             libraryHandle = LoadLibrary(LibraryName);
+            if (libraryHandle == IntPtr.Zero)
+                throw new ArgumentException("Failed to load " + LibraryName);
             try
             {
                 var addr = GetProcAddress(libraryHandle, "MapPhysToLin");
