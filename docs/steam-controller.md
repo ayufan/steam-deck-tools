@@ -143,7 +143,20 @@ To configure the hotkey in Lossless Scaling:
 1. Verify that the hotkey was set to "CTRL + ALT + U"
 1. Close the settings dialog
 
-## 7. Uninstall
+## 7. Pause (Almost) Any Game
+
+Some games to not provide a pause function. It is often possible to suspend those programs using an app such as Game Pauser by Jase (https://madebyjase.com/game-pauser/). Steam Controller has been configured with a shortcut for that application.
+
+To configure the program:
+
+1. Install and launch Game Pauser by Jase
+2. Open Settings then Advanced User Customization
+3. Scroll down to the Custom Pausable Applications List and add any folders you run games from to the line AdditionalPausableFilepathInclusions. For example, I added "C:\\Games" and "C:\\XboxGames" as I install games in those folders in addition to steam.
+4. Under Keyboard Settings, ensure the two keycodes are 0xDB and 0xDD (this corresponds to '[' and ']')
+5. Close the settings and leave the app running in the background. When it is running, "STEAM + Left Stick" should pause any running games
+
+
+## 8. Uninstall
 
 Since `Steam Controller` changes Steam you need to follow those steps to properly uninstall the app:
 
@@ -152,7 +165,7 @@ Since `Steam Controller` changes Steam you need to follow those steps to properl
 3. Now, select `Ignore Steam` to remove `Steam Controller` from Steam
 4. Next go to `Steam > Settings > Controller` and revert all changes made to `Desktop configuration`
 
-## 8. Managed configs
+## 9. Managed configs
 
 The `Steam Controller` will manage default steam controller configs
 and install controller templates to ease controller management.
