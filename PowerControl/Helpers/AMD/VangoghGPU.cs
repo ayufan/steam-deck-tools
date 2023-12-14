@@ -13,7 +13,10 @@ namespace PowerControl.Helpers.AMD
             new Device("AMD Custom GPU 0405", 0x80300000, 0x8037ffff, new uint[] { 0x43F3900, 0x43F3C05, 0x43F3E00 }),
 
             // SteamDeck OLED
-            new Device("AMD Custom GPU 0932", 0x80600000, 0x8067ffff, new uint[] { 0x063F0E00 }),
+            // BIOS 105
+            // new Device("AMD Custom GPU 0932", 0x80600000, 0x8067ffff, new uint[] { 0x063F0E00 }),
+            // BIOS 107
+            new Device("AMD Custom GPU 0932", 0x80500000, 0x8057ffff, new uint[] { 0x063F0F00 }),
 
             // SteamDeck unofficial APU drivers
             // https://sourceforge.net/projects/amernimezone/files/Release%20Polaris-Vega-Navi/AMD%20SOC%20Driver%20Variant/
