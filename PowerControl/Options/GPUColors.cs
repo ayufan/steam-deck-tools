@@ -12,7 +12,7 @@ namespace PowerControl.Options
             Options = Enum.GetNames<DCE.Mode>(),
             CurrentValue = delegate ()
             {
-                return DCE.Current.ToString();
+                return DCE.Current?.ToString();
             },
             ApplyValue = (selected) =>
             {
