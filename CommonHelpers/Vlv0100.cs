@@ -43,7 +43,7 @@
 
         private static readonly DeviceVersion[] deviceVersions = {
             // Steam Deck - LCD version
-            new DeviceVersion() { Firmware = 0xB030, BoardID = 0x6, PDCS = 0 /* 0x2B */, BatteryTempLE = false },
+            new DeviceVersion() { Firmware = 0xB030, BoardID = 0x6, PDCS = 0 /* 0x2B */, BatteryTempLE = false, MaxBatteryCharge = true },
             new DeviceVersion() { Firmware = 0xB030, BoardID = 0xA, PDCS = 0 /* 0x2B */, BatteryTempLE = false, MaxBatteryCharge = true },
 
             // Steam Deck - OLED version
