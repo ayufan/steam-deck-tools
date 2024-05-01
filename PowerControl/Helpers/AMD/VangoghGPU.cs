@@ -10,7 +10,7 @@ namespace PowerControl.Helpers.AMD
         public static readonly Device[] SupportedDevices =
         {
             // SteamDeck LCD
-            new Device("AMD Custom GPU 0405", 0x80300000, 0x8037ffff, new uint[] { 0x43F3900, 0x43F3C05, 0x43F3E00 }),
+            new Device("AMD Custom GPU 0405", 0x80300000, 0x8037ffff, new uint[] { 0x43F3900, 0x43F3C05, 0x43F3E00, 0x063F0F00 }),
 
             // SteamDeck OLED
             // BIOS 105
