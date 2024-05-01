@@ -145,7 +145,6 @@ namespace PerformanceOverlay
                         {
                             Text = "<C1>FAN<C>",
                             Nested = { new Entry("<C4><A5>{FAN_RPM}<A><A1><S1> RPM<S><A>") },
-                            Include = { OverlayMode.Detail }
                         },
                         new Entry
                         {
