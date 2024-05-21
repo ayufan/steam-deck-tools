@@ -43,7 +43,7 @@ namespace PowerControl
 
         private static bool Is24hClock
         {
-            get => DateTimeFormatInfo.CurrentInfo.ShortTimePattern.Contains("HH");
+            get => DateTimeFormatInfo.CurrentInfo.ShortTimePattern.Contains('H');
         }
     }
 }
