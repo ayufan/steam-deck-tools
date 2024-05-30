@@ -6,6 +6,10 @@
 
 ## #{GIT_TAG_NAME}
 
+- SteamDeck LCD: Support BIOS F7A0131
+
+## 0.7.2
+
 - PowerControl: Add Charge Limit (70%, 80%, 90%, 100%)
 
 ## 0.7.1
