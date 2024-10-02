@@ -20,6 +20,7 @@ namespace CommonHelpers
     {
         FPS = 10032,
         FPSWithBattery,
+        Battery,
         Minimal,
         Detail,
         Full
