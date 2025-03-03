@@ -176,7 +176,7 @@ namespace PerformanceOverlay
                             Nested =
                             {
                                 new Entry("<C4><A4>{CURR_TIME}<A><C>")
-                            }
+                            },
                             Include = { OverlayMode.Minimal }
                         }
                     },
