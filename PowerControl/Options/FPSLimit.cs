@@ -13,14 +13,13 @@ namespace PowerControl.Options
             ResetValue = () => { return "Off"; },
             OptionsValues = delegate ()
             {
-                var refreshRate = DisplayResolutionController.GetRefreshRate();
-                return new string[]
-                {
-                    (refreshRate / 4).ToString(),
-                    (refreshRate / 2).ToString(),
-                    refreshRate.ToString(),
-                    "Off"
-                };
+                int refreshRate = DisplayResolutionController.GetRefreshRate();
+        		string[] limits = new string[refreshRate/5];
+        		for (int i = 0; i < refreshRate/5; i++) {
+        			limits[i] = string.Format("{0}", (i + 1) * 5);
+        		}
+                
+                return limits;
             },
             CurrentValue = delegate ()
             {
@@ -84,23 +83,13 @@ namespace PowerControl.Options
 
                     RTSS.LoadProfile();
                     RTSS.GetProfileProperty("FramerateLimit", out int fpsLimit);
-                    if (fpsLimit == 0)
+                    if (fpsLimit <= 0)
                         return;
 
-                    // FPSLimit, RR => outcome
-                    // 50 + 60 => 60 (div 1)
-                    // 25 + 60 => 30 (div 2)
-                    // 10 + 60 => 15 (div 6)
-                    // 60 + 50 => 50 (div 0)
-                    // 50 + 40 => 40 (div 0)
-                    // 60 + 30 => 30 (div 0)
-                    int div = refreshRate / fpsLimit;
-                    if (div >= 4)
-                        fpsLimit = refreshRate / 4;
-                    else if (div >= 2)
-                        fpsLimit = refreshRate / 2;
-                    else
+                    if (fpsLimit > refreshRate) {
                         fpsLimit = refreshRate;
+                    }
+                    
                     RTSS.SetProfileProperty("FramerateLimit", fpsLimit);
                     RTSS.SaveProfile();
                     RTSS.UpdateProfiles();
