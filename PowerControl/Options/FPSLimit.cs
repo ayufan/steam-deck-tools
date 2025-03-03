@@ -20,7 +20,7 @@ namespace PowerControl.Options
         		}
 
                 // dissalow to use fps limits lower than 15
-                string[] allowedLimits = Array.FindAll(availableLimits, val => val != null && Int32.Parse(val) >= 15)
+                string[] allowedLimits = Array.FindAll(availableLimits, val => val != null && Int32.Parse(val) >= 15);
                 
                 return allowedLimits;
             },
