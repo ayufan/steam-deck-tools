@@ -48,6 +48,18 @@ namespace PerformanceOverlay
                 return ConvertToString(Value());
             }
         }
+        
+        public class UserStringValueSensor : ValueSensor
+        {
+            public delegate string? ValueDelegate();
+
+            public ValueDelegate Value { get; set; }
+
+            public override string? GetValue(Sensors sensors)
+            {
+                return ConvertToString(Value());
+            }
+        }
 
         public class HardwareSensor : ValueSensor
         {
@@ -341,9 +353,9 @@ namespace PerformanceOverlay
                 }
             },
             {
-                "CURR_TIME", new UserValueSensor()
+                "CURR_TIME", new UserStringValueSensor()
                 {
-                    Value = delegate string ()
+                    Value = delegate ()
                     {
                         DateTime localDate = DateTime.Now;
                         return localDate.ToString("t");
