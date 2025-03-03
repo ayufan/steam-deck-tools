@@ -343,7 +343,7 @@ namespace PerformanceOverlay
             {
                 "CURR_TIME", new UserValueSensor()
                 {
-                    Value = delegate ()
+                    Value = delegate string ()
                     {
                         DateTime localDate = DateTime.Now;
                         return localDate.ToString("t");
