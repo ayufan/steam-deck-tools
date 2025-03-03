@@ -339,6 +339,17 @@ namespace PerformanceOverlay
                     },
                     Format = "F0"
                 }
+            },
+            {
+                "CURR_TIME", new UserValueSensor()
+                {
+                    Value = delegate ()
+                    {
+                        DateTime localDate = DateTime.Now;
+                        return localDate.ToString("t");
+                    },
+                    Format = "F0"
+                }
             }
         };
         public IList<ISensor> AllHardwareSensors { get; private set; } = new List<ISensor>();
