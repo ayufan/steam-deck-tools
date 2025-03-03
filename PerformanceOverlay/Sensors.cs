@@ -57,7 +57,7 @@ namespace PerformanceOverlay
 
             public override string? GetValue(Sensors sensors)
             {
-                return ConvertToString(Value());
+                return Value();
             }
         }
 
