@@ -14,12 +14,15 @@ namespace PowerControl.Options
             OptionsValues = delegate ()
             {
                 int refreshRate = DisplayResolutionController.GetRefreshRate();
-        		string[] limits = new string[refreshRate/5];
+        		string[] availableLimits = new string[refreshRate/5];
         		for (int i = 0; i < refreshRate/5; i++) {
-        			limits[i] = string.Format("{0}", (i + 1) * 5);
+        			availableLimits[i] = string.Format("{0}", (i + 1) * 5);
         		}
+
+                // dissalow to use fps limits lower than 15
+                string[] allowedLimits = Array.FindAll(availableLimits, val => val != null && Int32.Parse(val) >= 15)
                 
-                return limits;
+                return allowedLimits;
             },
             CurrentValue = delegate ()
             {
@@ -89,8 +92,25 @@ namespace PowerControl.Options
                     if (fpsLimit > refreshRate) {
                         fpsLimit = refreshRate;
                     }
+
+                    if (fpsLimit < 15) {
+                        fpsLimit = 15;
+                    }
                     
-                    RTSS.SetProfileProperty("FramerateLimit", fpsLimit);
+                    int convertFpsLimitDividedByFive(int limit) {
+                        var leftOver = limit % 5;
+                        if (leftOver == 0) {
+                            return limit;
+                        }
+                        
+                        if (leftOver >= 3) {
+                            return limit + (5 - leftOver);
+                        }
+                        
+                        return limit - leftOver;
+                    }
+                    
+                    RTSS.SetProfileProperty("FramerateLimit", convertFpsLimitDividedByFive(fpsLimit));
                     RTSS.SaveProfile();
                     RTSS.UpdateProfiles();
                 }
