@@ -94,6 +94,7 @@ namespace PerformanceOverlay
                     Nested =
                     {
                         new Entry("<C4><FR><C><A><A1><S1><C4> FPS<C><S><A>"),
+                        new Entry("<C4><A3>{CURR_TIME}<A><A1><S1><S><A>") { Include = { OverlayMode.FPSWithBattery } },
                         new Entry("<C4><A3>{BATT_%}<A><A1><S1> %<C><S><A>") { Include = { OverlayMode.FPSWithBattery }, IgnoreMissing = true },
                         new Entry("<C4><A4>{BATT_W}<A><A1><S1> W<C><S><A>") { Include = { OverlayMode.FPSWithBattery }, IgnoreMissing = true },
                         new Entry("<C4><A3>{BATT_MIN}<A><A1><S1> min<C><S><A>") { Include = { OverlayMode.FPSWithBattery }, IgnoreMissing = true }
@@ -155,6 +156,11 @@ namespace PerformanceOverlay
                         new Entry
                         {
                             Text = "<C2>[OBJ_FT_SMALL]<C><S1> <C4><A0><FT><A><A1> ms<A><S><C>",
+                            Include = { OverlayMode.Detail }
+                        },
+                        new Entry
+                        {
+                            Text = "<C4><A3>{CURR_TIME}<A><A1><S1><S><A>",
                             Include = { OverlayMode.Detail }
                         }
                     },
