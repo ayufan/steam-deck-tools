@@ -94,11 +94,24 @@ namespace PerformanceOverlay
                     Nested =
                     {
                         new Entry("<C4><FR><C><A><A1><S1><C4> FPS<C><S><A>"),
-                        new Entry("<C4><A3>{CURR_TIME}<A><A1><S1><S><A>") { Include = { OverlayMode.FPSWithBattery } },
                         new Entry("<C4><A3>{BATT_%}<A><A1><S1> %<C><S><A>") { Include = { OverlayMode.FPSWithBattery }, IgnoreMissing = true },
                         new Entry("<C4><A4>{BATT_W}<A><A1><S1> W<C><S><A>") { Include = { OverlayMode.FPSWithBattery }, IgnoreMissing = true },
-                        new Entry("<C4><A3>{BATT_MIN}<A><A1><S1> min<C><S><A>") { Include = { OverlayMode.FPSWithBattery }, IgnoreMissing = true }
+                        new Entry("<C4><A3>{BATT_MIN}<A><A1><S1> min<C><S><A>") { Include = { OverlayMode.FPSWithBattery }, IgnoreMissing = true },
+                        new Entry("<C4><FR><C><A><A1><S1><C4>{CURR_TIME}<C><S><A>") { Include = { OverlayMode.FPSWithBattery, OverlayMode.FPS } }
                     },
+                    Separator = "<C250>|<C> ",
+                    Include = { OverlayMode.FPS, OverlayMode.FPSWithBattery }
+                },
+                // Battery
+                new Entry {
+                    Nested =
+                    {
+                        new Entry("<C4><A3>{BATT_%}<A><A1><S1> %<C><S><A>") { Include = { OverlayMode.Battery }, IgnoreMissing = true },
+                        new Entry("<C4><A4>{BATT_W}<A><A1><S1> W<C><S><A>") { Include = { OverlayMode.Battery }, IgnoreMissing = true },
+                        new Entry("<C4><A3>{BATT_MIN}<A><A1><S1> min<C><S><A>") { Include = { OverlayMode.Battery }, IgnoreMissing = true },
+                        new Entry("<C4><FR><C><A><A1><S1><C4>{CURR_TIME}<C><S><A>") { Include = { OverlayMode.BatteryWithTime } }
+                    },
+                    Separator = "<C250>|<C> ",
                     Include = { OverlayMode.FPS, OverlayMode.FPSWithBattery }
                 },
 
@@ -160,8 +173,8 @@ namespace PerformanceOverlay
                         },
                         new Entry
                         {
-                            Text = "<C4><A3>{CURR_TIME}<A><A1><S1><S><A>",
-                            Include = { OverlayMode.Detail }
+                            Text = "<C4><A4><FR><C><A><A1><S1><C4>{CURR_TIME}<C><S><A>",
+                            Include = { OverlayMode.Minimal }
                         }
                     },
                     Separator = "<C250>|<C> ",
@@ -224,6 +237,12 @@ namespace PerformanceOverlay
                         },
                         new Entry("<C2><S1>Frametime<S>"),
                         new Entry("[OBJ_FT_LARGE]<S1> <A0><FT><A><A1> ms<A><S><C>"),
+                        new Entry("<C1>TIME<C>\t  ")
+                        {
+                            Nested = {
+                                new Entry("<A5>{CURR_TIME}<A>"),
+                            }
+                        },
                     },
                     Separator = "\r\n",
                     Include = { OverlayMode.Full }
