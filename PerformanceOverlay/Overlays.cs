@@ -101,6 +101,15 @@ namespace PerformanceOverlay
                     Include = { OverlayMode.FPS, OverlayMode.FPSWithBattery }
                 },
 
+                // Just battery
+                new Entry {
+                    Nested =
+                    {
+                        new Entry("<C4><A3>{BATT_%}<A><A1><S1> %<C><S><A>")
+                    },
+                    Include = { OverlayMode.Battery }
+                },
+
                 // Minimal and Detail
                 new Entry {
                     Nested =
