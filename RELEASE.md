@@ -6,6 +6,11 @@
 
 ## #{GIT_TAG_NAME}
 
+- SteamController: Persist and expose in release Lizard{Buttons,Mouse}
+- PerformanceOverlay: Battery-only setting in Performance Overlay (#193)
+
+## 0.7.3
+
 - SteamDeck LCD: Support BIOS F7A0131
 
 ## 0.7.2
