@@ -14,10 +14,18 @@ namespace SteamController
         }
 
         [Description("Use Lizard Buttons instead of emulated. This option is only for testing purposes.")]
-        public bool LizardButtons { get; set; } = false;
+        public bool LizardButtons
+        {
+            get { return Get<bool>("LizardButtons", false); }
+            set { Set("LizardButtons", value); }
+        }
 
         [Description("Use Lizard Mouse instead of emulated. This option is only for testing purposes.")]
-        public bool LizardMouse { get; set; } = true;
+        public bool LizardMouse
+        {
+            get { return Get<bool>("LizardMouse", false); }
+            set { Set("LizardMouse", value); }
+        }
 
         public override string ToString()
         {
