@@ -41,13 +41,13 @@ jobs:
           /DBUILD_DIR=../${{ env.RELEASE_NAME }}-debug
           /DOUTPUT_FILE=../${{ env.RELEASE_NAME }}-setup-debug.exe
     - name: 'Upload Artifact debug.zip'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: debug.zip
         path: ${{ env.RELEASE_NAME }}-debug.zip
         retention-days: 14
     - name: 'Upload Artifact setup-debug.exe'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: setup-debug.exe
         path: ${{ env.RELEASE_NAME }}-setup-debug.exe
