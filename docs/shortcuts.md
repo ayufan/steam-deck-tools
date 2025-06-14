@@ -14,6 +14,7 @@
 | STEAM + A                  | RETURN                 | RETURN                 | RETURN                 |                        | RETURN                 |
 | STEAM + B (hold for 1s)    | ALT + F4               | ALT + F4               | ALT + F4               |                        | ALT + F4               |
 | STEAM + B (hold for 3s)    | Kill active process    | Kill active process    | Kill active process    |                        | Kill active process    |
+| STEAM + Left Stick Press   | [ + ]                  | [ + ]                  | [ + ]                  |                        | [ + ]                  |
 | STEAM + X                  | Toggle Keyboard        | Toggle Keyboard        | Toggle Keyboard        |                        | Toggle Keyboard        |
 | STEAM + L1                 | Toggle Magnify         | Toggle Magnify         | Toggle Magnify         |                        | Toggle Magnify         |
 | STEAM + R1                 | Screenshot             | Screenshot             | Screenshot             |                        | Screenshot             |
