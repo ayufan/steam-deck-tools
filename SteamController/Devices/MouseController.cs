@@ -2,7 +2,7 @@ using WindowsInput;
 
 namespace SteamController.Devices
 {
-    public class MouseController : IDisposable
+    public partial class MouseController : IDisposable
     {
         private struct Accum
         {

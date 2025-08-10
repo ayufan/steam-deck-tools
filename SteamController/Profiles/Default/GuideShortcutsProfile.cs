@@ -174,13 +174,11 @@ namespace SteamController.Profiles.Default
                 c.Mouse[Devices.MouseController.Button.Left] = c.Steam.BtnRPadPress;
             }
 
-            if (c.Steam.RPadX || c.Steam.RPadY)
-            {
-                c.Mouse.MoveBy(
-                    c.Steam.RPadX.GetDeltaValue(Context.PadToMouseSensitivity, Devices.DeltaValueMode.Delta, 10),
-                    -c.Steam.RPadY.GetDeltaValue(Context.PadToMouseSensitivity, Devices.DeltaValueMode.Delta, 10)
-                );
-            }
+            c.Mouse.MoveByFauxLizard(
+                c.Steam.RPadX.GetDeltaValue(Context.PadToMouseSensitivity, Devices.DeltaValueMode.Delta, 10),
+                -c.Steam.RPadY.GetDeltaValue(Context.PadToMouseSensitivity, Devices.DeltaValueMode.Delta, 10),
+                c
+            );
         }
     }
 }
