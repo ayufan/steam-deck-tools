@@ -121,15 +121,6 @@ namespace SteamController.Profiles.Default
 
         protected void EmulateScrollOnLPad(Context c)
         {
-            //Send haptic for pad presses
-            if (!c.Steam.LizardButtons && !c.Steam.LizardMouse)
-            {
-                if (c.Steam.BtnLPadPress.Pressed() || c.Steam.BtnLPadPress.JustPressed())
-                {
-                    c.Steam.SendHaptic(HapticPad.Left, HapticStyle.Strong, 8);
-                }
-            }
-
             if (c.Steam.LPadX)
             {
                 c.Mouse.HorizontalScroll(
@@ -149,6 +140,31 @@ namespace SteamController.Profiles.Default
                         10
                     )
                 );
+            }
+
+            if (!c.Steam.LizardButtons && !c.Steam.LizardMouse)
+            {
+                // Send haptic for pad presses
+                if (c.Steam.BtnLPadPress.Pressed() || c.Steam.BtnLPadPress.JustPressed())
+                {
+                    c.Steam.SendHaptic(HapticPad.Left, HapticStyle.Strong, 8);
+                }
+
+                // Send haptic for pad drag
+                if (c.Mouse.HapticDragLFauxLizard(
+                    c.Steam.LPadX.GetDeltaValue(
+                        150,
+                        Devices.DeltaValueMode.Delta,
+                        10
+                    ),
+                    c.Steam.LPadY.GetDeltaValue(
+                        150,
+                        Devices.DeltaValueMode.Delta,
+                        10
+                    ),
+                    c.Steam.BtnLPadTouch?.LastValue ?? false
+                ))
+                    c.Steam.SendHaptic(HapticPad.Left, HapticStyle.Weak, 5);
             }
         }
 
@@ -184,20 +200,36 @@ namespace SteamController.Profiles.Default
                 c.Mouse[Devices.MouseController.Button.Left] = c.Steam.BtnRPadPress;
             }
 
-            //Send haptic for pad presses
+            c.Mouse.MoveByFauxLizard(
+                c.Steam.RPadX.GetDeltaValue(Context.PadToMouseSensitivity, Devices.DeltaValueMode.Delta, 10),
+                -c.Steam.RPadY.GetDeltaValue(Context.PadToMouseSensitivity, Devices.DeltaValueMode.Delta, 10),
+                c.Steam.BtnRPadTouch?.LastValue ?? false
+            );
+
             if (!c.Steam.LizardButtons && !c.Steam.LizardMouse)
             {
+                // Send haptic for pad presses
                 if (c.Steam.BtnRPadPress.Pressed() || c.Steam.BtnRPadPress.JustPressed())
                 {
                     c.Steam.SendHaptic(HapticPad.Right, HapticStyle.Strong, 8);
                 }
-            }
 
-            c.Mouse.MoveByFauxLizard(
-                c.Steam.RPadX.GetDeltaValue(Context.PadToMouseSensitivity, Devices.DeltaValueMode.Delta, 10),
-                -c.Steam.RPadY.GetDeltaValue(Context.PadToMouseSensitivity, Devices.DeltaValueMode.Delta, 10),
-                c
-            );
+                // Send haptic for pad drag
+                if (c.Mouse.HapticDragRFauxLizard(
+                    c.Steam.RPadX.GetDeltaValue(
+                        150,
+                        Devices.DeltaValueMode.Delta,
+                        10
+                    ),
+                    c.Steam.RPadY.GetDeltaValue(
+                        150,
+                        Devices.DeltaValueMode.Delta,
+                        10
+                    ),
+                    c.Steam.BtnRPadTouch?.LastValue ?? false
+                ))
+                    c.Steam.SendHaptic(HapticPad.Right, HapticStyle.Weak, 5);
+            }
         }
     }
 }

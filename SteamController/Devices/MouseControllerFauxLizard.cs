@@ -11,15 +11,14 @@ namespace SteamController.Devices
         private const int velocityWindowSize = 20;         // Velocity smoothing window size
         private const double minGlideMagnitude = 0.8;      // Minimum velocity to start glide
         private const double minGlideVelocity = 0.15;      // Minimum velocity to continue glide
-        private const double hapticTriggerDelta = 45;      // Distance threshold for haptic feedback
-        private const sbyte hapticStrength = 5;            // Haptic feedback intensity
+        private const double hapticTriggerDelta = 30;     // Distance threshold for haptic feedback on each pad
 
         // Functional constants (derived once)
         private readonly double gestureRadiusSq = gestureRadius * gestureRadius;
         private readonly double minGlideMagnitudeSq = minGlideMagnitude * minGlideMagnitude;
         private readonly double minGlideVelocitySq = minGlideVelocity * minGlideVelocity;
 
-        // Runtime state
+        // Runtime state RPad
         private Queue<double> bufX = new(), bufY = new();
         private double totalDeltaX = 0, totalDeltaY = 0;
         private bool gestureCommitted = false;
@@ -31,13 +30,13 @@ namespace SteamController.Devices
         private Queue<double> velocityHistoryX = new(), velocityHistoryY = new();
         private double velocitySumX = 0, velocitySumY = 0;
 
-        private double hapticDelta = 0;
+        // Runtime state haptics
+        private double hapticDeltaR = 0;
+        private double hapticDeltaL = 0;
 
         // Main movement logic
-        public void MoveByFauxLizard(double dx, double dy, Context c)
+        public void MoveByFauxLizard(double dx, double dy, bool isTouched)
         {
-            bool isTouched = c.Steam.BtnRPadTouch?.LastValue ?? false;
-
             if (!isTouched)
             {
                 // Start glide if gesture was committed and velocity is high enough
@@ -72,7 +71,7 @@ namespace SteamController.Devices
 
                 // Reset gesture state
                 gestureCommitted = false;
-                totalDeltaX = totalDeltaY = hapticDelta = 0;
+                totalDeltaX = totalDeltaY;
                 return;
             }
 
@@ -130,17 +129,52 @@ namespace SteamController.Devices
             double finalX = flushedX + rampedX;
             double finalY = flushedY + rampedY;
 
-            // Haptic trigger
-            double finalMagSq = finalX * finalX + finalY * finalY;
-            hapticDelta += Math.Sqrt(finalMagSq); // Only one sqrt per frame
-
-            if (hapticDelta >= hapticTriggerDelta)
-            {
-                c.Steam.SendHaptic(HapticPad.Right, HapticStyle.Weak, hapticStrength);
-                hapticDelta -= hapticTriggerDelta;
-            }
-
             MoveBy(finalX, finalY);
+        }
+
+        // Checks whether the pads have been dragged enough to trigger a haptic feedback
+        public bool HapticDragRFauxLizard(double dx, double dy, bool isTouched)
+        {
+            if (isTouched)
+            {
+                double finalMagSq = dx * dx + dy * dy;
+
+                if (hapticDeltaR < hapticTriggerDelta)
+                    hapticDeltaR += Math.Sqrt(finalMagSq);
+
+                if (hapticDeltaR >= hapticTriggerDelta)
+                {
+                    hapticDeltaR -= hapticTriggerDelta;
+
+                    return true;
+                }
+            }
+            else
+                hapticDeltaR = 0;
+
+            return false;
+        }
+
+        public bool HapticDragLFauxLizard(double dx, double dy, bool isTouched)
+        {
+            if (isTouched)
+            {
+                double finalMagSq = dx * dx + dy * dy;
+
+                if (hapticDeltaL < hapticTriggerDelta)
+                    hapticDeltaL += Math.Sqrt(finalMagSq);
+
+                if (hapticDeltaL >= hapticTriggerDelta)
+                {
+                    hapticDeltaL -= hapticTriggerDelta;
+
+                    return true;
+                }
+            }
+            else
+                hapticDeltaL = 0;
+
+            return false;
         }
 
         // Input smoothing
