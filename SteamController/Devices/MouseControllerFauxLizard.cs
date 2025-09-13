@@ -71,7 +71,7 @@ namespace SteamController.Devices
 
                 // Reset gesture state
                 gestureCommitted = false;
-                totalDeltaX = totalDeltaY;
+                totalDeltaX = totalDeltaY = 0;
                 return;
             }
 
