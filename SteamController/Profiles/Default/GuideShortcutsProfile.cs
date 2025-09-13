@@ -2,6 +2,7 @@ using System.Diagnostics;
 using ExternalHelpers;
 using PowerControl.Helpers;
 using WindowsInput;
+using static SteamController.Devices.SteamController;
 
 namespace SteamController.Profiles.Default
 {
@@ -120,6 +121,15 @@ namespace SteamController.Profiles.Default
 
         protected void EmulateScrollOnLPad(Context c)
         {
+            //Send haptic for pad presses
+            if (!c.Steam.LizardButtons && !c.Steam.LizardMouse)
+            {
+                if (c.Steam.BtnLPadPress.Pressed() || c.Steam.BtnLPadPress.JustPressed())
+                {
+                    c.Steam.SendHaptic(HapticPad.Left, HapticStyle.Strong, 8);
+                }
+            }
+
             if (c.Steam.LPadX)
             {
                 c.Mouse.HorizontalScroll(
@@ -172,6 +182,15 @@ namespace SteamController.Profiles.Default
             {
                 c.Mouse[Devices.MouseController.Button.Right] = c.Steam.BtnLPadPress;
                 c.Mouse[Devices.MouseController.Button.Left] = c.Steam.BtnRPadPress;
+            }
+
+            //Send haptic for pad presses
+            if (!c.Steam.LizardButtons && !c.Steam.LizardMouse)
+            {
+                if (c.Steam.BtnRPadPress.Pressed() || c.Steam.BtnRPadPress.JustPressed())
+                {
+                    c.Steam.SendHaptic(HapticPad.Right, HapticStyle.Strong, 8);
+                }
             }
 
             c.Mouse.MoveByFauxLizard(
