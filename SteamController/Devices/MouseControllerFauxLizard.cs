@@ -5,18 +5,20 @@ namespace SteamController.Devices
     public partial class MouseController : IDisposable
     {
         // Adjustable parameters (tweakable settings)
-        private const int bufferSize = 4;                  // Input smoothing buffer size
-        private const int gestureRadius = 30;              // Gesture commit threshold (pixels)
-        private const double gestureFlushRate = 0.1;       // Rate at which gesture flush decays
-        private const int velocityWindowSize = 20;         // Velocity smoothing window size
-        private const double minGlideMagnitude = 0.8;      // Minimum velocity to start glide
-        private const double minGlideVelocity = 0.15;      // Minimum velocity to continue glide
-        private const double hapticTriggerDelta = 30;     // Distance threshold for haptic feedback on each pad
+        private const int bufferSize = 4;                     // Input smoothing buffer size
+        private const int gestureRadius = 30;                 // Gesture commit threshold (pixels)
+        private const double gestureFlushRate = 0.1;          // Rate at which gesture flush decays
+        private const int velocityWindowSize = 20;            // Velocity smoothing window size
+        private const double minGlideMagnitude = 0.8;         // Minimum velocity to start glide
+        private const double minGlideVelocity = 0.15;         // Minimum velocity to continue glide
+        private const double hapticTriggerDelta = 6000;       // Distance required for haptic feedback on each pad
+        private const double hapticTriggerThreshold = 600;    // Only triggers haptic if moved this much, prevents triggering on minor drifts
 
         // Functional constants (derived once)
         private readonly double gestureRadiusSq = gestureRadius * gestureRadius;
         private readonly double minGlideMagnitudeSq = minGlideMagnitude * minGlideMagnitude;
         private readonly double minGlideVelocitySq = minGlideVelocity * minGlideVelocity;
+        private readonly double hapticTriggerThresholdSq = hapticTriggerThreshold * hapticTriggerThreshold;
 
         // Runtime state RPad
         private Queue<double> bufX = new(), bufY = new();
@@ -31,8 +33,21 @@ namespace SteamController.Devices
         private double velocitySumX = 0, velocitySumY = 0;
 
         // Runtime state haptics
+        private int hapticDriftBufferSize = 250;
+
         private double hapticDeltaR = 0;
+        double[] hapticDriftRX = new double[250];
+        double[] hapticDriftRY = new double[250];
+        int hapticDriftRIndex = 0;
+        double hapticDriftSumRX = 0;
+        double hapticDriftSumRY = 0;
+
         private double hapticDeltaL = 0;
+        double[] hapticDriftLX = new double[250];
+        double[] hapticDriftLY = new double[250];
+        int hapticDriftLIndex = 0;
+        double hapticDriftSumLX = 0;
+        double hapticDriftSumLY = 0;
 
         // Main movement logic
         public void MoveByFauxLizard(double dx, double dy, bool isTouched)
@@ -137,20 +152,52 @@ namespace SteamController.Devices
         {
             if (isTouched)
             {
-                double finalMagSq = dx * dx + dy * dy;
+                // Update circular buffer and drift sums
+                hapticDriftSumRX -= hapticDriftRX[hapticDriftRIndex];
+                hapticDriftSumRY -= hapticDriftRY[hapticDriftRIndex];
 
-                if (hapticDeltaR < hapticTriggerDelta)
-                    hapticDeltaR += Math.Sqrt(finalMagSq);
+                hapticDriftRX[hapticDriftRIndex] = dx;
+                hapticDriftRY[hapticDriftRIndex] = dy;
 
-                if (hapticDeltaR >= hapticTriggerDelta)
+                hapticDriftSumRX += dx;
+                hapticDriftSumRY += dy;
+
+                hapticDriftRIndex = (hapticDriftRIndex + 1) % hapticDriftBufferSize;
+
+                // Compute drift magnitude squared
+                double driftMagSq = hapticDriftSumRX * hapticDriftSumRX + hapticDriftSumRY * hapticDriftSumRY;
+
+                if (driftMagSq > hapticTriggerThresholdSq)
                 {
-                    hapticDeltaR -= hapticTriggerDelta;
+                    // Compute instantaneous movement magnitude
+                    double deltaMagSq = dx * dx + dy * dy;
+                    if(hapticDeltaR < hapticTriggerDelta)
+                        hapticDeltaR += Math.Sqrt(deltaMagSq);
 
-                    return true;
+                    if (hapticDeltaR >= hapticTriggerDelta)
+                    {
+                        // Reset drift buffer and trigger haptic
+                        hapticDriftSumRX = hapticDriftSumRY = 0;
+                        hapticDriftRIndex = 0;
+                        Array.Clear(hapticDriftRX, 0, hapticDriftBufferSize);
+                        Array.Clear(hapticDriftRY, 0, hapticDriftBufferSize);
+
+                        hapticDeltaR -= hapticTriggerDelta;
+
+                        return true;
+                    }
                 }
             }
             else
+            {
+                // Reset everything on release
+                hapticDriftSumRX = hapticDriftSumRY = 0;
+                hapticDriftRIndex = 0;
+                Array.Clear(hapticDriftRX, 0, hapticDriftBufferSize);
+                Array.Clear(hapticDriftRY, 0, hapticDriftBufferSize);
+
                 hapticDeltaR = 0;
+            }
 
             return false;
         }
@@ -159,20 +206,52 @@ namespace SteamController.Devices
         {
             if (isTouched)
             {
-                double finalMagSq = dx * dx + dy * dy;
+                // Update circular buffer and drift sums
+                hapticDriftSumLX -= hapticDriftLX[hapticDriftLIndex];
+                hapticDriftSumLY -= hapticDriftLY[hapticDriftLIndex];
 
-                if (hapticDeltaL < hapticTriggerDelta)
-                    hapticDeltaL += Math.Sqrt(finalMagSq);
+                hapticDriftLX[hapticDriftLIndex] = dx;
+                hapticDriftLY[hapticDriftLIndex] = dy;
 
-                if (hapticDeltaL >= hapticTriggerDelta)
+                hapticDriftSumLX += dx;
+                hapticDriftSumLY += dy;
+
+                hapticDriftLIndex = (hapticDriftLIndex + 1) % hapticDriftBufferSize;
+
+                // Compute drift magnitude squared
+                double driftMagSq = hapticDriftSumLX * hapticDriftSumLX + hapticDriftSumLY * hapticDriftSumLY;
+
+                if (driftMagSq > hapticTriggerThresholdSq)
                 {
-                    hapticDeltaL -= hapticTriggerDelta;
+                    // Compute instantaneous movement magnitude
+                    double deltaMagSq = dx * dx + dy * dy;
+                    if (hapticDeltaL < hapticTriggerDelta)
+                        hapticDeltaL += Math.Sqrt(deltaMagSq);
 
-                    return true;
+                    if (hapticDeltaL >= hapticTriggerDelta)
+                    {
+                        // Reset drift buffer and trigger haptic
+                        hapticDriftSumLX = hapticDriftSumLY = 0;
+                        hapticDriftLIndex = 0;
+                        Array.Clear(hapticDriftLX, 0, hapticDriftBufferSize);
+                        Array.Clear(hapticDriftLY, 0, hapticDriftBufferSize);
+
+                        hapticDeltaL -= hapticTriggerDelta;
+
+                        return true;
+                    }
                 }
             }
             else
+            {
+                // Reset everything on release
+                hapticDriftSumLX = hapticDriftSumLY = 0;
+                hapticDriftLIndex = 0;
+                Array.Clear(hapticDriftLX, 0, hapticDriftBufferSize);
+                Array.Clear(hapticDriftLY, 0, hapticDriftBufferSize);
+
                 hapticDeltaL = 0;
+            }
 
             return false;
         }
