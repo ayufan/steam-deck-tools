@@ -1,3 +1,4 @@
+﻿using System;
 using static SteamController.Devices.SteamController;
 
 namespace SteamController.Devices
@@ -11,14 +12,14 @@ namespace SteamController.Devices
         private const int velocityWindowSize = 20;            // Velocity smoothing window size
         private const double minGlideMagnitude = 0.8;         // Minimum velocity to start glide
         private const double minGlideVelocity = 0.15;         // Minimum velocity to continue glide
-        private const double hapticTriggerDelta = 6000;       // Distance required for haptic feedback on each pad
-        private const double hapticTriggerThreshold = 600;    // Only triggers haptic if moved this much, prevents triggering on minor drifts
+        private const int hapticBufferSize = 10;             // Haptic smoothing and jitter reduction buffer
+        private const double hapticTriggerDelta = 30;         // Distance required for haptic feedback on each pad
 
         // Functional constants (derived once)
         private readonly double gestureRadiusSq = gestureRadius * gestureRadius;
         private readonly double minGlideMagnitudeSq = minGlideMagnitude * minGlideMagnitude;
         private readonly double minGlideVelocitySq = minGlideVelocity * minGlideVelocity;
-        private readonly double hapticTriggerThresholdSq = hapticTriggerThreshold * hapticTriggerThreshold;
+        private readonly double hapticBufferMidpoint = hapticBufferSize / 2.0;
 
         // Runtime state RPad
         private Queue<double> bufX = new(), bufY = new();
@@ -33,21 +34,39 @@ namespace SteamController.Devices
         private double velocitySumX = 0, velocitySumY = 0;
 
         // Runtime state haptics
-        private int hapticDriftBufferSize = 250;
+        private readonly int[] hapticDxSignBufferR = new int[hapticBufferSize];
+        private readonly int[] hapticDySignBufferR = new int[hapticBufferSize];
+        private readonly int[] hapticDxFlipFlagBufferR = new int[hapticBufferSize];
+        private readonly int[] hapticDyFlipFlagBufferR = new int[hapticBufferSize];
+        private readonly double[] hapticMagBufferR = new double[hapticBufferSize];
 
         private double hapticDeltaR = 0;
-        double[] hapticDriftRX = new double[250];
-        double[] hapticDriftRY = new double[250];
-        int hapticDriftRIndex = 0;
-        double hapticDriftSumRX = 0;
-        double hapticDriftSumRY = 0;
+        private int hapticBufferCountR = 0;
+        private int hapticBufferIndexR = 0;
+        private int hapticDxFlipCountR = 0;
+        private int hapticDyFlipCountR = 0;
+        private int hapticDxZeroCountR = 0;
+        private int hapticDyZeroCountR = 0;
+        private double hapticMagSumR = 0;
+
+        private bool hapticClearedR = true;
+
+        private readonly int[] hapticDxSignBufferL = new int[hapticBufferSize];
+        private readonly int[] hapticDySignBufferL = new int[hapticBufferSize];
+        private readonly int[] hapticDxFlipFlagBufferL = new int[hapticBufferSize];
+        private readonly int[] hapticDyFlipFlagBufferL = new int[hapticBufferSize];
+        private readonly double[] hapticMagBufferL = new double[hapticBufferSize];
 
         private double hapticDeltaL = 0;
-        double[] hapticDriftLX = new double[250];
-        double[] hapticDriftLY = new double[250];
-        int hapticDriftLIndex = 0;
-        double hapticDriftSumLX = 0;
-        double hapticDriftSumLY = 0;
+        private int hapticBufferCountL = 0;
+        private int hapticBufferIndexL = 0;
+        private int hapticDxFlipCountL = 0;
+        private int hapticDyFlipCountL = 0;
+        private int hapticDxZeroCountL = 0;
+        private int hapticDyZeroCountL = 0;
+        private double hapticMagSumL = 0;
+
+        private bool hapticClearedL = true;
 
         // Main movement logic
         public void MoveByFauxLizard(double dx, double dy, bool isTouched)
@@ -152,51 +171,116 @@ namespace SteamController.Devices
         {
             if (isTouched)
             {
-                // Update circular buffer and drift sums
-                hapticDriftSumRX -= hapticDriftRX[hapticDriftRIndex];
-                hapticDriftSumRY -= hapticDriftRY[hapticDriftRIndex];
+                hapticClearedR = false;
 
-                hapticDriftRX[hapticDriftRIndex] = dx;
-                hapticDriftRY[hapticDriftRIndex] = dy;
-
-                hapticDriftSumRX += dx;
-                hapticDriftSumRY += dy;
-
-                hapticDriftRIndex = (hapticDriftRIndex + 1) % hapticDriftBufferSize;
-
-                // Compute drift magnitude squared
-                double driftMagSq = hapticDriftSumRX * hapticDriftSumRX + hapticDriftSumRY * hapticDriftSumRY;
-
-                if (driftMagSq > hapticTriggerThresholdSq)
+                // If buffer is full, remove array contributions at this slot
+                if (hapticBufferCountR == hapticBufferSize)
                 {
-                    // Compute instantaneous movement magnitude
-                    double deltaMagSq = dx * dx + dy * dy;
-                    if(hapticDeltaR < hapticTriggerDelta)
-                        hapticDeltaR += Math.Sqrt(deltaMagSq);
+                    int idx = hapticBufferIndexR;
+                    hapticDxFlipCountR -= hapticDxFlipFlagBufferR[idx];
+                    hapticDyFlipCountR -= hapticDyFlipFlagBufferR[idx];
+                    if (hapticDxSignBufferR[idx] == 0) hapticDxZeroCountR--;
+                    if (hapticDySignBufferR[idx] == 0) hapticDyZeroCountR--;
+                    hapticMagSumR -= hapticMagBufferR[idx];
+                }
+                else
+                {
+                    hapticBufferCountR++;
+                }
 
-                    if (hapticDeltaR >= hapticTriggerDelta)
-                    {
-                        // Reset drift buffer and trigger haptic
-                        hapticDriftSumRX = hapticDriftSumRY = 0;
-                        hapticDriftRIndex = 0;
-                        Array.Clear(hapticDriftRX, 0, hapticDriftBufferSize);
-                        Array.Clear(hapticDriftRY, 0, hapticDriftBufferSize);
+                // Compute current signs
+                int curDxSign = Math.Sign(dx);
+                int curDySign = Math.Sign(dy);
 
-                        hapticDeltaR -= hapticTriggerDelta;
+                // Compute flips against previous signs
+                int dxFlip = 0, dyFlip = 0;
+                if (hapticBufferCountR > 1)
+                {
+                    int prevIndex = (hapticBufferIndexR - 1 + hapticBufferSize) % hapticBufferSize;
+                    int prevDxSign = hapticDxSignBufferR[prevIndex];
+                    int prevDySign = hapticDySignBufferR[prevIndex];
 
-                        return true;
-                    }
+                    if (prevDxSign != 0 && curDxSign != 0 && prevDxSign != curDxSign) dxFlip = 1;
+                    if (prevDySign != 0 && curDySign != 0 && prevDySign != curDySign) dyFlip = 1;
+                }
+
+                // Compute current magnitude
+                double mag = Math.Sqrt(dx * dx + dy * dy);
+
+                // Store signs and flip flags and magnitude in array for rolling sums
+                int i = hapticBufferIndexR;
+                hapticDxSignBufferR[i] = curDxSign;
+                hapticDySignBufferR[i] = curDySign;
+                hapticDxFlipFlagBufferR[i] = dxFlip;
+                hapticDyFlipFlagBufferR[i] = dyFlip;
+                hapticMagBufferR[i] = mag;
+
+                // Increment rolling sums
+                if (curDxSign == 0) hapticDxZeroCountR++;
+                if (curDySign == 0) hapticDyZeroCountR++;
+                hapticDxFlipCountR += dxFlip;
+                hapticDyFlipCountR += dyFlip;
+                hapticMagSumR += mag;
+
+                // Store new buffer index for later
+                hapticBufferIndexR++;
+                if (hapticBufferIndexR == hapticBufferSize) hapticBufferIndexR = 0;
+
+                // No need to proceed as buffer is not full yet
+                if (hapticBufferCountR != hapticBufferSize)
+                    return false;
+
+                // Compute average magnitude over buffer for smoothing
+                double avgMag = hapticMagSumR / hapticBufferCountR;
+
+                // Calculate a penalty for the magnitude
+                double bufferSpan = hapticBufferSize - hapticBufferMidpoint;
+                double invSpan = 1.0 / bufferSpan;
+                bool dxZeroEdge = hapticDxZeroCountR == hapticBufferCountR;
+                bool dyZeroEdge = hapticDyZeroCountR == hapticBufferCountR;
+                double factor = (dxZeroEdge || dyZeroEdge) ? 1.0 : 0.5;
+
+                double dxFactor = dxZeroEdge
+                    ? 0.0
+                    : (hapticDxFlipCountR < hapticBufferMidpoint
+                        ? factor
+                        : -factor * ((hapticDxFlipCountR - hapticBufferMidpoint) * invSpan));
+
+                double dyFactor = dyZeroEdge
+                    ? 0.0
+                    : (hapticDyFlipCountR < hapticBufferMidpoint
+                        ? factor
+                        : -factor * ((hapticDyFlipCountR - hapticBufferMidpoint) * invSpan));
+
+                // Final penalty
+                hapticDeltaR += avgMag * (dxFactor + dyFactor);
+
+                if (hapticDeltaR >= hapticTriggerDelta)
+                {
+                    hapticDeltaR -= hapticTriggerDelta;
+                    return true;
+                }
+                else if (hapticDeltaR < 0)
+                {
+                    hapticDeltaR = 0;
                 }
             }
             else
             {
-                // Reset everything on release
-                hapticDriftSumRX = hapticDriftSumRY = 0;
-                hapticDriftRIndex = 0;
-                Array.Clear(hapticDriftRX, 0, hapticDriftBufferSize);
-                Array.Clear(hapticDriftRY, 0, hapticDriftBufferSize);
+                if (!hapticClearedR)
+                {
+                    hapticClearedR = true;
 
-                hapticDeltaR = 0;
+                    // Reset all buffers when not touched
+                    hapticDeltaR = 0;
+                    hapticBufferCountR = 0;
+                    hapticBufferIndexR = 0;
+                    hapticDxFlipCountR = 0;
+                    hapticDyFlipCountR = 0;
+                    hapticDxZeroCountR = 0;
+                    hapticDyZeroCountR = 0;
+                    hapticMagSumR = 0;
+                }
             }
 
             return false;
@@ -206,51 +290,116 @@ namespace SteamController.Devices
         {
             if (isTouched)
             {
-                // Update circular buffer and drift sums
-                hapticDriftSumLX -= hapticDriftLX[hapticDriftLIndex];
-                hapticDriftSumLY -= hapticDriftLY[hapticDriftLIndex];
+                hapticClearedL = false;
 
-                hapticDriftLX[hapticDriftLIndex] = dx;
-                hapticDriftLY[hapticDriftLIndex] = dy;
-
-                hapticDriftSumLX += dx;
-                hapticDriftSumLY += dy;
-
-                hapticDriftLIndex = (hapticDriftLIndex + 1) % hapticDriftBufferSize;
-
-                // Compute drift magnitude squared
-                double driftMagSq = hapticDriftSumLX * hapticDriftSumLX + hapticDriftSumLY * hapticDriftSumLY;
-
-                if (driftMagSq > hapticTriggerThresholdSq)
+                // If buffer is full, remove array contributions at this slot
+                if (hapticBufferCountL == hapticBufferSize)
                 {
-                    // Compute instantaneous movement magnitude
-                    double deltaMagSq = dx * dx + dy * dy;
-                    if (hapticDeltaL < hapticTriggerDelta)
-                        hapticDeltaL += Math.Sqrt(deltaMagSq);
+                    int idx = hapticBufferIndexL;
+                    hapticDxFlipCountL -= hapticDxFlipFlagBufferL[idx];
+                    hapticDyFlipCountL -= hapticDyFlipFlagBufferL[idx];
+                    if (hapticDxSignBufferL[idx] == 0) hapticDxZeroCountL--;
+                    if (hapticDySignBufferL[idx] == 0) hapticDyZeroCountL--;
+                    hapticMagSumL -= hapticMagBufferL[idx];
+                }
+                else
+                {
+                    hapticBufferCountL++;
+                }
 
-                    if (hapticDeltaL >= hapticTriggerDelta)
-                    {
-                        // Reset drift buffer and trigger haptic
-                        hapticDriftSumLX = hapticDriftSumLY = 0;
-                        hapticDriftLIndex = 0;
-                        Array.Clear(hapticDriftLX, 0, hapticDriftBufferSize);
-                        Array.Clear(hapticDriftLY, 0, hapticDriftBufferSize);
+                // Compute current signs
+                int curDxSign = Math.Sign(dx);
+                int curDySign = Math.Sign(dy);
 
-                        hapticDeltaL -= hapticTriggerDelta;
+                // Compute flips against previous signs
+                int dxFlip = 0, dyFlip = 0;
+                if (hapticBufferCountL > 1)
+                {
+                    int prevIndex = (hapticBufferIndexL - 1 + hapticBufferSize) % hapticBufferSize;
+                    int prevDxSign = hapticDxSignBufferL[prevIndex];
+                    int prevDySign = hapticDySignBufferL[prevIndex];
 
-                        return true;
-                    }
+                    if (prevDxSign != 0 && curDxSign != 0 && prevDxSign != curDxSign) dxFlip = 1;
+                    if (prevDySign != 0 && curDySign != 0 && prevDySign != curDySign) dyFlip = 1;
+                }
+
+                // Compute current magnitude
+                double mag = Math.Sqrt(dx * dx + dy * dy);
+
+                // Store signs and flip flags and magnitude in array for rolling sums
+                int i = hapticBufferIndexL;
+                hapticDxSignBufferL[i] = curDxSign;
+                hapticDySignBufferL[i] = curDySign;
+                hapticDxFlipFlagBufferL[i] = dxFlip;
+                hapticDyFlipFlagBufferL[i] = dyFlip;
+                hapticMagBufferL[i] = mag;
+
+                // Increment rolling sums
+                if (curDxSign == 0) hapticDxZeroCountL++;
+                if (curDySign == 0) hapticDyZeroCountL++;
+                hapticDxFlipCountL += dxFlip;
+                hapticDyFlipCountL += dyFlip;
+                hapticMagSumL += mag;
+
+                // Store new buffer index for later
+                hapticBufferIndexL++;
+                if (hapticBufferIndexL == hapticBufferSize) hapticBufferIndexL = 0;
+
+                // No need to proceed as buffer is not full yet
+                if (hapticBufferCountL != hapticBufferSize)
+                    return false;
+
+                // Compute average magnitude over buffer for smoothing
+                double avgMag = hapticMagSumL / hapticBufferCountL;
+
+                // Calculate a penalty for the magnitude
+                double bufferSpan = hapticBufferSize - hapticBufferMidpoint;
+                double invSpan = 1.0 / bufferSpan;
+                bool dxZeroEdge = hapticDxZeroCountL == hapticBufferCountL;
+                bool dyZeroEdge = hapticDyZeroCountL == hapticBufferCountL;
+                double factor = (dxZeroEdge || dyZeroEdge) ? 1.0 : 0.5;
+
+                double dxFactor = dxZeroEdge
+                    ? 0.0
+                    : (hapticDxFlipCountL < hapticBufferMidpoint
+                        ? factor
+                        : -factor * ((hapticDxFlipCountL - hapticBufferMidpoint) * invSpan));
+
+                double dyFactor = dyZeroEdge
+                    ? 0.0
+                    : (hapticDyFlipCountL < hapticBufferMidpoint
+                        ? factor
+                        : -factor * ((hapticDyFlipCountL - hapticBufferMidpoint) * invSpan));
+
+                // Final penalty
+                hapticDeltaL += avgMag * (dxFactor + dyFactor);
+
+                if (hapticDeltaL >= hapticTriggerDelta)
+                {
+                    hapticDeltaL -= hapticTriggerDelta;
+                    return true;
+                }
+                else if (hapticDeltaL < 0)
+                {
+                    hapticDeltaL = 0;
                 }
             }
             else
             {
-                // Reset everything on release
-                hapticDriftSumLX = hapticDriftSumLY = 0;
-                hapticDriftLIndex = 0;
-                Array.Clear(hapticDriftLX, 0, hapticDriftBufferSize);
-                Array.Clear(hapticDriftLY, 0, hapticDriftBufferSize);
+                if (!hapticClearedL)
+                {
+                    hapticClearedL = true;
 
-                hapticDeltaL = 0;
+                    // Reset all buffers when not touched
+                    hapticDeltaL = 0;
+                    hapticBufferCountL = 0;
+                    hapticBufferIndexL = 0;
+                    hapticDxFlipCountL = 0;
+                    hapticDyFlipCountL = 0;
+                    hapticDxZeroCountL = 0;
+                    hapticDyZeroCountL = 0;
+                    hapticMagSumL = 0;
+                }
             }
 
             return false;

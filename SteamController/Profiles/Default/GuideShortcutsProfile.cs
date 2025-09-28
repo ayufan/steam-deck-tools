@@ -153,12 +153,12 @@ namespace SteamController.Profiles.Default
                 // Send haptic for pad drag
                 if (c.Mouse.HapticDragLFauxLizard(
                     c.Steam.LPadX.GetDeltaValue(
-                        32766,
+                        150,
                         Devices.DeltaValueMode.Delta,
                         10
                     ),
                     c.Steam.LPadY.GetDeltaValue(
-                        32766,
+                        150,
                         Devices.DeltaValueMode.Delta,
                         10
                     ),
@@ -217,12 +217,12 @@ namespace SteamController.Profiles.Default
                 // Send haptic for pad drag
                 if (c.Mouse.HapticDragRFauxLizard(
                     c.Steam.RPadX.GetDeltaValue(
-                        32766,
+                        150,
                         Devices.DeltaValueMode.Delta,
                         10
                     ),
                     c.Steam.RPadY.GetDeltaValue(
-                        32766,
+                        150,
                         Devices.DeltaValueMode.Delta,
                         10
                     ),
