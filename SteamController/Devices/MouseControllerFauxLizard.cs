@@ -12,8 +12,9 @@ namespace SteamController.Devices
         private const int velocityWindowSize = 20;            // Velocity smoothing window size
         private const double minGlideMagnitude = 0.8;         // Minimum velocity to start glide
         private const double minGlideVelocity = 0.15;         // Minimum velocity to continue glide
-        private const int hapticBufferSize = 10;             // Haptic smoothing and jitter reduction buffer
+        private const int hapticBufferSize = 10;              // Haptic smoothing and jitter reduction buffer
         private const double hapticTriggerDelta = 30;         // Distance required for haptic feedback on each pad
+        private const int hapticResetTime = 5;                // Number of seconds to invalidate a haptic feedback, prevents triggering on drag jitter
 
         // Functional constants (derived once)
         private readonly double gestureRadiusSq = gestureRadius * gestureRadius;
@@ -34,6 +35,7 @@ namespace SteamController.Devices
         private double velocitySumX = 0, velocitySumY = 0;
 
         // Runtime state haptics
+        // Right track pad
         private readonly int[] hapticDxSignBufferR = new int[hapticBufferSize];
         private readonly int[] hapticDySignBufferR = new int[hapticBufferSize];
         private readonly int[] hapticDxFlipFlagBufferR = new int[hapticBufferSize];
@@ -48,9 +50,11 @@ namespace SteamController.Devices
         private int hapticDxZeroCountR = 0;
         private int hapticDyZeroCountR = 0;
         private double hapticMagSumR = 0;
+        private DateTime hapticLastTimeR = DateTime.MinValue;
 
         private bool hapticClearedR = true;
 
+        // Left track pad
         private readonly int[] hapticDxSignBufferL = new int[hapticBufferSize];
         private readonly int[] hapticDySignBufferL = new int[hapticBufferSize];
         private readonly int[] hapticDxFlipFlagBufferL = new int[hapticBufferSize];
@@ -65,6 +69,7 @@ namespace SteamController.Devices
         private int hapticDxZeroCountL = 0;
         private int hapticDyZeroCountL = 0;
         private double hapticMagSumL = 0;
+        private DateTime hapticLastTimeL = DateTime.MinValue;
 
         private bool hapticClearedL = true;
 
@@ -173,6 +178,18 @@ namespace SteamController.Devices
             {
                 hapticClearedR = false;
 
+                // Timeout check: reset delta if accumulation is too slow
+                DateTime now = DateTime.UtcNow;
+                if (hapticBufferCountR == 0)
+                {
+                    hapticLastTimeR = now;
+                }
+                else if ((now - hapticLastTimeR).TotalSeconds > hapticResetTime)
+                {
+                    hapticDeltaR = 0;
+                    hapticLastTimeR = now;
+                }
+
                 // If buffer is full, remove array contributions at this slot
                 if (hapticBufferCountR == hapticBufferSize)
                 {
@@ -257,7 +274,8 @@ namespace SteamController.Devices
 
                 if (hapticDeltaR >= hapticTriggerDelta)
                 {
-                    hapticDeltaR -= hapticTriggerDelta;
+                    hapticDeltaR -= Math.Floor(hapticDeltaR / hapticTriggerDelta) * hapticTriggerDelta;
+                    hapticLastTimeR = now;
                     return true;
                 }
                 else if (hapticDeltaR < 0)
@@ -291,6 +309,18 @@ namespace SteamController.Devices
             if (isTouched)
             {
                 hapticClearedL = false;
+
+                // Timeout check: reset delta if accumulation is too slow
+                DateTime now = DateTime.UtcNow;
+                if (hapticBufferCountL == 0)
+                {
+                    hapticLastTimeL = now;
+                }
+                else if ((now - hapticLastTimeL).TotalSeconds > hapticResetTime)
+                {
+                    hapticDeltaL = 0;
+                    hapticLastTimeL = now;
+                }
 
                 // If buffer is full, remove array contributions at this slot
                 if (hapticBufferCountL == hapticBufferSize)
@@ -376,7 +406,8 @@ namespace SteamController.Devices
 
                 if (hapticDeltaL >= hapticTriggerDelta)
                 {
-                    hapticDeltaL -= hapticTriggerDelta;
+                    hapticDeltaL -= Math.Floor(hapticDeltaL / hapticTriggerDelta) * hapticTriggerDelta;
+                    hapticLastTimeL = now;
                     return true;
                 }
                 else if (hapticDeltaL < 0)
