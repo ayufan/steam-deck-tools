@@ -27,6 +27,13 @@ namespace SteamController
             set { Set("LizardMouse", value); }
         }
 
+        [Description("Emulate Lizard controls in software. LizardButtons and LizardMouse must be disabled for this to take effect.")]
+        public bool FauxLizardMode
+        {
+            get { return Get<bool>("FauxLizardMode", false); }
+            set { Set("FauxLizardMode", value); }
+        }
+
         public override string ToString()
         {
             return "";
