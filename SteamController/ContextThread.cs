@@ -31,6 +31,13 @@ namespace SteamController
                 ThreadSleep((int)startDelayMs);
             }
 
+            //Raise the thread priority to High for better responsiveness
+            try
+            {
+                Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            }
+            catch { }
+
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             int updates = 0;

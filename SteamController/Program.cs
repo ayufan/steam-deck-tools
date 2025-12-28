@@ -1,4 +1,5 @@
 using CommonHelpers;
+using System.Diagnostics;
 
 namespace SteamController
 {
@@ -12,6 +13,13 @@ namespace SteamController
         {
             Instance.WithSentry(() =>
             {
+                // Raise the application priority to Above Normal for better responsiveness
+                try
+                {
+                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
+                }
+                catch { }
+
                 // To customize application configuration such as set high DPI settings or default font,
                 // see https://aka.ms/applicationconfiguration.
                 ApplicationConfiguration.Initialize();
