@@ -23,16 +23,25 @@ namespace SteamController.Devices
         private readonly double hapticBufferMidpoint = hapticBufferSize / 2.0;
 
         // Runtime state RPad
-        private Queue<double> bufX = new(), bufY = new();
+        private readonly double[] bufX = new double[bufferSize];
+        private int bufXIndex = 0, bufXCount = 0;
+        private double bufXSum = 0;
+        private readonly double[] bufY = new double[bufferSize];
+        private int bufYIndex = 0, bufYCount = 0;
+        private double bufYSum = 0;
         private double totalDeltaX = 0, totalDeltaY = 0;
         private bool gestureCommitted = false;
         private double gestureFlushX = 0, gestureFlushY = 0;
 
         private bool isGliding = false;
-        private DateTime releaseTime;
+        private long releaseTicks;
         private double releaseVelocityX = 0, releaseVelocityY = 0;
-        private Queue<double> velocityHistoryX = new(), velocityHistoryY = new();
-        private double velocitySumX = 0, velocitySumY = 0;
+        private readonly double[] velocityX = new double[velocityWindowSize];
+        private int velocityXIndex = 0, velocityXCount = 0;
+        private double velocityXSum = 0;
+        private readonly double[] velocityY = new double[velocityWindowSize];
+        private int velocityYIndex = 0, velocityYCount = 0;
+        private double velocityYSum = 0;
 
         // Runtime state haptics
         // Right track pad
@@ -84,7 +93,7 @@ namespace SteamController.Devices
                     double magSq = releaseVelocityX * releaseVelocityX + releaseVelocityY * releaseVelocityY;
                     if (magSq >= minGlideMagnitudeSq)
                     {
-                        releaseTime = DateTime.Now;
+                        releaseTicks = System.Diagnostics.Stopwatch.GetTimestamp();
                         isGliding = true;
                     }
                 }
@@ -92,7 +101,9 @@ namespace SteamController.Devices
                 // Continue glide if active
                 if (isGliding)
                 {
-                    double elapsed = (DateTime.Now - releaseTime).TotalSeconds;
+                    double elapsed =
+                        (System.Diagnostics.Stopwatch.GetTimestamp() - releaseTicks)
+                        / (double)System.Diagnostics.Stopwatch.Frequency;
                     double glideX = ApplyReleaseGlide(releaseVelocityX, elapsed);
                     double glideY = ApplyReleaseGlide(releaseVelocityY, elapsed);
 
@@ -110,15 +121,16 @@ namespace SteamController.Devices
 
                 // Reset gesture state
                 gestureCommitted = false;
-                totalDeltaX = totalDeltaY = 0;
+                bufXIndex = bufXCount = bufYIndex = bufYCount = velocityXIndex = velocityXCount = velocityYIndex = velocityYCount = 0;
+                bufYSum = bufXSum = velocityXSum = velocityYSum = totalDeltaX = totalDeltaY = 0;
                 return;
             }
 
             isGliding = false;
 
             // Smooth input deltas
-            double smoothedX = SmoothDelta(dx, bufX);
-            double smoothedY = SmoothDelta(dy, bufY);
+            double smoothedX = SmoothDelta(dx, bufX, ref bufXIndex, ref bufXCount, ref bufXSum);
+            double smoothedY = SmoothDelta(dy, bufY, ref bufYIndex, ref bufYCount, ref bufYSum);
 
             // Apply acceleration ramp
             double rampedX = ApplyAccelerationRamp(smoothedX);
@@ -137,26 +149,15 @@ namespace SteamController.Devices
                     gestureFlushX = totalDeltaX;
                     gestureFlushY = totalDeltaY;
 
-                    velocityHistoryX.Clear();
-                    velocityHistoryY.Clear();
-                    velocitySumX = velocitySumY = 0;
+                    velocityXIndex = velocityXCount = 0; velocityXSum = 0;
+                    velocityYIndex = velocityYCount = 0; velocityYSum = 0;
                 }
                 else return;
             }
 
             // Track velocity using rolling sum
-            velocityHistoryX.Enqueue(rampedX);
-            velocitySumX += rampedX;
-            if (velocityHistoryX.Count > velocityWindowSize)
-                velocitySumX -= velocityHistoryX.Dequeue();
-
-            velocityHistoryY.Enqueue(rampedY);
-            velocitySumY += rampedY;
-            if (velocityHistoryY.Count > velocityWindowSize)
-                velocitySumY -= velocityHistoryY.Dequeue();
-
-            releaseVelocityX = velocitySumX / velocityHistoryX.Count;
-            releaseVelocityY = velocitySumY / velocityHistoryY.Count;
+            releaseVelocityX = SmoothVelocity(rampedX, velocityX, ref velocityXIndex, ref velocityXCount, ref velocityXSum);
+            releaseVelocityY = SmoothVelocity(rampedY, velocityY, ref velocityYIndex, ref velocityYCount, ref velocityYSum);
 
             // Apply gesture flush
             double flushedX = gestureFlushX * gestureFlushRate;
@@ -437,14 +438,49 @@ namespace SteamController.Devices
         }
 
         // Input smoothing
-        private double SmoothDelta(double raw, Queue<double> buffer)
+        private double SmoothDelta(double raw, double[] buffer, ref int index, ref int count, ref double sum)
         {
-            buffer.Enqueue(raw);
-            if (buffer.Count > bufferSize) buffer.Dequeue();
+            if (count < bufferSize)
+            {
+                buffer[index] = raw;
+                sum += raw;
+                count++;
+            }
+            else
+            {
+                sum -= buffer[index];
+                buffer[index] = raw;
+                sum += raw;
+            }
 
-            double sum = 0;
-            foreach (var v in buffer) sum += v;
-            return sum / buffer.Count;
+            index++;
+            if (index == bufferSize)
+                index = 0;
+
+            return sum / count;
+        }
+
+        // Velocity smoothing
+        private double SmoothVelocity(double v, double[] buffer, ref int index, ref int count, ref double sum)
+        {
+            if (count < velocityWindowSize)
+            {
+                buffer[index] = v;
+                sum += v;
+                count++;
+            }
+            else
+            {
+                sum -= buffer[index];
+                buffer[index] = v;
+                sum += v;
+            }
+
+            index++;
+            if (index == velocityWindowSize)
+                index = 0;
+
+            return sum / count;
         }
 
         // Acceleration ramp
