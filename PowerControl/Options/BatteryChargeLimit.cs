@@ -10,6 +10,19 @@ namespace PowerControl.Options
             ApplyDelay = 1000,
             Options = { "70%", "80%", "90%", "100%" },
             ActiveOption = "?",
+            CurrentValue = delegate ()
+            {
+                using (var vlv0100 = new Vlv0100())
+                {
+                    if (!vlv0100.Open())
+                        return null;
+
+                    var value = vlv0100.GetMaxBatteryCharge();
+                    if (value is null)
+                        return null;
+                    return value.ToString() + "%";
+                }
+            },
             ApplyValue = (selected) =>
             {
                 var value = int.Parse(selected.ToString().TrimEnd('%'));
